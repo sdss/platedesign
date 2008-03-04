@@ -1,0 +1,7 @@
+# Created on Fri Oct 19 11:15:05 2007
+parametersDir /global/data/products/Linux64/idlspec2d/cvs/examples
+parameters    plParam.par
+plObsFile     plObs.par
+outFileDir    /home/users/mb144/boss/platedesign/data/inputs/marvels/oct-2007
+tileDir       /home/users/mb144/boss/platedesign/data/inputs/marvels/oct-2007
+

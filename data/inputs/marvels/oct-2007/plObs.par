@@ -1,0 +1,14 @@
+# Created on Fri Oct 19 11:15:05 2007
+plateRun special
+
+typedef struct {
+   int plateId;
+   int tileId;
+   float temp;
+   float haMin;
+   float haMax;
+   int mjdDesign
+} PLOBS;
+
+
+PLOBS 2846 9564 5.00000 0.0000000 0.0000000 54392.635

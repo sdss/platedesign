@@ -1,0 +1,187 @@
+* text=auto !eol
+/README -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate1209ra130.422195dec32.249088.dr6.lopriority -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate1592ra139.6978dec32.798649.dr6.lopriority -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate1943ra144.579895dec32.577969.dr6.lopriority -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate1949ra149.856903dec32.124512.dr6.lopriority -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate861ra123.218803dec31.58687.dr6.lopriority -text
+data/inputs/boss/feb-2008/HIGHERDENSITYplate890ra118.400299dec31.940149.dr6.lopriority -text
+data/inputs/boss/feb-2008/plDrillPos-2957.par -text
+data/inputs/boss/feb-2008/plDrillPos-2958.par -text
+data/inputs/boss/feb-2008/plDrillPos-2959.par -text
+data/inputs/boss/feb-2008/plDrillPos-2960.par -text
+data/inputs/boss/feb-2008/plDrillPos-2961.par -text
+data/inputs/boss/feb-2008/plDrillPos-2962.par -text
+data/inputs/boss/feb-2008/plFanuc-2957.par -text
+data/inputs/boss/feb-2008/plFanuc-2958.par -text
+data/inputs/boss/feb-2008/plFanuc-2959.par -text
+data/inputs/boss/feb-2008/plFanuc-2960.par -text
+data/inputs/boss/feb-2008/plFanuc-2961.par -text
+data/inputs/boss/feb-2008/plFanuc-2962.par -text
+data/inputs/boss/feb-2008/plMeas-2957.par -text
+data/inputs/boss/feb-2008/plMeas-2958.par -text
+data/inputs/boss/feb-2008/plMeas-2959.par -text
+data/inputs/boss/feb-2008/plMeas-2960.par -text
+data/inputs/boss/feb-2008/plMeas-2961.par -text
+data/inputs/boss/feb-2008/plMeas-2962.par -text
+data/inputs/boss/feb-2008/plObs.par -text
+data/inputs/boss/feb-2008/plOverlay-2957.ps -text
+data/inputs/boss/feb-2008/plOverlay-2958.ps -text
+data/inputs/boss/feb-2008/plOverlay-2959.ps -text
+data/inputs/boss/feb-2008/plOverlay-2960.ps -text
+data/inputs/boss/feb-2008/plOverlay-2961.ps -text
+data/inputs/boss/feb-2008/plOverlay-2962.ps -text
+data/inputs/boss/feb-2008/plPlan.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2957.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2958.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2959.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2960.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2961.par -text
+data/inputs/boss/feb-2008/plPlugMapP-2962.par -text
+data/inputs/boss/feb-2008/plate1209ra130.422195dec32.249088.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate1209ra130.422195dec32.249088.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate1209ra130.422195dec32.249088.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1209ra130.422195dec32.249088.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1209ra130.422195dec32.249088.std.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1592ra139.6978dec32.798649.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate1592ra139.6978dec32.798649.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate1592ra139.6978dec32.798649.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1592ra139.6978dec32.798649.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1592ra139.6978dec32.798649.std.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1943ra144.579895dec32.577969.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate1943ra144.579895dec32.577969.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate1943ra144.579895dec32.577969.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1943ra144.579895dec32.577969.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1943ra144.579895dec32.577969.std.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1949ra149.856903dec32.124512.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate1949ra149.856903dec32.124512.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate1949ra149.856903dec32.124512.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1949ra149.856903dec32.124512.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate1949ra149.856903dec32.124512.std.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate861ra123.218803dec31.58687.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate861ra123.218803dec31.58687.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate861ra123.218803dec31.58687.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate861ra123.218803dec31.58687.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate861ra123.218803dec31.58687.std.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate890ra118.400299dec31.940149.dr5.hipriority -text
+data/inputs/boss/feb-2008/plate890ra118.400299dec31.940149.dr6.lopriority -text
+data/inputs/boss/feb-2008/plate890ra118.400299dec31.940149.guide.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate890ra118.400299dec31.940149.sky.fits -text svneol=unset#unset
+data/inputs/boss/feb-2008/plate890ra118.400299dec31.940149.std.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/GL273.Segue.coo -text
+data/inputs/marvels/oct-2007/GL273.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/GL273.ps -text
+data/inputs/marvels/oct-2007/HATP1.Segue.coo -text
+data/inputs/marvels/oct-2007/HATP1.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HATP1.ps -text
+data/inputs/marvels/oct-2007/HD17092.Segue.coo -text
+data/inputs/marvels/oct-2007/HD17092.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD17092.ps -text
+data/inputs/marvels/oct-2007/HD17156.Segue.coo -text
+data/inputs/marvels/oct-2007/HD17156.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD17156.ps -text
+data/inputs/marvels/oct-2007/HD209458.Segue.coo -text
+data/inputs/marvels/oct-2007/HD209458.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD209458.ps -text
+data/inputs/marvels/oct-2007/HD37605.Segue.coo -text
+data/inputs/marvels/oct-2007/HD37605.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD37605.ps -text
+data/inputs/marvels/oct-2007/HD43691.Segue.coo -text
+data/inputs/marvels/oct-2007/HD43691.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD43691.ps -text
+data/inputs/marvels/oct-2007/HD49674.Segue.coo -text
+data/inputs/marvels/oct-2007/HD49674.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD49674.ps -text
+data/inputs/marvels/oct-2007/HD68988.Segue.coo -text
+data/inputs/marvels/oct-2007/HD68988.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/HD68988.ps -text
+data/inputs/marvels/oct-2007/README -text
+data/inputs/marvels/oct-2007/WASP1.Segue.coo -text
+data/inputs/marvels/oct-2007/WASP1.Segue.sky.fits -text svneol=unset#unset
+data/inputs/marvels/oct-2007/WASP1.ps -text
+data/inputs/marvels/oct-2007/plDrillPos-2838.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2839.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2840.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2841.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2842.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2843.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2844.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2845.par -text
+data/inputs/marvels/oct-2007/plDrillPos-2847.par -text
+data/inputs/marvels/oct-2007/plFanuc-2838.par -text
+data/inputs/marvels/oct-2007/plFanuc-2839.par -text
+data/inputs/marvels/oct-2007/plFanuc-2840.par -text
+data/inputs/marvels/oct-2007/plFanuc-2841.par -text
+data/inputs/marvels/oct-2007/plFanuc-2842.par -text
+data/inputs/marvels/oct-2007/plFanuc-2843.par -text
+data/inputs/marvels/oct-2007/plFanuc-2844.par -text
+data/inputs/marvels/oct-2007/plFanuc-2845.par -text
+data/inputs/marvels/oct-2007/plFanuc-2847.par -text
+data/inputs/marvels/oct-2007/plMeas-2838.par -text
+data/inputs/marvels/oct-2007/plMeas-2839.par -text
+data/inputs/marvels/oct-2007/plMeas-2840.par -text
+data/inputs/marvels/oct-2007/plMeas-2841.par -text
+data/inputs/marvels/oct-2007/plMeas-2842.par -text
+data/inputs/marvels/oct-2007/plMeas-2843.par -text
+data/inputs/marvels/oct-2007/plMeas-2844.par -text
+data/inputs/marvels/oct-2007/plMeas-2845.par -text
+data/inputs/marvels/oct-2007/plMeas-2847.par -text
+data/inputs/marvels/oct-2007/plObs.par -text
+data/inputs/marvels/oct-2007/plOverlay-2838.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2839.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2840.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2841.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2842.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2843.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2844.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2845.ps -text
+data/inputs/marvels/oct-2007/plOverlay-2847.ps -text
+data/inputs/marvels/oct-2007/plPlan.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2838.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2839.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2840.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2841.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2842.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2843.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2844.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2845.par -text
+data/inputs/marvels/oct-2007/plPlugMapP-2847.par -text
+data/strategy/boss_observing_nights.par -text
+data/strategy/night_usage.ps -text
+data/strategy/tiInputFormat.fit -text
+data/strategy/tile-simple.par -text
+pro/plate/coo_read.pro -text
+pro/plate/plate_design.pro -text
+pro/plate/plate_marvels.pro -text
+pro/plate/plate_marvels_oct07.pro -text
+pro/plate/plate_pmotion_correct.pro -text
+pro/plate/plate_qsos.pro -text
+pro/plate/plate_qsos_feb08.pro -text
+pro/plate/plate_sanity.pro -text
+pro/plate/plate_select_guide.pro -text
+pro/plate/plate_select_sky.pro -text
+pro/plate/plate_select_sphoto.pro -text
+pro/plate/plate_tmass_to_sdss.pro -text
+pro/plate/plate_tycho_to_sdss.pro -text
+pro/plate/qsolist_read.pro -text
+pro/plate/sky_location_candidates.pro -text
+pro/strategy/QUESTIONS -text
+pro/strategy/apo_almanac.pro -text
+pro/strategy/apo_in_interval.pro -text
+pro/strategy/baseline_tiles.pro -text
+pro/strategy/boss_efficiency_half.pro -text
+pro/strategy/boss_observing_days.pro -text
+pro/strategy/boss_observing_night.pro -text
+pro/strategy/boss_observing_nights.pro -text
+pro/strategy/boss_strategy_simple.pro -text
+pro/strategy/dummy_tiles.pro -text
+pro/strategy/interval_stats.pro -text
+pro/strategy/lrgs2tiinput.pro -text
+pro/strategy/night_intervals.pro -text
+pro/strategy/plot_night_usage.pro -text
+pro/strategy/run_boss_strategy.pro -text
+pro/strategy/splot_rbs.pro -text
+pro/strategy/trial_lrgs_for_tile.pro -text
+pro/strategy/trim_tiles.pro -text
+src/skycalc/Makefile -text
+src/skycalc/skycalc.c -text
