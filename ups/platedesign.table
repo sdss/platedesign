@@ -1,0 +1,2 @@
+setupenv()
+envPrepend(IDL_PATH, +${UPS_PROD_DIR}/pro)

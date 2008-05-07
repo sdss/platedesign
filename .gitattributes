@@ -150,8 +150,12 @@ data/strategy/boss_observing_nights.par -text
 data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
+defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
+pro/misc/lines2struct.pro -text
 pro/plate/coo_read.pro -text
 pro/plate/plate_design.pro -text
+pro/plate/plate_drillrun.pro -text
+pro/plate/plate_holes.pro -text
 pro/plate/plate_marvels.pro -text
 pro/plate/plate_marvels_oct07.pro -text
 pro/plate/plate_pmotion_correct.pro -text
@@ -185,3 +189,4 @@ pro/strategy/trial_lrgs_for_tile.pro -text
 pro/strategy/trim_tiles.pro -text
 src/skycalc/Makefile -text
 src/skycalc/skycalc.c -text
+ups/platedesign.table -text
