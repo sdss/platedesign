@@ -1,0 +1,78 @@
+#
+# MARVELS_PRESELECT
+#
+# Default settings for MARVELS pre-selection plates.
+#
+
+#
+# Number of fibers of each type in each category
+#
+
+# science fibers 
+nScienceSDSS 592
+nScienceMARVELS 0
+nScienceBOSS 0
+nScienceAPOGEE 0
+
+# standard fibers 
+nStandardSDSS 16
+nStandardMARVELS 0
+nStandardBOSS 0
+nStandardAPOGEE 0
+
+# sky fibers 
+nSkySDSS 32
+nSkyMARVELS 0
+nSkyBOSS 0
+nSkyAPOGEE 0
+
+#
+# Nature of the pointings and observations
+#
+
+nPointings 1
+pointingExpTime1 300.   
+nGuide1 10
+nOffsets 0
+
+#
+# Ferrule sizes to assume
+#
+
+ferruleSizeSDSS 
+ferruleSizeBOSS
+ferruleSizeMARVELS
+ferruleSizeAPOGEE
+
+#
+# lambdaObserve?
+#
+
+
+#
+# Settings if platedesign is meant to find standards
+#
+
+plateDesignStandards 1
+standardType 2MASS
+standardMinJminusH 0.3
+standardMaxJminusH 0.4
+
+#
+# Settings if platedesign is meant to find skies
+#
+
+plateDesignSkies 1
+
+#
+# Settings if platedesign is meant to find guides
+#
+
+plateDesignGuides 1
+
+#
+# SOS settings
+#
+#sosMinMag
+#sosMaxMag
+
