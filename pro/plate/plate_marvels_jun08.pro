@@ -9,18 +9,18 @@
 ;   11-Oct-2007  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_marvels_jun08,doplot=doplot
+pro plate_marvels_jun08,doplot=doplot, nodesign=nodesign
 
 cd, getenv('PLATEDESIGN_DIR')+'/data/inputs/marvels/june-2008'
 epoch = 2008.564
 
-fieldnames=['testE2008']
+fieldnames=['WASP-1']
 
 pst=3000L
 tst=9900L
 for i=0L, n_elements(fieldnames)-1L do begin
     plate_marvels_new, fieldnames[i], tilenum=tst+i, platenum=pst+i, $
-      epoch=epoch, doplot=doplot
+      epoch=epoch, doplot=doplot, nodesign=nodesign
 endfor
 
 return
