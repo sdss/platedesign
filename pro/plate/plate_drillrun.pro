@@ -31,6 +31,10 @@ if(n_elements(designid) gt 1) then begin
     return
 endif
 
+;; set random seed 
+origseed=-designid
+seed=origseed
+
 if(NOT keyword_set(justholes)) then begin
     
     ;; Read in the plate definition file
@@ -68,6 +72,9 @@ if(NOT keyword_set(justholes)) then begin
               default.(i)= definition.(j)
         endfor
     endfor
+
+    ;; Initialize design structure, including a center hole
+    design=design_blank(/center)
     
     ;; For each class of input priorities, run plate_assign 
     ;; Note input files root path is $PLATELIST_DIR/inputs
@@ -77,8 +84,10 @@ if(NOT keyword_set(justholes)) then begin
         if(itag eq -1) then $
           message, 'no plateInput'+strtrim(string(i+1),2)+' param set'
         targets= yanny_readone(getenv('PLATELIST_DIR')+ $
-                               '/inputs/'+definition.(itag))
-        ;; RUN PLATE_ASSIGN HERE
+                               '/inputs/'+definition.(itag), hdr=hdr)
+        hdrstr=lines2struct(hdr)
+        plate_assign, definition, default, design, targets, info=hdrstr, $
+                      seed=seed
     endfor
 
     ;; Find guide fibers and assign them
@@ -98,6 +107,7 @@ if(NOT keyword_set(justholes)) then begin
     endif
 
     ;; Find sky fibers and assign them
+    ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
     if(definition.platedesignskies gt 0) then begin
         ;; find sky fibers 
 
