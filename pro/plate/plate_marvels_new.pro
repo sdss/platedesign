@@ -23,7 +23,8 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_marvels_new, fieldname, tilenum=tile, platenum=plate, epoch=epoch1, $
-                       rerun=rerun1, tilerad=tilerad1, doplot=doplot
+                       rerun=rerun1, tilerad=tilerad1, doplot=doplot, $
+                       nodesign=nodesign
 
 common com_pq, tycdat
 
@@ -37,7 +38,7 @@ nminsky = 64L
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 
-targets= yanny_readone('plateInput-'+fieldname+'.par', hdr=hdr)
+targets= yanny_readone('plateInput-'+fieldname+'.par', hdr=hdr, /anon)
 hdrstr=lines2struct(hdr)
 racen=double(hdrstr.racen)
 deccen=double(hdrstr.deccen)
@@ -85,9 +86,6 @@ if(NOT file_test(stdfile)) then begin
     plate_select_sphoto, racen, deccen, epoch=epoch, rerun=rerun, $
       tilerad=tilerad, stardata=standards, sphoto_mag=[10.5,14.], $
       redden_mag=[0,0]
-    isdss=where(standards.priority ge 101 and $
-                standards.priority le 200, nsdss)
-    standards=standards[isdss]
 
     mwrfits, standards, stdfile, /create
 endif else begin
@@ -99,7 +97,8 @@ alldata = struct_append(alldata, skies)
 alldata = struct_append(alldata, guides)
 alldata = struct_append(alldata, standards)
 
-plate_design, alldata, racen=racen, deccen=deccen, tile=tile, $
+if(NOT keyword_set(nodesign)) then $
+  plate_design, alldata, racen=racen, deccen=deccen, tile=tile, $
   plate=plate, nstd=nstd, nminsky=nminsky
 
 return
