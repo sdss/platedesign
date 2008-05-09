@@ -174,8 +174,6 @@ alldata = struct_append(alldata, skies)
 alldata = struct_append(alldata, guides)
 alldata = struct_append(alldata, standards)
 
-save
-
 plate_design, alldata, racen=racen, deccen=deccen, tile=tile, $
   plate=plate, nstd=nstd, nminsky=nminsky
 
