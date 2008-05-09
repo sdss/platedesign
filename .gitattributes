@@ -152,7 +152,11 @@ data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 pro/misc/lines2struct.pro -text
+pro/plate/check_conflicts.pro -text
 pro/plate/coo_read.pro -text
+pro/plate/design_blank.pro -text
+pro/plate/plate_assign.pro -text
+pro/plate/plate_center.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_drillrun.pro -text
 pro/plate/plate_holes.pro -text
