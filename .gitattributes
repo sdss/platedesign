@@ -122,6 +122,7 @@ data/inputs/marvels/june-2008/plateInput-KEPLER4.par -text
 data/inputs/marvels/june-2008/plateInput-WASP-1.par -text
 data/inputs/marvels/june-2008/plateInput-XO-1.par -text
 data/inputs/marvels/june-2008/plateInput-XO-2.par -text
+data/inputs/marvels/june-2008/plateInput-testE2008.par -text
 data/inputs/marvels/oct-2007/GL273.Segue.coo -text
 data/inputs/marvels/oct-2007/GL273.Segue.sky.fits -text svneol=unset#unset
 data/inputs/marvels/oct-2007/GL273.ps -text
@@ -215,6 +216,8 @@ pro/plate/plate_design.pro -text
 pro/plate/plate_drillrun.pro -text
 pro/plate/plate_holes.pro -text
 pro/plate/plate_marvels.pro -text
+pro/plate/plate_marvels_jun08.pro -text
+pro/plate/plate_marvels_new.pro -text
 pro/plate/plate_marvels_oct07.pro -text
 pro/plate/plate_pmotion_correct.pro -text
 pro/plate/plate_qsos.pro -text
