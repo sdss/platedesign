@@ -38,15 +38,21 @@ nminsky = 64L
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 
-targets= yanny_readone('plateInput-'+fieldname+'.par', hdr=hdr, /anon)
+targets_in= yanny_readone('plateInput-'+fieldname+'.par', hdr=hdr, /anon)
 hdrstr=lines2struct(hdr)
 racen=double(hdrstr.racen)
 deccen=double(hdrstr.deccen)
 
+targets1= create_struct(targets_in[0], 'OBJTYPE', 'SERENDIPITY_MANUAL')
+targets=replicate(targets1, n_elements(targets_in))
+struct_assign, targets_in, targets
+targets.objtype= 'SERENDIPITY_MANUAL'
+targets.holetype= 'OBJECT'
+
 tycdat = tycho_read(racen=racen, deccen=deccen, radius=tilerad, epoch=epoch)
 
 ;; Select sky targets
-nsky = 300L
+nsky = (640L-n_elements(targets)+50L)>300L
 skyfile=fieldname+'.sky.fits'
 if(NOT file_test(skyfile)) then begin
     plate_select_sky, racen, deccen, nsky=nsky, $
