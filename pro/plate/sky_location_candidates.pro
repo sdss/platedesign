@@ -84,11 +84,16 @@ ix=isky mod nx
 iy=isky / nx
 ikeep=where(ix gt 30L and ix lt (nx-30L) and $
             iy gt 30L and iy lt (ny-30L), nkeep)
+if(nkeep eq 0) then begin
+    splog, 'NO SKY HERE'
+    cand_ra=0
+    cand_dec=0
+    return
+endif
+
 ix=ix[ikeep]
 iy=iy[ikeep]
 xyad, hdr, ix, iy, tmp_ra, tmp_dec
-
-save
 
 ;;   d. NOW sort by smoothed image
 smbox=smooth(image, 40)
@@ -115,6 +120,7 @@ while(i lt nkeep AND ic lt ncand) do begin
 endwhile
 
 if(ic eq 0) then begin
+    splog, 'NO SKY HERE'
     cand_ra=0
     cand_dec=0
     return
