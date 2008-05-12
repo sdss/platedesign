@@ -169,8 +169,12 @@ pro plate_select_guide, racen, deccen, epoch=epoch, $
     'HOLETYPE' , '', $
     'OBJTYPE'  , '', $
     'PRIORITY' , 0L )
-   nobj1 = n_elements(objs)
-   nobj2 = n_elements(objt)
+   nobj1=0
+   if(n_tags(objs) gt 0) then $
+     nobj1 = n_elements(objs)
+   nobj2=0
+   if(n_tags(objt) gt 0) then $
+     nobj2 = n_elements(objt)
    stardata = replicate(stardata1, nobj1+nobj2)
    if (nobj1 GT 0) then begin
       stardata[0:nobj1-1].ra = objs.ra
