@@ -1,0 +1,21 @@
+#!/bin/csh -f
+
+#
+# Convert files in a drill run directory to a .dos.zip file
+# used by the UW plate drilling
+#
+# MRB May 13 2008
+#
+
+set name = $1
+
+if ($name == "") set name = noname
+
+mkdir -p dos
+cp plDrillPos* plFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* dos
+cd dos
+unix2dos *
+rm -f ../$name.dos.zip
+zip ../$name.dos *
+cd ../
+rm -rf dos

@@ -1,2 +1,3 @@
 setupenv()
+envPrepend(PATH, ${UPS_PROD_DIR}/bin)
 envPrepend(IDL_PATH, +${UPS_PROD_DIR}/pro)

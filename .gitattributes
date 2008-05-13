@@ -1,5 +1,6 @@
 * text=auto !eol
 /README -text
+bin/drillrun2zip -text
 data/inputs/boss/feb-2008/HIGHERDENSITYplate1209ra130.422195dec32.249088.dr6.lopriority -text
 data/inputs/boss/feb-2008/HIGHERDENSITYplate1592ra139.6978dec32.798649.dr6.lopriority -text
 data/inputs/boss/feb-2008/HIGHERDENSITYplate1943ra144.579895dec32.577969.dr6.lopriority -text
