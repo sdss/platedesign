@@ -227,7 +227,7 @@ pro plate_design, stardata1, racen=racen, deccen=deccen, $
    ; Add the tags XFOCAL,YFOCAL to the structure of object data.
    
    radec_to_xyfocal, stardata1.ra, stardata1.dec, xfocal, yfocal, $
-    racen=racen, deccen=deccen, airtemp=airtemp
+    racen=racen, deccen=deccen, airtemp=airtemp, lst=lst
    xydata = replicate(create_struct('XFOCAL', 0D, 'YFOCAL', 0D), $
     n_elements(stardata1))
    xydata.xfocal = xfocal
@@ -529,7 +529,7 @@ pro plate_design, stardata1, racen=racen, deccen=deccen, $
    endif
    if (keyword_set(tycdat)) then begin
       radec_to_xyfocal, tycdat.radeg, tycdat.dedeg, xfocal, yfocal, $
-       racen=racen, deccen=deccen, airtemp=airtemp
+       racen=racen, deccen=deccen, airtemp=airtemp, lst=lst
       for ityc=0, n_elements(tycdat)-1 do begin
          addplug = blankplug
          addplug.holetype = 'LIGHT_TRAP'
