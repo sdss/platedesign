@@ -1,4 +1,4 @@
-# Created on Tue May 13 13:54:32 2008
+# Created on Tue May 13 14:05:10 2008
 plateRun special
 
 typedef struct {
@@ -11,4 +11,4 @@ typedef struct {
 } PLOBS;
 
 
-PLOBS 3014 9614 5.00000 -2.5000000 -2.5000000 54599.746
+PLOBS 3014 9614 5.00000 -2.5000000 -2.5000000 54599.754
