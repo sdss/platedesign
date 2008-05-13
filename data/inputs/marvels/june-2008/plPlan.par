@@ -1,0 +1,7 @@
+# Created on Mon May 12 23:07:30 2008
+parametersDir /global/data/products/Linux64/idlspec2d/cvs/examples
+parameters    plParam.par
+plObsFile     plObs.par
+outFileDir    /mount/bias1/scr/harding/plate_test_may10/platedesign/data/inputs/marvels/june-2008
+tileDir       /mount/bias1/scr/harding/plate_test_may10/platedesign/data/inputs/marvels/june-2008
+
