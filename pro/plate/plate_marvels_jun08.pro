@@ -30,12 +30,28 @@ fieldnames=[ '47UMA', $            ;;0
              '51PEG', $            ;;12
              'HAT-P-1', $          ;;13
              'HD219828']           ;;14
-                                    
+
+has= [ 4., $
+       3., $
+       1.5, $
+       1.5, $
+       1.5, $
+       0., $
+       0., $
+       0., $
+       0., $
+       0., $
+       0., $
+       -1.5,  $
+       -2.5, $
+       -2.5, $
+       -2.5]
+
 pst=3000L
 tst=9600L
 for i=0L, n_elements(fieldnames)-1L do begin
     plate_marvels_new, fieldnames[i], tilenum=tst+i, platenum=pst+i, $
-      epoch=epoch, doplot=doplot, nodesign=nodesign
+      epoch=epoch, doplot=doplot, nodesign=nodesign, ha=ha[i]
 endfor
 
 return
