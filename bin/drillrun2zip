@@ -16,6 +16,6 @@ cp plDrillPos* plFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* dos
 cd dos
 unix2dos *
 rm -f ../$name.dos.zip
-zip ../$name.dos *
+zip ../$name.dos.zip *
 cd ../
 rm -rf dos

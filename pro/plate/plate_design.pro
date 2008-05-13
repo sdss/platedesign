@@ -193,8 +193,9 @@ function design_groupfibers, allplug, nxbin1, nybin
 end
 ;------------------------------------------------------------------------------
 pro plate_design, stardata1, racen=racen, deccen=deccen, $
- tilenums=tilenum, platenums=platenum, airtemp=airtemp, nstd=nstd, $
- nminsky=nminsky, lst=lst, ntotal=ntotal, southern=southern
+                  tilenums=tilenum, platenums=platenum, airtemp=airtemp, $
+                  nstd=nstd, nminsky=nminsky, lst=lst, ntotal=ntotal, $
+                  southern=southern, ha=ha
 
    if (NOT keyword_set(tilenum)) then tilenum = 1L
    if (NOT keyword_set(platenum)) then platenum = tilenum
@@ -203,7 +204,8 @@ pro plate_design, stardata1, racen=racen, deccen=deccen, $
    if (n_elements(airtemp) EQ 0) then airtemp = 5.0
    if (n_elements(nstd) eq 0) then nstd = 16L
    if (n_elements(nminsky) eq 0) then nminsky = 32L
-   if (n_elements(lst) eq 0) then lst = racen
+   if (n_elements(ha) eq 0) then ha = 0.
+   if (n_elements(lst) eq 0) then lst = racen + ha
    if (NOT keyword_set(ntotal)) then ntotal = 640L
    ntot = ntotal
    nsci = ntot - nstd - nminsky ; Max number of science targets to add

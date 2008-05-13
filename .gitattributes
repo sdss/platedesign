@@ -213,7 +213,8 @@ data/inputs/marvels/june-2008/XO-1.std.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.guide.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.sky.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.std.fits -text svneol=unset#unset
-data/inputs/marvels/june-2008/marvels-june-2008.dos -text
+data/inputs/marvels/june-2008/marvels-june-2008.dos.zip -text
+data/inputs/marvels/june-2008/marvels-june-2008.html -text
 data/inputs/marvels/june-2008/plDrillPos-3000.par -text
 data/inputs/marvels/june-2008/plDrillPos-3001.par -text
 data/inputs/marvels/june-2008/plDrillPos-3002.par -text
@@ -457,6 +458,7 @@ pro/plate/plate_select_sky.pro -text
 pro/plate/plate_select_sphoto.pro -text
 pro/plate/plate_tmass_to_sdss.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
+pro/plate/plate_writepage.pro -text
 pro/plate/qsolist_read.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/strategy/QUESTIONS -text
