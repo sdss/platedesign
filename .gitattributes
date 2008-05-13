@@ -212,6 +212,7 @@ data/inputs/marvels/june-2008/XO-1.std.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.guide.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.sky.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.std.fits -text svneol=unset#unset
+data/inputs/marvels/june-2008/marvels-june-2008.dos -text
 data/inputs/marvels/june-2008/plDrillPos-3000.par -text
 data/inputs/marvels/june-2008/plDrillPos-3001.par -text
 data/inputs/marvels/june-2008/plDrillPos-3002.par -text
