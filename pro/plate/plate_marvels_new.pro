@@ -24,11 +24,12 @@
 ;------------------------------------------------------------------------------
 pro plate_marvels_new, fieldname, tilenum=tile, platenum=plate, epoch=epoch1, $
                        rerun=rerun1, tilerad=tilerad1, doplot=doplot, $
-                       nodesign=nodesign
+                       nodesign=nodesign, ha=ha
 
 common com_pq, tycdat
 
 seed = -12L
+if (NOT keyword_set(ha)) then ha=0.
 if (keyword_set(epoch1)) then epoch = epoch1 $
 else epoch = 2008.564
 if (keyword_set(rerun1)) then rerun = rerun1 $
@@ -42,6 +43,7 @@ targets_in= yanny_readone('plateInput-'+fieldname+'.par', hdr=hdr, /anon)
 hdrstr=lines2struct(hdr)
 racen=double(hdrstr.racen)
 deccen=double(hdrstr.deccen)
+lst= racen + ha
 
 targets1= create_struct(targets_in[0], 'OBJTYPE', 'SERENDIPITY_MANUAL')
 targets=replicate(targets1, n_elements(targets_in))
@@ -105,7 +107,7 @@ alldata = struct_append(alldata, standards)
 
 if(NOT keyword_set(nodesign)) then $
   plate_design, alldata, racen=racen, deccen=deccen, tile=tile, $
-  plate=plate, nstd=nstd, nminsky=nminsky
+  plate=plate, nstd=nstd, nminsky=nminsky, lst=lst
 
 return
 end
