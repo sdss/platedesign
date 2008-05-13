@@ -212,6 +212,9 @@ data/inputs/marvels/june-2008/XO-1.std.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.guide.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.sky.fits -text svneol=unset#unset
 data/inputs/marvels/june-2008/XO-2.std.fits -text svneol=unset#unset
+data/inputs/marvels/june-2008/plDrillPos-3000.par -text
+data/inputs/marvels/june-2008/plDrillPos-3001.par -text
+data/inputs/marvels/june-2008/plDrillPos-3002.par -text
 data/inputs/marvels/june-2008/plDrillPos-3003.par -text
 data/inputs/marvels/june-2008/plDrillPos-3004.par -text
 data/inputs/marvels/june-2008/plDrillPos-3005.par -text
@@ -224,6 +227,9 @@ data/inputs/marvels/june-2008/plDrillPos-3011.par -text
 data/inputs/marvels/june-2008/plDrillPos-3012.par -text
 data/inputs/marvels/june-2008/plDrillPos-3013.par -text
 data/inputs/marvels/june-2008/plDrillPos-3014.par -text
+data/inputs/marvels/june-2008/plFanuc-3000.par -text
+data/inputs/marvels/june-2008/plFanuc-3001.par -text
+data/inputs/marvels/june-2008/plFanuc-3002.par -text
 data/inputs/marvels/june-2008/plFanuc-3003.par -text
 data/inputs/marvels/june-2008/plFanuc-3004.par -text
 data/inputs/marvels/june-2008/plFanuc-3005.par -text
@@ -236,6 +242,9 @@ data/inputs/marvels/june-2008/plFanuc-3011.par -text
 data/inputs/marvels/june-2008/plFanuc-3012.par -text
 data/inputs/marvels/june-2008/plFanuc-3013.par -text
 data/inputs/marvels/june-2008/plFanuc-3014.par -text
+data/inputs/marvels/june-2008/plMeas-3000.par -text
+data/inputs/marvels/june-2008/plMeas-3001.par -text
+data/inputs/marvels/june-2008/plMeas-3002.par -text
 data/inputs/marvels/june-2008/plMeas-3003.par -text
 data/inputs/marvels/june-2008/plMeas-3004.par -text
 data/inputs/marvels/june-2008/plMeas-3005.par -text
@@ -249,7 +258,25 @@ data/inputs/marvels/june-2008/plMeas-3012.par -text
 data/inputs/marvels/june-2008/plMeas-3013.par -text
 data/inputs/marvels/june-2008/plMeas-3014.par -text
 data/inputs/marvels/june-2008/plObs.par -text
+data/inputs/marvels/june-2008/plOverlay-3000.ps -text
+data/inputs/marvels/june-2008/plOverlay-3001.ps -text
+data/inputs/marvels/june-2008/plOverlay-3002.ps -text
+data/inputs/marvels/june-2008/plOverlay-3003.ps -text
+data/inputs/marvels/june-2008/plOverlay-3004.ps -text
+data/inputs/marvels/june-2008/plOverlay-3005.ps -text
+data/inputs/marvels/june-2008/plOverlay-3006.ps -text
+data/inputs/marvels/june-2008/plOverlay-3007.ps -text
+data/inputs/marvels/june-2008/plOverlay-3008.ps -text
+data/inputs/marvels/june-2008/plOverlay-3009.ps -text
+data/inputs/marvels/june-2008/plOverlay-3010.ps -text
+data/inputs/marvels/june-2008/plOverlay-3011.ps -text
+data/inputs/marvels/june-2008/plOverlay-3012.ps -text
+data/inputs/marvels/june-2008/plOverlay-3013.ps -text
+data/inputs/marvels/june-2008/plOverlay-3014.ps -text
 data/inputs/marvels/june-2008/plPlan.par -text
+data/inputs/marvels/june-2008/plPlugMapP-3000.par -text
+data/inputs/marvels/june-2008/plPlugMapP-3001.par -text
+data/inputs/marvels/june-2008/plPlugMapP-3002.par -text
 data/inputs/marvels/june-2008/plPlugMapP-3003.par -text
 data/inputs/marvels/june-2008/plPlugMapP-3004.par -text
 data/inputs/marvels/june-2008/plPlugMapP-3005.par -text
