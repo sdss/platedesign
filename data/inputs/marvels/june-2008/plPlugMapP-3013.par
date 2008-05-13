@@ -6,8 +6,8 @@ decCen  38.674000
 plateVersion v0
 plateId         3013
 temp       5.00000
-haMin        0.0000000
-haMax        0.0000000
+haMin       -2.5000000
+haMax       -2.5000000
 mjdDesign        54599
 theta 0 
 
