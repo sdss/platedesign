@@ -36,8 +36,8 @@ printf, unit, '</body>'
 printf, unit, '</html>'
 free_lun, unit
 
-spawn, 'scp -p '+path+'/'+runname+'.html sdss.physics.nyu.edu:/var/www/html/sdss3/drillruns/'
-spawn, 'scp -p '+path+'/'+runname+'.dos.zip sdss.physics.nyu.edu:/var/www/html/sdss3/drillruns/'
+spawn, 'scp -p '+path+'/'+runname+'.html sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'
+spawn, 'scp -p '+path+'/'+runname+'.dos.zip sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'
 
 return
 end
