@@ -51,7 +51,7 @@ pst=3000L
 tst=9600L
 for i=0L, n_elements(fieldnames)-1L do begin
     plate_marvels_new, fieldnames[i], tilenum=tst+i, platenum=pst+i, $
-      epoch=epoch, doplot=doplot, nodesign=nodesign, ha=ha[i]
+      epoch=epoch, doplot=doplot, nodesign=nodesign, ha=has[i]
 endfor
 
 return

@@ -1,4 +1,4 @@
-# Created on Tue May 13 09:28:12 2008
+# Created on Tue May 13 13:54:32 2008
 parametersDir /global/data/products/Linux64/idlspec2d/cvs/examples
 parameters    plParam.par
 plObsFile     plObs.par
