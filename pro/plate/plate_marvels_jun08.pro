@@ -32,7 +32,7 @@ fieldnames=[ '47UMA', $            ;;0
              'HD219828']           ;;14
                                     
 pst=3000L
-tst=9900L
+tst=9600L
 for i=0L, n_elements(fieldnames)-1L do begin
     plate_marvels_new, fieldnames[i], tilenum=tst+i, platenum=pst+i, $
       epoch=epoch, doplot=doplot, nodesign=nodesign
