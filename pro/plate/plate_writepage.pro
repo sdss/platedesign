@@ -19,6 +19,8 @@ pro plate_writepage, runname, path
 
 if(NOT keyword_set(path)) then path='./'
 
+spawn, 'cd '+path+' ; drillrun2zip '+runname
+
 openw, unit, path+'/'+runname+'.html', /get_lun
 printf, unit, '<html>'
 printf, unit, '<head>'
