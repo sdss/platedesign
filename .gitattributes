@@ -437,10 +437,13 @@ data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 pro/misc/lines2struct.pro -text
+pro/plate/ad2xyfocal.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/coo_read.pro -text
 pro/plate/design_blank.pro -text
+pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_assign.pro -text
+pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_drillrun.pro -text
@@ -454,6 +457,8 @@ pro/plate/plate_qsos.pro -text
 pro/plate/plate_qsos_feb08.pro -text
 pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide.pro -text
+pro/plate/plate_select_guide_2mass.pro -text
+pro/plate/plate_select_guide_sdss.pro -text
 pro/plate/plate_select_sky.pro -text
 pro/plate/plate_select_sphoto.pro -text
 pro/plate/plate_tmass_to_sdss.pro -text
@@ -461,6 +466,7 @@ pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/qsolist_read.pro -text
 pro/plate/sky_location_candidates.pro -text
+pro/plate/target2design.pro -text
 pro/strategy/QUESTIONS -text
 pro/strategy/apo_almanac.pro -text
 pro/strategy/apo_in_interval.pro -text
