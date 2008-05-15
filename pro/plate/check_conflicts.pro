@@ -17,8 +17,9 @@
 ;   conflict - 1 if a conflict, 0 otherwise
 ; COMMENTS:
 ;   Units of DIAMETER and BUFFER are mm.
-;   Conflict is registered if new target is within SIZE+BUFFER
-;    of any target.
+;   Conflict is registered if new target is within 
+;       (DIAMETER_NEW/2+BUFFER_NEW) + (DIAMETER_OLD/2+BUFFER_OLD) 
+;     of any old target
 ;   Design is ALWAYS assumed to have some element 
 ;    (since all designs will have the center hole)
 ; REVISION HISTORY:
