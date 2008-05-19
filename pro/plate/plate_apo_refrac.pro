@@ -36,12 +36,12 @@ ha = lst - ra
 hacen = lst - racen
 
 hadec2altaz, ha, dec, lat, alt, az
-new_alt = co_refract_list(alt, altitude=height, $
+new_alt = plate_refract_list(alt, altitude=height, $
                           epsilon=0.00001, temperature=airtemp_k, $
                           /to_observed, pressure=1013.25)
 
 hadec2altaz, hacen, deccen, lat, altcen, azcen
-new_altcen = co_refract_list(altcen, altitude=height, $
+new_altcen = plate_refract_list(altcen, altitude=height, $
                              epsilon=0.00001, temperature=airtemp_k, $
                              /to_observed, pressure=1013.25)
 

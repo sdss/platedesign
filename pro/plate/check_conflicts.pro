@@ -25,25 +25,24 @@
 ; REVISION HISTORY:
 ;   9-May-2008 MRB, NYU (based on DJS's design_append)
 ;-
-function check_conflict, design, new
+function check_conflicts, design, new
 
 if(n_tags(design) eq 0) then $
   message, 'empty design structure'
 
-
 xx_design=fltarr(2,n_elements(design))
-xx_design[0,*]= design.xfocal
-xx_design[1,*]= design.yfocal
+xx_design[0,*]= design.xf_default
+xx_design[1,*]= design.yf_default
 
 xx_new=fltarr(2,1)
-xx_new[0,0]= new.xfocal
-xx_new[1,0]= new.yfocal
+xx_new[0,0]= new.xf_default
+xx_new[1,0]= new.yf_default
 
 ;; find all potential conflicts
-maxconflict= max([design.size+2.*design.buffer, $
-                  new.size+2.*new.buffer])
+maxconflict= max([design.diameter+2.*design.buffer, $
+                  new.diameter+2.*new.buffer])
 matchnd, xx_design, xx_new, maxconflict, m1=m1, m2=m2, nmatch=nmatch, $
-         max=0
+         max=0, nd=2, /silent
 
 ;; check the close calls
 for i=0L, nmatch-1L do begin

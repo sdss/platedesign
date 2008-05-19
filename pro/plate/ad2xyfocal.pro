@@ -39,8 +39,8 @@ rcoeffs=[-0.000137627D, -0.00125238D, 1.5447D-09, 8.23673D-08, $
 
 ;; deal with atmospheric refraction
 if(NOT keyword_set(norefrac)) then begin
-    apo_refrac, ra, dec, racen, deccen, ra_refrac, dec_refrac, lst=lst, $
-      airtemp=airtemp
+    plate_apo_refrac, ra, dec, racen, deccen, ra_refrac, dec_refrac, lst=lst, $
+                      airtemp=airtemp
 endif else begin
     ra_refrac=ra
     dec_refrac=dec

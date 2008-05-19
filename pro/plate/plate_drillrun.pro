@@ -146,7 +146,7 @@ if(NOT keyword_set(justholes)) then begin
             
             ;; convert target information to design structure
             ;; (record which plate input file this came from)
-            target2design, definition, default, tmp_design, tmp_targets, $
+            target2design, definition, default, tmp_targets, tmp_design, $
                            info=hdrstr
             tmp_design.iplateinput= k
             
@@ -164,7 +164,7 @@ if(NOT keyword_set(justholes)) then begin
     endfor
 
     ;; Find guide fibers and assign them (if we're supposed to)
-    if(definition.platedesignguides gt 0) then begin
+    if(default.platedesignguides gt 0) then begin
         
         for pointing= 1L, npointings do begin
 
@@ -201,13 +201,13 @@ if(NOT keyword_set(justholes)) then begin
     ;; HOW DO WE ALLOCATE AMONG POINTINGS?
     ;; HOW DO WE ALLOCATE AMONG OFFSETS? (RIGHT NOW, JUST OFFSET 0)
     ;; SHOULD WE SOMEHOW CACHE THE STANDARDS?
-    if(tag_exist(definition.platedesignstandards)) then begin
+    if(tag_exist(default.platedesignstandards)) then begin
         itype= where(fibercount.targettype eq 'standard', ntype)
         if(ntype eq 0) then $
           message, 'no standard target type' 
 
-        platedesignstandards= strsplit(definition.platedesignstandards, /extr)
-        standardtype= strsplit(definition.standardtype, /extr)
+        platedesignstandards= strsplit(default.platedesignstandards, /extr)
+        standardtype= strsplit(default.standardtype, /extr)
         for i=0L, n_elements(platedesignstandards)-1L do begin
             curr_inst=platedesignstandards[i]
             curr_type=standardtype[i]
@@ -254,13 +254,13 @@ if(NOT keyword_set(justholes)) then begin
 
     ;; Find sky fibers and assign them
     ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
-    if(definition.platedesignskies gt 0) then begin
+    if(default.platedesignskies gt 0) then begin
         itype= where(fibercount.targettype eq 'sky', ntype)
         if(ntype eq 0) then $
           message, 'no sky target type' 
 
-        platedesignskies= strsplit(definition.platedesignskies, /extr)
-        skytype= strsplit(definition.skytype, /extr)
+        platedesignskies= strsplit(default.platedesignskies, /extr)
+        skytype= strsplit(default.skytype, /extr)
         for i=0L, n_elements(platedesignskies)-1L do begin
             curr_inst=platedesignskies[i]
             curr_type=skytype[i]
@@ -304,7 +304,7 @@ if(NOT keyword_set(justholes)) then begin
     ;; (Note that assignment here checks for conflicts:
     ;; so if a light trap overlaps an existing hole, the
     ;; light trap is not drilled)
-    if(definition.platedesigntraps gt 0) then begin
+    if(default.platedesigntraps gt 0) then begin
         ;; find bright stars
 
         ;; assign them 
