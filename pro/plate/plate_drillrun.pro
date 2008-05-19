@@ -100,12 +100,13 @@ if(NOT keyword_set(justholes)) then begin
         for j=0L, ntargettypes-1L do begin
             itag= tag_indx(default, 'n'+ $
                            strtrim(string(instruments[i]),2)+ $
-                           '_'+strtrim(string(targettypes[i]),2))
+                           '_'+strtrim(string(targettypes[j]),2))
             if(itag eq -1) then $
               message, 'must specify n'+ $
                        strtrim(string(instruments[i]),2)+ $
-                       '_'+strtrim(string(targettypes[i]),2)
-            ntot[i,j,*,*]= long(default.(itag))
+                       '_'+strtrim(string(targettypes[j]),2)
+            ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
+            print,default.(itag)
         endfor
     endfor
     fibercount= {instruments:instruments, $
@@ -188,7 +189,8 @@ if(NOT keyword_set(justholes)) then begin
               rerun=rerun, guide_design=guide_design_sdss
             if(n_tags(guide_design_sdss) gt 0) then begin
                 plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_sdss.ra, guide_design_sdss.dec, $
+                             guide_design_sdss.target_ra, $
+                             guide_design_sdss.target_dec, $
                              xf=xf, yf=yf
                 guide_design_sdss.xf_default=xf
                 guide_design_sdss.yf_default=yf
@@ -201,7 +203,8 @@ if(NOT keyword_set(justholes)) then begin
               guide_design=guide_design_2mass
             if(n_tags(guide_design_2mass) gt 0) then begin
                 plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_2mass.ra, guide_design_2mass.dec, $
+                             guide_design_2mass.target_ra, $
+                             guide_design_2mass.target_dec, $
                              xf=xf, yf=yf
                 guide_design_2mass.xf_default=xf
                 guide_design_2mass.yf_default=yf
