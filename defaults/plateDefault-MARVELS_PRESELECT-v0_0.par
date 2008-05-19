@@ -8,41 +8,37 @@
 # Number of fibers of each type in each category
 #
 
-# science fibers 
-nScienceSDSS 592
-nScienceMARVELS 0
-nScienceBOSS 0
-nScienceAPOGEE 0
+# which instruments are to be used?
+instruments SDSS
 
-# standard fibers 
+# science fibers for each instrument
+nScienceSDSS 592  
+
+# standard fibers for each instrument
 nStandardSDSS 16
-nStandardMARVELS 0
-nStandardBOSS 0
-nStandardAPOGEE 0
 
-# sky fibers 
+# sky fibers for each instrument
 nSkySDSS 32
-nSkyMARVELS 0
-nSkyBOSS 0
-nSkyAPOGEE 0
 
 #
 # Nature of the pointings and observations
 #
 
-nPointings 1
+nPointings 2
 pointingExpTime1 300.   
-nGuide1 10
+pointingExpTime2 300.   
+guideNums1 1 2 3 4 5
+guideNums2 6 7 8 9 10 11
 nOffsets 0
 
 #
 # Ferrule sizes to assume
 #
 
-ferruleSizeSDSS 
-ferruleSizeBOSS
-ferruleSizeMARVELS
-ferruleSizeAPOGEE
+ferruleSizeSDSS 3.327
+ferruleSizeBOSS 1000000.
+ferruleSizeMARVELS 1000000.
+ferruleSizeAPOGEE 1000000.
 
 #
 # lambdaObserve?
