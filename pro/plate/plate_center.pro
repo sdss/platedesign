@@ -28,23 +28,18 @@
 pro plate_center, definition, default, pointing, offset, $
                   racen=racen, deccen=deccen
 
-racenstr= 'racen'+strtrim(string(pointing),2)
-deccenstr= 'deccen'+strtrim(string(pointing),2)
+racens= double(strsplit(definition.racen, /extr))
+deccens= double(strsplit(definition.deccen, /extr))
 
-iracen=tag_indx(definition, racenstr)
-ideccen=tag_indx(definition, cencenstr)
-
-racen= double(definition.(iracen))
-deccen= double(definition.(ideccen))
+racen= racens[pointing-1L]
+deccen= deccens[pointing-1L]
 
 if(offset gt 0) then begin
-    racenstr= 'racen'+strtrim(string(pointing),2)
-    deccenstr= 'deccen'+strtrim(string(pointing),2)
-    idra=tag_indx(default, racenstr)
-    iddec=tag_indx(default, cencenstr)
+    dras= double(strsplit(definition.dra, /extr))
+    ddecs= double(strsplit(definition.ddec, /extr))
 
-    racen= racen+ double(default.(idra))
-    deccen= deccen+ double(default.(iddec))
+    racen= racen+ dras[offset-1]
+    deccen= deccen+ ddecs[offset-1]
 endif
 
 end

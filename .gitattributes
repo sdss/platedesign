@@ -436,6 +436,7 @@ data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
+defaults/plateDefault-example-v0_0.par -text
 pro/misc/lines2struct.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/check_conflicts.pro -text
@@ -463,7 +464,10 @@ pro/plate/plate_select_guide.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
 pro/plate/plate_select_guide_sdss.pro -text
 pro/plate/plate_select_sky.pro -text
+pro/plate/plate_select_sky_sdss.pro -text
 pro/plate/plate_select_sphoto.pro -text
+pro/plate/plate_select_sphoto_2mass.pro -text
+pro/plate/plate_select_sphoto_sdss.pro -text
 pro/plate/plate_tmass_to_sdss.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text

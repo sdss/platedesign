@@ -27,16 +27,16 @@ pro target2design, definition, default, targets, design, info=info
 
 ;; which pointing are we adding these targets to?
 pointing= 1L
-if(tag_exists(info, 'pointing')) then $
+if(tag_exist(info, 'pointing')) then $
   pointing=long(info.pointing)
 if(pointing gt long(default.npointings)) then $
   message, 'pointing '+strtrim(string(pointing),2)+' does not exist'
 
 ;; which offset are we adding these targets to?
 offset= 0L
-if(tag_exists(info, 'offset')) then $
+if(tag_exist(info, 'offset')) then $
   offset=long(info.offset)
-if(pointing gt long(default.noffsets)) then $
+if(offset gt long(default.noffsets)) then $
   message, 'pointing '+strtrim(string(pointing),2)+' does not exist'
 
 ;; Get default xf_default and yf_default
@@ -49,30 +49,30 @@ ntargets=n_elements(targets)
 design= replicate(design_blank(), ntargets)
 
 ;; add per plateInput data 
-instruments=strsplit(definition.instrument, /extr)
-iinst=where(info.holetype eq instruments, ninst)
+instruments=strsplit(default.instruments, /extr)
+iinst=where(info.instrument eq instruments, ninst)
 if(ninst eq 0) then $
-  message, 'no instrument '+info.holetype' in this plate!'
-new_design.holetype= info.holetype
+  message, 'no instrument '+info.instrument+' in this plate!'
+design.holetype= info.instrument
 
-targettypes=strsplit(definition.targettypes, /extr)
+targettypes=strsplit(default.targettypes, /extr)
 itt=where(info.targettype eq targettypes, ntt)
 if(ntt eq 0) then $
-  message, 'no targettype '+info.targettype' in this plate!'
-new_design.targettype= info.targettype
+  message, 'no targettype '+info.targettype+' in this plate!'
+design.targettype= info.targettype
 
-new_design.pointing=pointing
-new_design.offset=offset
-
-;; get hole size for this type
-ferrulestr= 'ferruleSize'+strtrim(definition.holetype,2)
-iferrule= tag_indx(definition, ferrulestr)
-ferrulesize= float(definition.(iferrule))
+design.pointing=pointing
+design.offset=offset
 
 ;; get hole size for this type
-bufferstr= 'bufferSize'+strtrim(definition.holetype,2)
-ibuffer= tag_indx(definition, bufferstr)
-buffersize= float(definition.(ibuffer))
+ferrulestr= 'ferruleSize'+strtrim(info.instrument,2)
+iferrule= tag_indx(default, ferrulestr)
+ferrulesize= float(default.(iferrule))
+
+;; get hole size for this type
+bufferstr= 'bufferSize'+strtrim(info.instrument,2)
+ibuffer= tag_indx(default, bufferstr)
+buffersize= float(default.(ibuffer))
 
 ;; add per target data 
 design.sourcetype= targets.sourcetype
