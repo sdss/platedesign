@@ -188,7 +188,8 @@ if(NOT keyword_set(justholes)) then begin
               rerun=rerun, guide_design=guide_design_sdss
             if(n_tags(guide_design_sdss) gt 0) then begin
                 plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_sdss, xf=xf, yf=yf
+                             guide_design_sdss.ra, guide_design_sdss.dec, $
+                             xf=xf, yf=yf
                 guide_design_sdss.xf_default=xf
                 guide_design_sdss.yf_default=yf
                 plate_assign_guide, definition, default, design, $
@@ -200,7 +201,8 @@ if(NOT keyword_set(justholes)) then begin
               guide_design=guide_design_2mass
             if(n_tags(guide_design_2mass) gt 0) then begin
                 plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_2mass, xf=xf, yf=yf
+                             guide_design_2mass.ra, guide_design_2mass.dec, $
+                             xf=xf, yf=yf
                 guide_design_2mass.xf_default=xf
                 guide_design_2mass.yf_default=yf
                 plate_assign_guide, definition, default, design, $

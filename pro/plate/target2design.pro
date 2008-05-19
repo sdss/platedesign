@@ -41,8 +41,8 @@ if(offset gt long(default.noffsets)) then $
 
 ;; Get default xf_default and yf_default
 ;; (not particular position for this LST and temp)
-plate_ad2xy, definition, default, pointing, offset, targets, $
-             xfocal=xf_default, yfocal=yf_default
+plate_ad2xy, definition, default, pointing, offset, targets.ra, $
+             targets.dec, xfocal=xf_default, yfocal=yf_default
 
 ;; create structure for targets
 ntargets=n_elements(targets)
