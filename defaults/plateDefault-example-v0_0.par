@@ -1,12 +1,4 @@
-#
-# MARVELS_PRESELECT
-#
-# Default settings for MARVELS pre-selection plates.
-#
-
-#
-# Number of fibers of each type in each category
-#
+# Default settings for example plate (silly)
 
 # Which instruments are to be used? 
 # At least one argument required, from among:

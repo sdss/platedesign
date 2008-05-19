@@ -29,7 +29,8 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_drillrun, designid, ha, temp, epoch, justholes=justholes
+pro plate_drillrun, designid, ha, temp, epoch, justholes=justholes, $
+                    rerun=rerun
 
 ;; loop over multiple designs, etc
 if(n_elements(designid) gt 1) then begin
