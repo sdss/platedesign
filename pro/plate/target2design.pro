@@ -49,7 +49,18 @@ ntargets=n_elements(targets)
 design= replicate(design_blank(), ntargets)
 
 ;; add per plateInput data 
+instruments=strsplit(definition.instrument, /extr)
+iinst=where(info.holetype eq instruments, ninst)
+if(ninst eq 0) then $
+  message, 'no instrument '+info.holetype' in this plate!'
 new_design.holetype= info.holetype
+
+targettypes=strsplit(definition.targettypes, /extr)
+itt=where(info.targettype eq targettypes, ntt)
+if(ntt eq 0) then $
+  message, 'no targettype '+info.targettype' in this plate!'
+new_design.targettype= info.targettype
+
 new_design.pointing=pointing
 new_design.offset=offset
 

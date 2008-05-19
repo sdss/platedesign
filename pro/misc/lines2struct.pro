@@ -29,7 +29,7 @@ for i=0L, nlines-1L do begin
             tagname=words[0]
             tagval=' '
             if(n_elements(words) gt 1) then begin
-                tagval=strjoin(words[1:n_elements(words)-1L])
+                tagval=strjoin(words[1:n_elements(words)-1L], ' ')
             endif
             tmpstr= create_struct(tagname, tagval)
             if(n_tags(str) eq 0) then $

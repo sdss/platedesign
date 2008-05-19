@@ -441,6 +441,7 @@ pro/plate/ad2xyfocal.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/coo_read.pro -text
 pro/plate/design_blank.pro -text
+pro/plate/make_example.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_assign.pro -text
 pro/plate/plate_assign_guide.pro -text
