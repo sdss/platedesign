@@ -186,14 +186,24 @@ if(NOT keyword_set(justholes)) then begin
             ;; find SDSS guide fibers and try to assign them
             plate_select_guide_sdss, racen, deccen, epoch=epoch, $
               rerun=rerun, guide_design=guide_design_sdss
-            plate_assign_guide, definition, default, design, $
-                                guide_design_sdss, guidenums=guidenums
+            plate_ad2xy, definition, default, pointing, 0L, $
+                         guide_design_sdss, xf=xf, yf=yf
+            guide_design_sdss.xf_default=xf
+            guide_design_sdss.yf_default=yf
+            if(n_tags(guide_design_sdss) gt 0) then $
+              plate_assign_guide, definition, default, design, $
+                                  guide_design_sdss, guidenums=guidenums
             
             ;; find 2MASS guide fibers and try to assign them
             plate_select_guide_2mass, racen, deccen, epoch=epoch, $
-              rerun=rerun, guide_design=guide_design_2mass
-            plate_assign_guide, definition, default, design, $
-                                guide_design_2mass, guidenums=guidenums
+              guide_design=guide_design_2mass
+            plate_ad2xy, definition, default, pointing, 0L, $
+                         guide_design_2mass, xf=xf, yf=yf
+            guide_design_2mass.xf_default=xf
+            guide_design_2mass.yf_default=yf
+            if(n_tags(guide_design_2mass) gt 0) then $
+              plate_assign_guide, definition, default, design, $
+                                  guide_design_2mass, guidenums=guidenums
         endfor
     endif
 
