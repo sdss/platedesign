@@ -443,6 +443,7 @@ pro/plate/coo_read.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/make_example.pro -text
 pro/plate/plate_ad2xy.pro -text
+pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
 pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
@@ -456,6 +457,7 @@ pro/plate/plate_marvels_oct07.pro -text
 pro/plate/plate_pmotion_correct.pro -text
 pro/plate/plate_qsos.pro -text
 pro/plate/plate_qsos_feb08.pro -text
+pro/plate/plate_refract_list.pro -text
 pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
