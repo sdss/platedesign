@@ -45,43 +45,47 @@ endif
 origseed=-designid
 seed=origseed
 
-if(NOT keyword_set(justholes)) then begin
+;; What is the output directory?
+outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+        string((designid/100L)*100L, f='(i6.6)')
     
-    ;; Read in the plate definition file
-    ;; Should be at 
-    ;;   $PLATELIST_DIR/definitions/[did/100]00/plateDefinition-[did].par
-    ;; as in 
-    ;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
-    definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
-      string(f='(i6.6)', (designid/100L)*100L)
-    definitionfile=definitiondir+'/'+ $
-      'plateDefinition-'+ $
-      string(f='(i6.6)', designid)+'.par'
-    dum= yanny_readone(definitionfile, hdr=hdr)
-    if(NOT keyword_set(hdr)) then begin
-        message, 'no plateDefaults file '+definitionfile
-    endif
-    definition= lines2struct(hdr)
+;; Read in the plate definition file
+;; Should be at 
+;;   $PLATELIST_DIR/definitions/[did/100]00/plateDefinition-[did].par
+;; as in 
+;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
+definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
+              string(f='(i6.6)', (designid/100L)*100L)
+definitionfile=definitiondir+'/'+ $
+               'plateDefinition-'+ $
+               string(f='(i6.6)', designid)+'.par'
+dum= yanny_readone(definitionfile, hdr=hdr)
+if(NOT keyword_set(hdr)) then begin
+    message, 'no plateDefaults file '+definitionfile
+endif
+definition= lines2struct(hdr)
 
-    ;; Read in the plate defaults file
-    ;; (reset any tags that are overwritten by plateDefinition)
-    defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
-    defaultfile= defaultdir+'/plateDefault-'+ $
-      definition.platetype+'-'+ $
-      definition.platedesignversion+'.par'
-    dum= yanny_readone(defaultfile, hdr=hdr)
-    if(NOT keyword_set(hdr)) then begin
-        message, 'no plateDefaults file '+defaultfile
-    endif
-    default= lines2struct(hdr)
-    defaultnames=tag_names(default)
-    definitionnames=tag_names(definition)
-    for i=0L, n_tags(default)-1L do begin
-        for j=0L, n_tags(definition)-1L do begin
-            if(defaultnames[i] eq definitionnames[j]) then $
-              default.(i)= definition.(j)
-        endfor
+;; Read in the plate defaults file
+;; (reset any tags that are overwritten by plateDefinition)
+defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
+defaultfile= defaultdir+'/plateDefault-'+ $
+             definition.platetype+'-'+ $
+             definition.platedesignversion+'.par'
+dum= yanny_readone(defaultfile, hdr=hdr)
+if(NOT keyword_set(hdr)) then begin
+    message, 'no plateDefaults file '+defaultfile
+endif
+default= lines2struct(hdr)
+defaultnames=tag_names(default)
+definitionnames=tag_names(definition)
+for i=0L, n_tags(default)-1L do begin
+    for j=0L, n_tags(definition)-1L do begin
+        if(defaultnames[i] eq definitionnames[j]) then $
+          default.(i)= definition.(j)
     endfor
+endfor
+
+if(NOT keyword_set(justholes)) then begin
 
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
@@ -106,7 +110,6 @@ if(NOT keyword_set(justholes)) then begin
                        strtrim(string(instruments[i]),2)+ $
                        '_'+strtrim(string(targettypes[j]),2)
             ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
-            print,default.(itag)
         endfor
     endfor
     fibercount= {instruments:instruments, $
@@ -166,155 +169,40 @@ if(NOT keyword_set(justholes)) then begin
     endfor
 
     ;; Find guide fibers and assign them (if we're supposed to)
-    if(default.platedesignguides gt 0) then begin
-        
-        for pointing= 1L, npointings do begin
+    ;; Make sure to assign proper guides to each pointing
+    for pointing=1L, npointings do begin
+        iguidenums= $
+          tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
+        if(iguidenums eq -1) then $
+          message, 'Must specify guide fiber numbers for pointing '+ $
+                   strtrim(string(pointing),2)
+        guidenums=long(strsplit(default.(iguidenums),/extr))
+        guide_design= plate_guide(definition, default, pointing)
+        if(n_tags(guide_design) gt 0) then $
+          plate_assign_guide, definition, default, design, guide_design, $
+                              guidenums=guidenums
+    endfor
 
-            ;; what is center for this pointing?
-            plate_center, definition, default, pointing, 0L, $
-                          racen=racen, deccen=deccen
-
-            ;; which guide fibers for this pointing?
-            if(npointings gt 1) then begin
-                iguides=tag_indx(default, 'guidenums'+ $
-                                 strtrim(string(pointing),2))
-                if(iguides eq -1) then $
-                  message, 'Must specify guide fiber numbers for pointing '+ $
-                           strtrim(string(pointing),2)
-                guidenums= long(strsplit(default.(iguides), /extr))
-            endif 
-            
-            ;; find SDSS guide fibers and try to assign them
-            plate_select_guide_sdss, racen, deccen, epoch=epoch, $
-              rerun=rerun, guide_design=guide_design_sdss
-            if(n_tags(guide_design_sdss) gt 0) then begin
-                plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_sdss.target_ra, $
-                             guide_design_sdss.target_dec, $
-                             xf=xf, yf=yf
-                guide_design_sdss.xf_default=xf
-                guide_design_sdss.yf_default=yf
-                plate_assign_guide, definition, default, design, $
-                                    guide_design_sdss, guidenums=guidenums
-            endif
-            
-            ;; find 2MASS guide fibers and try to assign them
-            plate_select_guide_2mass, racen, deccen, epoch=epoch, $
-              guide_design=guide_design_2mass
-            if(n_tags(guide_design_2mass) gt 0) then begin
-                plate_ad2xy, definition, default, pointing, 0L, $
-                             guide_design_2mass.target_ra, $
-                             guide_design_2mass.target_dec, $
-                             xf=xf, yf=yf
-                guide_design_2mass.xf_default=xf
-                guide_design_2mass.yf_default=yf
-                plate_assign_guide, definition, default, design, $
-                                    guide_design_2mass, guidenums=guidenums
-            endif
-        endfor
-    endif
-
-    ;; Find standard stars and assign them
+    ;; Assign standards 
     ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
-    ;; HOW DO WE ALLOCATE AMONG POINTINGS?
-    ;; HOW DO WE ALLOCATE AMONG OFFSETS? (RIGHT NOW, JUST OFFSET 0)
-    ;; SHOULD WE SOMEHOW CACHE THE STANDARDS?
-    if(tag_exist(default.platedesignstandards)) then begin
-        itype= where(fibercount.targettype eq 'standard', ntype)
-        if(ntype eq 0) then $
-          message, 'no standard target type' 
-
-        platedesignstandards= strsplit(default.platedesignstandards, /extr)
-        standardtype= strsplit(default.standardtype, /extr)
-        for i=0L, n_elements(platedesignstandards)-1L do begin
-            curr_inst=platedesignstandards[i]
-            curr_type=standardtype[i]
-            iinst=where(fibercount.instruments eq curr_inst, ninst)
-            if(ninst eq 0) then $
-              message, 'no instrument '+ curr_inst
-
-            npointings= long(default.npointings)
-            noffsets= long(default.noffsets)
-            for pointing= 1L, npointings do begin
-                
-                for offset= 0L, noffsets do begin
-                    ;; what is center for this pointing and offset?
-                    plate_center, definition, default, pointing, offset, $
-                                  racen=racen, deccen=deccen
-                    
-                    if(curr_type eq 'SDSS') then begin
-                        ;; find SDSS standards and assign them
-                        plate_select_sphoto_sdss, racen, deccen, rerun=rerun, $
-                          sphoto_mag=sphoto_mag, $
-                          sphoto_design= sphoto_design_sdss
-                        sphoto_design_sdss.pointing=pointing
-                        sphoto_design_sdss.offset=offset
-                        sphoto_design_sdss.holetype=curr_inst
-                        plate_assign, fibercount, design, $
-                                      sphoto_design_sdss, seed=seed
-                    endif 
-                    
-                    if(curr_type eq '2MASS') then begin
-                        ;; find 2MASS standards and assign them
-                        plate_select_sphoto_2mass, racen, deccen, $
-                          sphoto_mag=sphoto_mag, $
-                          sphoto_design= sphoto_design_2mass
-                        sphoto_design_2mass.pointing=pointing
-                        sphoto_design_2mass.offset=offset
-                        sphoto_design_2mass.holetype=curr_inst
-                        plate_assign, fibercount, design, $
-                                      sphoto_design_2mass, seed=seed
-                    endif
-                endfor
-            endfor
-        endfor
-    endif
-
+    for pointing=1L, npointings do begin
+        for offset=0L, noffsets do begin
+            sphoto_design= plate_standard(definition, default, $
+                                          pointing, offset)
+            if(n_tags(sphoto_design) gt 0) then $
+              plate_assign, fibercount, design, sphoto_design, seed=seed
+        endfor 
+    endfor
+    
     ;; Find sky fibers and assign them
     ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
-    if(default.platedesignskies gt 0) then begin
-        itype= where(fibercount.targettype eq 'sky', ntype)
-        if(ntype eq 0) then $
-          message, 'no sky target type' 
-
-        platedesignskies= strsplit(default.platedesignskies, /extr)
-        skytype= strsplit(default.skytype, /extr)
-        for i=0L, n_elements(platedesignskies)-1L do begin
-            curr_inst=platedesignskies[i]
-            curr_type=skytype[i]
-            iinst=where(fibercount.instruments eq curr_inst, ninst)
-            if(ninst eq 0) then $
-              message, 'no instrument '+ curr_inst
-            isky=where(fibercount.targettype eq 'sky', nsky)
-            if(nsky eq 0) then $
-              message, 'no target type sky'
-
-            npointings= long(default.npointings)
-            noffsets= long(default.noffsets)
-            for pointing= 1L, npointings do begin
-                
-                for offset= 0L, noffsets do begin
-                    ;; what is center for this pointing and offset?
-                    plate_center, definition, default, pointing, offset, $
-                                  racen=racen, deccen=deccen
-                    
-                    nsky=2L*fibercounts.ntot[iinst,isky,pointing-1L,offset] 
-
-                    if(curr_type eq 'SDSS') then begin
-                        ;; find SDSS skies and assign them
-                        plate_select_sky_sdss, racen, deccen, $
-                          nsky=nsky, seed=seed, rerun=rerun, $
-                          sky_design=sky_design
-                        sky_design.pointing=pointing
-                        sky_design.offset=offset
-                        sky_design.holetype=curr_inst
-                        plate_assign, fibercount, design, $
-                                      sky_design, seed=seed
-                    endif 
-                endfor
-            endfor
-        endfor
-    endif
+    for pointing=1L, npointings do begin
+        for offset=0L, noffsets do begin
+            sky_design= plate_sky(definition, default, pointing, offset)
+            if(n_tags(sky_design) gt 0) then $
+              plate_assign, fibercount, design, sky_design, seed=seed
+        endfor 
+    endfor
     
     ;; WHAT DO WE DO WITH EXTRA FIBERS HERE!!
 
@@ -323,18 +211,22 @@ if(NOT keyword_set(justholes)) then begin
     ;; so if a light trap overlaps an existing hole, the
     ;; light trap is not drilled)
     if(default.platedesigntraps gt 0) then begin
-        ;; find bright stars
-
-        ;; assign them 
-
+        for pointing=1L, npointings do begin
+            for offset=0L, noffsets do begin
+                ;; find bright stars
+                trap_design= plate_trap(definition, default, pointing, offset)
+                
+                ;; assign them 
+                if(n_tags(trap_design gt 0) then $
+                   plate_assign, fibercount, design, trap_design, seed=seed
+            endfor
+        endfor
     endif
 
     ;; Re-sort fibers
     
     ;; Write out plate assignments to 
     ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-            string((designid/100L)*100L, f='(i6.6)')
     outfile=outdir+'/plateDesign-'+ $
             string(designid, f='(i6.6)')+'.par'
     pdata= ptr_new(design)

@@ -8,6 +8,7 @@
 ; OPTIONAL KEYWORDS:
 ;   /center - return a center hole
 ;   /guide - return a guide hole
+;   /trap - return a trap hole
 ; OUTPUTS:
 ;   design - structure containing center hole information
 ; COMMENTS:
@@ -18,7 +19,7 @@
 ; REVISION HISTORY:
 ;   9-May-2008 MRB, NYU (based on DJS's design_append)
 ;-
-function design_blank, center=center, guide=guide
+function design_blank, center=center, guide=guide, trap=trap
 
 design0={holetype:'NA', $
          targettype:'NA', $
@@ -44,9 +45,17 @@ if(keyword_set(center)) then begin
     design0.diameter=2.*3.175
     design0.buffer=0.94
 endif
+
 if(keyword_set(guide)) then begin
     design0.holetype='GUIDE'
     design0.sourcetype='STAR'
+    design0.diameter=2.*3.32
+    design0.buffer=7.0
+endif
+
+if(keyword_set(trap)) then begin
+    design0.holetype='TRAP'
+    design0.sourcetype='NA'
     design0.diameter=2.*3.32
     design0.buffer=7.0
 endif
