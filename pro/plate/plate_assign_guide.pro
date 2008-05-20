@@ -84,9 +84,9 @@ for i=0l, n_elements(guidenums)-1L do begin
                               guide_design.conflicted eq 0, navailable)
             if(navailable eq 0) then $
               message, 'no more available guide stars!'
-            adiff= sqrt((gfiber[iguide].xprefer- $
+            adiff= sqrt((gfiber[iguide-1L].xprefer- $
                          guide_design[iavailable].xf_default)^2+ $
-                        (gfiber[iguide].yprefer- $
+                        (gfiber[iguide-1L].yprefer- $
                          guide_design[iavailable].yf_default)^2)
             minadiff = min(adiff, iclosest)
             iclosest= iavailable[iclosest]
