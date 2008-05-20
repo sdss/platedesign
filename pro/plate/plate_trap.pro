@@ -52,7 +52,7 @@ if(NOT file_test(trapfile)) then begin
         
         ;; NEED TO WRITE HEADER
         pdata= ptr_new(trap_design)
-        yanny_write, stdfile, pdata
+        yanny_write, trapfile, pdata
     endif
 endif else begin
     trap_design= yanny_readone(trapfile)

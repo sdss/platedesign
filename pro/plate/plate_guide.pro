@@ -64,7 +64,7 @@ if(NOT file_test(guidefile)) then begin
     ;; NEED TO WRITE HEADER
     if(n_tags(guide_design) gt 0) then begin
         pdata= ptr_new(guide_design)
-        yanny_write, stdfile, pdata
+        yanny_write, guidefile, pdata
     endif
 endif else begin
     guide_design= yanny_readone(guidefile)
