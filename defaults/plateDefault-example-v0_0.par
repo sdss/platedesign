@@ -59,8 +59,12 @@ bufferSizeAPOGEE 5.
 bufferSizeGUIDE 4.
 
 # Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
 plateDesignStandards SDSS MARVELS
+
+# For each pointing, what type of standard star?
 standardType SDSS 2MASS
 
-# Settings if platedesign is meant to find skies
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
 plateDesignSkies SDSS MARVELS
