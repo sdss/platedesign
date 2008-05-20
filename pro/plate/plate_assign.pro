@@ -47,19 +47,21 @@ for i=0L, ntargets-1L do begin
     curr_offset= new_design[icurr].offset
 
     ;; which type of instrument is this target for?
-    iinstrument= where(curr_holetype eq fibercount.instruments, $
-                       ninstruments)
+    iinstrument= $
+      where(strcmp(curr_holetype, fibercount.instruments, /fold) gt 0, $
+            ninstruments)
     if(ninstruments gt 1) then $
       message, 'multiple instruments specified of type '+curr_holetype
     if(ninstruments eq 0) then $
       message, 'no such instrument for type of hole '+curr_holetype
 
     ;; which target type is this?
-    itarget= where(curr_targettype eq fibercount.targettypes, $
-                   ntargettypes)
-    if(ninstruments gt 1) then $
+    itarget= $
+      where(strcmp(curr_targettype, fibercount.targettypes, /fold) gt 0, $
+            ntargettypes)
+    if(ntargettypes gt 1) then $
       message, 'multiple target types specified of type '+curr_targettype
-    if(ninstruments eq 0) then $
+    if(ntargettypes eq 0) then $
       message, 'no such target types for type of hole '+curr_targettype
 
     ;; if there are fewer fibers used from this instrument than
