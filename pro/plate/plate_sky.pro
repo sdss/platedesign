@@ -27,6 +27,11 @@ for i=0L, n_elements(platedesignskies)-1L do begin
     if(ninst eq 0) then $
       message, 'no instrument '+ curr_inst
 
+    itag= tag_indx(default, 'n'+ $
+                   strtrim(string(curr_inst),2)+ $
+                   '_sky')
+    nsky= 2L*long(strsplit(default.(itag),/extr))
+
     ;; file name
     outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
             string((designid/100L)*100L, f='(i6.6)')
@@ -39,8 +44,6 @@ for i=0L, n_elements(platedesignskies)-1L do begin
         ;; what is center for this pointing and offset?
         plate_center, definition, default, pointing, offset, $
                       racen=racen, deccen=deccen
-        
-        nsky=2L*fibercounts.ntot[iinst,isky,pointing-1L,offset] 
         
         ;; find SDSS skies and assign them
         plate_select_sky_sdss, racen, deccen, $
