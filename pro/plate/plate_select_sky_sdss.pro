@@ -23,7 +23,6 @@ pro plate_select_sky_sdss, racen, deccen, nsky=nsky, tilerad=tilerad, $
   seed=seed, rerun=rerun, sky_design=sky_design
 
 if(NOT keyword_set(tilerad)) then tilerad=1.49
-if(NOT keyword_set(exclude)) then exclude=120.
 if(n_elements(in_racurr) gt 0 AND $
    n_elements(in_deccurr) gt 0) then begin
     racurr=in_racurr
@@ -142,19 +141,10 @@ while(i lt ngrid AND $
       soplot,rasky, decsky, psym=4, th=4, color='green'
 endwhile
 
-stardata1 = create_struct( $
- 'RA'       , 0.D, $
- 'DEC'      , 0.D, $
- 'MAG'      , fltarr(5), $
- 'HOLETYPE' , '', $
- 'OBJTYPE'  , '', $
- 'PRIORITY' , 0L )
-stardata = replicate(stardata1, n_elements(rasky))
-stardata.ra = rasky
-stardata.dec = decsky
-stardata.mag = [25,25,25,25,25]
-stardata.holetype = 'OBJECT'
-stardata.objtype = 'SKY'
+sky_design= replicate(design_blank(), n_elements(rasky))
+sky_design.target_ra= rasky
+sky_design.target_dec= decsky
+sky_design.targettype= 'SKY'
+sky_design.sourcetype= 'NA'
 
-return
 end
