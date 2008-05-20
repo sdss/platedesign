@@ -38,6 +38,7 @@ pointingExpTime2 300.
 offsetExpTime1 10.
 
 # Guide fibers to use for each pointing
+guideType 2MASS SDSS
 guideNums1 1 2 3 4 5
 guideNums2 6 7 8 9 10 11
 
