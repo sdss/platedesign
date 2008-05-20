@@ -53,7 +53,7 @@ for i=0L, n_elements(platedesignskies)-1L do begin
         ;; NEED TO WRITE HEADER
         if(n_tags(sky_design) gt 0) then begin
             pdata= ptr_new(sky_design)
-            yanny_write, stdfile, pdata
+            yanny_write, skyfile, pdata
         endif
     endif else begin
         sky_design= yanny_readone(skyfile)
