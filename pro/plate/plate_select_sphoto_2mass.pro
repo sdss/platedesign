@@ -10,7 +10,6 @@
 ;   racen - RA center for pointing [J2000 deg]
 ;   deccen - DEC center for pointing [J2000 deg]
 ; OPTIONAL INPUTS:
-;   rerun - Rerun name(s)
 ;   tilerad - Tile radius; default to 1.49 deg
 ;   sphoto_mag - Magnitude range for SPECTROPHOTO_STD stars; default
 ;                to 15.5 < g < 17
@@ -26,7 +25,7 @@
 ;   10-Oct-2007  Written by D. Schlegel, LBL
 ;-
 ;------------------------------------------------------------------------------
-pro plate_select_sphoto_2mass, racen, deccen, rerun=rerun, tilerad=tilerad1, $
+pro plate_select_sphoto_2mass, racen, deccen, tilerad=tilerad1, $
   sphoto_mag=sphoto_mag1, sphoto_design=sphoto_design
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1) then $
@@ -35,8 +34,6 @@ if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 if (keyword_set(sphoto_mag1)) then sphoto_mag = sphoto_mag1 $
 else sphoto_mag = [15.5,17]
-if(NOT keyword_set(rerun)) then $
-  message, 'Must specify RERUN'
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
