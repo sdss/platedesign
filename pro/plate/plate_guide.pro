@@ -67,7 +67,7 @@ if(NOT file_test(guidefile)) then begin
         yanny_write, guidefile, pdata
     endif
 endif else begin
-    guide_design= yanny_readone(guidefile)
+    guide_design= yanny_readone(guidefile, /anon)
 endelse
 
 return, guide_design
