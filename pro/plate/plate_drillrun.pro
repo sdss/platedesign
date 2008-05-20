@@ -48,6 +48,7 @@ seed=origseed
 ;; What is the output directory?
 outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
         string((designid/100L)*100L, f='(i6.6)')
+spawn, 'mkdir -p '+outdir
     
 ;; Read in the plate definition file
 ;; Should be at 
