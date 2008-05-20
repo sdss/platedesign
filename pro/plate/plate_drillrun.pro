@@ -177,7 +177,8 @@ if(NOT keyword_set(justholes)) then begin
           message, 'Must specify guide fiber numbers for pointing '+ $
                    strtrim(string(pointing),2)
         guidenums=long(strsplit(default.(iguidenums),/extr))
-        guide_design= plate_guide(definition, default, pointing)
+        guide_design= plate_guide(definition, default, pointing, $
+                                  rerun=rerun, epoch=epoch)
         if(n_tags(guide_design) gt 0) then $
           plate_assign_guide, definition, default, design, guide_design, $
                               guidenums=guidenums
@@ -188,7 +189,8 @@ if(NOT keyword_set(justholes)) then begin
     for pointing=1L, npointings do begin
         for offset=0L, noffsets do begin
             sphoto_design= plate_standard(definition, default, $
-                                          pointing, offset)
+                                          pointing, offset, $
+                                          rerun=rerun)
             if(n_tags(sphoto_design) gt 0) then $
               plate_assign, fibercount, design, sphoto_design, seed=seed
         endfor 
@@ -198,7 +200,8 @@ if(NOT keyword_set(justholes)) then begin
     ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
     for pointing=1L, npointings do begin
         for offset=0L, noffsets do begin
-            sky_design= plate_sky(definition, default, pointing, offset)
+            sky_design= plate_sky(definition, default, pointing, offset, $
+                                  rerun=rerun)
             if(n_tags(sky_design) gt 0) then $
               plate_assign, fibercount, design, sky_design, seed=seed
         endfor 
