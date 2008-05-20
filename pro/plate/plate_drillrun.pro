@@ -210,18 +210,16 @@ if(NOT keyword_set(justholes)) then begin
     ;; (Note that assignment here checks for conflicts:
     ;; so if a light trap overlaps an existing hole, the
     ;; light trap is not drilled)
-    if(default.platedesigntraps gt 0) then begin
-        for pointing=1L, npointings do begin
-            for offset=0L, noffsets do begin
-                ;; find bright stars
-                trap_design= plate_trap(definition, default, pointing, offset)
-                
-                ;; assign them 
-                if(n_tags(trap_design gt 0) then $
-                   plate_assign, fibercount, design, trap_design, seed=seed
-            endfor
+    for pointing=1L, npointings do begin
+        for offset=0L, noffsets do begin
+            ;; find bright stars
+            trap_design= plate_trap(definition, default, pointing, offset)
+            
+            ;; assign them 
+            if(n_tags(trap_design gt 0) then $
+               plate_assign, fibercount, design, trap_design, seed=seed
         endfor
-    endif
+    endfor
 
     ;; Re-sort fibers
     
