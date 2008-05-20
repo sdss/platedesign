@@ -47,10 +47,11 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             plate_select_sphoto_sdss, racen, deccen, $
               rerun=rerun, sphoto_mag=sphoto_mag, $
               sphoto_design= sphoto_design_sdss
-            sphoto_design.pointing=pointing
-            sphoto_design.offset=offset
-            sphoto_design.holetype=curr_inst
-            pdata= ptr_new(sphoto_design_sdss)
+            if(n_tags(sphoto_design)) then begin
+                sphoto_design.pointing=pointing
+                sphoto_design.offset=offset
+                sphoto_design.holetype=curr_inst
+            endif
         endif 
         
         if(curr_type eq '2MASS') then begin
@@ -58,9 +59,11 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             plate_select_sphoto_2mass, racen, deccen, $
               sphoto_mag=sphoto_mag, $
               sphoto_design= sphoto_design_2mass
-            sphoto_design.pointing=pointing
-            sphoto_design.offset=offset
-            sphoto_design.holetype=curr_inst
+            if(n_tags(sphoto_design)) then begin
+                sphoto_design.pointing=pointing
+                sphoto_design.offset=offset
+                sphoto_design.holetype=curr_inst
+            endif
         endif
         
         ;; NEED TO WRITE HEADER
