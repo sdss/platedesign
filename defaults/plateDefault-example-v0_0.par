@@ -44,6 +44,8 @@ guideNums2 6 7 8 9 10 11
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # (Include guide instrument here)
+# BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
+# BUG: SIZES BELOW ARE TOTALLY WRONG
 ferruleSizeSDSS 3.327
 ferruleSizeBOSS 5.
 ferruleSizeMARVELS 3.
@@ -62,10 +64,3 @@ standardType SDSS 2MASS
 
 # Settings if platedesign is meant to find skies
 plateDesignSkies SDSS MARVELS
-
-#
-# SOS settings
-#
-#sosMinMag
-#sosMaxMag
-
