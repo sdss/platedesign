@@ -11,7 +11,7 @@
 ;------------------------------------------------------------------------------
 function plate_sky, definition, default, pointing, offset, rerun=rerun
 
-if(NOT tag_exist(default.platedesignskies)) then begin
+if(NOT tag_exist(default, 'PLATEDESIGNSKIES')) then begin
     return, 0
 endif 
 
