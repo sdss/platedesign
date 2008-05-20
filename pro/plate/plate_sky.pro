@@ -30,7 +30,10 @@ for i=0L, n_elements(platedesignskies)-1L do begin
     itag= tag_indx(default, 'n'+ $
                    strtrim(string(curr_inst),2)+ $
                    '_sky')
-    nsky= 2L*long(strsplit(default.(itag),/extr))
+    npointings= long(default.npointings)
+    noffsets= long(default.noffsets)
+    nsky= 2L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
+                     noffsets+1L))[pointing-1L, offset]
 
     ;; file name
     outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
