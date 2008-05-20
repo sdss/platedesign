@@ -216,7 +216,7 @@ if(NOT keyword_set(justholes)) then begin
             trap_design= plate_trap(definition, default, pointing, offset)
             
             ;; assign them 
-            if(n_tags(trap_design gt 0) then $
+            if(n_tags(trap_design) gt 0) then $
                plate_assign, fibercount, design, trap_design, seed=seed
         endfor
     endfor
