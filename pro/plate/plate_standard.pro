@@ -47,7 +47,7 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             plate_select_sphoto_sdss, racen, deccen, $
               rerun=rerun, sphoto_mag=sphoto_mag, $
               sphoto_design= sphoto_design, tilerad=tilerad
-            if(n_tags(sphoto_design)) then begin
+            if(n_tags(sphoto_design) gt 0) then begin
                 sphoto_design.pointing=pointing
                 sphoto_design.offset=offset
                 sphoto_design.holetype=curr_inst
@@ -59,7 +59,7 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             plate_select_sphoto_2mass, racen, deccen, $
               sphoto_mag=sphoto_mag, $
               sphoto_design= sphoto_design, tilerad=tilerad
-            if(n_tags(sphoto_design)) then begin
+            if(n_tags(sphoto_design) gt 0) then begin
                 sphoto_design.pointing=pointing
                 sphoto_design.offset=offset
                 sphoto_design.holetype=curr_inst
