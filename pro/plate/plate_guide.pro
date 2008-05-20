@@ -16,6 +16,8 @@ if(NOT tag_exist(default, 'GUIDETYPE')) then begin
 endif 
 
 ;; file name
+outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+        string((designid/100L)*100L, f='(i6.6)')
 guidefile=outdir+'/plateGuide-'+ $
           string(designid, f='(i6.6)')+ $
           '-p'+strtrim(string(pointing),2)+'.par'

@@ -14,6 +14,8 @@
 function plate_trap, definition, default, pointing, offset, rerun=rerun
 
 ;; file name
+outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+        string((designid/100L)*100L, f='(i6.6)')
 trapfile=outdir+'/plateTrap-'+ $
          string(designid, f='(i6.6)')+ $
          '-p'+strtrim(string(pointing),2)+ $
@@ -33,14 +35,6 @@ if(NOT file_test(trapfile)) then begin
         if (ct EQ 0) then tycdat = 0 $
         else tycdat = tycdat[indx]
     endif
-            plate_ad2xy, definition, default, pointing, 0L, $
-                         guide_design.target_ra, $
-                         guide_design.target_dec, $
-                         xf=xf, yf=yf
-            guide_design.xf_default=xf
-            guide_design.yf_default=yf
-            plate_assign_guide, definition, default, design, $
-                                guide_design, guidenums=guidenums
 
     if(n_tags(tycdat) gt 0) then begin
         trap_design= replicate(design_blank(/trap), n_elements(tycdat))

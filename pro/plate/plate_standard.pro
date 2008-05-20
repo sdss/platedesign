@@ -27,6 +27,8 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
       message, 'no instrument '+ curr_inst
     
     ;; file name
+    outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+            string((designid/100L)*100L, f='(i6.6)')
     stdfile=outdir+'/plateStandard'+curr_inst+'-'+ $
             string(designid, f='(i6.6)')+ $
             '-p'+strtrim(string(pointing),2)+ $
