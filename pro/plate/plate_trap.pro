@@ -55,7 +55,7 @@ if(NOT file_test(trapfile)) then begin
         yanny_write, trapfile, pdata
     endif
 endif else begin
-    trap_design= yanny_readone(trapfile)
+    trap_design= yanny_readone(trapfile, /anon)
 endelse
 
 return, trap_design

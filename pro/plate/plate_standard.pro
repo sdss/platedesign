@@ -69,7 +69,7 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             yanny_write, stdfile, pdata
         endif
     endif else begin
-        sphoto_design= yanny_readone(stdfile)
+        sphoto_design= yanny_readone(stdfile, /anon)
     endelse
 endfor
 

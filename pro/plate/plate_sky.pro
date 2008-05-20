@@ -56,7 +56,7 @@ for i=0L, n_elements(platedesignskies)-1L do begin
             yanny_write, skyfile, pdata
         endif
     endif else begin
-        sky_design= yanny_readone(skyfile)
+        sky_design= yanny_readone(skyfile, /anon)
     endelse
 endfor 
 
