@@ -46,7 +46,7 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             ;; find SDSS standards and assign them
             plate_select_sphoto_sdss, racen, deccen, $
               rerun=rerun, sphoto_mag=sphoto_mag, $
-              sphoto_design= sphoto_design_sdss, tilerad=tilerad
+              sphoto_design= sphoto_design, tilerad=tilerad
             if(n_tags(sphoto_design)) then begin
                 sphoto_design.pointing=pointing
                 sphoto_design.offset=offset
@@ -58,7 +58,7 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             ;; find 2MASS standards and assign them
             plate_select_sphoto_2mass, racen, deccen, $
               sphoto_mag=sphoto_mag, $
-              sphoto_design= sphoto_design_2mass, tilerad=tilerad
+              sphoto_design= sphoto_design, tilerad=tilerad
             if(n_tags(sphoto_design)) then begin
                 sphoto_design.pointing=pointing
                 sphoto_design.offset=offset
