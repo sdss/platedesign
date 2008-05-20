@@ -219,9 +219,15 @@ if(NOT keyword_set(justholes)) then begin
             ;; find bright stars
             trap_design= plate_trap(definition, default, pointing, offset)
             
-            ;; assign them 
-            if(n_tags(trap_design) gt 0) then $
-               plate_assign, fibercount, design, trap_design, seed=seed
+            ;; add them if they don't conflict
+            if(n_tags(trap_design) gt 0) then begin
+                for i=0L, n_elements(trap_design)-1L do begin
+                    trap_design[i].conflicted= $
+                      check_conflicts(design, trap_design[i])
+                    if(NOT trap_design[i].conflicted) then $
+                      design= [design, trap_design[i]]
+                endfor
+            endif
         endfor
     endfor
 
