@@ -61,10 +61,7 @@ plateDesignStandards SDSS MARVELS
 standardType SDSS 2MASS
 
 # Settings if platedesign is meant to find skies
-plateDesignSkies 1
-
-# Settings if platedesign is meant to find guides
-plateDesignGuides 1
+plateDesignSkies SDSS MARVELS
 
 #
 # SOS settings
