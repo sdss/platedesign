@@ -21,12 +21,15 @@ guidefile=outdir+'/plateGuide-'+ $
           '-p'+strtrim(string(pointing),2)+'.par'
 
 if(NOT file_test(guidefile)) then begin
+
+    guidetype= (strsplit(default.guidetype, /extr))[pointing-1]
+
     ;; what is center for this pointing?
     plate_center, definition, default, pointing, 0L, $
                   racen=racen, deccen=deccen
     
     ;; find SDSS guide fibers 
-    if(default.guidetype eq 'SDSS') then begin
+    if(guidetype eq 'SDSS') then begin
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
           rerun=rerun, guide_design=guide_design
         if(n_tags(guide_design) gt 0) then begin
@@ -40,7 +43,7 @@ if(NOT file_test(guidefile)) then begin
     endif
     
     ;; find 2MASS guide fibers 
-    if(default.guidetype eq '2MASS') then begin
+    if(guidetype eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design
         if(n_tags(guide_design) gt 0) then begin
