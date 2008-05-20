@@ -29,6 +29,15 @@
 pro plate_select_sphoto_2mass, racen, deccen, rerun=rerun, tilerad=tilerad1, $
   sphoto_mag=sphoto_mag1, sphoto_design=sphoto_design
 
+if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1) then $
+  message,' Must specify RACEN, DECCEN'
+if (keyword_set(tilerad1)) then tilerad = tilerad1 $
+else tilerad = 1.49
+if (keyword_set(sphoto_mag1)) then sphoto_mag = sphoto_mag1 $
+else sphoto_mag = [15.5,17]
+if(NOT keyword_set(rerun)) then $
+  message, 'Must specify RERUN'
+
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
 
