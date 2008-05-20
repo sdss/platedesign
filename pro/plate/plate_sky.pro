@@ -26,6 +26,8 @@ for i=0L, n_elements(platedesignskies)-1L do begin
       message, 'no instrument '+ curr_inst
 
     ;; file name
+    outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+            string((designid/100L)*100L, f='(i6.6)')
     skyfile=outdir+'/plateSky'+curr_inst+'-'+ $
             string(designid, f='(i6.6)')+ $
             '-p'+strtrim(string(pointing),2)+ $
