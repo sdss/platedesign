@@ -11,7 +11,7 @@
 ;------------------------------------------------------------------------------
 function plate_standard, definition, default, pointing, offset, rerun=rerun
 
-if(NOT tag_exist(default.platedesignstandards)) then begin
+if(NOT tag_exist(default, 'PLATEDESIGNSTANDARDS')) then begin
     return, 0
 endif 
 

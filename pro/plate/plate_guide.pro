@@ -11,7 +11,7 @@
 ;------------------------------------------------------------------------------
 function plate_guide, definition, default, pointing, rerun=rerun
 
-if(NOT tag_exist(default.guidetype)) then begin
+if(NOT tag_exist(default, 'GUIDETYPE')) then begin
     return, 0
 endif 
 
