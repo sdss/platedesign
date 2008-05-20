@@ -9,11 +9,14 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function plate_guide, definition, default, pointing, rerun=rerun
+function plate_guide, definition, default, pointing, rerun=rerun, $
+  epoch=epoch
 
 if(NOT tag_exist(default, 'GUIDETYPE')) then begin
     return, 0
 endif 
+
+designid= long(definition.designid)
 
 ;; file name
 outdir= getenv('PLATELIST_DIR')+'/designs/'+ $

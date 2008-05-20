@@ -13,6 +13,8 @@
 ;------------------------------------------------------------------------------
 function plate_trap, definition, default, pointing, offset, rerun=rerun
 
+designid= long(definition.designid)
+
 ;; file name
 outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
         string((designid/100L)*100L, f='(i6.6)')

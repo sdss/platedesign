@@ -15,6 +15,8 @@ if(NOT tag_exist(default, 'PLATEDESIGNSTANDARDS')) then begin
     return, 0
 endif 
 
+designid= long(definition.designid)
+
 ;; what instruments
 instruments= strsplit(default.instruments, /extr)
 platedesignstandards= strsplit(default.platedesignstandards, /extr)
