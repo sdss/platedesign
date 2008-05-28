@@ -7,6 +7,15 @@ data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 defaults/plateDefault-example-v0_0.par -text
+obsolete/pro/coo_read.pro -text
+obsolete/pro/make_example.pro -text
+obsolete/pro/plate_marvels.pro -text
+obsolete/pro/plate_marvels_new.pro -text
+obsolete/pro/plate_marvels_oct07.pro -text
+obsolete/pro/plate_qsos.pro -text
+obsolete/pro/plate_qsos_feb08.pro -text
+obsolete/pro/plate_select_sky.pro -text
+obsolete/pro/qsolist_read.pro -text
 pro/misc/lines2struct.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/check_conflicts.pro -text
