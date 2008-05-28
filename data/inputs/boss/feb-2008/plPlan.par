@@ -1,7 +1,0 @@
-# Created on Wed Feb 20 16:07:56 2008
-parametersDir /global/data/products/Linux64/idlspec2d/cvs/examples
-parameters    plParam.par
-plObsFile     plObs.par
-outFileDir    /home/users/mb144/boss/platedesign/data/inputs/boss/feb-2008
-tileDir       /home/users/mb144/boss/platedesign/data/inputs/boss/feb-2008
-
