@@ -55,6 +55,12 @@ for i=0L, n_elements(platedesignskies)-1L do begin
         sky_design.pointing=pointing
         sky_design.offset=offset
         sky_design.holetype=curr_inst
+        plate_ad2xy, definition, default, pointing, offset, $
+                     sky_design.target_ra, $
+                     sky_design.target_dec, $
+                     xf=xf, yf=yf
+        sky_design.xf_default=xf
+        sky_design.yf_default=yf
         
         ;; NEED TO WRITE HEADER
         if(n_tags(sky_design) gt 0) then begin
