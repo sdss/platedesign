@@ -21,7 +21,8 @@
 ;-
 function design_blank, center=center, guide=guide, trap=trap
 
-design0={holetype:'NA', $
+design0={DESIGN_TARGET, $
+         holetype:'NA', $
          targettype:'NA', $
          sourcetype:'NA', $
          target_ra:0.D, $
