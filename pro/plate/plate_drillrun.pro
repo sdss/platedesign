@@ -239,8 +239,11 @@ if(NOT keyword_set(justholes)) then begin
             string(designid, f='(i6.6)')+'.par'
     pdata= ptr_new(design)
     spawn, 'mkdir -p '+outdir
-    yanny_write, outfile, pdata
-
+    hdrstr=struct_combine(default, definition)
+    outhdr=struct2lines(hdrstr)
+    outhdr=[outhdr, 'platedesign_version '+platedesign_version()]
+    yanny_write, outfile, pdata, hdr=outhdr
+    
     ;; Update $PLATELIST_DIR/plateDesigns.par
     
 
