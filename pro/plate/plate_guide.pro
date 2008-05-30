@@ -61,10 +61,17 @@ if(NOT file_test(guidefile)) then begin
         endif
     endif
     
-    ;; NEED TO WRITE HEADER
     if(n_tags(guide_design) gt 0) then begin
         pdata= ptr_new(guide_design)
-        yanny_write, guidefile, pdata
+        hdrstr=struct_combine(default, definition)
+        outhdr=struct2lines(hdrstr)
+        outhdr=[outhdr, $
+                'pointing '+strtrim(string(pointing),2)+ $
+                'epoch '+strtrim(string(epoch, f='(f40.8)'),2)+ $
+                'platedesign_version '+platedesign_version()]
+        if(keyword_set(rerun)) then $
+          outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
+        yanny_write, guidefile, pdata, hdr=outhdr
     endif
 endif else begin
     guide_design= yanny_readone(guidefile, /anon)
