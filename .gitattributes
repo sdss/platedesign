@@ -1,6 +1,7 @@
 * text=auto !eol
 /README -text
 bin/drillrun2zip -text
+bin/platedesign_version -text
 data/strategy/boss_observing_nights.par -text
 data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
