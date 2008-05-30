@@ -46,16 +46,16 @@ guideNums2 6 7 8 9 10 11
 # (Include guide instrument here)
 # BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
 # BUG: SIZES BELOW ARE TOTALLY WRONG
-ferruleSizeSDSS 3.327
-ferruleSizeBOSS 5.
-ferruleSizeMARVELS 3.
-ferruleSizeAPOGEE 5.
+ferruleSizeSDSS .327
+ferruleSizeBOSS .5
+ferruleSizeMARVELS .3
+ferruleSizeAPOGEE .5
 ferruleSizeGUIDE 4.
 
-bufferSizeSDSS 3.327
-bufferSizeBOSS 5.
-bufferSizeMARVELS 3.
-bufferSizeAPOGEE 5.
+bufferSizeSDSS 0.327
+bufferSizeBOSS .5
+bufferSizeMARVELS .3
+bufferSizeAPOGEE .5
 bufferSizeGUIDE 4.
 
 # Settings if platedesign is meant to find standards
