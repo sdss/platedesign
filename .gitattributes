@@ -20,6 +20,7 @@ obsolete/pro/plate_select_guide.pro -text
 obsolete/pro/plate_select_sky.pro -text
 obsolete/pro/qsolist_read.pro -text
 pro/misc/lines2struct.pro -text
+pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
 pro/misc/struct_combine.pro -text
 pro/plate/ad2xyfocal.pro -text
