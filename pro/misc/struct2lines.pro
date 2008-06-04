@@ -22,7 +22,7 @@ ntags=n_tags(struct)
 lines=strarr(ntags)
 names=tag_names(struct)
 for i=0L, ntags-1L do begin
-    lines[i]=strlocase(names[i])+' '+string(struct.(i))
+    lines[i]=strlowcase(names[i])+' '+string(struct.(i))
 endfor
 
 return, lines
