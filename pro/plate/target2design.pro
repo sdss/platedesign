@@ -48,6 +48,9 @@ plate_ad2xy, definition, default, pointing, offset, targets.ra, $
 ntargets=n_elements(targets)
 design= replicate(design_blank(), ntargets)
 
+;; now copy all appropriate tags to design from the target list
+struct_assign, targets, design, /nozero
+
 ;; add per plateInput data 
 instruments=strsplit(default.instruments, /extr)
 iinst=where(info.instrument eq instruments, ninst)

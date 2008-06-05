@@ -55,7 +55,9 @@ if(NOT file_test(trapfile)) then begin
         yanny_write, trapfile, pdata
     endif
 endif else begin
-    trap_design= yanny_readone(trapfile, /anon)
+    in_trap_design= yanny_readone(trapfile, /anon)
+    trap_design= replicate(design_blank(), n_elements(in_trap_design))
+    struct_assign, in_trap_design, trap_design, /nozero
 endelse
 
 return, trap_design

@@ -208,7 +208,14 @@ if(NOT keyword_set(justholes)) then begin
         endfor 
     endfor
     
-    ;; WHAT DO WE DO WITH EXTRA FIBERS HERE!!
+    ;; Check for extra fibers
+    iunused=where(fibercount.nused lt fibercount.ntot, nunused)
+    if(nunused gt 0) then begin
+        splog, 'Unused fibers found. Please specify more targets!'
+        splog, 'Not completing plate design '+strtrim(string(designid),2)
+        stop
+        return
+    endif
 
     ;; Find light traps and assign them
     ;; (Note that assignment here checks for conflicts:

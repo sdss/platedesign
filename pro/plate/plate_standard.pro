@@ -74,7 +74,9 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             yanny_write, stdfile, pdata
         endif
     endif else begin
-        sphoto_design= yanny_readone(stdfile, /anon)
+        in_sphoto_design= yanny_readone(stdfile, /anon)
+        sphoto_design= replicate(design_blank(), n_elements(in_sphoto_design))
+        struct_assign, in_sphoto_design, sphoto_design, /nozero
     endelse
 endfor
 
