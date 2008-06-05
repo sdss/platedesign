@@ -12,6 +12,7 @@
 ;   epoch - [Ndesign] epoch 
 ; OPTIONAL KEYWORDS:
 ;   /justholes - just convert already made design into holes 
+;   /debug - 
 ; COMMENTS:
 ;   Required tags in plateDefinition:
 ;     designID
@@ -30,7 +31,7 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_drillrun, designid, ha, temp, epoch, justholes=justholes, $
-                    rerun=rerun
+                    rerun=rerun, debug=debug
 
 ;; loop over multiple designs, etc
 if(n_elements(designid) gt 1) then begin
