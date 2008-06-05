@@ -32,9 +32,9 @@ for i=0L, n_elements(platedesignskies)-1L do begin
                    '_sky')
     npointings= long(default.npointings)
     noffsets= long(default.noffsets)
-    nsky= 2L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
+    nsky= 4L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
                      noffsets+1L))[pointing-1L, offset]
-
+    
     ;; file name
     outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
             string((designid/100L)*100L, f='(i6.6)')
@@ -68,7 +68,9 @@ for i=0L, n_elements(platedesignskies)-1L do begin
             yanny_write, skyfile, pdata
         endif
     endif else begin
-        sky_design= yanny_readone(skyfile, /anon)
+        in_sky_design= yanny_readone(skyfile, /anon)
+        sky_design= replicate(design_blank(), n_elements(in_sky_design))
+        struct_assign, in_sky_design, sky_design, /nozero
     endelse
 endfor 
 

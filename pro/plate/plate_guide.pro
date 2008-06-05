@@ -74,7 +74,9 @@ if(NOT file_test(guidefile)) then begin
         yanny_write, guidefile, pdata, hdr=outhdr
     endif
 endif else begin
-    guide_design= yanny_readone(guidefile, /anon)
+    in_guide_design= yanny_readone(guidefile, /anon)
+    guide_design= replicate(design_blank(), n_elements(in_guide_design))
+    struct_assign, in_guide_design, guide_design, /nozero
 endelse
 
 return, guide_design

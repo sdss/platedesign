@@ -39,7 +39,27 @@ design0={DESIGN_TARGET, $
          priority:0L, $
          assigned:0L, $
          conflicted:0L, $
-         ranout:0L}
+         ranout:0L, $
+         sp_param_source:'NA', $
+         sp_params:fltarr(4), $
+         sp_param_err:fltarr(4), $
+         marvels_target1:0L, $
+         marvels_target2:0L, $
+         boss_target1:0L, $
+         boss_target2:0L, $
+         segue2_target1:0L, $
+         segue2_target2:0L, $
+         segueb_target1:0L, $
+         segueb_target2:0L, $
+         apogee_target1:0L, $
+         apogee_target2:0L, $
+         run:0L, $
+         rerun:' ', $
+         camcol:0L, $
+         field:0L, $
+         id:0L, $
+         targetids:'NA' $
+        }
 
 if(keyword_set(center)) then begin
     design0.holetype='CENTER'
