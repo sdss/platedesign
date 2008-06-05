@@ -78,8 +78,15 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
         sphoto_design= replicate(design_blank(), n_elements(in_sphoto_design))
         struct_assign, in_sphoto_design, sphoto_design, /nozero
     endelse
+
+    if(n_tags(sphoto_design) gt 0) then begin
+        if(n_tags(all_sphoto_design) eq 0) then $
+          all_sphoto_design=sphoto_design $
+        else $
+          all_sphoto_design=[all_sphoto_design, sphoto_design]
+    endif
 endfor
 
-return, sphoto_design
+return, all_sphoto_design
 
 end
