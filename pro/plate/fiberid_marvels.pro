@@ -15,9 +15,15 @@
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU 
 ;-
-function fiberid_marvels, design
+function fiberid_marvels, default, fibercount, design, $
+                          minstdinblock=minstdinblock, $
+                          minskyinblock=minskyinblock
 
-fiberid=lindgen(n_elements(design))+1L
+nfiber=60L
+
+ifiber=shuffle_indx(n_elements(design), num_sub=nfiber)
+fiberid=lonarr(n_elements(design))
+fiberid[ifiber]=lindgen(nfiber)
 
 return, fiberid
 

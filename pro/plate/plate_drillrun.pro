@@ -114,10 +114,15 @@ if(NOT keyword_set(justholes)) then begin
             ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
         endfor
     endfor
+    if(tag_exist(default, 'COLLECTFACTOR')) then $
+      collectfactor= long(default.collectfactor) $
+    else $
+      collectfactor= 5L
     fibercount= {instruments:instruments, $
                  targettypes:targettypes, $
                  ntot:ntot, $
-                 nused:nused}
+                 nused:nused, $
+                 ncollect:ntot*collectfactor}
     
     ;; For each class of input priorities, run plate_assign 
     ;; Note input files root path is $PLATELIST_DIR/inputs
@@ -155,7 +160,7 @@ if(NOT keyword_set(justholes)) then begin
             ;; (record which plate input file this came from)
             target2design, definition, default, tmp_targets, tmp_design, $
                            info=hdrstr
-            tmp_design.iplateinput= k
+            tmp_design.iplateinput= k+1L
             
             if(n_tags(new_design) eq 0) then begin
                 new_design=tmp_design 
@@ -187,14 +192,18 @@ if(NOT keyword_set(justholes)) then begin
     endfor
 
     ;; Assign standards 
-    ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
     for pointing=1L, npointings do begin
         for offset=0L, noffsets do begin
-            sphoto_design= plate_standard(definition, default, $
-                                          pointing, offset, $
-                                          rerun=rerun)
-            if(n_tags(sphoto_design) gt 0) then $
-              plate_assign, fibercount, design, sphoto_design, seed=seed
+            for iinst=0L, ninstruments-1L do begin
+                sphoto_design= plate_standard(definition, default, $
+                                              instruments[iinst], $
+                                              pointing, offset, $
+                                              rerun=rerun)
+
+                if(n_tags(sphoto_design) gt 0) then $
+                  plate_assign, fibercount, design, sphoto_design, seed=seed, $
+                  /collect
+            endfor
         endfor 
     endfor
     
@@ -242,10 +251,33 @@ if(NOT keyword_set(justholes)) then begin
     ;; Assign fiberid's for each instrument
     for iinst=0L, ninstruments-1L do begin
         icurr= where(design.holetype eq instruments[iinst], ncurr)
+
+        ;; get minimum number of standards per block per pointing, if desired
+        itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
+        if(itagminstd eq -1) then $
+          minstdinblock=0L $
+        else $
+          minstdinblock=long(default.(itagminstd))
+
+        ;; get minimum number of skies per block per pointing, if desired
+        itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
+        if(itagminsky eq -1) then $
+          minskyinblock=0L $
+        else $
+          minskyinblock=long(default.(itagminsky))
+
         if(ncurr gt 0) then begin
             fiberids= call_function('fiberid_'+instruments[iinst], $
-                                    design[icurr])
+                                    default, fibercount, design[icurr], $
+                                    minstdinblock=minstdinblock, $
+                                    minskyinblock=minskyinblock)
             design[icurr].fiberid= fiberids
+            inot= where(design[icurr].fiberid le 0, nnot)
+            if(nnot gt 0) then begin
+                splog, 'Some targets not assigned fibers, not outputting!'
+                if(keyword_set(debug)) then stop
+                return
+            endif
         endif
     endfor
     
@@ -261,7 +293,6 @@ if(NOT keyword_set(justholes)) then begin
     yanny_write, outfile, pdata, hdr=outhdr
     
     ;; Update $PLATELIST_DIR/plateDesigns.par
-    
 
 endif
 

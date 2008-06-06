@@ -26,20 +26,26 @@
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
 ;-
-pro plate_assign, fibercount, design, new_design, seed=seed
+pro plate_assign, fibercount, design, new_design, seed=seed, collect=collect
+
+;; normally limit by number of available fibers; however, in some
+;; cases we want to collect a large set of non-colliding ones (for
+;; skies and standards) before choosing a few out; we set /collect for
+;; such cases
+nlimit=fibercount.ntot
+if(keyword_set(collect)) then $
+  nlimit=fibercount.ncollect
 
 ;; step through targets in order of priority;
 ;; at this step we shuffle the targets to remove 
 ;; any funny sorting of the inputs
 ntargets=n_elements(new_design)
-ishuffle= shuffle_indx(ntargets)
+ishuffle= shuffle_indx(ntargets, seed=seed)
 isort=sort(new_design[ishuffle].priority)
 for i=0L, ntargets-1L do begin
     icurr= ishuffle[isort[i]]
 
     ;; are there any more of these sorts of holes available?
-    ;; special types are SKY and STANDARD; all others interpreted
-    ;; as SCIENCE
     curr_holetype= new_design[icurr].holetype
     curr_targettype= new_design[icurr].targettype
     curr_sourcetype= new_design[icurr].sourcetype
@@ -66,17 +72,9 @@ for i=0L, ntargets-1L do begin
 
     ;; if there are fewer fibers used from this instrument than
     ;; available, see if you can assign it
-    if(fibercount.nused[iinstrument, itarget, $
-                        curr_pointing-1L, curr_offset] lt $
-       fibercount.ntot[iinstrument, itarget, $
-                       curr_pointing-1L, curr_offset]) then begin
+    if(fibercount.nused[iinstrument,itarget,curr_pointing-1L,curr_offset] lt $
+       nlimit[iinstrument,itarget,curr_pointing-1L,curr_offset]) then begin
         
-        ;; CHECK HERE IF SOURCETYPE IS "STANDARD"
-        ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
-        
-        ;; CHECK HERE IF SOURCETYPE IS "SKY"
-        ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
-
         ;; if this target is not conflicted with a previous target,
         ;; mark it as assigned, increment the number of fibers of this
         ;; type in use, and add it to the design list

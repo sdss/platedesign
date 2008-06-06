@@ -5,8 +5,10 @@ int write_plugprob(double xtarget[],
 									 double yfiber[],
 									 int fiberused[],
 									 int nFibers,
+									 int nMax,
 									 int nFibersBlock,
 									 double limitDegree, 
+									 int minAvailInBlock,
 									 int minFibersInBlock,
 									 char probfile[]);
 

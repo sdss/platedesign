@@ -31,8 +31,10 @@ int write_plugprob(double xtarget[],
 									 double yfiber[],
 									 int fiberused[],
 									 int nFibers,
+									 int nMax,
 									 int nFibersBlock,
 									 double limitDegree, 
+									 int minAvailInBlock,
 									 int minFibersInBlock,
 									 char probfile[])
 {
@@ -67,12 +69,12 @@ int write_plugprob(double xtarget[],
 		} /* end for j */
 
 		/* now figure out which fibers can reach the target,
-		 * for which a number of fibers >= minFibersInBlock in the
+		 * for which a number of fibers >= minAvailInBlock in the
 		 * block can actually reach the target */
 		nFiberTargets[i]=0;
 		for(j=0;j<nFibers;j++) {
 			block=(int) floor(j/nFibersBlock);
-			if(nTargetBlocks[block]>=minFibersInBlock) {
+			if(nTargetBlocks[block]>=minAvailInBlock) {
 				sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
 					(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
 				if(sep2<limit2) {
@@ -109,11 +111,11 @@ int write_plugprob(double xtarget[],
 
 	/* source node */
   fprintf(fp,"c source node\n");
-  fprintf(fp,"n %d %d\n", 0, nTargets);
+  fprintf(fp,"n %d %d\n", 0, nMax);
 
 	/* sink node */
   fprintf(fp,"c sink node\n");
-  fprintf(fp,"n %d %d\n", nNodes-1, -nTargets);
+  fprintf(fp,"n %d %d\n", nNodes-1, -nMax);
 
 	/* one arc for each targets node */
   fprintf(fp,"c source to target arcs\n");
@@ -142,7 +144,7 @@ int write_plugprob(double xtarget[],
   fprintf(fp, "c block to sink arcs\n");
   for(i=0;i<nBlocks;i++) {
     fprintf(fp,"a %d %d %d %d %d\n", nTargets+nFibers+i+1, nNodes-1,
-						0, nFibersBlock, 0);
+						minFibersInBlock, nFibersBlock, 0);
   } /* end for i */
 
 	/* last arc for impossible galaxies */
