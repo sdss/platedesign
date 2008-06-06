@@ -1,0 +1,25 @@
+This software was obtained from http://www.neci.nj.nec.com/homepages/avg/
+
+CS2 is the second version of scaling algorithm for minimum-cost
+flow problems. For more detailed description, see "An
+Efficient Implementation of a Scaling Minimum-Cost Flow Algorithm" by
+A.V. Goldberg, Technical Report STAN-CS-92-1439, Computer Science
+Department, Stanford University, Stanford, CA, 1992.
+
+The program is designed to run under BSD UNIX.
+The program reads from the standard input and writes to the standard
+output. Edit makefile to set desirable compiler options.
+Then run "make" to compile the program. Program name is "cs2".
+
+Parameters: If no parameters are given, default values are used.
+There is one optional parameter, scale factor, which must be an integer.
+The default value if SCALE_DEFAULT. Changing this parameter may
+affect performance.
+
+CS2 was developed by Andrew Goldberg (avg@research.nj.nec.com) and
+Boris Cherkassky (cher@cher.msk.su).
+
+The program is available on "as is" basis. It is not guaranteed to
+be free of bugs, and the authors assume no responsibility for any
+potential problems. 
+
