@@ -71,6 +71,15 @@ pro/strategy/run_boss_strategy.pro -text
 pro/strategy/splot_rbs.pro -text
 pro/strategy/trial_lrgs_for_tile.pro -text
 pro/strategy/trim_tiles.pro -text
+src/cs2/COPYRIGHT -text
+src/cs2/README -text
+src/cs2/cs2.c -text
+src/cs2/makefile -text
+src/cs2/parser_cs2.c -text
+src/cs2/sample.input -text
+src/cs2/timer.c -text
+src/cs2/types_cs2.h -text
+src/cs2/version -text
 src/skycalc/Makefile -text
 src/skycalc/skycalc.c -text
 ups/platedesign.table -text
