@@ -80,6 +80,12 @@ src/cs2/sample.input -text
 src/cs2/timer.c -text
 src/cs2/types_cs2.h -text
 src/cs2/version -text
+src/fiber/Makefile -text
+src/fiber/export.h -text
+src/fiber/fiber.h -text
+src/fiber/idl_read_plugprob.c -text
+src/fiber/idl_write_plugprob.c -text
+src/fiber/plugprob.c -text
 src/skycalc/Makefile -text
 src/skycalc/skycalc.c -text
 ups/platedesign.table -text
