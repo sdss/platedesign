@@ -8,6 +8,10 @@
 ; INPUTS:
 ;   design - [640] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
+; OPTIONAL INPUTS:
+;   minstdinblock, minskyinblock 
+;          - minimum number of standards or skies to assign to each block
+;            [default 0]
 ; OUTPUTS:
 ;   fiberid - 1-indexed list of fibers 
 ; COMMENTS:
@@ -18,50 +22,66 @@
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU 
 ;-
-function fiberid_sdss, design
+function fiberid_sdss, default, fibercount, design, $
+                       minstdinblock=minstdinblock, $
+                       minskyinblock=minskyinblock
+
+if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
+if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
 
 fiberused=0L
 fiberid=lonarr(n_elements(design))
 
 ;; assign standards, if any exist
-;; ask for 1 in each block at least
-istd= where(design.targettype eq 'STANDARD', nstd)
-if(nstd gt 0) then begin
-    sdss_plugprob, design[istd].xf_default, design[istd].yf_default, $
-      tmp_fiberid, mininblock=1, fiberused=fiberused
-    
-    iassigned=where(tmp_fiberid ge 1, nassigned)
-    if(nassigned gt 0) then begin
-        if(keyword_set(fiberused)) then $
-          fiberused=tmp_fiberid[iassigned] $
-        else $
-          fiberused=[fiberused, tmp_fiberid[iassigned]] 
-    endif 
-    
-    fiberid[istd]=tmp_fiberid
-endif else begin
-    splog, 'No standards in this plate, I hope you meant to do that.'
-endelse
+;; ask for minstdinblock in each block for each pointing, at least
+npointings= long(default.npointings)
+for i=1L, npointings do begin
+    istd= where(strupcase(design.targettype) eq 'STANDARD' AND $
+                design.pointing eq i, nstd)
+    if(nstd gt 0) then begin
+        iinst=where(strupcase(fibercount.instruments) eq 'SDSS', ninst)
+        itype=where(strupcase(fibercount.targettypes) eq 'STANDARD', ntype)
+        nmax=long(total(fibercount.ntot[iinst, itype, i-1L, *]))
+        
+        sdss_plugprob, design[istd].xf_default, design[istd].yf_default, $
+          tmp_fiberid, mininblock=minstdinblock, minavail=1L, $
+          fiberused=fiberused, nmax=nmax
+        
+        iassigned=where(tmp_fiberid ge 1, nassigned)
+        if(nassigned gt 0) then begin
+            if(NOT keyword_set(fiberused)) then $
+              fiberused=tmp_fiberid[iassigned] $
+            else $
+              fiberused=[fiberused, tmp_fiberid[iassigned]] 
+            fiberid[istd[iassigned]]=tmp_fiberid[iassigned]
+        endif 
+    endif else begin
+        splog, 'No standards in pointing '+strtrim(string(i),2)
+    endelse
+endfor
 
 ;; assign skies, if any exist
-;; ask for 1 in each block at least
-isky= where(design.targettype eq 'SKY', nsky)
-if(nsky gt 0) then begin
-    sdss_plugprob, design[isky].xf_default, design[isky].yf_default, $
-      tmp_fiberid, mininblock=1, fiberused=fiberused
-    
-    iassigned=where(tmp_fiberid ge 1, nassigned)
-    if(nassigned gt 0) then begin
-        if(keyword_set(fiberused)) then $
-          fiberused=tmp_fiberid[iassigned] $
-        else $
-          fiberused=[fiberused, tmp_fiberid[iassigned]] 
-    endif 
-    
-    fiberid[isky]=tmp_fiberid
-endif else begin
-    splog, 'No skies in this plate, I hope you meant to do that.'
-endelse
+;; ask for minskyinblock in each block for each pointing, at least
+for i=1L, npointings do begin
+    isky= where(strupcase(design.targettype) eq 'SKY' AND $
+                design.pointing eq i, nsky)
+    if(nsky gt 0) then begin
+        sdss_plugprob, design[isky].xf_default, design[isky].yf_default, $
+          tmp_fiberid, mininblock=minskyinblock, minavail=1L, $
+          fiberused=fiberused
+        
+        iassigned=where(tmp_fiberid ge 1, nassigned)
+        if(nassigned gt 0) then begin
+            if(NOT keyword_set(fiberused)) then $
+              fiberused=tmp_fiberid[iassigned] $
+            else $
+              fiberused=[fiberused, tmp_fiberid[iassigned]] 
+            fiberid[isky[iassigned]]=tmp_fiberid[iassigned]
+        endif 
+    endif else begin
+        splog, 'No skies in pointing '+strtrim(string(i),2)
+    endelse
+endfor
 
 ;; assign the rest
 ileft= where(fiberid eq 0, nleft)
@@ -71,15 +91,14 @@ if(nleft gt 0) then begin
     
     iassigned=where(tmp_fiberid ge 1, nassigned)
     if(nassigned gt 0) then begin
-        if(keyword_set(fiberused)) then $
+        if(NOT keyword_set(fiberused)) then $
           fiberused=tmp_fiberid[iassigned] $
         else $
           fiberused=[fiberused, tmp_fiberid[iassigned]] 
+        fiberid[ileft[iassigned]]=tmp_fiberid[iassigned]
     endif 
-    
-    fiberid[ileft]=tmp_fiberid
 endif else begin
-    splog, 'No science targets in this plate, I hope you meant to do that.'
+    splog, 'No science targets in this plate.'
 endelse
 
 return, fiberid

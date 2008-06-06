@@ -10,6 +10,7 @@ IDL_LONG idl_write_plugprob (int      argc,
 														void *   argv[])
 {
 	IDL_LONG nTargets, nFibersBlock, nFibers, minFibersInBlock, *fiberused;
+	IDL_LONG nMax,minAvailInBlock;
 	double *xtarget, *ytarget, *xfiber, *yfiber, limitDegree;
 	char probfile[1000];
 	IDL_STRING idl_probfile;
@@ -26,8 +27,10 @@ IDL_LONG idl_write_plugprob (int      argc,
 	yfiber=((double *)argv[i]); i++;
 	fiberused=((int *)argv[i]); i++;
 	nFibers=*((int *)argv[i]); i++;
+	nMax=*((int *)argv[i]); i++;
 	nFibersBlock=*((int *)argv[i]); i++;
 	limitDegree=*((double *)argv[i]); i++;
+	minAvailInBlock=*((int *)argv[i]); i++;
 	minFibersInBlock=*((int *)argv[i]); i++;
 	idl_probfile=*((IDL_STRING *) argv[i]); i++;
 	strncpy(probfile, idl_probfile.s, 1000);
@@ -35,8 +38,9 @@ IDL_LONG idl_write_plugprob (int      argc,
 	/* 1. run the fitting routine */
 	retval=(IDL_LONG) write_plugprob(xtarget, ytarget, nTargets,
 																	 xfiber, yfiber, fiberused, nFibers,
-																	 nFibersBlock, limitDegree, 
-																	 minFibersInBlock, probfile);
+																	 nMax, nFibersBlock, limitDegree, 
+																	 minAvailInBlock, minFibersInBlock, 
+																	 probfile);
 	
 	/* 2. free memory and leave */
 	return retval;
