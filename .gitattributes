@@ -1,4 +1,5 @@
 * text=auto !eol
+/Makefile -text
 /README -text
 bin/drillrun2zip -text
 bin/platedesign_version -text
@@ -25,9 +26,11 @@ pro/misc/lines2struct.pro -text
 pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
 pro/misc/struct_combine.pro -text
+pro/misc/test_fiber.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/design_blank.pro -text
+pro/plate/fiberid_sdss.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
@@ -51,6 +54,7 @@ pro/plate/plate_tmass_to_sdss.pro -text
 pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
+pro/plate/sdss_plugprob.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
 pro/strategy/QUESTIONS -text

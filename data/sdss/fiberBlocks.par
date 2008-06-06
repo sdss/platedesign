@@ -1,6 +1,10 @@
 #
 # Positions of fibers in harnesses in degrees on the focal plane.
-# 
+#
+# Cribbed from ctile product, under etc directory, created by 
+# createFiberBlocks.tcl
+#
+# Units of fiberCenX and fiberCenY are degrees.
 #
 
 typedef struct {
