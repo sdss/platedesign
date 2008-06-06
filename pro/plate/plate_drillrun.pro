@@ -12,7 +12,7 @@
 ;   epoch - [Ndesign] epoch 
 ; OPTIONAL KEYWORDS:
 ;   /justholes - just convert already made design into holes 
-;   /debug - 
+;   /debug - run in debug mode 
 ; COMMENTS:
 ;   Required tags in plateDefinition:
 ;     designID
@@ -214,7 +214,7 @@ if(NOT keyword_set(justholes)) then begin
     if(nunused gt 0) then begin
         splog, 'Unused fibers found. Please specify more targets!'
         splog, 'Not completing plate design '+strtrim(string(designid),2)
-        stop
+        if(keyword_set(debug)) then stop
         return
     endif
 
@@ -239,7 +239,15 @@ if(NOT keyword_set(justholes)) then begin
         endfor
     endfor
 
-    ;; Re-sort fibers
+    ;; Assign fiberid's for each instrument
+    for iinst=0L, ninstruments-1L do begin
+        icurr= where(design.holetype eq instruments[iinst], ncurr)
+        if(ncurr gt 0) then begin
+            fiberids= call_function('fiberid_'+instruments[iinst], $
+                                    design[icurr])
+            design[icurr].fiberid= fiberids
+        endif
+    endfor
     
     ;; Write out plate assignments to 
     ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
