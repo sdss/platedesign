@@ -21,7 +21,7 @@ designid= long(definition.designid)
 instruments= strsplit(default.instruments, /extr)
 platedesignskies= strsplit(default.platedesignskies, /extr)
 standardtype= strsplit(default.standardtype, /extr)
-sky_design=0
+all_sky_design=0
 for i=0L, n_elements(platedesignskies)-1L do begin
     curr_inst=platedesignskies[i]
     iinst=where(instruments eq curr_inst, ninst)
@@ -64,10 +64,17 @@ for i=0L, n_elements(platedesignskies)-1L do begin
             sky_design.xf_default=xf
             sky_design.yf_default=yf
             
-            ;; NEED TO WRITE HEADER
             if(n_tags(sky_design) gt 0) then begin
                 pdata= ptr_new(sky_design)
-                yanny_write, skyfile, pdata
+                hdrstr=struct_combine(default, definition)
+                outhdr=struct2lines(hdrstr)
+                outhdr=[outhdr, $
+                        'pointing '+strtrim(string(pointing),2), $
+                        'epoch '+strtrim(string(epoch, f='(f40.8)'),2), $
+                        'platedesign_version '+platedesign_version()]
+                if(keyword_set(rerun)) then $
+                  outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
+                yanny_write, skyfile, pdata, hdr=outhdr
             endif
         endif else begin
             in_sky_design= yanny_readone(skyfile, /anon)

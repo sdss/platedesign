@@ -66,8 +66,8 @@ if(NOT file_test(guidefile)) then begin
         hdrstr=struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)
         outhdr=[outhdr, $
-                'pointing '+strtrim(string(pointing),2)+ $
-                'epoch '+strtrim(string(epoch, f='(f40.8)'),2)+ $
+                'pointing '+strtrim(string(pointing),2), $
+                'epoch '+strtrim(string(epoch, f='(f40.8)'),2), $
                 'platedesign_version '+platedesign_version()]
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
