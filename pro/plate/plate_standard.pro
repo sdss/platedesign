@@ -21,6 +21,7 @@ designid= long(definition.designid)
 instruments= strsplit(default.instruments, /extr)
 platedesignstandards= strsplit(default.platedesignstandards, /extr)
 standardtype= strsplit(default.standardtype, /extr)
+all_sphoto_design
 for i=0L, n_elements(platedesignstandards)-1L do begin
     curr_inst=platedesignstandards[i]
     curr_type=standardtype[i]
@@ -68,10 +69,17 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
             sphoto_design.yf_default=yf
         endif
         
-        ;; NEED TO WRITE HEADER
         if(n_tags(sphoto_design) gt 0) then begin
             pdata= ptr_new(sphoto_design)
-            yanny_write, stdfile, pdata
+            hdrstr=struct_combine(default, definition)
+            outhdr=struct2lines(hdrstr)
+            outhdr=[outhdr, $
+                    'pointing '+strtrim(string(pointing),2), $
+                    'epoch '+strtrim(string(epoch, f='(f40.8)'),2), $
+                    'platedesign_version '+platedesign_version()]
+            if(keyword_set(rerun)) then $
+              outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
+            yanny_write, stdfile, pdata, hdr=outhdr
         endif
     endif else begin
         in_sphoto_design= yanny_readone(stdfile, /anon)
