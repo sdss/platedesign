@@ -274,9 +274,9 @@ if(NOT keyword_set(justholes)) then begin
             design[icurr].fiberid= fiberids
             inot= where(design[icurr].fiberid le 0, nnot)
             if(nnot gt 0) then begin
-                splog, 'Some targets not assigned fibers, not outputting!'
-                if(keyword_set(debug)) then stop
-                return
+                splog, 'Some targets not assigned fibers!'
+            ;;    if(keyword_set(debug)) then stop
+            ;;    return
             endif
         endif
     endfor
