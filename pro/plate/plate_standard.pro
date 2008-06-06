@@ -21,7 +21,7 @@ designid= long(definition.designid)
 instruments= strsplit(default.instruments, /extr)
 platedesignstandards= strsplit(default.platedesignstandards, /extr)
 standardtype= strsplit(default.standardtype, /extr)
-all_sphoto_design
+all_sphoto_design=0
 for i=0L, n_elements(platedesignstandards)-1L do begin
     curr_inst=platedesignstandards[i]
     curr_type=standardtype[i]
