@@ -9,8 +9,8 @@
 IDL_LONG idl_write_plugprob (int      argc,
 														void *   argv[])
 {
-	IDL_LONG nTargets, nFibersBlock, nFibers, minFibersInBlock, *fiberused;
-	IDL_LONG nMax,minAvailInBlock;
+	int nTargets, nFibersBlock, nFibers, minFibersInBlock, *fiberused;
+	int nMax,minAvailInBlock;
 	double *xtarget, *ytarget, *xfiber, *yfiber, limitDegree;
 	char probfile[1000];
 	IDL_STRING idl_probfile;
