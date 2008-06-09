@@ -45,7 +45,7 @@ for i=1L, npointings do begin
         
         sdss_plugprob, design[istd].xf_default, design[istd].yf_default, $
           tmp_fiberid, mininblock=minstdinblock, minavail=1L, $
-          fiberused=fiberused, nmax=nmax
+          fiberused=fiberused, nmax=nmax, /quiet
         
         iassigned=where(tmp_fiberid ge 1, nassigned)
         if(nassigned gt 0) then begin
@@ -68,7 +68,7 @@ for i=1L, npointings do begin
     if(nsky gt 0) then begin
         sdss_plugprob, design[isky].xf_default, design[isky].yf_default, $
           tmp_fiberid, mininblock=minskyinblock, minavail=1L, $
-          fiberused=fiberused
+          fiberused=fiberused, /quiet
         
         iassigned=where(tmp_fiberid ge 1, nassigned)
         if(nassigned gt 0) then begin

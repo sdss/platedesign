@@ -19,5 +19,6 @@ int read_plugprob(double xtarget[],
 									int nTargets,
 									int nFibersBlock,
 									int nFibers,
+									int quiet,
 									char ansfile[]);
 

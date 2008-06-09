@@ -164,6 +164,7 @@ int read_plugprob(double xtarget[],
 									int nTargets,
 									int nFibersBlock,
 									int nFibers,
+									int quiet,
 									char ansfile[])
 {
 	char key[255],line[255];
@@ -182,8 +183,10 @@ int read_plugprob(double xtarget[],
 	for(i=0;i<nTargets;i++)
 		targetFiber[i]=-1;
 
-	printf("reading in result ...\n");
-	fflush(stdout);
+	if(quiet==0) {
+		printf("reading in result ...\n");
+		fflush(stdout);
+	}
   fp=fopen(ansfile,"r");
   while(fgets(line,nline,fp)!=NULL) {
     sscanf(line,"%s",key);
@@ -208,8 +211,9 @@ int read_plugprob(double xtarget[],
 
 	for(i=0;i<nTargets;i++)
 		if(targetFiber[i]==-1) {
-			fprintf(stderr,"Missed a target (%d: %lf %lf)\n",i,xtarget[i],
-							ytarget[i]);
+			if(quiet==0)
+				fprintf(stderr,"Missed a target (%d: %lf %lf)\n",i,xtarget[i],
+								ytarget[i]);
 			targetBlock[i]=-1;
 		}
 
