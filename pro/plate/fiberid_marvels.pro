@@ -21,7 +21,7 @@
 ;-
 function fiberid_marvels, default, fibercount, design, $
   minstdinblock=minstdinblock, minskyinblock=minskyinblock, $
-  nosky=nosky, noscience=noscience, nostd=nostd
+  nosky=nosky, noscience=noscience, nostd=nostd, quiet=quiet
 
 nfiber=60L
 fiberid=lonarr(n_elements(design))
