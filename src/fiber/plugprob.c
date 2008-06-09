@@ -217,8 +217,10 @@ int read_plugprob(double xtarget[],
 			targetBlock[i]=-1;
 		}
 
-	printf("done reading ...\n");
-	fflush(stdout);
+	if(quiet==0) {
+		printf("done reading ...\n");
+		fflush(stdout);
+	}
 
 	return(1);
 
