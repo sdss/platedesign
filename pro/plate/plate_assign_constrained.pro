@@ -37,7 +37,7 @@ while(gotall eq 0) do begin
     icurr=where(test_design.holetype eq instrument)
     fiberids= call_function('fiberid_'+instrument, $
                             default, test_fibercount, $
-                            test_design[icurr], $
+                            test_design[icurr], /quiet, $
                             _EXTRA=extra_for_fiberid)
 
     ;; check if the standards filled up the fibers
@@ -63,7 +63,7 @@ while(gotall eq 0) do begin
            n_elements(new_design)) then begin
             splog, 'Not enough targets for plate_assign_constrained!'
             if(keyword_set(debug)) then stop
-            
+            return
         endif
         
         ;; if not, increase the collect factor to
