@@ -272,11 +272,12 @@ if(NOT keyword_set(justholes)) then begin
                                     minstdinblock=minstdinblock, $
                                     minskyinblock=minskyinblock)
             design[icurr].fiberid= fiberids
-            inot= where(design[icurr].fiberid le 0, nnot)
-            if(nnot gt 0) then begin
-                splog, 'Some targets not assigned fibers!'
-            ;;    if(keyword_set(debug)) then stop
-            ;;    return
+            iassigned= where(design[icurr].fiberid ge 1, nassigned)
+            if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
+              then begin
+                splog, 'Some fibers not assigned to targets!'
+                if(keyword_set(debug)) then stop
+                return
             endif
         endif
     endfor
