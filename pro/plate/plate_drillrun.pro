@@ -123,6 +123,25 @@ if(NOT keyword_set(justholes)) then begin
                  ntot:ntot, $
                  nused:nused, $
                  ncollect:ntot*collectfactor}
+
+    ;; What conditions on fiber placement exist for each instrument?
+    minstdinblock=lonarr(ninstruments) ;; how many standards per block?
+    minskyinblock=lonarr(ninstruments) ;; how many skies per block?
+    for iinst=0L, ninstruments-1L do begin
+        ;; get minimum number of standards per block per pointing, if desired
+        itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
+        if(itagminstd eq -1) then $
+          minstdinblock[iinst]=0L $
+        else $
+          minstdinblock[iinst]=long(default.(itagminstd))
+
+        ;; get minimum number of skies per block per pointing, if desired
+        itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
+        if(itagminsky eq -1) then $
+          minskyinblock[iinst]=0L $
+        else $
+          minskyinblock[iinst]=long(default.(itagminsky))
+    endfor
     
     ;; For each class of input priorities, run plate_assign 
     ;; Note input files root path is $PLATELIST_DIR/inputs
@@ -195,26 +214,55 @@ if(NOT keyword_set(justholes)) then begin
     for pointing=1L, npointings do begin
         for offset=0L, noffsets do begin
             for iinst=0L, ninstruments-1L do begin
+
+                ;; get appropriate list of standards
                 sphoto_design= plate_standard(definition, default, $
                                               instruments[iinst], $
                                               pointing, offset, $
                                               rerun=rerun)
 
-                if(n_tags(sphoto_design) gt 0) then $
-                  plate_assign, fibercount, design, sphoto_design, seed=seed, $
-                  /collect
+                if(n_tags(sphoto_design) gt 0) then begin
+                    ;; assign, applying constraints imposed in the
+                    ;; "FIBERID_[INSTRUMENT]" procedure; this code
+                    ;; slowly increases number of considered targets 
+                    ;; until constraints are satisfied; because
+                    ;; pointing and offsets are considered separately,
+                    ;; this does not constitute a guarantee on the
+                    ;; final design
+                    plate_assign_constrained, default, instruments[iinst], $
+                      'standard', fibercount, pointing, offset, design, $
+                      sphoto_design, seed=seed, $
+                      minstdinblock=minstdinblock[iinst], $
+                      minskyinblock=minskyinblock[iinst], $
+                      /nosky, /noscience
+                endif
             endfor
         endfor 
     endfor
     
     ;; Find sky fibers and assign them
-    ;; DO WE HAVE CONSTRAINTS ON THE PLACEMENT?
     for pointing=1L, npointings do begin
         for offset=0L, noffsets do begin
-            sky_design= plate_sky(definition, default, pointing, offset, $
-                                  rerun=rerun)
-            if(n_tags(sky_design) gt 0) then $
-              plate_assign, fibercount, design, sky_design, seed=seed
+            for iinst=0L, ninstruments-1L do begin
+                sky_design= plate_sky(definition, default, $
+                                      instruments[iinst], pointing, offset, $
+                                      rerun=rerun)
+                if(n_tags(sky_design) gt 0) then begin
+                    ;; assign, applying constraints imposed in the
+                    ;; "FIBERID_[INSTRUMENT]" procedure; this code
+                    ;; slowly increases number of considered targets 
+                    ;; until constraints are satisfied; because
+                    ;; pointing and offsets are considered separately,
+                    ;; this does not constitute a guarantee on the
+                    ;; final design
+                    plate_assign_constrained, default, instruments[iinst], $
+                      'sky', fibercount, pointing, offset, design, $
+                      sky_design, seed=seed, $
+                      minstdinblock=minstdinblock[iinst], $
+                      minskyinblock=minskyinblock[iinst], $
+                      /nostd, /noscience
+                endif
+            endfor 
         endfor 
     endfor
     
@@ -249,38 +297,32 @@ if(NOT keyword_set(justholes)) then begin
     endfor
 
     ;; Assign fiberid's for each instrument
+    keep=lonarr(n_elements(design))+1L
     for iinst=0L, ninstruments-1L do begin
         icurr= where(design.holetype eq instruments[iinst], ncurr)
 
-        ;; get minimum number of standards per block per pointing, if desired
-        itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
-        if(itagminstd eq -1) then $
-          minstdinblock=0L $
-        else $
-          minstdinblock=long(default.(itagminstd))
-
-        ;; get minimum number of skies per block per pointing, if desired
-        itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
-        if(itagminsky eq -1) then $
-          minskyinblock=0L $
-        else $
-          minskyinblock=long(default.(itagminsky))
-
         if(ncurr gt 0) then begin
+            keep[icurr]=0L
             fiberids= call_function('fiberid_'+instruments[iinst], $
                                     default, fibercount, design[icurr], $
-                                    minstdinblock=minstdinblock, $
-                                    minskyinblock=minskyinblock)
+                                    minstdinblock=minstdinblock[iinst], $
+                                    minskyinblock=minskyinblock[iinst])
             design[icurr].fiberid= fiberids
             iassigned= where(design[icurr].fiberid ge 1, nassigned)
+            if(nassigned gt 0) then $
+              keep[icurr[iassigned]]=1L
             if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
               then begin
                 splog, 'Some fibers not assigned to targets!'
                 if(keyword_set(debug)) then stop
+                splog, 'Not completing plate design '+ $
+                       strtrim(string(designid),2)
                 return
             endif
         endif
     endfor
+    ikeep=where(keep gt 0, nkeep)
+    design=design[ikeep]
     
     ;; Write out plate assignments to 
     ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
