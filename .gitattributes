@@ -8,6 +8,7 @@ data/strategy/boss_observing_nights.par -text
 data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
+defaults/plateDefault-MARVELS_PRE-v0_1.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 defaults/plateDefault-example-v0_0.par -text
 obsolete/pro/coo_read.pro -text
