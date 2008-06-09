@@ -21,11 +21,11 @@ nOffsets 1
 # For each instrument, you must specify how many 
 # targets of each type are wanted. This is an array 
 # for multi-pointing or offset plates, of the form
-#  p1/o0 p1/o1 ... p1/oN .. pM/o0 ... pM/oN
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nSDSS_science 280 16 280 16 
-nSDSS_sky 8 0 8 0
-nSDSS_standard 16 0 16 0 
+nSDSS_science 280 280 16 16 
+nSDSS_sky 8 8 0 0
+nSDSS_standard 16 16 0 0 
 nMARVELS_science 13 13 13 13
 nMARVELS_standard 2 2 2 2 
 nMARVELS_sky 0 0 0 0 
@@ -33,8 +33,8 @@ nMARVELS_sky 0 0 0 0
 # Expected exposure time for each pointing in seconds; 
 # not used in operations! Just for the record. The pointingExpTime
 # values are those before any offset.
-pointingExpTime1 300.   
-pointingExpTime2 300.   
+pointingExpTime1 100.   
+pointingExpTime2 100.   
 offsetExpTime1 10.
 
 # Guide fibers to use for each pointing
