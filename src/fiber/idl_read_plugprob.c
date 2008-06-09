@@ -9,7 +9,7 @@
 IDL_LONG idl_read_plugprob (int      argc,
 														void *   argv[])
 {
-	IDL_LONG *targetFiber, *targetBlock, nTargets, nFibersBlock, nFibers, quiet;
+	int *targetFiber, *targetBlock, nTargets, nFibersBlock, nFibers, quiet;
 	double *xtarget, *ytarget;
 	IDL_STRING idl_ansfile;
 	char ansfile[1000];
