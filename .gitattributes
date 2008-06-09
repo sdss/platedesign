@@ -35,6 +35,7 @@ pro/plate/fiberid_sdss.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
+pro/plate/plate_assign_constrained.pro -text
 pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
 pro/plate/plate_drillrun.pro -text
