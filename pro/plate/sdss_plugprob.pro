@@ -16,6 +16,8 @@
 ;              minavail fibers in the same block can also reach it
 ;              [default 8]
 ;   nmax - use at most this many fibers total
+; OPTIONAL KEYWORDS:
+;   /quiet - be quiet about warnings
 ; OUTPUTS:
 ;   fiberid - 1-indexed list of assigned fibers 
 ; COMMENTS:
@@ -31,7 +33,7 @@
 ;-
 pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    mininblock=mininblock, fiberused=fiberused, $
-                   nmax=nmax
+                   nmax=nmax, quiet=in_quiet
 
 common com_plugprob, fiberblocks
 
@@ -39,6 +41,7 @@ platescale = 217.7358           ; mm/degree
 limitdegree= 7.*0.1164          ; limit of fiber reach
 if(NOT keyword_set(mininblock)) then mininblock= 0L
 if(NOT keyword_set(minavail)) then minavail= 8L
+quiet= long(keyword_set(in_quiet))
 
 ;; get fiber positions
 if(n_tags(fiberblocks) eq 0) then $
@@ -77,10 +80,12 @@ spawn, 'cat tmp_prob.txt | '+ $
 ansfile='tmp_ans.txt'
 targetfiber=lonarr(ntargets)
 fiberblock=lonarr(ntargets)
+
 retval = call_external(soname, 'idl_read_plugprob', $
                        double(xtarget), double(ytarget), long(targetfiber), $
                        long(fiberblock), long(ntargets), $
-                       long(nfibersblock), long(nfibers),string(ansfile))
+                       long(nfibersblock), long(nfibers), $
+                       long(quiet), string(ansfile))
 
 fiberid=targetfiber+1L
 
