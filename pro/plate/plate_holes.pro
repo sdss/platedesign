@@ -10,6 +10,8 @@
 ;   plateid - plateid to write to
 ;   ha - hour angle to use
 ;   temp - temperature
+; COMMENTS:
+;   NO ALIGNMENT HOLES!!
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
@@ -24,7 +26,7 @@ definition= lines2struct(hdr)
 default= definition
 
 ;; create output structure
-holes0= create_struct(design_blank(), 'XFOCAL', 0., 'YFOCAL', 0.)
+holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
 holes= replicate(holes0, n_elements(designs))
 struct_assign, designs, holes
 holes.xfocal= holes.xf_default
