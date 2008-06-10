@@ -53,7 +53,7 @@ plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
 ;; WHAT ABOUT MAG!!
-plug.mag= holes.mag
+;;plug.mag= holes.mag
 
 ;; We will ignore these likelihood columns
 plug.starl=0.
@@ -79,8 +79,8 @@ if(nhole gt 0) then plug[ihole].objtype= 'SPECTROPHOTO_STD'
 if(nhole gt 0) then plug[ihole].sectarget= 32
 
 ;; xfocal and yfocal
-plug.xfocal=xfocal
-plug.yfocal=yfocal
+plug.xfocal=holes.xfocal
+plug.yfocal=holes.yfocal
 
 ;; spectrographid, throughput, primtarget not set
 plug.spectrographid= 0
@@ -89,12 +89,13 @@ plug.primtarget= 0
 
 ;; fiber ID gets set to NEGATIVE of intended value
 ;; (unless it is -9999)
-ihole=where(plug.fiberid ge 1, nhole)
 plug.fiberid=-9999
-plug[ihole].fiberid= -holes[ihole].fiberid
+ihole=where(holes.fiberid ge 1, nhole)
+if(nhole gt 0) then $
+  plug[ihole].fiberid= -holes[ihole].fiberid
 
 ;; but guide fibers get fiberid set too
-ihole=where(plug.iguide ge 1, nhole)
+ihole=where(holes.iguide ge 1, nhole)
 plug[ihole].fiberid= holes[ihole].fiberid
 
 ;; Compute the median reddening for objects on this plate
