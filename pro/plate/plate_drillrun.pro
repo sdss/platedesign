@@ -42,9 +42,7 @@ origseed=-designid
 seed=origseed
 
 ;; What are the output directories?
-designdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-  string((designid/100L), f='(i4.4)')+'XX/'+ $
-  string(designid, f='(i6.6)')
+designdir= design_dir(designid)
 spawn, 'mkdir -p '+designdir
 platedir= getenv('PLATELIST_DIR')+'/plates/'+ $
   string((plateid/100L), f='(i4.4)')+'XX/'+ $
@@ -63,7 +61,7 @@ definitionfile=definitiondir+'/'+ $
                string(f='(i6.6)', designid)+'.par'
 dum= yanny_readone(definitionfile, hdr=hdr)
 if(NOT keyword_set(hdr)) then begin
-    message, 'no plateDefaults file '+definitionfile
+    message, 'no plateDefinition file '+definitionfile
 endif
 definition= lines2struct(hdr)
 
