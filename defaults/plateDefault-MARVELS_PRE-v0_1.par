@@ -29,8 +29,8 @@ nSDSS_standard 16 16
 
 # What are conditions on number of skies and standards per block?
 # (per pointing -- one entry per instrument)
-minstdperblockSDSS 0
-minskyperblockSDSS 1
+minstdinblockSDSS 0
+minskyinblockSDSS 1
 
 # Expected exposure time for each pointing in seconds; 
 # not used in operations! Just for the record. The pointingExpTime
