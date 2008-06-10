@@ -31,8 +31,7 @@ endif
 standardtype= standardtype[pointing-1L]
 
 ;; file name
-outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-  string((designid/100L)*100L, f='(i6.6)')
+outdir= design_dir(designid)
 stdfile=outdir+'/plateStandard'+instrument+'-'+ $
   string(designid, f='(i6.6)')+ $
   '-p'+strtrim(string(pointing),2)+ $

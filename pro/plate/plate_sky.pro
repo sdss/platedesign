@@ -40,8 +40,7 @@ nsky= 4L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
 sky_design=0
 if(nsky gt 0) then begin
     ;; file name
-    outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-            string((designid/100L)*100L, f='(i6.6)')
+    outdir= design_dir(designid)
     skyfile=outdir+'/plateSky'+instrument+'-'+ $
             string(designid, f='(i6.6)')+ $
             '-p'+strtrim(string(pointing),2)+ $
