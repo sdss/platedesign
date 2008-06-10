@@ -43,7 +43,7 @@ for pointing=1L, npointings do begin
         if(nin gt 0) then begin
             plate_ad2xy, definition, default, pointing, offset, $
               holes[iin].target_ra, holes[iin].target_dec, $
-              lst=racen+ha[pointing-1L], airtemp=temp, xfocal=xf, yfocal=yf
+              lst=racen+15.*ha[pointing-1L], airtemp=temp, xfocal=xf, yfocal=yf
             holes[iin].xfocal= xf
             holes[iin].yfocal= yf
         endif
