@@ -23,11 +23,12 @@ platedesignstandards= strsplit(default.platedesignstandards, /extr)
 standardtype= strsplit(default.standardtype, /extr)
 
 ;; check if the current instrument is included, if not, return
-iinst= where(instrument eq platedesignstandards, ninst)
+iinst= where(strupcase(instrument) eq $
+             strupcase(platedesignstandards), ninst)
 if(ninst eq 0) then begin
     return, 0
 endif
-standardtype= standardtype[iinst[0]]
+standardtype= standardtype[pointing-1L]
 
 ;; file name
 outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
@@ -38,6 +39,7 @@ stdfile=outdir+'/plateStandard'+instrument+'-'+ $
   '-o'+strtrim(string(offset),2)+'.par'
 
 ;; if file is already made, just read it in
+sphoto_design=0
 if(NOT file_test(stdfile)) then begin
     ;; what is center for this pointing and offset?
     plate_center, definition, default, pointing, offset, $
@@ -75,7 +77,6 @@ if(NOT file_test(stdfile)) then begin
         outhdr=struct2lines(hdrstr)
         outhdr=[outhdr, $
                 'pointing '+strtrim(string(pointing),2), $
-                'epoch '+strtrim(string(epoch, f='(f40.8)'),2), $
                 'platedesign_version '+platedesign_version()]
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
