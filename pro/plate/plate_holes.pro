@@ -50,7 +50,15 @@ for pointing=1L, npointings do begin
     endfor
 endfor
 
-
+outhdr=['plateid '+strtrim(string(plateid),2), $
+        'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
+        'temp '+strtrim(string(temp, f='(f40.3)'),2), $
+        hdr]
+pdata= ptr_new(holes)
+platedir= plate_dir(plateid)
+platefile=platedir+'/plateHoles-'+ $
+  string(plateid, f='(i6.6)')+'.par'
+yanny_write, platefile, pdata, hdr=outhdr
 
 end
 ;------------------------------------------------------------------------------
