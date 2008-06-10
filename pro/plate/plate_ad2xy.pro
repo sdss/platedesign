@@ -29,8 +29,6 @@
 pro plate_ad2xy, definition, default, pointing, offset, ra, dec, $
                  xfocal=xfocal, yfocal=yfocal, lst=lst, airtemp=airtemp
 
-platescale = 217.7358           ; mm/degree
-
 ntargets=n_elements(ra)
 
 ;; what is our raCen and decCen for this pointing and offset
