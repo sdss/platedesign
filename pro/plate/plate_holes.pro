@@ -32,11 +32,14 @@ struct_assign, designs, holes
 holes.xfocal= holes.xf_default
 holes.yfocal= holes.yf_default
 
+
 ;; for each pointing and offset, find the final
 ;; xfocal and yfocal and set them
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 for pointing=1L, npointings do begin
+
+    ;; for each offset, do the holes there
     for offset=0L, noffsets do begin
         iin= where(holes.pointing eq pointing AND $
                    holes.offset eq offset, nin)
@@ -50,7 +53,32 @@ for pointing=1L, npointings do begin
             holes[iin].yfocal= yf
         endif
     endfor
+
+    ;; for each guide fiber, make an alignment hole
+    iguide= where(holes.pointing eq pointing AND $
+                  strupcase(holes.holetype) eq 'GUIDE', nguide)
+    if(nguide eq 0) then $
+      message, 'Each pointing needs some guide fibers!'
+    for i=0L, nguide-1L do begin
+        alignment_fiber, holes[iguide[i]].iguide, $
+          holes[iguide[i]].xfocal, holes[iguide[i]].yfocal, $
+          xf_align, yf_align
+        align0= holes0
+        align0.holetype= 'ALIGNMENT'
+        align0.pointing=pointing
+        align0.iguide=holes[iguide[i]].iguide
+        align0.diameter=0.1
+        align0.xfocal= xf_align
+        align0.yfocal= yf_align
+        if(n_tags(align) eq 0) then $
+          align=align0 $
+        else $
+          align=[align, align0]
+    endfor
+    
 endfor
+
+holes= [holes, align]
 
 outhdr=['plateid '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $

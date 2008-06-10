@@ -27,46 +27,7 @@
 pro plate_assign_guide, definition, default, design, guide_design, $
   guidenums=guidenums
 
-;;----------
-;; Set up info for guide fibers.
-;;
-;; The following info is from the "plate" product in the
-;; file "$PLATE_DIR/test/plParam.par".
-;;   XREACH,YREACH = Center of the fiber reach [mm]
-;;   RREACH = Radius of the fiber reach [mm]
-;;   XPREFER,YREACH = Preferred position for the fiber [mm]
-;; Note that the plate scale is approx 217.7358 mm/degree.
-;; Moving +RA is +XFOCAL, +DEC is +YFOCAL.
-
-nguide = 11
-if(n_elements(guidenums) eq 0) then $
-  guidenums= lindgen(nguide)
-
-gfiber = create_struct( $
-         'xreach'   , 0.0, $
-         'yreach'   , 0.0, $
-         'rreach'   , 0.0, $
-         'xprefer'  , 0.d, $
-         'yprefer'  , 0.d )
-gfiber = replicate(gfiber, nguide)
-
-platescale = 217.7358           ; mm/degree
-guideparam = [[  1,  199.0,  -131.0,  165.0,  199.0,  -131.0 ], $
-              [  2,   93.0,  -263.0,  165.0,   93.0,  -263.0 ], $
-              [  3, -121.0,  -263.0,  165.0, -121.0,  -263.0 ], $
-              [  4, -227.0,  -131.0,  165.0, -227.0,  -131.0 ], $
-              [  5, -199.0,   131.0,  165.0, -199.0,   131.0 ], $
-              [  6,  -93.0,   263.0,  165.0,  -93.0,   263.0 ], $
-              [  7,  121.0,   263.0,  165.0,  121.0,   263.0 ], $
-              [  8,  227.0,   131.0,  165.0,  227.0,   131.0 ], $
-              [  9,   14.0,   131.0,  139.5,   14.0,    65.0 ], $
-              [ 10,  -14.0,  -131.0,  165.0,  -14.0,   -65.0 ], $
-              [ 11,   93.0,  -131.0,  139.5,   93.0,  -131.0 ] ]
-gfiber.xreach = transpose(guideparam[1,*])
-gfiber.yreach = transpose(guideparam[2,*])
-gfiber.rreach = transpose(guideparam[3,*])
-gfiber.xprefer = transpose(guideparam[4,*])
-gfiber.yprefer = transpose(guideparam[5,*])
+gfiber= gfiber_params()
 
 for i=0l, n_elements(guidenums)-1L do begin
     iguide= guidenums[i]
