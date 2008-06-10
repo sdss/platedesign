@@ -16,8 +16,7 @@ function plate_trap, definition, default, pointing, offset, rerun=rerun
 designid= long(definition.designid)
 
 ;; file name
-outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-        string((designid/100L)*100L, f='(i6.6)')
+outdir= design_dir(designid)
 trapfile=outdir+'/plateTrap-'+ $
          string(designid, f='(i6.6)')+ $
          '-p'+strtrim(string(pointing),2)+ $
@@ -42,8 +41,10 @@ if(NOT file_test(trapfile)) then begin
         trap_design= replicate(design_blank(/trap), n_elements(tycdat))
         trap_design.target_ra= tycdat.ramdeg
         trap_design.target_dec= tycdat.demdeg
+        trap_design.pointing= pointing
+        trap_design.offset= offset
         
-        plate_ad2xy, definition, default, pointing, 0L, $
+        plate_ad2xy, definition, default, pointing, offset, $
                      trap_design.target_ra, $
                      trap_design.target_dec, $
                      xf=xf, yf=yf
