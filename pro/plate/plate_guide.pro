@@ -19,8 +19,7 @@ endif
 designid= long(definition.designid)
 
 ;; file name
-outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-        string((designid/100L)*100L, f='(i6.6)')
+outdir= design_dir(designid)
 guidefile=outdir+'/plateGuide-'+ $
           string(designid, f='(i6.6)')+ $
           '-p'+strtrim(string(pointing),2)+'.par'
@@ -62,6 +61,9 @@ if(NOT file_test(guidefile)) then begin
     endif
     
     if(n_tags(guide_design) gt 0) then begin
+        guide_design.pointing=pointing
+        guide_design.offset=0
+        
         pdata= ptr_new(guide_design)
         hdrstr=struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)
