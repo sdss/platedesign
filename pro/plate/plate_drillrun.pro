@@ -4,52 +4,52 @@
 ; PURPOSE:
 ;   Run the plate design for a drill run
 ; CALLING SEQUENCE:
-;   plate_drillrun, designid, ha, temp, epoch [, /justholes]
+;   plate_drillrun, plateid [, /debug, /clobber]
 ; INPUTS:
-;   designid - [Ndesign] list of design IDs to run
-;   ha - [Ndesign] hour angle to drill for
-;   temp - [Ndesign] temperature to drill for
-;   epoch - [Ndesign] epoch 
+;   plateid - plateid number
 ; OPTIONAL KEYWORDS:
-;   /justholes - just convert already made design into holes 
 ;   /debug - run in debug mode 
-; COMMENTS:
-;   Required tags in plateDefinition:
-;     designID
-;     raCen1
-;     decCen1
-;     locationID1
-;     plateType
-;     platedesignVersion
-;     nInputs
-;     plateInput[1..nInputs]
-;     nPointings
-;     guideNums[1..nInputs] (if nPointings>1)
-;   NEED TO TRACK NUMBER OF AVAILABLE FIBERS PER INSTRUMENT!!
+;   /clobber - clobber the existing design files 
+;              (otherwise uses existing designs for a given designid)
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_drillrun, designid, ha, temp, epoch, justholes=justholes, $
-                    rerun=rerun, debug=debug
+pro plate_drillrun, plateid, debug=debug, clobber=clobber
 
 ;; loop over multiple designs, etc
-if(n_elements(designid) gt 1) then begin
+if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(designid)-1L do begin
-        plate_drillrun, designid[i], ha[i], temp[i], epoch[i], $
-                        justholes=justholes
+        plate_drillrun, plateid[i], debug=debug, clobber=clobber
     endfor
     return
 endif
+
+;; read plan file for settings
+plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+iplate=where(plans.plateid eq plateid, nplate)
+if(nplate ne 1) then $
+  message, 'error in platePlans.par file!'
+plan=plans[iplate]
+designid=plan.designid
+ha=plan.ha
+temp=plan.temp
+epoch=plan.epoch
+rerun=strsplit(plan.rerun, /extr)
 
 ;; set random seed 
 origseed=-designid
 seed=origseed
 
-;; What is the output directory?
-outdir= getenv('PLATELIST_DIR')+'/designs/'+ $
-        string((designid/100L)*100L, f='(i6.6)')
-spawn, 'mkdir -p '+outdir
+;; What are the output directories?
+designdir= getenv('PLATELIST_DIR')+'/designs/'+ $
+  string((designid/100L), f='(i4.4)')+'XX/'+ $
+  string(designid, f='(i6.6)')
+spawn, 'mkdir -p '+designdir
+platedir= getenv('PLATELIST_DIR')+'/plates/'+ $
+  string((plateid/100L), f='(i4.4)')+'XX/'+ $
+  string(plateid, f='(i6.6)')
+spawn, 'mkdir -p '+platedir
     
 ;; Read in the plate definition file
 ;; Should be at 
@@ -57,7 +57,7 @@ spawn, 'mkdir -p '+outdir
 ;; as in 
 ;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
 definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
-              string(f='(i6.6)', (designid/100L)*100L)
+              string(f='(i4.4)', (designid/100L))+'XX'
 definitionfile=definitiondir+'/'+ $
                'plateDefinition-'+ $
                string(f='(i6.6)', designid)+'.par'
@@ -87,11 +87,23 @@ for i=0L, n_tags(default)-1L do begin
     endfor
 endfor
 
-if(NOT keyword_set(justholes)) then begin
+;; Now do some sanity checks
+racen= double((strsplit(definition.racen,/extr))[0])
+deccen= double((strsplit(definition.deccen,/extr))[0])
+if(abs(racen-plan.racen) gt 1./3600. OR $
+   abs(deccen-plan.deccen) gt 1./3600.) then begin
+    message, 'platePlans.par file disagrees with plateDefinition file on plate center'
+endif
 
+;; Make design file if it doesn't already exist
+designfile=designdir+'/plateDesign-'+ $
+  string(designid, f='(i6.6)')+'.par'
+if(keyword_set(clobber) gt 0 OR $
+   file_test(designfile) eq 0) then begin
+    
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
-
+    
     ;; What instruments are being used, and how many science,
     ;; standard and sky fibers do we assign to each?
     npointings= long(default.npointings)
@@ -326,22 +338,18 @@ if(NOT keyword_set(justholes)) then begin
     
     ;; Write out plate assignments to 
     ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    outfile=outdir+'/plateDesign-'+ $
-            string(designid, f='(i6.6)')+'.par'
     pdata= ptr_new(design)
-    spawn, 'mkdir -p '+outdir
+    spawn, 'mkdir -p '+designdir
     hdrstr=struct_combine(default, definition)
     outhdr=struct2lines(hdrstr)
     outhdr=[outhdr, 'platedesign_version '+platedesign_version()]
-    yanny_write, outfile, pdata, hdr=outhdr
+    yanny_write, designfile, pdata, hdr=outhdr
     
-    ;; Update $PLATELIST_DIR/plateDesigns.par
-
 endif
 
 ;; Convert plateDesign to plateHoles
 ;;  -- recall to add ALIGNMENT
-;;plate_holes, designid, plateid, ha, temp
+plate_holes, designid, plateid, ha, temp
 
 ;; Produce standard-style plPlugMap files
 ;;plate_plplugmap, plateid
