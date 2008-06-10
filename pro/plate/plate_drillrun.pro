@@ -349,8 +349,17 @@ endif
 ;;  -- recall to add ALIGNMENT
 plate_holes, designid, plateid, ha, temp
 
-;; Produce standard-style plPlugMap files
-;;plate_plplugmap, plateid
+;; Produce plugfiles of desired style
+if(NOT tag_exist(default, 'plugmapstyle')) then $
+  plugmapstyle='plplugmap' $
+else $
+  plugmapstyle= default.plugmapstyle
+platedir= plate_dir(plateid)
+platefile= platedir+'/plateHoles-'+ $
+  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+holes= yanny_readone(platefile, hdr=hdr)
+hdrstr= lines2struct(hdr)
+call_procedure, 'plugfile_'+plugmapstyle, hdrstr, hdrstr, holes 
 
 ;; Run low-level plate routines
 
