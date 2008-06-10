@@ -62,6 +62,7 @@ pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plplugmap_blank.pro -text
+pro/plate/plugfile_plplugmap.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
