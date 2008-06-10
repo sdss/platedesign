@@ -93,7 +93,7 @@ if(NOT keyword_set(nosky)) then begin
                                tmp_fiberid, mininblock=minskyinblock, $
                                minavail=1L, fiberused=fiberused, nmax=nmax, $
                                /quiet
-                
+
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
                 if(nassigned gt 0) then begin
