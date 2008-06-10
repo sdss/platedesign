@@ -71,7 +71,6 @@ if(nsky gt 0) then begin
             outhdr=struct2lines(hdrstr)
             outhdr=[outhdr, $
                     'pointing '+strtrim(string(pointing),2), $
-                    'epoch '+strtrim(string(epoch, f='(f40.8)'),2), $
                     'platedesign_version '+platedesign_version()]
             if(keyword_set(rerun)) then $
               outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
