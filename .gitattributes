@@ -4,6 +4,7 @@
 bin/drillrun2zip -text
 bin/platedesign_version -text
 data/sdss/fiberBlocks.par -text
+data/sdss/plPlugMapP-blank.par -text
 data/strategy/boss_observing_nights.par -text
 data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
