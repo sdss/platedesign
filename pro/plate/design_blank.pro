@@ -64,22 +64,22 @@ design0={DESIGN_TARGET, $
 
 if(keyword_set(center)) then begin
     design0.holetype='CENTER'
-    design0.diameter=2.*3.175
-    design0.buffer=0.94
+    design0.diameter=4.87
+    design0.buffer=1.1
 endif
 
 if(keyword_set(guide)) then begin
     design0.holetype='GUIDE'
     design0.sourcetype='STAR'
-    design0.diameter=2.*3.32
-    design0.buffer=7.0
+    design0.diameter=6.95555
+    design0.buffer=0.3
 endif
 
 if(keyword_set(trap)) then begin
     design0.holetype='TRAP'
     design0.sourcetype='NA'
-    design0.diameter=2.*3.32
-    design0.buffer=7.0
+    design0.diameter=4.87
+    design0.buffer=2.
 endif
 
 return, design0
