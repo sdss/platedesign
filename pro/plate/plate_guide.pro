@@ -18,6 +18,14 @@ endif
 
 designid= long(definition.designid)
 
+if(tag_exist(default, 'GUIDEMAG_MINMAX')) then begin
+    gminmax=float(strsplit(default.guidemag_minmax, /extr))
+endif
+
+if(tag_exist(default, 'NGUIDEMAX')) then begin
+    nguidemax=long(default.nguidemax)
+endif
+
 ;; file name
 outdir= design_dir(designid)
 guidefile=outdir+'/plateGuide-'+ $
@@ -35,7 +43,8 @@ if(NOT file_test(guidefile)) then begin
     ;; find SDSS guide fibers 
     if(guidetype eq 'SDSS') then begin
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
-          rerun=rerun, guide_design=guide_design
+          rerun=rerun, guide_design=guide_design, nguidemax=nguidemax, $
+          gminmax=gminmax
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
                          guide_design.target_ra, $
@@ -49,7 +58,8 @@ if(NOT file_test(guidefile)) then begin
     ;; find 2MASS guide fibers 
     if(guidetype eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
-          guide_design=guide_design
+          guide_design=guide_design, nguidemax=nguidemax, $
+          gminmax=gminmax
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
                          guide_design.target_ra, $

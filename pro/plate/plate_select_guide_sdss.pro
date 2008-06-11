@@ -27,13 +27,18 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_guide_sdss, racen, deccen, epoch=epoch, $
-  rerun=rerun, tilerad=tilerad1, guide_design=guide_design
+                             rerun=rerun, tilerad=tilerad1, $
+                             guide_design=guide_design, $
+                             gminmax=gminmax, nguidemax=nguidemax
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
   message,'Must specify RACEN, DECCEN, EPOCH'
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
+
+if(NOT keyword_set(gminmax)) then $
+  gminmax=[13., 15.5]
 
 if(NOT keyword_set(rerun)) then $
   message, 'Must specify RERUN'
@@ -64,7 +69,7 @@ if (keyword_set(objs)) then begin
     grcolor = transpose( mag[1,*] - mag[2,*] )
     ricolor = transpose( mag[2,*] - mag[3,*] )
     izcolor = transpose( mag[3,*] - mag[4,*] )
-    indx = where(mag[1,*] GT 13. AND mag[1,*] LT 15.5 $
+    indx = where(mag[1,*] GT gminmax[0] AND mag[1,*] LT gminmax[1] $
                  AND grcolor GT 0.3 AND grcolor LT 1.4 $
                  AND ricolor GT 0.0 AND ricolor LT 0.7 $
                  AND izcolor GT -0.4 AND izcolor LT 1.0, ct)
@@ -80,6 +85,15 @@ if (keyword_set(objs)) then begin
 endif
 
 if (keyword_set(objs)) then begin
+
+    ;; Trim back number to maximum
+    if(keyword_set(nguidemax)) then begin
+        if(nguidemax lt n_elements(objs)) then begin
+            indx= shuffle_indx(n_elements(objs), num_sub=nguidemax)
+            objs=objs[indx]
+        endif
+    endif
+
     ;; Apply proper motion corrections
     ;; (Results not good at day-level precision --- 
     ;; leap years only approximated).

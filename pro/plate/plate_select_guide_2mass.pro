@@ -23,13 +23,17 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_guide_2mass, racen, deccen, epoch=epoch, $
-  tilerad=tilerad1, guide_design=guide_design
+                              tilerad=tilerad1, guide_design=guide_design, $
+                              gminmax=gminmax, nguidemax=nguidemax
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
   message,'Must specify RACEN, DECCEN, EPOCH'
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
+
+if(NOT keyword_set(gminmax)) then $
+  gminmax=[13., 15.5]
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
@@ -47,11 +51,17 @@ endif
 ;; Trim to stars in the desired magnitude + color boxes
 if (keyword_set(objt)) then begin
     jkcolor = objt.tmass_j - objt.tmass_k
+
+    mag= plate_tmass_to_sdss(objt.tmass_j, objt.tmass_h, objt.tmass_k)
+
     indx = where(objt.tmass_bl_flg EQ 111 $
+                 AND mag[1,*] gt gminmax[0] $
+                 AND mag[1,*] lt gminmax[1] $
                  AND objt.tmass_cc_flg EQ '000' $
                  AND objt.tmass_gal_contam EQ 0 $
                  AND objt.tmass_mp_flg EQ 0 $
                  AND jkcolor GT 0.4 AND jkcolor LT 0.6, ct)
+
     if (ct GT 0) then begin
         objt = objt[indx]
         jkcolor = jkcolor[indx]
@@ -60,7 +70,17 @@ if (keyword_set(objt)) then begin
     endelse
 endif
 
+
 if (keyword_set(objt)) then begin
+
+    ;; Trim back number to maximum
+    if(keyword_set(nguidemax)) then begin
+        if(nguidemax lt n_elements(objt)) then begin
+            indx= shuffle_indx(n_elements(objt), num_sub=nguidemax)
+            objt=objt[indx]
+        endif
+    endif
+
     ;; Apply proper motion corrections
     ;; (Results not good at day-level precision --- 
     ;; leap years only approximated).
