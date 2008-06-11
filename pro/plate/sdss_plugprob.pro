@@ -33,12 +33,13 @@
 ;-
 pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    mininblock=mininblock, fiberused=fiberused, $
-                   nmax=nmax, quiet=in_quiet
+                   nmax=nmax, quiet=in_quiet, limitdegree=limitdegree
 
 common com_plugprob, fiberblocks
 
 platescale = 217.7358           ; mm/degree
-limitdegree= 7.*0.1164          ; limit of fiber reach
+if(NOT keyword_set(limitdegree)) then $
+  limitdegree= 7.*0.1164        ; limit of fiber reach
 if(NOT keyword_set(mininblock)) then mininblock= 0L
 if(NOT keyword_set(minavail)) then minavail= 8L
 quiet= long(keyword_set(in_quiet))
