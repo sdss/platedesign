@@ -12,6 +12,8 @@
 ;   minstdinblock, minskyinblock 
 ;          - minimum number of standards or skies to assign to each block
 ;            [default 0]
+; OPTIONAL OUTPUTS:
+;   block - [N] block for each fiber
 ; OPTIONAL KEYWORDS:
 ;   /nosky - do not attempt to assign any of the sky fibers
 ;   /nostd - do not attempt to assign any of the standard fibers
@@ -27,8 +29,14 @@
 ;   4-Jun-2008 MRB, NYU 
 ;-
 function fiberid_sdss, default, fibercount, design, $
-  minstdinblock=minstdinblock, minskyinblock=minskyinblock, $
-  nosky=nosky, nostd=nostd, noscience=noscience, quiet=quiet
+                       minstdinblock=minstdinblock, $
+                       minskyinblock=minskyinblock, $
+                       nosky=nosky, nostd=nostd, noscience=noscience, $
+                       quiet=quiet, block=block
+
+limitdegree=7.*0.1164 ;; limit of fiber reach
+skylimitdegree= limitdegree ;; do not stretch as far for skies
+stdlimitdegree= limitdegree ;; ... and standards
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
@@ -56,7 +64,7 @@ if(NOT keyword_set(nostd)) then begin
                                design[istd].yf_default, $
                                tmp_fiberid, mininblock=minstdinblock, $
                                minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               /quiet
+                               limitdegree=stdlimitdegree
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -92,7 +100,7 @@ if(NOT keyword_set(nosky)) then begin
                                design[isky].yf_default, $
                                tmp_fiberid, mininblock=minskyinblock, $
                                minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               /quiet
+                               limitdegree=skylimitdegree
 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -118,7 +126,8 @@ if(NOT keyword_set(noscience)) then begin
                  strupcase(design.targettype) ne 'STANDARD', nleft)
     if(nleft gt 0) then begin
         sdss_plugprob, design[ileft].xf_default, design[ileft].yf_default, $
-                       tmp_fiberid, fiberused=fiberused
+          tmp_fiberid, fiberused=fiberused, $
+          limitdegree=limitdegree
         
         iassigned=where(tmp_fiberid ge 1, nassigned)
         help, nassigned
@@ -133,6 +142,12 @@ if(NOT keyword_set(noscience)) then begin
         if(NOT keyword_set(quiet)) then $
           splog, 'No science targets in this plate.'
     endelse
+endif
+
+block= lonarr(n_elements(fiberid))-9999L
+igood= where(fiberid ge 1, ngood)
+if(ngood gt 0) then begin
+    block[igood]= (fiberid[igood]-1L)/20L+1L
 endif
     
 return, fiberid
