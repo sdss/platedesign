@@ -4,20 +4,23 @@
 ; PURPOSE:
 ;   Create a plug file in the style of plPlugMapP files from SDSS-II
 ; CALLING SEQUENCE:
-;   plugfile_plplugmap, definition, default, holes
+;   plugfile_plplugmap, hdr, holes
 ; INPUTS:
-;   definition - plate definition structure
-;   default - plate default structure
-;   holes - [N] holes
+;   hdr - header from plateHoles file
+;   holes - [N] holes from plateHoles file
 ; BUGS:
 ;   CLASSIFIES ALL SOURCES AS STARS!!
+;   REASSIGNS FIBER IDs SO RUINS SKY IN BLOCK GUARANTEES
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plugfile_plplugmap, definition, default, holes
-.
+pro plugfile_plplugmap, hdr, holes
+
+definition= lines2struct(hdr)
+default= definition
+
 designid= long(definition.designid)
-platerun= long(definition.platerun)
+platerun= definition.platerun
 plateid= long(definition.plateid)
 temp= float(definition.temp)
 ha= float(strsplit(definition.ha, /extr))
@@ -98,12 +101,15 @@ plug.primtarget= 0
 ;; (unless it is -9999)
 plug.fiberid=-9999
 ihole=where(holes.fiberid ge 1, nhole)
-if(nhole gt 0) then $
-  plug[ihole].fiberid= -holes[ihole].fiberid
+;; Reassign fiberid to space nicely.
+sdss_plugprob, plug[ihole].xfocal, plug[ihole].yfocal, fiberid
+plug[ihole].fiberid=-fiberid
+;;;if(nhole gt 0) then $
+;;  plug[ihole].fiberid= -holes[ihole].fiberid
 
 ;; but guide fibers get fiberid set too
 ihole=where(holes.iguide ge 1, nhole)
-plug[ihole].fiberid= holes[ihole].fiberid
+plug[ihole].fiberid= holes[ihole].iguide
 
 ;; Compute the median reddening for objects on this plate
 ;; (just for first pointing)
@@ -114,13 +120,36 @@ reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
   * median(dust_getval(ll, bb, /interp))
 
 ;; resort fibers
-sortstring = plug.holetype
-sortstring = repstr(sortstring, 'LIGHT_TRAP', 'AAA')
-sortstring = repstr(sortstring, 'GUIDE', 'BBB')
-sortstring = repstr(sortstring, 'ALIGNMENT', 'BBB')
-sortstring = repstr(sortstring, 'OBJECT', 'CCC')
-sortstring = repstr(sortstring, 'QUALITY', 'DDD')
-plug = plug[sort(sortstring)]
+ihole= where(plug.holetype eq 'LIGHT_TRAP', nhole)
+if(nhole gt 0) then $
+  newplug= plug[ihole]
+
+ihole= where(plug.holetype eq 'GUIDE' OR $
+             plug.holetype eq 'ALIGNMENT', nhole)
+if(nhole gt 0) then begin
+    sortstr= string(plug[ihole].fiberid, f='(i2.2)')+ $
+      plug[ihole].holetype
+    isort=sort(sortstr)
+    if(n_tags(newplug) gt 0) then $
+      newplug= [newplug, plug[ihole[isort]]] $
+    else $
+      newplug= plug[ihole[isort]]
+endif
+
+ihole= where(plug.holetype eq 'OBJECT', nhole)
+if(nhole gt 0) then begin
+    isort= sort(abs(plug[ihole].fiberid))
+    newplug=[newplug, plug[ihole[isort]]]
+endif
+
+ihole= where(plug.holetype eq 'QUALITY', nhole)
+if(nhole gt 0) then $
+  newplug=[newplug, plug[ihole]]
+
+if(n_elements(newplug) ne n_elements(plug)) then $
+  message, 'Sorted plug structure messed up!'
+
+plug=newplug
 
 racen=dblarr(npointings)
 deccen=dblarr(npointings)
@@ -131,59 +160,28 @@ for pointing=1L, npointings do begin
     deccen[pointing-1L]=tmp_deccen
 endfor
 
-outhdr = ['completeTileVersion   none', $
-          'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
-          '# tileId is set to designid for SDSS-III plates', $
-          'tileId ' + string(designid), $
-          'raCen ' + string(racen,format='(f10.6)'), $
-          'decCen ' + string(deccen,format='(f10.6)'), $
-          'plateVersion v0', $
-          'plateId ' + string(plateid), $
-          'temp ' + string(temp), $
-          'haMin ' + string(ha), $
-          'haMax ' + string(ha), $
-          'mjdDesign ' + string(long(current_mjd())), $
-          'theta 0 ' ]
-platestr= strtrim(string(f='(i4.4)', plateid),2)
-plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par' 
-yanny_write, plugmapfile, ptr_new(plug), hdr=outhdr, $
-  enums=plugenum, structs=plugstruct
-
-;;----------
-;; Create the file "plPlan.par" in the current directory.
-
-cd, current=thisdir
-
-plhdr = '# Created on ' + systime()
-plhdr = [plhdr, "parametersDir " + thisdir]
-plhdr = [plhdr, "parameters    " + "plParam-"+platestr+".par"]
-plhdr = [plhdr, "plObsFile     " + "plObs-"+platestr+".par"]
-plhdr = [plhdr, "outFileDir    " + thisdir]
-plhdr = [plhdr, "tileDir       " + thisdir]
-yanny_write, plate_dir(plateid)+'/plPlan'+platestr+'.par', hdr=plhdr
-
-;;----------
-;; Create the file "plObs.par" in the current directory.
-
-plhdr = '# Created on ' + systime()
-plhdr = [plhdr, "plateRun "+platerun]
-plstructs = ["typedef struct {", $
-             "   int plateId;", $
-             "   int tileId;", $
-             "   float temp;", $
-             "   float haMin;", $
-             "   float haMax;", $
-             "   int mjdDesign", $
-             "} PLOBS;"]
-plobs = create_struct(name='PLOBS', $
-                      'PLATEID'  , plateid, $
-                      'TILEID'   , designid, $
-                      'TEMP'     , temp, $
-                      'HAMIN'    , ha, $
-                      'HAMAX'    , ha, $
-                      'MJDDESIGN', current_mjd())
-yanny_write, plate_dir(plateid)+'/plObs'+platestr+'.par', $
-  ptr_new(plobs), hdr=plhdr, structs=plstructs
+pointing_post=['', 'A', 'B', 'C', 'D', 'E']
+for pointing=1L, npointings do begin
+    outhdr = ['completeTileVersion   none', $
+              'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
+              '# tileId is set to designid for SDSS-III plates', $
+              'tileId ' + string(designid), $
+              'raCen ' + string(racen[pointing-1],format='(f30.8)'), $
+              'decCen ' + string(deccen[pointing-1],format='(f30.8)'), $
+              'platedesign_version '+platedesign_version(), $
+              'plateId ' + string(plateid)+pointing_post[pointing-1], $
+              'temp ' + string(temp), $
+              'haMin ' + string(ha[pointing-1]), $
+              'haMax ' + string(ha[pointing-1]), $
+              'mjdDesign ' + string(long(current_mjd())), $
+              'theta 0 ', $
+              hdr]
+    platestr= strtrim(string(f='(i4.4)', plateid),2)
+    plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
+      pointing_post[pointing-1]+'.par' 
+    yanny_write, plugmapfile, ptr_new(plug), hdr=outhdr, $
+      enums=plugenum, structs=plugstruct
+endfor
 
 end
 ;------------------------------------------------------------------------------
