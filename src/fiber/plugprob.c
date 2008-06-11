@@ -17,7 +17,7 @@
  *
  */
 
-#define COSTFACTOR 1000
+#define COSTFACTOR 10000
 
 static int nBlocks=0;
 static int *fiberTargets=NULL;
@@ -130,7 +130,8 @@ int write_plugprob(double xtarget[],
 			sep2=(xtarget[i]-xfiber[jFiber])*(xtarget[i]-xfiber[jFiber])+
 				(ytarget[i]-yfiber[jFiber])*(ytarget[i]-yfiber[jFiber]);
 			cost=(long) floor(0.5*COSTFACTOR*sep2);
-			fprintf(fp,"a %d %d %d %d %ld\n",i+1,nTargets+jFiber+1,0,1,cost);
+			fprintf(fp,"a %d %d %d %d %ld\n",i+1,nTargets+jFiber+1,0, 
+							1-fiberused[jFiber],cost);
 		} /* end for j */
 	} /* end for i */
 
