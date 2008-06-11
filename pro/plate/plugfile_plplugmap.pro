@@ -16,7 +16,12 @@
 ;-
 pro plugfile_plplugmap, definition, default, holes
 
-plug0= plplugmap_blank(enums=enums)
+plateid= long(definition.plateid)
+temp= float(definition.temp)
+ha= float(strsplit(definition.ha, /extr))
+npointings= long(definition.npointings)
+
+plug0= plplugmap_blank(enums=plugenum, struct=plugstruct)
 plug= replicate(plug0, n_elements(holes))
 
 ;; set holetype
@@ -115,39 +120,51 @@ sortstring = repstr(sortstring, 'OBJECT', 'CCC')
 sortstring = repstr(sortstring, 'QUALITY', 'DDD')
 plug = plug[sort(sortstring)]
 
-outhdr = ['completeTileVersion   v0', $
+racen=dblarr(npointings)
+deccen=dblarr(npointings)
+for pointing=1L, npointings do begin
+    plate_center, definition, default, pointing, 0L, $
+                  racen=tmp_racen, deccen=tmp_deccen
+    racen[pointing-1L]=tmp_racen
+    deccen[pointing-1L]=tmp_deccen
+endfor
+
+outhdr = ['completeTileVersion   none', $
           'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
-          'tileId ' + string(tilenum), $
+          '# tileId is set to designid for SDSS-III plates', $
+          'tileId ' + string(designid), $
           'raCen ' + string(racen,format='(f10.6)'), $
           'decCen ' + string(deccen,format='(f10.6)'), $
           'plateVersion v0', $
-          'plateId ' + string(platenum), $
-          'temp ' + string(airtemp), $
-          'haMin ' + string(lst-racen), $
-          'haMax ' + string(lst-racen), $
+          'plateId ' + string(plateid), $
+          'temp ' + string(temp), $
+          'haMin ' + string(ha), $
+          'haMax ' + string(ha), $
           'mjdDesign ' + string(long(current_mjd())), $
           'theta 0 ' ]
-yanny_write, plugmappfile, ptr_new(allplug), hdr=outhdr, $
+platestr= strtrim(string(f='(i4.4)', plateid),2)
+plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par' 
+yanny_write, plugmappfile, ptr_new(plug), hdr=outhdr, $
   enums=plugenum, structs=plugstruct
 
 ;;----------
 ;; Create the file "plPlan.par" in the current directory.
 
 cd, current=thisdir
-cd, thisdir
+
 plhdr = '# Created on ' + systime()
-plhdr = [plhdr, "parametersDir " + paramdir]
-plhdr = [plhdr, "parameters    " + "plParam.par"]
-plhdr = [plhdr, "plObsFile     " + "plObs.par"]
+plhdr = [plhdr, "parametersDir " + thisdir]
+plhdr = [plhdr, "parameters    " + "plParam-"+platestr+".par"]
+plhdr = [plhdr, "plObsFile     " + "plObs-"+platestr+".par"]
 plhdr = [plhdr, "outFileDir    " + thisdir]
 plhdr = [plhdr, "tileDir       " + thisdir]
-yanny_write, 'plPlan.par', hdr=plhdr
+yanny_write, 'plPlan'+platestr+'.par', hdr=plhdr
 
 ;;----------
 ;; Create the file "plObs.par" in the current directory.
 
 plhdr = '# Created on ' + systime()
-plhdr = [plhdr, "plateRun special"]
+plhdr = [plhdr, "plateRun "+definition.platerun]
 plstructs = ["typedef struct {", $
              "   int plateId;", $
              "   int tileId;", $
@@ -157,13 +174,14 @@ plstructs = ["typedef struct {", $
              "   int mjdDesign", $
              "} PLOBS;"]
 plobs = create_struct(name='PLOBS', $
-                      'PLATEID'  , platenum, $
-                      'TILEID'   , tilenum, $
-                      'TEMP'     , airtemp, $
-                      'HAMIN'    , (lst-racen), $
-                      'HAMAX'    , (lst-racen), $
+                      'PLATEID'  , plateid, $
+                      'TILEID'   , designid, $
+                      'TEMP'     , temp, $
+                      'HAMIN'    , ha, $
+                      'HAMAX'    , ha, $
                       'MJDDESIGN', current_mjd())
-yanny_write, 'plObs.par', ptr_new(plobs), hdr=plhdr, structs=plstructs
+yanny_write, 'plObs'+platestr+'.par', ptr_new(plobs), hdr=plhdr, $
+             structs=plstructs
 
 end
 ;------------------------------------------------------------------------------

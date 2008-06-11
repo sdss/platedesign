@@ -340,13 +340,14 @@ if(keyword_set(clobber) gt 0 OR $
     spawn, 'mkdir -p '+designdir
     hdrstr=struct_combine(default, definition)
     outhdr=struct2lines(hdrstr)
-    outhdr=[outhdr, 'platedesign_version '+platedesign_version()]
+    outhdr=[outhdr, $
+            'platerun '+plan.platerun, $
+            'platedesign_version '+platedesign_version()]
     yanny_write, designfile, pdata, hdr=outhdr
     
 endif
 
 ;; Convert plateDesign to plateHoles
-;;  -- recall to add ALIGNMENT
 plate_holes, designid, plateid, ha, temp
 
 ;; Produce plugfiles of desired style
