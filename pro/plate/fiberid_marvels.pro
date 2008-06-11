@@ -6,10 +6,12 @@
 ; CALLING SEQUENCE:
 ;   fiberid= fiberid_marvels(design)
 ; INPUTS:
-;   design - [60] struct array of targets, in design_blank() form
+;   design - [N] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
 ; OUTPUTS:
-;   fiberid - 1-indexed list of fibers 
+;   fiberid - [N] 1-indexed list of fibers 
+; OPTIONAL OUTPUTS:
+;   block - [N] block for each fiber
 ; OPTIONAL KEYWORDS:
 ;   /nosky - do not attempt to assign any of the sky fibers
 ;   /nostd - do not attempt to assign any of the standard fibers
@@ -20,8 +22,10 @@
 ;   4-Jun-2008 MRB, NYU 
 ;-
 function fiberid_marvels, default, fibercount, design, $
-  minstdinblock=minstdinblock, minskyinblock=minskyinblock, $
-  nosky=nosky, noscience=noscience, nostd=nostd, quiet=quiet
+                          minstdinblock=minstdinblock, $
+                          minskyinblock=minskyinblock, $
+                          nosky=nosky, noscience=noscience, nostd=nostd, $
+                          quiet=quiet, block=block
 
 nfiber=60L
 fiberid=lonarr(n_elements(design))
@@ -75,6 +79,7 @@ if(NOT keyword_set(noscience)) then begin
     endif 
 endif
 
+block= lonarr(n_elements(fiberid))+1L
         
 return, fiberid
 
