@@ -50,7 +50,7 @@ if (keyword_set(objt)) then begin
     mdist = 6./3600
     ingroup = spheregroup(objt.tmass_ra, objt.tmass_dec, mdist, $
                           multgroup=multgroup, firstgroup=firstgroup, $
-                          nextgroup=nextgroup)
+                          nextgroup=nextgroup, chunksize=0.05)
     indx = where(multgroup[ingroup] EQ 1, ct)
     if (ct GT 0) then objt = objt[indx] else objt = 0
 endif
