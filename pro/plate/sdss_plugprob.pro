@@ -64,7 +64,9 @@ used=lonarr(nfibers)
 if(keyword_set(fiberused)) then $
   used[fiberused-1]=1
 
-probfile='tmp_prob.txt'
+tmpdir=getenv('PLATELIST_DIR')+'/tmp'
+
+probfile=tmpdir+'/tmp_prob.txt'
 soname = filepath('libfiber.'+idlutils_so_ext(), $
                   root_dir=getenv('PLATEDESIGN_DIR'), subdirectory='lib')
 retval = call_external(soname, 'idl_write_plugprob', $
@@ -74,11 +76,11 @@ retval = call_external(soname, 'idl_write_plugprob', $
                        double(limitdegree), long(minavail), long(mininblock), $
                        string(probfile))
 
-spawn, 'cat tmp_prob.txt | '+ $
+spawn, 'cat '+tmpdir+'/tmp_prob.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
-  ' > tmp_ans.txt'
+  ' > '+tmpdir+'/tmp_ans.txt'
 
-ansfile='tmp_ans.txt'
+ansfile=tmpdir+'/tmp_ans.txt'
 targetfiber=lonarr(ntargets)
 fiberblock=lonarr(ntargets)
 
