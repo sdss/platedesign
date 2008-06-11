@@ -63,3 +63,9 @@ standardType 2MASS 2MASS
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
 plateDesignSkies SDSS
+
+# Specify version of plate to use for low level routines
+plateversion v3_9
+
+# Factor for collecting skies and standards
+collectfactor 10
