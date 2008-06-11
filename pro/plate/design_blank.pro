@@ -31,6 +31,7 @@ design0={DESIGN_TARGET, $
          pointing:0L, $
          offset:0L, $
          fiberid:-9999L, $
+         block:-9999L, $
          iguide:-9999L, $
          xf_default:0., $
          yf_default:0., $
