@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   plate_drillrun
+;   plate_design
 ; PURPOSE:
 ;   Run the plate design for a drill run
 ; CALLING SEQUENCE:
-;   plate_drillrun, plateid [, /debug, /clobber]
+;   plate_design, plateid [, /debug, /clobber]
 ; INPUTS:
 ;   plateid - plateid number
 ; OPTIONAL KEYWORDS:
@@ -15,12 +15,12 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_drillrun, plateid, debug=debug, clobber=clobber
+pro plate_design, plateid, debug=debug, clobber=clobber
 
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(designid)-1L do begin
-        plate_drillrun, plateid[i], debug=debug, clobber=clobber
+        plate_design, plateid[i], debug=debug, clobber=clobber
     endfor
     return
 endif
