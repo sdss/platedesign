@@ -28,7 +28,13 @@ iinst= where(strupcase(instrument) eq $
 if(ninst eq 0) then begin
     return, 0
 endif
+
 standardtype= standardtype[pointing-1L]
+
+itag= tag_indx(default, 'STANDARDMAG_MINMAX_'+instrument) 
+if(itag ne -1) then begin
+    gminmax=float(strsplit(default.(itag), /extr))
+endif
 
 ;; file name
 outdir= design_dir(designid)
@@ -47,14 +53,14 @@ if(NOT file_test(stdfile)) then begin
     if(standardtype eq 'SDSS') then begin
         ;; find SDSS standards and assign them
         plate_select_sphoto_sdss, racen, deccen, $
-          rerun=rerun, sphoto_mag=sphoto_mag, $
+          rerun=rerun, gminmax=gminmax, $
           sphoto_design= sphoto_design, tilerad=tilerad
     endif 
     
     if(standardtype eq '2MASS') then begin
         ;; find 2MASS standards and assign them
         plate_select_sphoto_2mass, racen, deccen, $
-          sphoto_mag=sphoto_mag, $
+          gminmax=gminmax, $
           sphoto_design= sphoto_design, tilerad=tilerad
     endif
     
