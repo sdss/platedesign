@@ -11,6 +11,7 @@ set name = $1
 
 if ($name == "") set name = noname
 
+cd $PLATELIST_DIR/runs/$name
 mkdir -p dos
 cp plDrillPos* plFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* dos
 cd dos

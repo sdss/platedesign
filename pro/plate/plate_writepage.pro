@@ -4,10 +4,9 @@
 ; PURPOSE:
 ;   Write the web page describing a drill run
 ; CALLING SEQUENCE:
-;   plate_writepage, runname, path
+;   plate_writepage, runname
 ; INPUTS:
 ;   runname - name of run
-;   path - path to results
 ; COMMENTS:
 ;   Currently only posts the zipfile.
 ;   This routine is really just a placeholder for the final version
@@ -15,9 +14,9 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_writepage, runname, path
+pro plate_writepage, runname
 
-if(NOT keyword_set(path)) then path='./'
+path= getenv('PLATELIST_DIR')+'/runs/'+runname
 
 spawn, 'cd '+path+' ; drillrun2zip '+runname
 

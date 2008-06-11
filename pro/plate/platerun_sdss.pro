@@ -84,5 +84,8 @@ spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
 spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
   planfile+'" | plate -noTk'
 
+;; finally, create the web page
+plate_writepage, platerun
+
 end
 ;------------------------------------------------------------------------------
