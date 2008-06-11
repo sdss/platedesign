@@ -15,7 +15,9 @@
 ;   10-Jun-2008  MRB, NYU
 ;-
 pro plugfile_plplugmap, definition, default, holes
-
+.
+designid= long(definition.designid)
+platerun= long(definition.platerun)
 plateid= long(definition.plateid)
 temp= float(definition.temp)
 ha= float(strsplit(definition.ha, /extr))
@@ -144,7 +146,7 @@ outhdr = ['completeTileVersion   none', $
           'theta 0 ' ]
 platestr= strtrim(string(f='(i4.4)', plateid),2)
 plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par' 
-yanny_write, plugmappfile, ptr_new(plug), hdr=outhdr, $
+yanny_write, plugmapfile, ptr_new(plug), hdr=outhdr, $
   enums=plugenum, structs=plugstruct
 
 ;;----------
@@ -158,13 +160,13 @@ plhdr = [plhdr, "parameters    " + "plParam-"+platestr+".par"]
 plhdr = [plhdr, "plObsFile     " + "plObs-"+platestr+".par"]
 plhdr = [plhdr, "outFileDir    " + thisdir]
 plhdr = [plhdr, "tileDir       " + thisdir]
-yanny_write, 'plPlan'+platestr+'.par', hdr=plhdr
+yanny_write, plate_dir(plateid)+'/plPlan'+platestr+'.par', hdr=plhdr
 
 ;;----------
 ;; Create the file "plObs.par" in the current directory.
 
 plhdr = '# Created on ' + systime()
-plhdr = [plhdr, "plateRun "+definition.platerun]
+plhdr = [plhdr, "plateRun "+platerun]
 plstructs = ["typedef struct {", $
              "   int plateId;", $
              "   int tileId;", $
@@ -180,8 +182,8 @@ plobs = create_struct(name='PLOBS', $
                       'HAMIN'    , ha, $
                       'HAMAX'    , ha, $
                       'MJDDESIGN', current_mjd())
-yanny_write, 'plObs'+platestr+'.par', ptr_new(plobs), hdr=plhdr, $
-             structs=plstructs
+yanny_write, plate_dir(plateid)+'/plObs'+platestr+'.par', $
+  ptr_new(plobs), hdr=plhdr, structs=plstructs
 
 end
 ;------------------------------------------------------------------------------
