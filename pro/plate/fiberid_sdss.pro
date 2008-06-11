@@ -64,7 +64,7 @@ if(NOT keyword_set(nostd)) then begin
                                design[istd].yf_default, $
                                tmp_fiberid, mininblock=minstdinblock, $
                                minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               limitdegree=stdlimitdegree
+                               limitdegree=stdlimitdegree, /quiet
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -100,7 +100,7 @@ if(NOT keyword_set(nosky)) then begin
                                design[isky].yf_default, $
                                tmp_fiberid, mininblock=minskyinblock, $
                                minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               limitdegree=skylimitdegree
+                               limitdegree=skylimitdegree, /quiet
 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
