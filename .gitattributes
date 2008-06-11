@@ -34,6 +34,7 @@ pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
 pro/misc/struct_combine.pro -text
 pro/misc/test_fiber.pro -text
+pro/misc/test_plug.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/alignment_fiber.pro -text
 pro/plate/check_conflicts.pro -text
