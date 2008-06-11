@@ -4,6 +4,10 @@
 bin/drillrun2zip -text
 bin/platedesign_version -text
 data/sdss/fiberBlocks.par -text
+data/sdss/g_codes_alignment.txt -text
+data/sdss/g_codes_completion.txt -text
+data/sdss/g_codes_lighttrap.txt -text
+data/sdss/g_codes_object.txt -text
 data/sdss/plParam.par -text
 data/sdss/plPlugMapP-blank.par -text
 data/strategy/boss_observing_nights.par -text
