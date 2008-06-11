@@ -33,7 +33,7 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_sphoto_sdss, racen, deccen, rerun=rerun, tilerad=tilerad1, $
-  sphoto_mag=sphoto_mag1, sphoto_design=sphoto_design
+  sphoto_mag=sphoto_mag1, sphoto_design=sphoto_design, gminmax=gminmax
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1) then $
   message,' Must specify RACEN, DECCEN'
@@ -43,6 +43,9 @@ if (keyword_set(sphoto_mag1)) then sphoto_mag = sphoto_mag1 $
 else sphoto_mag = [15.5,17]
 if(NOT keyword_set(rerun)) then $
   message, 'Must specify RERUN'
+
+if(NOT keyword_set(gminmax)) then $
+  gminmax=[15.5, 17.]
 
 ;; Find all SDSS objects in the footprint
 flist = sdss_astr2fields(radeg=racen, decdeg=deccen, radius=tilerad, $
@@ -72,9 +75,10 @@ if (keyword_set(objs)) then begin
     ricolor = mag[2,*] - mag[3,*]
     izcolor = mag[3,*] - mag[4,*]
     indx = where( $
-           ugcolor GT 0.6 AND grcolor LT 1.2 $
-           AND grcolor GT 0.0 AND grcolor LT 0.6 $
-           AND grcolor GT 0.75 * ugcolor - 0.45, ct)
+                  mag[1,*] gt gminmax[0] AND mag[1,*] lt gminmax[1] AND $
+                  ugcolor GT 0.6 AND grcolor LT 1.2 $
+                  AND grcolor GT 0.0 AND grcolor LT 0.6 $
+                  AND grcolor GT 0.75 * ugcolor - 0.45, ct)
     if (ct GT 0) then objs = objs[indx] else objs = 0
 endif
 
