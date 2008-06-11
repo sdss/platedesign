@@ -71,8 +71,8 @@ endif
 if(keyword_set(guide)) then begin
     design0.holetype='GUIDE'
     design0.sourcetype='STAR'
-    design0.diameter=6.95555
-    design0.buffer=0.3
+    design0.diameter=3.175
+    design0.buffer=3.75
 endif
 
 if(keyword_set(trap)) then begin
