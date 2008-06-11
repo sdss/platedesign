@@ -316,8 +316,10 @@ if(keyword_set(clobber) gt 0 OR $
             fiberids= call_function('fiberid_'+instruments[iinst], $
                                     default, fibercount, design[icurr], $
                                     minstdinblock=minstdinblock[iinst], $
-                                    minskyinblock=minskyinblock[iinst])
+                                    minskyinblock=minskyinblock[iinst], $
+                                    block=block)
             design[icurr].fiberid= fiberids
+            design[icurr].block= block
             iassigned= where(design[icurr].fiberid ge 1, nassigned)
             if(nassigned gt 0) then $
               keep[icurr[iassigned]]=1L
@@ -359,10 +361,7 @@ platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
 holes= yanny_readone(platefile, hdr=hdr)
-hdrstr= lines2struct(hdr)
-call_procedure, 'plugfile_'+plugmapstyle, hdrstr, hdrstr, holes 
-
-;; Run low-level plate routines
+call_procedure, 'plugfile_'+plugmapstyle, hdr, holes 
 
 return
 end
