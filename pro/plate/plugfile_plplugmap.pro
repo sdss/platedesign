@@ -73,8 +73,8 @@ if(nmarvels gt 0) then begin
     plug[imarvels].mag= plate_tmass_to_sdss(holes[imarvels].mfd_mag[3], $
                                             holes[imarvels].mfd_mag[4], $
                                             holes[imarvels].mfd_mag[5])
-    plug[imarvels].mag[1]= holes[imarvels].mfd_mag[0]  ;; BT -> g
-    plug[imarvels].mag[2]= holes[imarvels].mfd_mag[1]  ;; VT -> r
+    plug[imarvels].mag[1]= holes[imarvels].mfd_mag[1]  ;; BT -> g
+    plug[imarvels].mag[2]= holes[imarvels].mfd_mag[0]  ;; VT -> r
 endif
 itmass= where(holes.tmass_j gt 0, ntmass)
 if(ntmass gt 0) then begin
