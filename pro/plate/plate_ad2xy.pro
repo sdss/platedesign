@@ -19,10 +19,10 @@
 ;   xfocal, yfocal - position in focal plane in mm
 ; COMMENTS:
 ;   Required in definition structure:
-;     raCen1 [, ... as necessary]
-;     decCen1 [, ... as necessary]
-;     dRa1 [, ... as necessary]
-;     dDec1 [, ... as necessary]
+;     raCen[npointings]
+;     decCen[npointings]
+;     dRa[noffsets]
+;     dDec[noffsets]
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
 ;-
