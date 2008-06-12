@@ -68,6 +68,7 @@ pro/plate/plate_tmass_to_sdss.pro -text
 pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
+pro/plate/plate_xy2ad.pro -text
 pro/plate/platerun.pro -text
 pro/plate/platerun_sdss.pro -text
 pro/plate/plplugmap_blank.pro -text
@@ -75,6 +76,7 @@ pro/plate/plugfile_plplugmap.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
+pro/plate/xyfocal2ad.pro -text
 pro/strategy/QUESTIONS -text
 pro/strategy/apo_almanac.pro -text
 pro/strategy/apo_in_interval.pro -text
