@@ -84,7 +84,7 @@ if(ntmass gt 0) then begin
 endif
 isdss= where(holes.run gt 0, nsdss)
 if(nsdss gt 0) then begin
-    plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].psfflux > 0.1)
+    plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].fiberflux > 0.1)
 endif
 
 ;; We will ignore these likelihood columns
