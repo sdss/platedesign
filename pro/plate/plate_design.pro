@@ -92,6 +92,9 @@ if(abs(racen-plan.racen) gt 1./3600. OR $
    abs(deccen-plan.deccen) gt 1./3600.) then begin
     message, 'platePlans.par file disagrees with plateDefinition file on plate center'
 endif
+if(designid ne long(definition.designid)) then begin
+    message, 'plateDefinition file has wrong designid'
+endif
 
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
