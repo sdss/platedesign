@@ -238,7 +238,7 @@ for pointing=1L, npointings do begin
     endif
 
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
-    plate_xy2ad, outhdrstr, outhdrstr, pointing, 0L, thisplug.xfocal, $
+    plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
       thisplug.yfocal, ra=ra, dec=dec, lst=racen[pointing-1]+ha[pointing-1], $
       airtemp= temp
     thisplug.ra= ra
