@@ -41,6 +41,10 @@ design0={DESIGN_TARGET, $
          assigned:0L, $
          conflicted:0L, $
          ranout:0L, $
+         tmass_j:-9999., $
+         tmass_h:-9999., $
+         tmass_k:-9999., $
+         mfd_mag:fltarr(6), $
          sp_param_source:'NA', $
          sp_params:fltarr(4), $
          sp_param_err:fltarr(4), $
@@ -59,6 +63,8 @@ design0={DESIGN_TARGET, $
          camcol:0L, $
          field:0L, $
          id:0L, $
+         psfflux:fltarr(5), $
+         psfflux_ivar:fltarr(5), $
          targetids:'NA' $
         }
 
