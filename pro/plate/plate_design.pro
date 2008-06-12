@@ -357,11 +357,7 @@ if(NOT tag_exist(default, 'plugmapstyle')) then $
   plugmapstyle='plplugmap' $
 else $
   plugmapstyle= default.plugmapstyle
-platedir= plate_dir(plateid)
-platefile= platedir+'/plateHoles-'+ $
-  strtrim(string(f='(i6.6)',plateid),2)+'.par'
-holes= yanny_readone(platefile, hdr=hdr)
-call_procedure, 'plugfile_'+plugmapstyle, hdr, holes 
+call_procedure, 'plugfile_'+plugmapstyle, plateid
 
 return
 end
