@@ -126,8 +126,7 @@ if(NOT keyword_set(noscience)) then begin
                  strupcase(design.targettype) ne 'STANDARD', nleft)
     if(nleft gt 0) then begin
         sdss_plugprob, design[ileft].xf_default, design[ileft].yf_default, $
-          tmp_fiberid, fiberused=fiberused, $
-          limitdegree=limitdegree
+          tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree
         
         iassigned=where(tmp_fiberid ge 1, nassigned)
         help, nassigned
