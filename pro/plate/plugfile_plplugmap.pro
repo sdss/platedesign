@@ -67,8 +67,25 @@ if(nhole gt 0) then plug[ihole].holetype= 'LIGHT_TRAP'
 plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
-;; WHAT ABOUT MAG!!
-;;plug.mag= holes.mag
+;; Bad conversion of mags ...
+imarvels= where(holes.mfd_mag[0] gt 0, nmarvels)
+if(nmarvels gt 0) then begin
+    plug[imarvels].mag= plate_tmass_to_sdss(holes[imarvels].mfd_mag[3], $
+                                            holes[imarvels].mfd_mag[4], $
+                                            holes[imarvels].mfd_mag[5])
+    plug[imarvels].mag[1]= holes[imarvels].mfd_mag[0]  ;; BT -> g
+    plug[imarvels].mag[2]= holes[imarvels].mfd_mag[1]  ;; VT -> r
+endif
+itmass= where(holes.tmass_j gt 0, ntmass)
+if(ntmass gt 0) then begin
+    plug[itmass].mag= plate_tmass_to_sdss(holes[itmass].tmass_j, $
+                                          holes[itmass].tmass_h, $
+                                          holes[itmass].tmass_k)
+endif
+isdss= where(holes.run gt 0, nsdss)
+if(nsdss gt 0) then begin
+    plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].psfflux > 0.1)
+endif
 
 ;; We will ignore these likelihood columns
 plug.starl=0.
@@ -140,7 +157,7 @@ if(nhole gt 0) then begin
     if(n_tags(newplug) gt 0) then begin
         newplug= [newplug, plug[ihole[isort]]] 
         newholes= [newholes, holes[ihole[isort]]] 
-    else begin
+    endif else begin
         newplug= plug[ihole[isort]]
         newholes= holes[ihole[isort]]
     endelse
