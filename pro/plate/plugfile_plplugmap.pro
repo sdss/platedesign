@@ -160,7 +160,8 @@ for pointing=1L, npointings do begin
     deccen[pointing-1L]=tmp_deccen
 endfor
 
-pointing_post=['', 'A', 'B', 'C', 'D', 'E']
+pointing_post=['', 'B', 'C', 'D', 'E', 'F']
+pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
 for pointing=1L, npointings do begin
     outhdr = ['completeTileVersion   none', $
               'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
@@ -174,12 +175,24 @@ for pointing=1L, npointings do begin
               'haMin ' + string(ha[pointing-1]), $
               'haMax ' + string(ha[pointing-1]), $
               'mjdDesign ' + string(long(current_mjd())), $
+              'pointing ' + pointing_name[pointing-1], $
               'theta 0 ', $
               hdr]
     platestr= strtrim(string(f='(i4.4)', plateid),2)
     plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
       pointing_post[pointing-1]+'.par' 
-    yanny_write, plugmapfile, ptr_new(plug), hdr=outhdr, $
+
+    thisplug=plug
+    inotthis= where(thisplug.pointing ne pointing AND $
+                    thisplug.pointing ne 0L, nnotthis)
+    if(nnotthis gt 0L) then begin
+        thisplug[inotthis].objtype= 'SKY'
+        thisplug[inotthis].mag= 25.
+        thisplug[inotthis].primtarget= 0
+        thisplug[inotthis].sectarget= 16
+    endif
+
+    yanny_write, plugmapfile, ptr_new(thisplug), hdr=outhdr, $
       enums=plugenum, structs=plugstruct
 endfor
 
