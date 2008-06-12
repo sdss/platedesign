@@ -87,6 +87,7 @@ if (keyword_set(objt)) then begin
                             / (max(objt.tmass_j) - min(objt.tmass_j) + 0.1) )
     
     sphoto_design= replicate(design_blank(), n_elements(objt))
+    struct_assign, objt, sphoto_design, /nozero
     sphoto_design.target_ra= objt.tmass_ra
     sphoto_design.target_dec= objt.tmass_dec
     sphoto_design.priority= priority_t
