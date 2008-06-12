@@ -198,6 +198,8 @@ endfor
 pointing_post=['', 'B', 'C', 'D', 'E', 'F']
 pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
 for pointing=1L, npointings do begin
+
+    ;; add header keywords
     outhdr = ['completeTileVersion   none', $
               'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
               '# tileId is set to designid for SDSS-III plates', $
@@ -213,10 +215,18 @@ for pointing=1L, npointings do begin
               'pointing ' + pointing_name[pointing-1], $
               'theta 0 ', $
               hdr]
+
+    ;; get rid of repeats (this keeps first value for repeated ones)
+    outhdrstr= lines2struct(outhdr, /relaxed)
+    outhdr= struct2lines(outhdrstr)
+
+    ;; output file name
     platestr= strtrim(string(f='(i4.4)', plateid),2)
     plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
       pointing_post[pointing-1]+'.par' 
-
+    
+    ;; for holes that aren't in this pointing, replace values with sky
+    ;; values
     thisplug=plug
     inotthis= where(holes.pointing ne pointing AND $
                     holes.pointing ne 0L, nnotthis)
@@ -227,6 +237,13 @@ for pointing=1L, npointings do begin
         thisplug[inotthis].sectarget= 16
     endif
 
+    ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
+    plate_xy2ad, outhdrstr, outhdrstr, pointing, 0L, thisplug.xfocal, $
+      thisplug.yfocal, ra=ra, dec=dec, lst=racen[pointing-1]+ha[pointing-1], $
+      airtemp= temp
+    thisplug.ra= ra
+    thisplug.dec= dec
+    
     yanny_write, plugmapfile, ptr_new(thisplug), hdr=outhdr, $
       enums=plugenum, structs=plugstruct
 endfor
