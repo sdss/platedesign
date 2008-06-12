@@ -93,6 +93,7 @@ if (keyword_set(objs)) then begin
                              / (max(cdist) - min(cdist) + 0.01))
     
     sphoto_design= replicate(design_blank(), n_elements(objs))
+    struct_assign, objs, sphoto_design, /nozero
     sphoto_design.target_ra= objs.ra
     sphoto_design.target_dec= objs.dec
     sphoto_design.priority= priority_s
