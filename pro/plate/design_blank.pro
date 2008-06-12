@@ -65,6 +65,8 @@ design0={DESIGN_TARGET, $
          id:0L, $
          psfflux:fltarr(5), $
          psfflux_ivar:fltarr(5), $
+         fiberflux:fltarr(5), $
+         fiberflux_ivar:fltarr(5), $
          targetids:'NA' $
         }
 
