@@ -19,7 +19,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber
 
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
-    for i=0L, n_elements(designid)-1L do begin
+    for i=0L, n_elements(plateid)-1L do begin
         plate_design, plateid[i], debug=debug, clobber=clobber
     endfor
     return
