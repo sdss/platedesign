@@ -14,7 +14,12 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plugfile_plplugmap, hdr, holes
+pro plugfile_plplugmap, plateid
+
+platedir= plate_dir(plateid)
+platefile= platedir+'/plateHoles-'+ $
+  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+holes= yanny_readone(platefile, hdr=hdr)
 
 definition= lines2struct(hdr)
 default= definition
@@ -121,8 +126,10 @@ reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
 
 ;; resort fibers
 ihole= where(plug.holetype eq 'LIGHT_TRAP', nhole)
-if(nhole gt 0) then $
-  newplug= plug[ihole]
+if(nhole gt 0) then begin
+    newplug= plug[ihole]
+    newholes= holes[ihole]
+endif
 
 ihole= where(plug.holetype eq 'GUIDE' OR $
              plug.holetype eq 'ALIGNMENT', nhole)
@@ -130,26 +137,33 @@ if(nhole gt 0) then begin
     sortstr= string(plug[ihole].fiberid, f='(i2.2)')+ $
       plug[ihole].holetype
     isort=sort(sortstr)
-    if(n_tags(newplug) gt 0) then $
-      newplug= [newplug, plug[ihole[isort]]] $
-    else $
-      newplug= plug[ihole[isort]]
+    if(n_tags(newplug) gt 0) then begin
+        newplug= [newplug, plug[ihole[isort]]] 
+        newholes= [newholes, holes[ihole[isort]]] 
+    else begin
+        newplug= plug[ihole[isort]]
+        newholes= holes[ihole[isort]]
+    endelse
 endif
 
 ihole= where(plug.holetype eq 'OBJECT', nhole)
 if(nhole gt 0) then begin
     isort= sort(abs(plug[ihole].fiberid))
     newplug=[newplug, plug[ihole[isort]]]
+    newholes=[newholes, holes[ihole[isort]]]
 endif
 
 ihole= where(plug.holetype eq 'QUALITY', nhole)
-if(nhole gt 0) then $
-  newplug=[newplug, plug[ihole]]
+if(nhole gt 0) then begin
+    newplug=[newplug, plug[ihole]]
+    newholes=[newholes, holes[ihole]]
+endif
 
 if(n_elements(newplug) ne n_elements(plug)) then $
   message, 'Sorted plug structure messed up!'
 
 plug=newplug
+holes=newholes
 
 racen=dblarr(npointings)
 deccen=dblarr(npointings)
@@ -183,8 +197,8 @@ for pointing=1L, npointings do begin
       pointing_post[pointing-1]+'.par' 
 
     thisplug=plug
-    inotthis= where(thisplug.pointing ne pointing AND $
-                    thisplug.pointing ne 0L, nnotthis)
+    inotthis= where(holes.pointing ne pointing AND $
+                    holes.pointing ne 0L, nnotthis)
     if(nnotthis gt 0L) then begin
         thisplug[inotthis].objtype= 'SKY'
         thisplug[inotthis].mag= 25.
