@@ -23,14 +23,14 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p1/o1 ... p1/oN .. pM/o0 ... pM/oN
 # (for M pointings and N offsets).
-nSDSS_science 272 272 
-nSDSS_sky 32 32
+nSDSS_science 304 304 
+nSDSS_sky 0 0
 nSDSS_standard 16 16
 
 # What are conditions on number of skies and standards per block?
 # (per pointing -- one entry per instrument)
 minstdinblockSDSS 0
-minskyinblockSDSS 1
+minskyinblockSDSS 0
 
 # Expected exposure time for each pointing in seconds; 
 # not used in operations! Just for the record. The pointingExpTime
@@ -46,7 +46,6 @@ guideNums2 6 7 8 4 5 11
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # (Include guide instrument here)
 # BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
-# BUG: SIZES BELOW ARE TOTALLY WRONG
 ferruleSizeSDSS 3.175
 bufferSizeSDSS 0.076
 
