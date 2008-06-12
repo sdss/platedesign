@@ -165,6 +165,10 @@ if(n_elements(newplug) ne n_elements(plug)) then $
 plug=newplug
 holes=newholes
 
+sortedplatefile= platedir+'/plateHolesSorted-'+ $
+  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+yanny_write, sortedplatefile, ptr_new(holes), hdr=hdr
+
 racen=dblarr(npointings)
 deccen=dblarr(npointings)
 for pointing=1L, npointings do begin
