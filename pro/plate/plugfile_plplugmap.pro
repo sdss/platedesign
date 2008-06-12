@@ -213,6 +213,7 @@ for pointing=1L, npointings do begin
               'haMax ' + string(ha[pointing-1]), $
               'mjdDesign ' + string(long(current_mjd())), $
               'pointing ' + pointing_name[pointing-1], $
+              'mag_quality bad',  $
               'theta 0 ', $
               hdr]
 
