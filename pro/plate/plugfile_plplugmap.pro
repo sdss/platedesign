@@ -216,9 +216,6 @@ for pointing=1L, npointings do begin
               'theta 0 ', $
               hdr]
 
-    ;; get rid of repeats (this keeps first value for repeated ones)
-    outhdrstr= lines2struct(outhdr, /relaxed)
-    outhdr= struct2lines(outhdrstr)
 
     ;; output file name
     platestr= strtrim(string(f='(i4.4)', plateid),2)
