@@ -17,9 +17,9 @@ platerun_dir= getenv('PLATELIST_DIR')+'/runs/'+platerun
 
 spawn, 'mkdir -p '+platerun_dir
 
-spawn, 'cp '+getenv('PLATEDESIGN_DIR')+'/data/sdss/plParam.par '+ $
+spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/sdss/plParam.par '+ $
   platerun_dir+'/plParam-'+platerun+'.par'
-spawn, 'cp '+getenv('PLATEDESIGN_DIR')+'/data/sdss/g_codes*.txt '+ $
+spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/sdss/g_codes*.txt '+ $
   platerun_dir
 
 plhdr = '# Created on ' + systime()
@@ -63,7 +63,7 @@ for i=0L, n_elements(plateid)-1L do begin
     plobs[i].temp= float(hdrstr.temp)
     plobs[i].hamin= float(hdrstr.hamin)
     plobs[i].hamax= float(hdrstr.hamax)
-    spawn, 'cp '+plate_dir(plateid[i])+'/plPlugMapP-'+ $
+    spawn, 'cp -f '+plate_dir(plateid[i])+'/plPlugMapP-'+ $
       strtrim(string(plateid[i], f='(i4.4)'),2)+'.par '+ $
       platerun_dir
 endfor
