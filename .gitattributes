@@ -29,6 +29,8 @@ obsolete/pro/plate_qsos_feb08.pro -text
 obsolete/pro/plate_select_guide.pro -text
 obsolete/pro/plate_select_sky.pro -text
 obsolete/pro/qsolist_read.pro -text
+pro/misc/check_new_cover.pro -text
+pro/misc/check_old_cover.pro -text
 pro/misc/lines2struct.pro -text
 pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
