@@ -19,7 +19,7 @@ pro plugfile_plplugmap, plateid
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
-holes= yanny_readone(platefile, hdr=hdr)
+holes= yanny_readone(platefile, hdr=hdr, /anon)
 
 definition= lines2struct(hdr)
 default= definition
