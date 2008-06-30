@@ -32,7 +32,7 @@ cand_dec=0
 
 ;; if SDSS exists, use its determinations
 if(keyword_set(rerun)) then begin
-    objs= sdss_circle(ra, dec, radius, rerun=rerun, objtype='sky')
+    objs= sdss_sweep_circle(ra, dec, radius, type='sky', /silent)
     if(n_tags(objs) gt 0) then begin
         ing=spheregroup(objs.ra, objs.dec, exclude/3600., firstg=firstg)
         cand_ra=objs[firstg].ra
