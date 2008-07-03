@@ -4,13 +4,12 @@
 ; PURPOSE:
 ;   Select spectro-photo stars for a single plate from SDSS
 ; CALLING SEQUENCE:
-;   plate_select_sphoto_sdss, racen, deccen, [ rerun=, tilerad=, $
+;   plate_select_sphoto_sdss, racen, deccen, [ tilerad=, $
 ;    sphoto_mag=, sphoto_design= ]
 ; INPUTS:
 ;   racen - RA center for pointing [J2000 deg]
 ;   deccen - DEC center for pointing [J2000 deg]
 ; OPTIONAL INPUTS:
-;   rerun - Rerun name(s)
 ;   tilerad - Tile radius; default to 1.49 deg
 ;   sphoto_mag - Magnitude range for SPECTROPHOTO_STD stars; default
 ;                to 15.5 < g < 17
@@ -28,6 +27,8 @@
 ;     r-i = 0.101
 ;     i-z = 0.013
 ;   We assume that no proper motions are necessary for these stars.
+;   Changed to use datasweeps; requires $PHOTO_SWEEP to be set.
+;     (rerun input still allowed, but ignored)
 ; REVISION HISTORY:
 ;   10-Oct-2007  Written by D. Schlegel, LBL
 ;-
@@ -41,24 +42,12 @@ if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 if (keyword_set(sphoto_mag1)) then sphoto_mag = sphoto_mag1 $
 else sphoto_mag = [15.5,17]
-if(NOT keyword_set(rerun)) then $
-  message, 'Must specify RERUN'
 
 if(NOT keyword_set(gminmax)) then $
   gminmax=[15.5, 17.]
 
 ;; Find all SDSS objects in the footprint
-flist = sdss_astr2fields(radeg=racen, decdeg=deccen, radius=tilerad, $
-                         rerun=rerun)
-if (keyword_set(flist)) then begin
-    objs = sdss_readobj(flist.run, flist.camcol, flist.field, $
-                        rerun=flist.rerun)
-    spherematch, racen, deccen, objs.ra, objs.dec, tilerad, m1, m2, max=0
-    if(m1[0] eq -1) then $
-      objs=0 $
-    else $
-      objs=objs[m2]
-endif
+objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
 ;; Trim to good observations of isolated stars
 if (keyword_set(objs)) then begin

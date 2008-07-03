@@ -15,9 +15,9 @@
 ;   exclude - exclusion area around each sky in arcsec (default 120'')
 ; COMMENTS:
 ;   First checks for SDSS imaging, uses PHOTO sky objects (returns all
-;   in area).
+;     in area).  Uses datasweeps, requires $PHOTO_SWEEP to be set.
 ;   If SDSS isn't found, finds DSS image with querydss command,
-;   returns lowest three locations (with 120'' exclusion)
+;     returns lowest three locations (with 120'' exclusion)
 ; REVISION HISTORY:
 ;   11-Sep-2007  MRB, NYU
 ;-

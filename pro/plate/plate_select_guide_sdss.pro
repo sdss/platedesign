@@ -5,7 +5,7 @@
 ;   Select guide stars for a single plate from SDSS
 ; CALLING SEQUENCE:
 ;   plate_select_guide_sdss, racen, deccen, epoch= $
-;    [ rerun=, tilerad=, guide_design= ]
+;    [ tilerad=, guide_design= ]
 ; INPUTS:
 ;   racen      - RA center for tile [J2000 deg]
 ;   deccen     - DEC center for tile [J2000 deg]
@@ -22,6 +22,8 @@
 ;     0.0 < r-i < 0.7
 ;     -0.4 < i-z < 1.0
 ;   All magnitudes and colors are without extinction-correction.
+;   Changed to use datasweeps; requires $PHOTO_SWEEP to be set.
+;     (rerun input still allowed, but ignored)
 ; REVISION HISTORY:
 ;   10-Oct-2007  Written by D. Schlegel, LBL
 ;-
@@ -40,21 +42,9 @@ else tilerad = 1.49
 if(NOT keyword_set(gminmax)) then $
   gminmax=[13., 15.5]
 
-if(NOT keyword_set(rerun)) then $
-  message, 'Must specify RERUN'
 
 ;; Find all SDSS objects in the footprint
-flist = sdss_astr2fields(radeg=racen, decdeg=deccen, radius=tilerad, $
-                         rerun=rerun)
-if (keyword_set(flist)) then begin
-    objs = sdss_readobj(flist.run, flist.camcol, flist.field, $
-                        rerun=flist.rerun)
-    spherematch, racen, deccen, objs.ra, objs.dec, tilerad, m1, m2, max=0
-    if(m1[0] eq -1) then $
-      objs=0 $
-    else $
-      objs=objs[m2]
-endif
+objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
 ;; Trim to good observations of isolated stars
 if (keyword_set(objs)) then begin
@@ -99,12 +89,13 @@ if (keyword_set(objs)) then begin
     ;; leap years only approximated).
     ra=objs.ra
     dec=objs.dec
-    from_mjd=objs.mjd
+    from_mjd=sdss_run2mjd(objs.run)
     to_mjd = (epoch - 2000.)*365.25 + 51544.5d0
     plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd
     
     ;; Now put results into a design structure
     guide_design= replicate(design_blank(/guide), n_elements(objs))
+    struct_assign, objs, guide_design, /nozero
     guide_design.target_ra= ra
     guide_design.target_dec= dec
 endif
