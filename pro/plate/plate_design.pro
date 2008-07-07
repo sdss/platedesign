@@ -130,7 +130,7 @@ if(keyword_set(clobber) gt 0 OR $
     if(tag_exist(default, 'COLLECTFACTOR')) then $
       collectfactor= long(default.collectfactor) $
     else $
-      collectfactor= 5L
+      collectfactor= 10L
     fibercount= {instruments:instruments, $
                  targettypes:targettypes, $
                  ntot:ntot, $

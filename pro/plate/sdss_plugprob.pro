@@ -12,10 +12,17 @@
 ;   fiberused - [N] 1-indexed indices of already used fibers
 ;   mininblock - minimum numbers of fibers to assign per block
 ;                [default 0]
+;   mininblock - maximum numbers of fibers to assign per block
+;                [default 20]
 ;   minavail - don't assign a fiber to a target unless more than
 ;              minavail fibers in the same block can also reach it
 ;              [default 8]
 ;   nmax - use at most this many fibers total
+;   toblock - [N] assign each fiber to this particular block (0 for
+;             no constraint)
+;   blockcenx, blockceny - [20] centers of cost for assigning a fiber
+;                          in each block to a target (if set, this cost used
+;                          instead of normal distance-to-fiber cost)
 ; OPTIONAL KEYWORDS:
 ;   /quiet - be quiet about warnings
 ; OUTPUTS:
@@ -33,21 +40,41 @@
 ;-
 pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    mininblock=mininblock, fiberused=fiberused, $
-                   nmax=nmax, quiet=in_quiet, limitdegree=limitdegree
+                   nmax=nmax, quiet=in_quiet, limitdegree=limitdegree, $
+                   toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
+                   maxinblock=maxinblock
 
 common com_plugprob, fiberblocks
 
 platescale = 217.7358           ; mm/degree
 if(NOT keyword_set(limitdegree)) then $
   limitdegree= 7.*0.1164        ; limit of fiber reach
+if(NOT keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
 if(NOT keyword_set(mininblock)) then mininblock= 0L
+if(NOT keyword_set(maxinblock)) then maxinblock= 20L
 if(NOT keyword_set(minavail)) then minavail= 8L
 quiet= long(keyword_set(in_quiet))
 
-;; get fiber positions
 if(n_tags(fiberblocks) eq 0) then $
-    fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                               '/data/sdss/fiberBlocks.par')
+  fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
+                             '/data/sdss/fiberBlocks.par')
+
+;; default centers of blocks
+blockconstrain=1L
+if(keyword_set(blockcenx) eq 0 OR $
+   keyword_set(blockceny) eq 0) then begin
+    nblocks=max(fiberblocks.blockid)
+    blockcenx= fltarr(nblocks)
+    blockceny= fltarr(nblocks)
+    for i=1L, nblocks do begin
+        ib= where(fiberblocks.blockid eq i, nb)
+        blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
+        blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
+    endfor
+    blockconstrain=0L
+endif
+
+;; get fiber positions
 xfiber= double(fiberblocks.fibercenx)
 yfiber= double(fiberblocks.fiberceny)
 nfibers=n_elements(xfiber)
@@ -72,9 +99,11 @@ soname = filepath('libfiber.'+idlutils_so_ext(), $
 retval = call_external(soname, 'idl_write_plugprob', $
                        double(xtarget), double(ytarget), long(ntargets), $
                        double(xfiber), double(yfiber), long(used), $
-                       long(nfibers), long(nmax), long(nfibersblock), $
-                       double(limitdegree), long(minavail), long(mininblock), $
-                       string(probfile))
+                       long(toblock), long(nfibers), long(nmax), $
+                       long(nfibersblock), double(limitdegree), $
+                       long(minavail), long(mininblock), long(maxinblock), $
+                       double(blockcenx), double(blockceny), $
+                       long(blockconstrain), string(probfile))
 
 spawn, 'cat '+tmpdir+'/tmp_prob.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $

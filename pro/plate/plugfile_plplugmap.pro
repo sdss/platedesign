@@ -124,10 +124,10 @@ plug.primtarget= 0
 plug.fiberid=-9999
 ihole=where(holes.fiberid ge 1, nhole)
 ;; Reassign fiberid to space nicely.
-sdss_plugprob, plug[ihole].xfocal, plug[ihole].yfocal, fiberid
-plug[ihole].fiberid=-fiberid
-;;;if(nhole gt 0) then $
-;;  plug[ihole].fiberid= -holes[ihole].fiberid
+;;sdss_plugprob, plug[ihole].xfocal, plug[ihole].yfocal, fiberid
+;;plug[ihole].fiberid=-fiberid
+if(nhole gt 0) then $
+  plug[ihole].fiberid= -holes[ihole].fiberid
 
 ;; but guide fibers get fiberid set too
 ihole=where(holes.iguide ge 1, nhole)
