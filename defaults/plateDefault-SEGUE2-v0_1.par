@@ -27,6 +27,11 @@ nSDSS_science 592
 nSDSS_sky 32 
 nSDSS_standard 16 
 
+# What are conditions on number of skies and standards per block?
+# (per pointing)
+minstdinblockSDSS 0
+minskyinblockSDSS 1
+
 # Expected exposure time for each pointing in seconds; 
 # not used in operations! Just for the record. The pointingExpTime
 # values are those before any offset.
