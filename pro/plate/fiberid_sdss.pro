@@ -34,8 +34,11 @@ function fiberid_sdss, default, fibercount, design, $
                        nosky=nosky, nostd=nostd, noscience=noscience, $
                        quiet=quiet, block=block
 
+common com_fiberid_sdss, fiberblocks
+
+platescale = 217.7358           ; mm/degree
 limitdegree=7.*0.1164 ;; limit of fiber reach
-skylimitdegree= limitdegree ;; do not stretch as far for skies
+skylimitdegree= limitdegree ;; stretch just as far for skies
 stdlimitdegree= limitdegree ;; ... and standards
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
@@ -45,6 +48,52 @@ fiberused=0L
 fiberid=lonarr(n_elements(design))
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
+
+;; default centers of blocks
+if(n_tags(fiberblocks) eq 0) then $
+    fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
+                               '/data/sdss/fiberBlocks.par')
+nblocks=max(fiberblocks.blockid)
+blockcenx= fltarr(nblocks)
+blockceny= fltarr(nblocks)
+for i=1L, nblocks do begin
+    ib= where(fiberblocks.blockid eq i, nb)
+    blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
+    blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
+endfor
+
+;; first assign science, and reset block centers to follow science
+;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
+if(NOT keyword_set(noscience)) then begin
+    isci= where(strupcase(design.targettype) ne 'SKY' AND $
+                strupcase(design.targettype) ne 'STANDARD', nsci)
+    if(nsci gt 0) then begin
+        
+        ;; assign the fibers 
+        sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
+          tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree, $
+          maxinblock=20L-minstdinblock-minskyinblock
+        
+        ;; which block is each in
+        block= lonarr(n_elements(tmp_fiberid))-1L
+        igood= where(tmp_fiberid ge 1, ngood)
+        if(ngood gt 0) then begin
+            block[igood]= (tmp_fiberid[igood]-1L)/20L+1L
+            
+            ;; now find the center location for each block
+            for i=1L, nblocks do begin
+                ib= where(block eq i, nb)
+                if(nb gt 0) then begin
+                    blockcenx[i-1]= mean(design[ib].xf_default)/platescale
+                    blockceny[i-1]= mean(design[ib].yf_default)/platescale
+                endif 
+            endfor
+        endif
+    endif else begin
+        if(NOT keyword_set(quiet)) then $
+          splog, 'No science targets in this plate.'
+    endelse
+endif
 
 if(NOT keyword_set(nostd)) then begin
     ;; assign standards, if any exist
@@ -61,10 +110,11 @@ if(NOT keyword_set(nostd)) then begin
                 nmax=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
                 
                 sdss_plugprob, design[istd].xf_default, $
-                               design[istd].yf_default, $
-                               tmp_fiberid, mininblock=minstdinblock, $
-                               minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               limitdegree=stdlimitdegree, /quiet
+                  design[istd].yf_default, $
+                  tmp_fiberid, mininblock=minstdinblock, $
+                  minavail=8L, fiberused=fiberused, nmax=nmax, $
+                  limitdegree=stdlimitdegree, $
+                  blockcenx=blockcenx, blockceny=blockceny, /quiet
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -97,11 +147,12 @@ if(NOT keyword_set(nosky)) then begin
                 nmax=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
                 
                 sdss_plugprob, design[isky].xf_default, $
-                               design[isky].yf_default, $
-                               tmp_fiberid, mininblock=minskyinblock, $
-                               minavail=1L, fiberused=fiberused, nmax=nmax, $
-                               limitdegree=skylimitdegree, /quiet
-
+                  design[isky].yf_default, $
+                  tmp_fiberid, mininblock=minskyinblock, $
+                  minavail=8L, fiberused=fiberused, nmax=nmax, $
+                  limitdegree=skylimitdegree, $
+                  blockcenx=blockcenx, blockceny=blockceny, /quiet
+                
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
                 if(nassigned gt 0) then begin
@@ -120,14 +171,17 @@ if(NOT keyword_set(nosky)) then begin
     endfor
 endif
 
+;; finally, assign science again
 if(NOT keyword_set(noscience)) then begin
-    ;; assign the rest
-    ileft= where(strupcase(design.targettype) ne 'SKY' AND $
-                 strupcase(design.targettype) ne 'STANDARD', nleft)
-    if(nleft gt 0) then begin
-        sdss_plugprob, design[ileft].xf_default, design[ileft].yf_default, $
+    isci= where(strupcase(design.targettype) ne 'SKY' AND $
+                strupcase(design.targettype) ne 'STANDARD', nsci)
+    if(nsci gt 0) then begin
+        
+        ;; assign the fibers 
+        sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
           tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree
         
+        ;; do store results
         iassigned=where(tmp_fiberid ge 1, nassigned)
         help, nassigned
         if(nassigned gt 0) then begin
@@ -135,19 +189,34 @@ if(NOT keyword_set(noscience)) then begin
               fiberused=tmp_fiberid[iassigned] $
             else $
               fiberused=[fiberused, tmp_fiberid[iassigned]] 
-            fiberid[ileft[iassigned]]=tmp_fiberid[iassigned]
+            fiberid[isci[iassigned]]=tmp_fiberid[iassigned]
         endif 
+        
     endif else begin
         if(NOT keyword_set(quiet)) then $
           splog, 'No science targets in this plate.'
     endelse
 endif
 
-block= lonarr(n_elements(fiberid))-9999L
+block= lonarr(n_elements(fiberid))-1L
 igood= where(fiberid ge 1, ngood)
 if(ngood gt 0) then begin
     block[igood]= (fiberid[igood]-1L)/20L+1L
+
+    ;; now we have all the fibers assigned, and satisfy the number per
+    ;; block constraints. as a last step, we will reassign KEEPING THE
+    ;; BLOCK ASSIGNMENTS FIXED
+    ii=where(design[igood].targettype eq 'SKY' OR $
+             design[igood].targettype eq 'STANDARD', nii)
+    if(nii gt 0) then begin
+        toblock=lonarr(n_elements(design))
+        toblock[igood[ii]]=block[igood[ii]]
+        sdss_plugprob, design[igood].xf_default, design[igood].yf_default, $
+          tmp_fiberid, toblock=toblock[igood], limitdegree=limitdegree
+        fiberid[igood]= tmp_fiberid
+    endif
 endif
+
     
 return, fiberid
 

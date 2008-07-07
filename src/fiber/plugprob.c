@@ -30,15 +30,20 @@ int write_plugprob(double xtarget[],
 									 double xfiber[],
 									 double yfiber[],
 									 int fiberused[],
+									 int toblock[],
 									 int nFibers,
 									 int nMax,
 									 int nFibersBlock,
 									 double limitDegree, 
 									 int minAvailInBlock,
 									 int minFibersInBlock,
+									 int maxFibersInBlock,
+									 double blockcenx[],
+									 double blockceny[],
+									 int blockconstrain,
 									 char probfile[])
 {
-	double sep2,limit2;
+	double sep2,limit2,bsep2;
 	int i,j,jFiber,nArcs,nNodes,block;
 	long cost;
 	FILE *fp;
@@ -70,11 +75,15 @@ int write_plugprob(double xtarget[],
 
 		/* now figure out which fibers can reach the target,
 		 * for which a number of fibers >= minAvailInBlock in the
-		 * block can actually reach the target */
+		 * block can actually reach the target; additionally, if
+		 * toblock for this target is not 0, require that the fiber 
+		 * be assigned to only fibers in a specific block (note 
+		 * we have to account for zero-indexing of blocks here) */
 		nFiberTargets[i]=0;
 		for(j=0;j<nFibers;j++) {
 			block=(int) floor(j/nFibersBlock);
-			if(nTargetBlocks[block]>=minAvailInBlock) {
+			if(nTargetBlocks[block]>=minAvailInBlock && 
+				 (toblock[i]==0 || block==toblock[i]-1)) {
 				sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
 					(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
 				if(sep2<limit2) {
@@ -126,9 +135,18 @@ int write_plugprob(double xtarget[],
   fprintf(fp, "c target to fiber arcs\n");
   for(i=0;i<nTargets;i++) {
 		for(j=0;j<nFiberTargets[i];j++) {
+
+			/* get fiber separation */
 			jFiber=fiberTargets[i*nFibers+j];
 			sep2=(xtarget[i]-xfiber[jFiber])*(xtarget[i]-xfiber[jFiber])+
 				(ytarget[i]-yfiber[jFiber])*(ytarget[i]-yfiber[jFiber]);
+
+			/* get distance from block center (a lesser consideration */
+			block=(int) floor(jFiber/nFibersBlock);
+			bsep2=(xtarget[i]-blockcenx[block])*(xtarget[i]-blockcenx[block])+
+				(ytarget[i]-blockceny[block])*(ytarget[i]-blockceny[block]);
+			if(blockconstrain>0) sep2=bsep2;
+
 			cost=(long) floor(0.5*COSTFACTOR*sep2);
 			fprintf(fp,"a %d %d %d %d %ld\n",i+1,nTargets+jFiber+1,0, 
 							1-fiberused[jFiber],cost);
@@ -145,7 +163,7 @@ int write_plugprob(double xtarget[],
   fprintf(fp, "c block to sink arcs\n");
   for(i=0;i<nBlocks;i++) {
     fprintf(fp,"a %d %d %d %d %d\n", nTargets+nFibers+i+1, nNodes-1,
-						minFibersInBlock, nFibersBlock, 0);
+						minFibersInBlock, maxFibersInBlock, 0);
   } /* end for i */
 
 	/* last arc for impossible galaxies */
