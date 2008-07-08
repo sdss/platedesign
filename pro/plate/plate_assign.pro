@@ -4,8 +4,10 @@
 ; PURPOSE:
 ;   Assign targets to a current plate
 ; CALLING SEQUENCE:
-;   plate_assign, fibercount, design, new_design [, seed= ]
+;   plate_assign, definition, fibercount, design, new_design [, seed= ]
 ; INPUTS:
+;   definition - structure with plate definition info (required to
+;                have .RACEN and .DECCEN)
 ;   fibercount - structure with number of science, sky, standards 
 ;                used and total for each instrument:
 ;                  .INSTRUMENTS[NINSTRUMENT]
@@ -26,7 +28,10 @@
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
 ;-
-pro plate_assign, fibercount, design, new_design, seed=seed, collect=collect
+pro plate_assign, definition, default, fibercount, design, new_design, $
+                  seed=seed, collect=collect
+
+tilerad=1.49
 
 ;; normally limit by number of available fibers; however, in some
 ;; cases we want to collect a large set of non-colliding ones (for
@@ -70,26 +75,37 @@ for i=0L, ntargets-1L do begin
     if(ntargettypes eq 0) then $
       message, 'no such target types for type of hole '+curr_targettype
 
-    ;; if there are fewer fibers used from this instrument than
-    ;; available, see if you can assign it
-    if(fibercount.nused[iinstrument,itarget,curr_pointing-1L,curr_offset] lt $
-       nlimit[iinstrument,itarget,curr_pointing-1L,curr_offset]) then begin
-        
-        ;; if this target is not conflicted with a previous target,
-        ;; mark it as assigned, increment the number of fibers of this
-        ;; type in use, and add it to the design list
-        new_design[icurr].conflicted= $
-          check_conflicts(design, new_design[icurr])
-        if(new_design[icurr].conflicted eq 0) then begin
-            new_design[icurr].assigned=1
-            fibercount.nused[iinstrument, itarget, $
-                             curr_pointing-1L, curr_offset]= $
-              fibercount.nused[iinstrument, itarget, $
-                               curr_pointing-1L, curr_offset]+1L
-            design= [design, new_design[icurr]]
-        endif
+    ;; if this fiber is outside the radius, discount it altogether
+    plate_center, definition, default, curr_pointing, curr_offset, $
+      racen=racen, deccen=deccen
+    spherematch, racen, deccen, new_design[icurr].target_ra, $
+      new_design[icurr].target_dec, tilerad, m1, m2
+    if(m1[0] ne -1) then begin
+        ;; if there are fewer fibers used from this instrument than
+        ;; available, see if you can assign it
+        if(fibercount.nused[iinstrument,itarget, $
+                            curr_pointing-1L,curr_offset] lt $
+           nlimit[iinstrument,itarget, $
+                  curr_pointing-1L,curr_offset]) then begin
+            
+            ;; if this target is not conflicted with a previous target,
+            ;; mark it as assigned, increment the number of fibers of this
+            ;; type in use, and add it to the design list
+            new_design[icurr].conflicted= $
+              check_conflicts(design, new_design[icurr])
+            if(new_design[icurr].conflicted eq 0) then begin
+                new_design[icurr].assigned=1
+                fibercount.nused[iinstrument, itarget, $
+                                 curr_pointing-1L, curr_offset]= $
+                  fibercount.nused[iinstrument, itarget, $
+                                   curr_pointing-1L, curr_offset]+1L
+                design= [design, new_design[icurr]]
+            endif
+        endif else begin
+            new_design[icurr].ranout=1
+        endelse
     endif else begin
-        new_design[icurr].ranout=1
+        new_design[icurr].outside=1
     endelse
 endfor
 

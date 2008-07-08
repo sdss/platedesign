@@ -41,6 +41,7 @@ design0={DESIGN_TARGET, $
          assigned:0L, $
          conflicted:0L, $
          ranout:0L, $
+         outside:0L, $
          tmass_j:-9999., $
          tmass_h:-9999., $
          tmass_k:-9999., $

@@ -204,7 +204,8 @@ if(keyword_set(clobber) gt 0 OR $
         endfor
         
         ;; assign holes to each plateInput file
-        plate_assign, fibercount, design, new_design, seed=seed
+        plate_assign, definition, default, fibercount, design, new_design, $
+          seed=seed
 
         ;; output results for this set
         iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
@@ -264,7 +265,8 @@ if(keyword_set(clobber) gt 0 OR $
                     ;; pointing and offsets are considered separately,
                     ;; this does not constitute a guarantee on the
                     ;; final design
-                    plate_assign_constrained, default, instruments[iinst], $
+                    plate_assign_constrained, definition, default, $
+                      instruments[iinst], $
                       'standard', fibercount, pointing, offset, design, $
                       sphoto_design, seed=seed, $
                       minstdinblock=minstdinblock[iinst], $
@@ -290,7 +292,8 @@ if(keyword_set(clobber) gt 0 OR $
                     ;; pointing and offsets are considered separately,
                     ;; this does not constitute a guarantee on the
                     ;; final design
-                    plate_assign_constrained, default, instruments[iinst], $
+                    plate_assign_constrained, definition, default, $
+                      instruments[iinst], $
                       'sky', fibercount, pointing, offset, design, $
                       sky_design, seed=seed, $
                       minstdinblock=minstdinblock[iinst], $
