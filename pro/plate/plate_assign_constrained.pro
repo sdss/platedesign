@@ -4,15 +4,17 @@
 ; PURPOSE:
 ;   Run plate_assign, but make sure we satisfy fiber constraints
 ; CALLING SEQUENCE:
-;   plate_assign_constrained, default, instrument, targettype,
+;   plate_assign_constrained, definition, default, instrument, targettype,
 ;     fibercount, pointing, offset, design, new_design, [ seed=, $
 ;     [parameters for fiberid_ commands]
 ; REVISION HISTORY:
 ;   7-June-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plate_assign_constrained, default, instrument, targettype, fibercount, $
-  pointing, offset, design, in_new_design, seed=seed, _EXTRA=extra_for_fiberid
+pro plate_assign_constrained, definition, default, instrument, $
+                              targettype, fibercount, pointing, offset, $
+                              design, in_new_design, seed=seed, $
+                              _EXTRA=extra_for_fiberid
 
 ;; params from default
 targettypes= strsplit(default.targettypes, /extr)
@@ -30,7 +32,7 @@ while(gotall eq 0) do begin
     ;; satisfy the fiber constraints
     test_design=design
     test_fibercount=fibercount
-    plate_assign, test_fibercount, test_design, $
+    plate_assign, definition, default, test_fibercount, test_design, $
                   new_design, seed=seed, /collect
 
     ;; now assign fibers
