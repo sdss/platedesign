@@ -161,6 +161,7 @@ if(keyword_set(clobber) gt 0 OR $
 
     ;; first, convert inputs into priority list
     ninputs= long(definition.ninputs)
+    hdrs=ptrarr(ninputs)
     priority=lindgen(ninputs)
     if(tag_exist(definition, 'priority')) then $
       priority= long(strsplit(definition.priority, /extr))
@@ -186,6 +187,7 @@ if(keyword_set(clobber) gt 0 OR $
             tmp_targets= yanny_readone(infile, hdr=hdr)
             if(n_tags(tmp_targets) eq 0) then $
               message, 'empty plateInput file '+infile
+            hdrs[k]=ptr_new(hdr)
             hdrstr=lines2struct(hdr)
             
             ;; convert target information to design structure
@@ -203,6 +205,26 @@ if(keyword_set(clobber) gt 0 OR $
         
         ;; assign holes to each plateInput file
         plate_assign, fibercount, design, new_design, seed=seed
+
+        ;; output results for this set
+        iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
+        for j=0L, n_elements(iplate)-1L do begin
+            ithis= where(new_design.iplateinput eq iplate[j], nthis)
+            if(nthis gt 0) then begin
+                outstr= new_design[ithis]
+                pdata= ptr_new(outstr)
+                itag=tag_indx(definition, 'plateInput'+ $
+                              strtrim(string(iplate[j]),2))
+                if(itag eq -1) then $
+                  message, 'no plateInput'+strtrim(string(iplate[j]+1),2)+ $
+                  ' param set'
+                infile=getenv('PLATELIST_DIR')+ '/inputs/'+definition.(itag)
+                filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
+                                   /extr, /sub))[1]
+                yanny_write, designdir+'/'+filebase+'-output.par', pdata, $
+                  hdr=(*hdrs[iplate[j]-1])
+            endif
+        endfor
         
         istart=iend+1L
     endfor
