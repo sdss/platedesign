@@ -48,17 +48,17 @@ platedir= getenv('PLATELIST_DIR')+'/plates/'+ $
   string((plateid/100L), f='(i4.4)')+'XX/'+ $
   string(plateid, f='(i6.6)')
 spawn, 'mkdir -p '+platedir
-    
+
 ;; Read in the plate definition file
 ;; Should be at 
 ;;   $PLATELIST_DIR/definitions/[did/100]00/plateDefinition-[did].par
 ;; as in 
 ;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
 definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
-              string(f='(i4.4)', (designid/100L))+'XX'
+  string(f='(i4.4)', (designid/100L))+'XX'
 definitionfile=definitiondir+'/'+ $
-               'plateDefinition-'+ $
-               string(f='(i6.6)', designid)+'.par'
+  'plateDefinition-'+ $
+  string(f='(i6.6)', designid)+'.par'
 dum= yanny_readone(definitionfile, hdr=hdr)
 if(NOT keyword_set(hdr)) then begin
     message, 'no plateDefinition file '+definitionfile
@@ -69,8 +69,8 @@ definition= lines2struct(hdr)
 ;; (reset any tags that are overwritten by plateDefinition)
 defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
 defaultfile= defaultdir+'/plateDefault-'+ $
-             definition.platetype+'-'+ $
-             definition.platedesignversion+'.par'
+  definition.platetype+'-'+ $
+  definition.platedesignversion+'.par'
 dum= yanny_readone(defaultfile, hdr=hdr)
 if(NOT keyword_set(hdr)) then begin
     message, 'no plateDefaults file '+defaultfile
@@ -122,8 +122,8 @@ if(keyword_set(clobber) gt 0 OR $
                            '_'+strtrim(string(targettypes[j]),2))
             if(itag eq -1) then $
               message, 'must specify n'+ $
-                       strtrim(string(instruments[i]),2)+ $
-                       '_'+strtrim(string(targettypes[j]),2)
+              strtrim(string(instruments[i]),2)+ $
+              '_'+strtrim(string(targettypes[j]),2)
             ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
         endfor
     endfor
@@ -183,7 +183,7 @@ if(keyword_set(clobber) gt 0 OR $
             if(itag eq -1) then $
               message, 'no plateInput'+strtrim(string(k+1),2)+' param set'
             infile=getenv('PLATELIST_DIR')+ $
-                   '/inputs/'+definition.(itag)
+              '/inputs/'+definition.(itag)
             tmp_targets= yanny_readone(infile, hdr=hdr)
             if(n_tags(tmp_targets) eq 0) then $
               message, 'empty plateInput file '+infile
@@ -193,7 +193,7 @@ if(keyword_set(clobber) gt 0 OR $
             ;; convert target information to design structure
             ;; (record which plate input file this came from)
             target2design, definition, default, tmp_targets, tmp_design, $
-                           info=hdrstr
+              info=hdrstr
             tmp_design.iplateinput= k+1L
             
             if(n_tags(new_design) eq 0) then begin
@@ -237,13 +237,13 @@ if(keyword_set(clobber) gt 0 OR $
           tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
         if(iguidenums eq -1) then $
           message, 'Must specify guide fiber numbers for pointing '+ $
-                   strtrim(string(pointing),2)
+          strtrim(string(pointing),2)
         guidenums=long(strsplit(default.(iguidenums),/extr))
         guide_design= plate_guide(definition, default, pointing, $
                                   rerun=rerun, epoch=epoch)
         if(n_tags(guide_design) gt 0) then $
           plate_assign_guide, definition, default, design, guide_design, $
-                              guidenums=guidenums
+          guidenums=guidenums
     endfor
 
     ;; Assign standards 
@@ -309,8 +309,7 @@ if(keyword_set(clobber) gt 0 OR $
     if(nunused gt 0) then begin
         splog, 'Unused fibers found. Please specify more targets!'
         splog, 'Not completing plate design '+strtrim(string(designid),2)
-        if(keyword_set(debug)) then stop
-        return
+        if(not keyword_set(debug)) then return else stop
     endif
 
     ;; Find light traps and assign them
@@ -354,27 +353,30 @@ if(keyword_set(clobber) gt 0 OR $
             if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
               then begin
                 splog, 'Some fibers not assigned to targets!'
-                if(keyword_set(debug)) then stop
-                splog, 'Not completing plate design '+ $
-                       strtrim(string(designid),2)
-                return
-            endif
+                if(not keyword_set(debug)) then begin
+                    splog, 'Not completing plate design '+ $
+                      strtrim(string(designid),2)
+                    return
+                endif else begin
+                stop
+            endelse
         endif
-    endfor
-    ikeep=where(keep gt 0, nkeep)
-    design=design[ikeep]
-    
-    ;; Write out plate assignments to 
-    ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    pdata= ptr_new(design)
-    spawn, 'mkdir -p '+designdir
-    hdrstr=struct_combine(default, definition)
-    outhdr=struct2lines(hdrstr)
-    outhdr=[outhdr, $
-            'platerun '+plan.platerun, $
-            'platedesign_version '+platedesign_version()]
-    yanny_write, designfile, pdata, hdr=outhdr
-    
+    endif
+endfor
+ikeep=where(keep gt 0, nkeep)
+design=design[ikeep]
+
+;; Write out plate assignments to 
+;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
+pdata= ptr_new(design)
+spawn, 'mkdir -p '+designdir
+hdrstr=struct_combine(default, definition)
+outhdr=struct2lines(hdrstr)
+outhdr=[outhdr, $
+        'platerun '+plan.platerun, $
+        'platedesign_version '+platedesign_version()]
+yanny_write, designfile, pdata, hdr=outhdr
+
 endif
 
 ;; Convert plateDesign to plateHoles
