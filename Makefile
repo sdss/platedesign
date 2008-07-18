@@ -1,8 +1,7 @@
 ###############################################################################
 # Sloan Digital Sky Survey (SDSS)
 # IDL support code for products: platedesign
-#
-# S. Burles & D. Schlegel
+# Mike Blanton & Paul Harding
 ###############################################################################
 
 SHELL = /bin/sh
@@ -10,9 +9,9 @@ SHELL = /bin/sh
 .c.o :
 	$(CC) -c $(CCCHK) $(CFLAGS) $*.c
 #
-CFLAGS  = $(SDSS_CFLAGS) -DCHECK_LEAKS -I../include
+CFLAGS  = 
 
-SUBDIRS = src 
+SUBDIRS = bin data defaults docs src pro lib src ups
 
 all :
 	@ for f in $(SUBDIRS); do \
@@ -40,11 +39,7 @@ install :
 	@echo ""
 	@ rm -rf $(PLATEDESIGN_DIR)
 	@ mkdir $(PLATEDESIGN_DIR)
-	@ for f in $(SUBDIRS); do \
-		(mkdir $(PLATEDESIGN_DIR)/$$f; cd $$f ; echo In $$f; $(MAKE) $(MFLAGS) install ); \
-	done
-	- cp Makefile $(PLATEDESIGN_DIR)
-	- cp RELEASE_NOTES $(PLATEDESIGN_DIR)
+	@ cp -rf * $(PLATEDESIGN_DIR)
 
 clean :
 	- /bin/rm -f *~ core
