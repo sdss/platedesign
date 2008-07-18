@@ -11,7 +11,7 @@ SHELL = /bin/sh
 #
 CFLAGS  = 
 
-SUBDIRS = bin data defaults docs src pro lib src ups
+SUBDIRS = src 
 
 all :
 	@ for f in $(SUBDIRS); do \
@@ -39,7 +39,7 @@ install :
 	@echo ""
 	@ rm -rf $(PLATEDESIGN_DIR)
 	@ mkdir $(PLATEDESIGN_DIR)
-	@ cp -rf * $(PLATEDESIGN_DIR)
+	@ cp -rpf * $(PLATEDESIGN_DIR)
 
 clean :
 	- /bin/rm -f *~ core
