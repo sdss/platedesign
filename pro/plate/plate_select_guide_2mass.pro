@@ -33,7 +33,7 @@ if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 
 if(NOT keyword_set(gminmax)) then $
-  gminmax=[13., 15.5]
+  gminmax=[13., 14.5]
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
@@ -93,8 +93,14 @@ if (keyword_set(objt)) then begin
     
     ;; Now put results into a design structure
     guide_design= replicate(design_blank(/guide), n_elements(objt))
+    struct_assign, objt, guide_design, /nozero
     guide_design.target_ra= ra
     guide_design.target_dec= dec
+
+    ;; Finally, set priority; note that for guide stars priority is
+    ;; used differently than elsewhere (see plate_assign_guide.pro)
+    isort= sort(guide_design.tmass_j)
+    guide_design[isort].priority= 1L+lindgen(n_elements(isort))
 endif
 
 return
