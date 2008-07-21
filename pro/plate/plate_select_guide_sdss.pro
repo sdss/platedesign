@@ -40,7 +40,7 @@ if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.49
 
 if(NOT keyword_set(gminmax)) then $
-  gminmax=[13., 15.5]
+  gminmax=[13., 14.5]
 
 
 ;; Find all SDSS objects in the footprint
@@ -98,6 +98,11 @@ if (keyword_set(objs)) then begin
     struct_assign, objs, guide_design, /nozero
     guide_design.target_ra= ra
     guide_design.target_dec= dec
+
+    ;; Finally, set priority; note that for guide stars priority is
+    ;; used differently than elsewhere (see plate_assign_guide.pro)
+    isort= reverse(sort(guide_design.psfflux[1]))
+    guide_design[isort].priority= 1L+lindgen(n_elements(isort))
 endif
 
 return
