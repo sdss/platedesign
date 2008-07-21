@@ -73,10 +73,11 @@ endif
 
 if (keyword_set(objt)) then begin
 
-    ;; Trim back number to maximum
+    ;; Trim back number to maximum; only allow brightest
     if(keyword_set(nguidemax)) then begin
         if(nguidemax lt n_elements(objt)) then begin
-            indx= shuffle_indx(n_elements(objt), num_sub=nguidemax)
+            isort= sort(objt.tmass_j)
+            indx= isort[0:nguidemax-1]
             objt=objt[indx]
         endif
     endif
