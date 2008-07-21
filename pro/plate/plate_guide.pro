@@ -10,7 +10,7 @@
 ;-
 ;------------------------------------------------------------------------------
 function plate_guide, definition, default, pointing, rerun=rerun, $
-  epoch=epoch
+  epoch=epoch, clobber=clobber
 
 if(NOT tag_exist(default, 'GUIDETYPE')) then begin
     return, 0
@@ -32,7 +32,8 @@ guidefile=outdir+'/plateGuide-'+ $
           string(designid, f='(i6.6)')+ $
           '-p'+strtrim(string(pointing),2)+'.par'
 
-if(NOT file_test(guidefile)) then begin
+if(file_test(guidefile) eq 0 OR $
+   keyword_set(clobber) gt 0) then begin
 
     guidetype= (strsplit(default.guidetype, /extr))[pointing-1]
 
