@@ -1,9 +1,9 @@
-# Default settings for example plate (silly)
+# Default settings for SEGUE2
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
 #   SDSS BOSS MARVELS APOGEE
-instruments SDSS 
+instruments SDSS
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
@@ -35,7 +35,7 @@ minskyinblockSDSS 1
 # Expected exposure time for each pointing in seconds; 
 # not used in operations! Just for the record. The pointingExpTime
 # values are those before any offset.
-pointingExpTime1 2700.   
+pointingExpTime1 10800   
 
 # Guide fibers to use for each pointing
 guideType SDSS
@@ -54,11 +54,11 @@ bufferSizeGUIDE 0.3
 
 # Settings if platedesign is meant to find standards
 # Specify which instruments we need to find standards for
-plateDesignStandards SDSS 
+plateDesignStandards SDSS
 
 # For each pointing, what type of standard star?
-standardType SDSS 
+standardType SDSS
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
-plateDesignSkies SDSS 
+plateDesignSkies SDSS
