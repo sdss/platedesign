@@ -30,6 +30,7 @@
 ;
 ; REVISION HISTORY:
 ;   17-Oct-2007  Written by D. Schlegel, LBL
+;   21-Jul-2008  Parameters changed by MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
 function plate_tmass_to_sdss, jmag, hmag, kmag
@@ -40,11 +41,11 @@ function plate_tmass_to_sdss, jmag, hmag, kmag
     message, 'Inconsistent input dimensions'
 
    mag = fltarr(5,nstar)
-   mag[0,*] = jmag + 0.273 + 0.0839 * (jmag - kmag)
-   mag[1,*] = jmag + 0.354 + 0.1143 * (jmag - kmag)
-   mag[2,*] = jmag + 0.416 + 0.1427 * (jmag - kmag)
-   mag[3,*] = jmag + 0.325 + 0.2657 * (jmag - kmag)
-   mag[4,*] = jmag + 0.248 + 0.4184 * (jmag - kmag)
+   mag[0,*] = jmag + 3.516 + 5.9443 * ((jmag - kmag)-0.5)
+   mag[1,*] = jmag + 1.895 + 3.2425 * ((jmag - kmag)-0.5)
+   mag[2,*] = jmag + 1.259 + 1.6908 * ((jmag - kmag)-0.5)
+   mag[3,*] = jmag + 1.039 + 1.1022 * ((jmag - kmag)-0.5)
+   mag[4,*] = jmag + 0.939 + 0.6665 * ((jmag - kmag)-0.5)
 
    return, mag
 end
