@@ -69,7 +69,7 @@ collectfactor 10
 
 # Mininum and maximum guide star magnitudes
 # (g-band)
-guidemag_minmax 13. 15.5
+guidemag_minmax 13. 14.5
 nguidemax 600
 
 # Mininum and maximum standard star magnitudes
