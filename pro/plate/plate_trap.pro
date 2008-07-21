@@ -28,7 +28,7 @@ if(NOT file_test(trapfile)) then begin
                   racen=racen, deccen=deccen
 
     tycvlimit = 7.5
-    tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.49)
+    tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.48)
     if (keyword_set(tycdat)) then begin
         ;; Sort so that we add the brightest Tycho stars first.
         tycdat = tycdat[sort(tycdat.vtmag)]
