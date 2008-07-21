@@ -243,7 +243,7 @@ if(keyword_set(clobber) gt 0 OR $
                                   rerun=rerun, epoch=epoch)
         if(n_tags(guide_design) gt 0) then $
           plate_assign_guide, definition, default, design, guide_design, $
-          guidenums=guidenums
+          pointing, guidenums=guidenums
     endfor
 
     ;; Assign standards 
