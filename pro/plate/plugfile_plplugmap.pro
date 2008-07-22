@@ -68,19 +68,20 @@ plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
 ;; Bad conversion of mags ...
-imarvels= where(holes.mfd_mag[0] gt 0, nmarvels)
-if(nmarvels gt 0) then begin
-    plug[imarvels].mag= plate_tmass_to_sdss(holes[imarvels].mfd_mag[3], $
-                                            holes[imarvels].mfd_mag[4], $
-                                            holes[imarvels].mfd_mag[5])
-    plug[imarvels].mag[1]= holes[imarvels].mfd_mag[1]  ;; BT -> g
-    plug[imarvels].mag[2]= holes[imarvels].mfd_mag[0]  ;; VT -> r
-endif
 itmass= where(holes.tmass_j gt 0, ntmass)
 if(ntmass gt 0) then begin
     plug[itmass].mag= plate_tmass_to_sdss(holes[itmass].tmass_j, $
                                           holes[itmass].tmass_h, $
                                           holes[itmass].tmass_k)
+endif
+imarvels= where(holes.gsc_vmag gt 0, nmarvels)
+if(nmarvels gt 0) then begin
+    plug[imarvels].mag= $
+      plate_tmass_to_sdss(holes[imarvels].tmass_j, $
+                          holes[imarvels].tmass_h, $
+                          holes[imarvels].tmass_k)
+    plug[imarvels].mag[1]= holes[imarvels].tyc_bmag
+    plug[imarvels].mag[2]= holes[imarvels].gsc_vmag
 endif
 isdss= where(holes.run gt 0, nsdss)
 if(nsdss gt 0) then begin
