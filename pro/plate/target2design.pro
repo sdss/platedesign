@@ -59,10 +59,10 @@ if(ninst eq 0) then $
 design.holetype= info.instrument
 
 targettypes=strsplit(default.targettypes, /extr)
-itt=where(info.targettype eq targettypes, ntt)
+itt=where(strlowcase(info.targettype) eq strlowcase(targettypes), ntt)
 if(ntt eq 0) then $
   message, 'no targettype '+info.targettype+' in this plate!'
-design.targettype= info.targettype
+design.targettype= strlowcase(info.targettype)
 
 design.pointing=pointing
 design.offset=offset
