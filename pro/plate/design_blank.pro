@@ -45,6 +45,9 @@ design0={DESIGN_TARGET, $
          tmass_j:-9999., $
          tmass_h:-9999., $
          tmass_k:-9999., $
+         gsc_vmag:-9999., $
+         tyc_bmag:-9999., $
+         tyc_vmag:-9999., $
          mfd_mag:fltarr(6), $
          sp_param_source:'NA', $
          sp_params:fltarr(4), $
