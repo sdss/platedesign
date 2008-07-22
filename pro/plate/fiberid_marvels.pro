@@ -70,6 +70,7 @@ if(NOT keyword_set(noscience)) then begin
     ileft= where(strupcase(design.targettype) ne 'SKY' AND $
                  strupcase(design.targettype) ne 'STANDARD', nleft)
     if(nleft gt 0) then begin
+        iinst=where(strupcase(fibercount.instruments) eq 'MARVELS', ninst)
         itype=where(strupcase(fibercount.targettypes) eq 'SCIENCE', ntype)
         nmax=long(total(fibercount.ntot[iinst, itype, *, *]))
 
