@@ -3,6 +3,7 @@
 /README -text
 bin/drillrun2zip -text
 bin/platedesign_version -text
+data/marvels/fiberBlocksMarvelsDummy.par -text
 data/sdss/fiberBlocks.par -text
 data/sdss/g_codes_alignment.txt -text
 data/sdss/g_codes_completion.txt -text
