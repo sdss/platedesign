@@ -124,4 +124,5 @@ src/fiber/idl_write_plugprob.c -text
 src/fiber/plugprob.c -text
 src/skycalc/Makefile -text
 src/skycalc/skycalc.c -text
+tcl/makeFanucET.tcl -text
 ups/platedesign.table -text
