@@ -5,31 +5,32 @@
 ;   assign targets to fibers and blocks for SDSS style cartridge
 ; CALLING SEQUENCE:
 ;   sdss_plugprob, xtarget, ytarget, fiberid, [fiberused=, $
-;      mininblock=, minavail=, nmax= ]
+;      mininblock=, maxinblock=, minavail=, nmax=, blockfile= ]
 ; INPUTS:
 ;   xtarget, ytarget - focal plane positions (mm)
 ; OPTIONAL INPUTS:
 ;   fiberused - [N] 1-indexed indices of already used fibers
 ;   mininblock - minimum numbers of fibers to assign per block
 ;                [default 0]
-;   mininblock - maximum numbers of fibers to assign per block
+;   maxinblock - maximum numbers of fibers to assign per block
 ;                [default 20]
 ;   minavail - don't assign a fiber to a target unless more than
 ;              minavail fibers in the same block can also reach it
-;              [default 8]
+;              [default 8, or maxinblock if < 8]
 ;   nmax - use at most this many fibers total
 ;   toblock - [N] assign each fiber to this particular block (0 for
 ;             no constraint)
 ;   blockcenx, blockceny - [20] centers of cost for assigning a fiber
 ;                          in each block to a target (if set, this cost used
 ;                          instead of normal distance-to-fiber cost)
+;   blockfile - file to read in for fibers
 ; OPTIONAL KEYWORDS:
 ;   /quiet - be quiet about warnings
 ; OUTPUTS:
 ;   fiberid - 1-indexed list of assigned fibers 
 ; COMMENTS:
 ;   Uses $PLATEDESIGN_DIR/data/sdss/fiberBlocks.par to find closest 
-;     fiber position for each target.
+;     fiber position for each target by default.
 ;   If you have already assigned fibers, pass fiberused to exclude
 ;     them from the selection
 ;   The minavail option avoids highly tuned pluggings, by guaranteeing
@@ -42,9 +43,9 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    mininblock=mininblock, fiberused=fiberused, $
                    nmax=nmax, quiet=in_quiet, limitdegree=limitdegree, $
                    toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
-                   maxinblock=maxinblock
+                   maxinblock=maxinblock, blockfile=in_blockfile
 
-common com_plugprob, fiberblocks
+common com_plugprob, fiberblocks, blockfile
 
 platescale = 217.7358           ; mm/degree
 if(NOT keyword_set(limitdegree)) then $
@@ -52,12 +53,22 @@ if(NOT keyword_set(limitdegree)) then $
 if(NOT keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
 if(NOT keyword_set(mininblock)) then mininblock= 0L
 if(NOT keyword_set(maxinblock)) then maxinblock= 20L
-if(NOT keyword_set(minavail)) then minavail= 8L
+if(NOT keyword_set(minavail)) then minavail= (8L) < maxinblock
+if(NOT keyword_set(in_blockfile)) then $
+  in_blockfile=getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par'
 quiet= long(keyword_set(in_quiet))
 
-if(n_tags(fiberblocks) eq 0) then $
-  fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                             '/data/sdss/fiberBlocks.par')
+reload=0L
+if(n_tags(fiberblocks) eq 0) then reload=1
+if(keyword_set(blockfile) eq 0) then begin
+    reload=1
+endif else begin
+    if(blockfile ne in_blockfile) then reload=1
+endelse
+if(keyword_set(reload)) then begin
+    blockfile= in_blockfile
+    fiberblocks= yanny_readone(blockfile)
+endif
 
 ;; default centers of blocks
 blockconstrain=1L
