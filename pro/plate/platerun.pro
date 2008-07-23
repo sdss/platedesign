@@ -10,14 +10,14 @@
 ; OPTIONAL INPUTS:
 ;   drillstyle - make drilling files using this style (default 'sdss')
 ; COMMENTS:
-;   Only implemented drillstyle is "sdss"
+;   Only implemented drillstyles are "sdss" and "marvels"
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
 pro platerun, platerun, drillstyle, _EXTRA=extra_for_plate_design
 
 if(keyword_set(platerun) EQ 0) then begin
-    print, 'Usage: platerun, runname [, drillstyle= ]'
+    print, 'Usage: platerun, runname [, drillstyle ]'
     return
 endif
 
