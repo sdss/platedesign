@@ -77,7 +77,7 @@ print, '   use_cs3'
 print, '   makePlots -skipBrightCheck'
 print
 setupplate = 'setup plate'
-spawn, setupplate +'; echo "makeFanucET -plan='+planfile+' " | plate -noTk'
+spawn, setupplate +'; echo "source '+getenv('PLATEDESIGN_DIR')+'/tcl/makeFanucET.tcl ; makeFanucET -plan='+planfile+' " | plate -noTk'
 spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
 spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
   planname+'" | plate -noTk'
