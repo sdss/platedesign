@@ -19,6 +19,8 @@ spawn, 'mkdir -p '+platerun_dir
 
 spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/marvels/plParam.par '+ $
   platerun_dir+'/plParam-'+platerun+'.par'
+spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/marvels/g_codes*.txt '+ $
+  platerun_dir
 spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/sdss/g_codes*.txt '+ $
   platerun_dir
 
