@@ -212,7 +212,7 @@ proc makeFanucET { args } {
 
 #	set objHolesChn [keylget return objects]
         set allHolesChn [keylget return objects]
-        set objHolesChn [chainSearch $allHolesChn "{objType == STAR_SUB_DWARF}"]
+        set objHolesChn [chainSearch $allHolesChn "{holeType == OBJECT}"]
         set guideHolesChn [chainSearch $allHolesChn "{holeType == GUIDE}"]
 
 	set trapHolesChn [keylget return lighttraps]
