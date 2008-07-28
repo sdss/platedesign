@@ -184,7 +184,7 @@ if(keyword_set(clobber) gt 0 OR $
               message, 'no plateInput'+strtrim(string(k+1),2)+' param set'
             infile=getenv('PLATELIST_DIR')+ $
               '/inputs/'+definition.(itag)
-            tmp_targets= yanny_readone(infile, hdr=hdr)
+            tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
             if(n_tags(tmp_targets) eq 0) then $
               message, 'empty plateInput file '+infile
             hdrs[k]=ptr_new(hdr)
