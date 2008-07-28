@@ -39,6 +39,21 @@ if(tag_exist(info, 'offset')) then $
 if(offset gt long(default.noffsets)) then $
   message, 'pointing '+strtrim(string(pointing),2)+' does not exist'
 
+if(tag_exist(info, 'racen') gt 0 OR $
+   tag_exist(info, 'deccen') gt 0) then begin
+    if(tag_exist(info, 'racen') gt 0 AND $
+       tag_exist(info, 'deccen') gt 0) then begin
+        racen= double((strsplit(definition.racen,/extr)))
+        deccen= double((strsplit(definition.deccen,/extr)))
+        if(abs(racen[pointing-1]-double(info.racen)) gt 1./3600. OR $
+           abs(deccen[pointing-1]-double(info.deccen)) gt 1./3600.) then begin
+            message, 'plateInput file has raCen, decCen inconsistent with its pointing; aborting!'
+        endif
+    endif else begin
+        message, 'suspicious: racen OR deccen is set in plateInput file, but not BOTH; aborting!'
+    endelse
+endif
+
 ;; Get default xf_default and yf_default
 ;; (not particular position for this LST and temp)
 plate_ad2xy, definition, default, pointing, offset, targets.ra, $
