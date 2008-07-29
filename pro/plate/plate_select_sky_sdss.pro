@@ -13,6 +13,7 @@
 ;   tilerad - radius of tile in deg (default 1.49 deg)
 ;   nsky - number of sky fibers desired (default 64)
 ;   seed - random seed 
+;   nper - maximum to add per cycle (default 10)
 ; OPTIONAL OUTPUTS:
 ;   sky_design - output structure with sky coordinates in J2000 [NSKY]
 ; REVISION HISTORY:
@@ -20,8 +21,11 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_sky_sdss, racen, deccen, nsky=nsky, tilerad=tilerad, $
-  seed=seed, rerun=rerun, sky_design=sky_design
+  seed=seed, rerun=rerun, sky_design=sky_design, nper=nper
 
+doplot=1
+
+if(NOT keyword_set(nper)) then nper=2L
 if(NOT keyword_set(tilerad)) then tilerad=1.49
 if(n_elements(in_racurr) gt 0 AND $
    n_elements(in_deccurr) gt 0) then begin
@@ -100,7 +104,7 @@ while(i lt ngrid AND $
             ikeep=where(keep, nkeep)
             if(nkeep gt 0) then begin
                 gotone=1L
-                is=shuffle_indx(nkeep, num_sub=1, seed=seed)
+                is=shuffle_indx(nkeep, num_sub=(nper<nkeep), seed=seed)
                 use_ra= cand_ra[ikeep[is]]
                 use_dec= cand_dec[ikeep[is]]
             endif
@@ -120,7 +124,7 @@ while(i lt ngrid AND $
                     rasky=use_ra
                     decsky=use_dec
                 endelse
-                ngot=ngot+1L
+                ngot=ngot+n_elements(use_ra)
                 if(n_elements(old_ra) lt nremember) then begin
                     if(keyword_set(old_ra)) then begin
                         old_ra=[old_ra, tmp_ra]
