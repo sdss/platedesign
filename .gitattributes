@@ -24,7 +24,9 @@ defaults/plateDefault-MARVELS-v0_5.par -text
 defaults/plateDefault-MARVELS_PRE-v0_1.par -text
 defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 defaults/plateDefault-SEGUE2-v0_1.par -text
+defaults/plateDefault-SEGUEtest-v0_7.par -text
 defaults/plateDefault-example-v0_0.par -text
+lib/.svnignore -text
 obsolete/pro/coo_read.pro -text
 obsolete/pro/make_example.pro -text
 obsolete/pro/plate_design.pro -text
@@ -55,6 +57,7 @@ pro/plate/design_dir.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/gfiber_params.pro -text
+pro/plate/make_seguetest.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
@@ -110,6 +113,7 @@ pro/strategy/trial_lrgs_for_tile.pro -text
 pro/strategy/trim_tiles.pro -text
 pro/test/test_tmass_conversion.pro -text
 src/Makefile -text
+src/cs2/.svnignore -text
 src/cs2/COPYRIGHT -text
 src/cs2/README -text
 src/cs2/cs2.c -text
