@@ -1,6 +1,7 @@
 * text=auto !eol
 /Makefile -text
 /README -text
+bin/.svnignore -text
 bin/drillrun2zip -text
 bin/platedesign_version -text
 data/marvels/fiberBlocksMarvelsDummy.par -text
