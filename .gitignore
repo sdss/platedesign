@@ -1,1 +1,3 @@
 bin/skycalc
+lib/lib*.so
+src/cs2/cs2

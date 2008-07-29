@@ -12,10 +12,6 @@
 function plate_guide, definition, default, pointing, rerun=rerun, $
   epoch=epoch, clobber=clobber
 
-if(NOT tag_exist(default, 'GUIDETYPE')) then begin
-    return, 0
-endif 
-
 designid= long(definition.designid)
 
 if(tag_exist(default, 'GUIDEMAG_MINMAX')) then begin
@@ -34,6 +30,12 @@ guidefile=outdir+'/plateGuide-'+ $
 
 if(file_test(guidefile) eq 0 OR $
    keyword_set(clobber) gt 0) then begin
+
+    ;; if there is no file, and we haven't specified type,
+    ;; then abort
+    if(NOT tag_exist(default, 'GUIDETYPE')) then begin
+        return, 0
+    endif 
 
     guidetype= (strsplit(default.guidetype, /extr))[pointing-1]
 
@@ -88,7 +90,8 @@ if(file_test(guidefile) eq 0 OR $
     endif
 endif else begin
     in_guide_design= yanny_readone(guidefile, /anon)
-    guide_design= replicate(design_blank(), n_elements(in_guide_design))
+    guide_design= replicate(design_blank(/guide), $
+                            n_elements(in_guide_design))
     struct_assign, in_guide_design, guide_design, /nozero
 endelse
 
