@@ -49,6 +49,7 @@ endif
 ;; want to be in the lowest flux part of the VERY SMOOTHED image 
 ;;   a. download image
 ncand=10L
+splog, 'Querying DSS.'
 querydss, [ra, dec], image, hdr, survey='2r', imsize=radius*2.*60.
 iz=where(image eq 0, nz)
 while(float(nz)/float(n_elements(image)) gt 0.25) do begin
@@ -64,11 +65,13 @@ nx=(size(image, /dim))[0]
 ny=(size(image, /dim))[1]
 
 ;;   b. find objects 
+splog, 'Finding objects.'
 mimage= dmedsmooth(image, box=200)
 image=image-mimage
 dobjects_multi, image, obj=obj, plim=1.5
 
 ;;   c. find regions isolated from objects (and edges)
+splog, 'Finding isolated regions.'
 mask=float(obj ge 0)
 sm=20L
 nzero=0L
@@ -96,6 +99,7 @@ iy=iy[ikeep]
 xyad, hdr, ix, iy, tmp_ra, tmp_dec
 
 ;;   d. NOW sort by smoothed image
+splog, 'Pick keepers.'
 smbox=smooth(image, 40)
 isort=sort(smbox[isky[ikeep]])
 cand_ra=dblarr(ncand)
@@ -118,6 +122,8 @@ while(i lt nkeep AND ic lt ncand) do begin
     endif
     i=i+1L
 endwhile
+
+splog, 'Done.'
 
 if(ic eq 0) then begin
     splog, 'NO SKY HERE'
