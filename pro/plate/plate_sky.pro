@@ -34,8 +34,8 @@ itag= tag_indx(default, 'n'+ $
                '_sky')
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
-nsky= 10L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
-                  noffsets+1L))[pointing-1L, offset]
+nsky= 3L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
+                 noffsets+1L))[pointing-1L, offset]
 
 sky_design=0
 if(nsky gt 0) then begin
