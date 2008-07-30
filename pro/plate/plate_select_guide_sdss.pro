@@ -65,7 +65,6 @@ if (keyword_set(objs)) then begin
                  AND grcolor GT 0.3 AND grcolor LT 1.4 $
                  AND ricolor GT 0.0 AND ricolor LT 0.7 $
                  AND izcolor GT -0.4 AND izcolor LT 1.0, ct)
-    stop
     if (ct GT 0) then begin
         objs = objs[indx]
         mag = mag[*,indx]
