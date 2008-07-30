@@ -19,6 +19,10 @@ data/strategy/boss_observing_nights.par -text
 data/strategy/night_usage.ps -text
 data/strategy/tiInputFormat.fit -text
 data/strategy/tile-simple.par -text
+data/test/guide_2mass.fits -text
+data/test/guide_2mass.kml -text
+data/test/guide_sdss.fits -text
+data/test/guide_sdss.kml -text
 data/test/icon.png -text
 defaults/plateDefault-MARVELS-v0_0.par -text
 defaults/plateDefault-MARVELS-v0_5.par -text
