@@ -6,7 +6,7 @@
 <Style id="circleIcon">
 <IconStyle>
 <color>#ff00ff</color>
-<Icon><href>icon.png</href></Icon>'
+<Icon><href>http://sdss.physics.nyu.edu/sdss3/icon.png</href></Icon>'
 </IconStyle>
 </Style>
 <Placemark id="ID">
