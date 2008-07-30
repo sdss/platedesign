@@ -49,6 +49,11 @@ if(NOT keyword_set(gminmax)) then $
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
+;; if sweep fails, see if there is anything NOT in the sweep to find
+if(NOT keyword_set(objs)) then begin
+    objs= sdss_circle(racen, deccen, tilerad, rerun=rerun)
+endif
+
 ;; Trim to good observations of isolated stars
 if (keyword_set(objs)) then begin
     indx = sdss_selectobj(objs, ancestry='single', objtype='star', $
