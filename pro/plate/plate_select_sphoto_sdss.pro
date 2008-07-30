@@ -50,8 +50,10 @@ if(NOT keyword_set(gminmax)) then $
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
 ;; if sweep fails, see if there is anything NOT in the sweep to find
+;; (there is probably nothing in the sweep because RESOLVE_STATUS was
+;; set incorrectly; thus, do not check RESOLVE_STATUS).
 if(NOT keyword_set(objs)) then begin
-    objs= sdss_circle(racen, deccen, tilerad, rerun=rerun)
+    objs= sdss_circle(racen, deccen, tilerad, rerun=rerun, /all)
 endif
 
 ;; Trim to good observations of isolated stars
