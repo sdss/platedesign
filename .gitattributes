@@ -111,6 +111,7 @@ pro/strategy/run_boss_strategy.pro -text
 pro/strategy/splot_rbs.pro -text
 pro/strategy/trial_lrgs_for_tile.pro -text
 pro/strategy/trim_tiles.pro -text
+pro/test/radec2kml.pro -text
 pro/test/test_tmass_conversion.pro -text
 src/Makefile -text
 src/cs2/.svnignore -text
