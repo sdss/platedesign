@@ -46,12 +46,14 @@ if(NOT keyword_set(gminmax)) then $
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
+help,objs
 ;; Trim to good observations of isolated stars
 if (keyword_set(objs)) then begin
     indx = sdss_selectobj(objs, ancestry='single', objtype='star', $
                           /trim, count=ct)
     if (ct GT 0) then objs = objs[indx] else objs = 0
 endif
+help,objs
 
 ;; Trim to stars in the desired magnitude + color boxes
 if (keyword_set(objs)) then begin
@@ -63,6 +65,7 @@ if (keyword_set(objs)) then begin
                  AND grcolor GT 0.3 AND grcolor LT 1.4 $
                  AND ricolor GT 0.0 AND ricolor LT 0.7 $
                  AND izcolor GT -0.4 AND izcolor LT 1.0, ct)
+    stop
     if (ct GT 0) then begin
         objs = objs[indx]
         mag = mag[*,indx]
@@ -73,6 +76,7 @@ if (keyword_set(objs)) then begin
         objs = 0
     endelse
 endif
+help,objs
 
 if (keyword_set(objs)) then begin
 

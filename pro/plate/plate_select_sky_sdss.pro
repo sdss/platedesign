@@ -23,6 +23,8 @@
 pro plate_select_sky_sdss, racen, deccen, nsky=nsky, tilerad=tilerad, $
   seed=seed, rerun=rerun, sky_design=sky_design, nper=nper
 
+doplot=1
+
 if(NOT keyword_set(nper)) then nper=2L
 if(NOT keyword_set(tilerad)) then tilerad=1.49
 if(n_elements(in_racurr) gt 0 AND $
