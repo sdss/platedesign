@@ -34,7 +34,7 @@ printf, unit, '<IconStyle>'
 if(keyword_set(color)) then begin
     printf, unit, '<color>'+color+'</color>'
 endif
-printf, unit, '<Icon><href>http://sdss.physics.nyu.edu/sdss3/icon.png</href></Icon>''
+printf, unit, '<Icon><href>icon.png</href></Icon>''
 printf, unit, '</IconStyle>'    
 printf, unit, '</Style>'    
 

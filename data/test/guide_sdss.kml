@@ -5,8 +5,8 @@
 <description>Trying ra and dec.</description>
 <Style id="circleIcon">
 <IconStyle>
-<color>#ffffff</color>
-<Icon><href>http://sdss.physics.nyu.edu/sdss3/icon.png</href></Icon>'
+<color>#ffffffff</color>
+<Icon><href>icon.png</href></Icon>'
 </IconStyle>
 </Style>
 <Placemark id="ID">
