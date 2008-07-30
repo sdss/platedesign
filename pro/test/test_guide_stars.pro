@@ -18,13 +18,13 @@ endelse
 radec2kml, sg.target_ra, sg.target_dec, getenv('PLATEDESIGN_DIR')+ $
   '/data/test/guide_sdss.kml', $
   description=replicate('SDSS-based guide', n_elements(sg)), $
-  color='#ffffff', $
+  color='#ffffffff', $
   name=hogg_iau_name(sg.target_ra, sg.target_dec,' ')
 
 radec2kml, tg.target_ra, tg.target_dec, getenv('PLATEDESIGN_DIR')+ $
   '/data/test/guide_2mass.kml', $
   description=replicate('2MASS-based guide', n_elements(tg)), $
-  color='#ff00ff', $
+  color='#ff00ffff', $
   name=hogg_iau_name(tg.target_ra, tg.target_dec,' ')
 
 end
