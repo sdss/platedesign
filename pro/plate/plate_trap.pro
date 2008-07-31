@@ -22,6 +22,7 @@ trapfile=outdir+'/plateTrap-'+ $
          '-p'+strtrim(string(pointing),2)+ $
          '-o'+strtrim(string(offset),2)+'.par'
 
+trap_design=0
 if(NOT file_test(trapfile)) then begin
     ;; what is center for this pointing?
     plate_center, definition, default, pointing, offset, $
