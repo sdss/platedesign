@@ -189,6 +189,13 @@ if(keyword_set(clobber) gt 0 OR $
               message, 'empty plateInput file '+infile
             hdrs[k]=ptr_new(hdr)
             hdrstr=lines2struct(hdr)
+
+            ;; check data type of ra and dec -- abort if they are not
+            ;; typed double
+            if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
+               datatype(tmp_targets[0].dec) ne 'DOU') then begin
+                message, 'Aborting: RA and Dec MUST be typed as double precision!'
+            endif
             
             ;; convert target information to design structure
             ;; (record which plate input file this came from)

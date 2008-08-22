@@ -10,7 +10,6 @@
 ;   holes - [N] holes from plateHoles file
 ; BUGS:
 ;   CLASSIFIES ALL SOURCES AS STARS!!
-;   REASSIGNS FIBER IDs SO RUINS SKY IN BLOCK GUARANTEES
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
