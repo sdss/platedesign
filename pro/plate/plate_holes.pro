@@ -80,6 +80,19 @@ endfor
 
 holes= [holes, align]
 
+tmpstr= lines2struct(hdr)
+if(NOT tag_exist(tmpstr, 'locationid')) then begin
+    plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+    iplate= where(plans.plateid eq plateid, nplate)
+    if(nplate eq 0) then $
+      message, 'plate '+strtrim(string(plateid),2)+' not in platePlans.par!'
+    if(nplate gt 1) then $
+      message, 'plate '+strtrim(string(plateid),2)+ $
+      ' has multiple entries in platePlans.par!'
+    locationid= plans[iplate[0]].locationid
+    hdr=['locationID '+strtrim(string(locationid),2), hdr]
+endif
+    
 outhdr=['plateid '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
         'temp '+strtrim(string(temp, f='(f40.3)'),2), $
