@@ -62,3 +62,8 @@ standardType SDSS
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
 plateDesignSkies SDSS
+
+# Use SEGUE-2 plugmapstyle, which uses fibermag 
+# instead of fiberflux
+plugmapstyle plplugmap_segue2
+
