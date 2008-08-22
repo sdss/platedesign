@@ -42,7 +42,7 @@ endfor
 printf, unit, '</ul>'
 printf, unit, '<h4>plPlugMapP files</h4>'
 printf, unit, '<ul>'
-plplugfiles= file_search(path+'/plPlugMapP-*.par')
+plplugfiles= file_search(path+'/plPlugMapP-????.par')
 for i=0L, n_elements(plplugfiles)-1L do begin
     words=strsplit(plplugfiles[i], '/',/extr)
     filename=words[n_elements(words)-1]
@@ -60,7 +60,7 @@ spawn, 'ssh sdss.physics.nyu.edu mkdir -p /var/www/html/as2/drillruns/'+runname
 spawn, 'scp -p '+path+'/'+runname+'.html sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
 spawn, 'scp -p '+path+'/'+runname+'.dos.zip sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
 spawn, 'scp -p '+path+'/plOverlay-*.ps sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
-spawn, 'scp -p '+path+'/plPlugMapP-*.par sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
+spawn, 'scp -p '+path+'/plPlugMapP-????.par sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
 
 return
 end
