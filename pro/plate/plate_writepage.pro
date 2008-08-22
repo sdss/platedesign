@@ -20,6 +20,7 @@ path= getenv('PLATELIST_DIR')+'/runs/'+runname
 
 spawn, 'cd '+path+' ; drillrun2zip '+runname
 
+
 openw, unit, path+'/'+runname+'.html', /get_lun
 printf, unit, '<html>'
 printf, unit, '<head>'
@@ -28,8 +29,26 @@ printf, unit, '</head>'
 printf, unit, '<body>'
 printf, unit, '<h1>Drilling run: '+runname+'</h1>'
 printf, unit, '<hr>'
-printf, unit, '<h4>Zipped, DOS-version files</h4>'
-printf, unit, '<a href="'+runname+'.dos.zip">'+runname+'.dos.zip</a>'
+printf, unit, '<h4>Zipped, DOS-version files for UW plate shop</h4>'
+printf, unit, '<p><a href="'+runname+'.dos.zip">'+runname+'.dos.zip</a></p>'
+printf, unit, '<h4>Overlay plots</h4>'
+overlayfiles= file_search(path+'/plOverlay-*.ps')
+printf, unit, '<ul>'
+for i=0L, n_elements(overlayfiles)-1L do begin
+    words=strsplit(overlayfiles[i], '/',/extr)
+    filename=words[n_elements(words)-1]
+    printf, unit, '<li><a href="'+filename+'">'+filename+ '</a></li>'
+endfor
+printf, unit, '</ul>'
+printf, unit, '<h4>plPlugMapP files</h4>'
+printf, unit, '<ul>'
+plplugfiles= file_search(path+'/plPlugMapP-*.par')
+for i=0L, n_elements(plplugfiles)-1L do begin
+    words=strsplit(plplugfiles[i], '/',/extr)
+    filename=words[n_elements(words)-1]
+    printf, unit, '<li><a href="'+filename+'">'+filename+ '</a></li>'
+endfor
+printf, unit, '</ul>'
 printf, unit, '<hr>'
 printf, unit, '<p>Produced by '+getenv('USER')+' on '+getenv('HOST')+' at '+ $
   systime()+'.</p>'
@@ -37,8 +56,11 @@ printf, unit, '</body>'
 printf, unit, '</html>'
 free_lun, unit
 
-spawn, 'scp -p '+path+'/'+runname+'.html sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'
-spawn, 'scp -p '+path+'/'+runname+'.dos.zip sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'
+spawn, 'ssh sdss.physics.nyu.edu mkdir -p /var/www/html/as2/drillruns/'+runname
+spawn, 'scp -p '+path+'/'+runname+'.html sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
+spawn, 'scp -p '+path+'/'+runname+'.dos.zip sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
+spawn, 'scp -p '+path+'/plOverlay-*.ps sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
+spawn, 'scp -p '+path+'/plPlugMapP-*.par sdss.physics.nyu.edu:/var/www/html/as2/drillruns/'+runname
 
 return
 end
