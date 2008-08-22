@@ -7,7 +7,7 @@
 ;   retrofit_segue2_jul08
 ; COMMENTS:
 ;   Retrofits the original plate drilling files for this set of plate
-;    runs: XXX,
+;    runs: jul08c, jul08e, jul08f
 ;   What happened was that the platedesign code was meant to propagate
 ;    the fibermag input into the "mag" section of the plPlugMap files. 
 ;   In order to handle this difficulty, we here use the
@@ -64,20 +64,19 @@ for i=0L, n_elements(plans)-1L do begin
         if(nsdss eq 0) then $
           message, 'not SDSS data, why are you retrofitting?'
         
-        for i=0L, n_elements(holes)-1L do begin
-            iin= where(holes[i].targetids eq plinput.targetids, nin)
+        for j=0L, n_elements(holes)-1L do begin
+            iin= where(holes[j].targetids eq plinput.targetids, nin)
             if(nin eq 0) then begin
-                if(holes[i].targetids ne 'NA') then $
+                if(holes[j].targetids ne 'NA') then $
                   message, 'error in targetids'
             endif else begin
-                plplug[i].mag= plinput[iin[0]].fibermag
+                plplug[j].mag= plinput[iin[0]].fibermag
             endelse
         endfor
         
         pdata= ptr_new(plplug)
         yanny_write, plugmapfile, pdata, hdr=hdr
         
-        stop
     endif
 endfor
 
