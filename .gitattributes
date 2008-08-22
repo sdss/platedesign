@@ -100,6 +100,7 @@ pro/plate/sdss_plugprob.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
 pro/plate/xyfocal2ad.pro -text
+pro/retro/retrofit_segue2_jul08.pro -text
 pro/strategy/QUESTIONS -text
 pro/strategy/apo_almanac.pro -text
 pro/strategy/apo_in_interval.pro -text
