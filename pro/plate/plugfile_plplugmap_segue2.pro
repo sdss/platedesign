@@ -13,7 +13,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plugfile_plplugmap, plateid
+pro plugfile_plplugmap_segue2, plateid
 
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
