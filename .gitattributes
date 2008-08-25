@@ -123,6 +123,7 @@ pro/strategy/trim_tiles.pro -text
 pro/test/radec2kml.pro -text
 pro/test/test_guide_stars.pro -text
 pro/test/test_tmass_conversion.pro -text
+pro/test/write_platelines_run.pro -text
 src/Makefile -text
 src/cs2/.svnignore -text
 src/cs2/COPYRIGHT -text
