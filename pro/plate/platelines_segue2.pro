@@ -97,8 +97,8 @@ fibercolors= [ replicate(faintcolor, 8), $
 nblocks=32L
 nper=20L
 for i=0L, nblocks-1L do begin
-    ii= where(-holes.fiberid ge i*nper+1 and $
-              -holes.fiberid le i*nper+20, nii)
+    ii= where(-holes.fiberid ge i*nper+1L and $
+              -holes.fiberid le (i+1L)*nper, nii)
     isort= sort(holes[ii].yfocal)
     color= colors[i mod n_elements(colors)]
 
