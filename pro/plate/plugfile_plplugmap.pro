@@ -200,6 +200,9 @@ pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
 for pointing=1L, npointings do begin
 
     ;; add header keywords
+    inotradec= where(strmatch(hdr, 'racen *') eq 0 AND $
+                     strmatch(hdr, 'deccen *') eq 0, nnotradec)
+    khdr= hdr[inotradec]
     outhdr = ['completeTileVersion   none', $
               'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
               '# tileId is set to designid for SDSS-III plates', $
@@ -215,7 +218,7 @@ for pointing=1L, npointings do begin
               'pointing ' + pointing_name[pointing-1], $
               'mag_quality bad',  $
               'theta 0 ', $
-              hdr]
+              khdr]
 
 
     ;; output file name
