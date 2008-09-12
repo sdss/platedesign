@@ -4,14 +4,17 @@
 ; PURPOSE:
 ;   write the plateLines-????.ps file for a MARVELS plate
 ; CALLING SEQUENCE:
-;   platelines_marvels, plateid
+;   platelines_marvels, plateid [, /fullsize
 ; INPUTS:
 ;   plateid - plate ID to run on 
+; OPTIONAL KEYWORDS:
+;   /fullsize - if set, make full size PS file, otherwise, letter size
 ; COMMENTS:
 ;   Appropriate for MARVELS data
-;   Makes a PostScript file 26.7717 by 26.7717 inches; mapping
+;   If /fullsize set, a PostScript file 26.7717 by 26.7717 inches; mapping
 ;    should be one-to-one onto plate (x and y ranges are from -340 to
-;    +340 mm).
+;    +340 mm). Otherwise, 7x7 inch file is made (appropriate for
+;    letter)
 ;   Circles are 45 arcsec radius.
 ;   Colors of circles are blue for 8 faintest stars in block, green
 ;    for the 6 next brightest, and red for the 6 brightest
@@ -21,7 +24,7 @@
 ;   22-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_marvels, plateid
+pro platelines_marvels, plateid, fullsize=fullsize
 
 platescale = 217.7358D           ; mm/degree
 
@@ -32,8 +35,13 @@ holes= yanny_readone(plplug)
 
 filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.ps'
 
-xsize=26.7717 ;; in inches
-ysize=26.7717 ;; in inches
+if(keyword_set(fullsize)) then begin
+    xsize=26.7717 ;; in inches
+    ysize=26.7717 ;; in inches
+endif else begin
+    xsize=7.
+    ysize=7.
+endelse
 
 ;; setup postscript device
 pold=!P
