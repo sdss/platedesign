@@ -122,7 +122,13 @@ plug.yfocal=holes.yfocal
 ;; spectrographid, throughput, primtarget not set
 plug.spectrographid= 0
 plug.throughput= 0
-plug.primtarget= 0
+plug.primtarget= holes.segue2_target1
+plug.sectarget= holes.segue2_target2
+plug.objid[0]= holes.run
+plug.objid[1]= long(holes.rerun)
+plug.objid[2]= holes.camcol
+plug.objid[3]= holes.field
+plug.objid[4]= holes.id
 
 ;; fiber ID gets set to NEGATIVE of intended value
 ;; (unless it is -9999)
