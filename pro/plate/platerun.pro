@@ -33,6 +33,11 @@ plate_design, plans[iplate].plateid, _EXTRA=extra_for_plate_design
 
 ;; now run the low level plate routines
 drillstyle= strtrim(plans[iplate].drillstyle,2)
+isort=sort(drillstyle)
+iuniq=uniq(drillstyle[isort])
+if(n_elements(iuniq) gt 1) then $
+  message, 'cannot include more than one drillstyle in a single plate run!'
+drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid
 
 end
