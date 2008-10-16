@@ -70,6 +70,7 @@ pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/make_seguetest.pro -text
+pro/plate/marvels_fiberblocks.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
