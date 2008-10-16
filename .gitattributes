@@ -5,6 +5,8 @@ bin/.svnignore -text
 bin/drillrun2zip -text
 bin/platedesign_version -text
 data/marvels/fiberBlocksMarvelsDummy.par -text
+data/marvels/fiberBlocksMarvels_p1.par -text
+data/marvels/fiberBlocksMarvels_p2.par -text
 data/marvels/g_codes_et_guide.txt -text
 data/marvels/g_codes_et_object.txt -text
 data/marvels/plParam.par -text
