@@ -4,6 +4,9 @@
 bin/.svnignore -text
 bin/drillrun2zip -text
 bin/platedesign_version -text
+data/marvels/anchor-block-map-2008-09-10.pdf -text
+data/marvels/anchordiagram.jpg -text
+data/marvels/fiberBlocksMarvels.par -text
 data/marvels/fiberBlocksMarvelsDummy.par -text
 data/marvels/fiberBlocksMarvels_p1.par -text
 data/marvels/fiberBlocksMarvels_p2.par -text
