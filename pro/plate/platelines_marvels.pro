@@ -31,7 +31,9 @@ platescale = 217.7358D           ; mm/degree
 platedir= plate_dir(plateid)
 plplug= platedir+'/plPlugMapP-'+ $
   strtrim(string(f='(i4.4)',plateid),2)+'.par'
-holes= yanny_readone(plplug)
+holes= yanny_readone(plplug, hdr=hdr)
+hdrstr= lines2struct(hdr, /relaxed)
+npointings= long(hdrstr.npointings)
 
 filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.ps'
 
@@ -85,9 +87,11 @@ loadct,0
 djs_plot, [0], [0], /nodata, xra=[-340., 340.], yra=[-340., 340.], $
   xstyle=5, ystyle=5
 
-linecolors= ['black', 'blue', 'green', 'red', 'yellow', $
-             'black', 'blue', 'green', 'red', 'yellow', $
-             'black', 'blue', 'green', 'red', 'yellow']
+linecolors=strarr(15,2)
+linecolors[*,0]=['black', 'blue', 'green', 'red', 'yellow', $
+                 'black', 'blue', 'green', 'red', 'yellow', $
+                 'black', 'blue', 'green', 'red', 'yellow']
+linecolors[*,1]= linecolors[(lindgen(15)+2L) MOD 15]
 circlecolors= ['cyan','magenta','yellow','orange']
 
 ;; set buffer for lines, and circle size
@@ -105,43 +109,52 @@ fibercolors= [ replicate(faintcolor, 8), $
 
 nblocks=15L
 nper=4L
-iobj= where(holes.holetype eq 'OBJECT')
-for i=0L, nblocks-1L do begin
-    ii= where(-holes[iobj].fiberid ge i*nper+1 and $
-              -holes[iobj].fiberid le (i+1)*nper, nii)
-    ii=iobj[ii]
-    isort= sort(holes[ii].yfocal)
-    linecolor= linecolors[i]
-
-    ;; connect lines
-    for j=0L, nper-2L do begin
-        xhole1= holes[ii[isort[j]]].xfocal
-        xhole2= holes[ii[isort[j+1]]].xfocal
-        yhole1= holes[ii[isort[j]]].yfocal
-        yhole2= holes[ii[isort[j+1]]].yfocal
-        length= sqrt((xhole2-xhole1)^2+(yhole2-yhole1)^2)
-        sbuffer=buffer 
-        ebuffer=(length-buffer) 
-        if(ebuffer gt sbuffer) then begin
-            xdir= (xhole2-xhole1)/length
-            ydir= (yhole2-yhole1)/length
-            xstart= (xhole1+sbuffer*xdir) 
-            ystart= (yhole1+sbuffer*ydir) 
-            xend= (xhole1+ebuffer*xdir) 
-            yend= (yhole1+ebuffer*ydir) 
-            djs_oplot, [xstart, xend], [ystart, yend], th=5, color=linecolor
-        endif
+linestyles=[0,2,1]
+for ip=0L, npointings-1L do begin
+    iobj= where(holes.holetype eq 'OBJECT')
+    foff= ip*nblocks*nper
+    for i=0L, nblocks-1L do begin
+        ii= where(-holes[iobj].fiberid ge i*nper+1+foff and $
+                  -holes[iobj].fiberid le (i+1)*nper+foff, nii)
+        ii=iobj[ii]
+        isort= sort(holes[ii].yfocal)
+        linecolor= linecolors[i,ip]
+        
+        ;; connect lines
+        for j=0L, nper-2L do begin
+            xhole1= holes[ii[isort[j]]].xfocal
+            xhole2= holes[ii[isort[j+1]]].xfocal
+            yhole1= holes[ii[isort[j]]].yfocal
+            yhole2= holes[ii[isort[j+1]]].yfocal
+            length= sqrt((xhole2-xhole1)^2+(yhole2-yhole1)^2)
+            sbuffer=buffer 
+            ebuffer=(length-buffer) 
+            if(ebuffer gt sbuffer) then begin
+                xdir= (xhole2-xhole1)/length
+                ydir= (yhole2-yhole1)/length
+                xstart= (xhole1+sbuffer*xdir) 
+                ystart= (yhole1+sbuffer*ydir) 
+                xend= (xhole1+ebuffer*xdir) 
+                yend= (yhole1+ebuffer*ydir) 
+                djs_oplot, [xstart, xend], [ystart, yend], th=5, $
+                  color=linecolor, linestyle=linestyles[ip]
+            endif
+        endfor
+        
+        ;; draw holes & labels
+        for j=0L, nper-1L do begin
+            icc=abs(holes[ii[isort[j]]].fiberid)-1L-i*nper-foff
+            circlecolor= circlecolors[icc]
+            theta= findgen(100)/float(99.)*!DPI*2.
+            xcurr= holes[ii[isort[j]]].xfocal+ circle* cos(theta)
+            ycurr= holes[ii[isort[j]]].yfocal+ circle* sin(theta)
+            djs_oplot, xcurr, ycurr, color=circlecolor
+            numstr= strtrim(string(abs(holes[ii[isort[j]]].fiberid)),2)
+            djs_xyouts, xcurr[0]+8., ycurr[0]-2., numstr, align=0.5, $
+              charsize=0.5
+        endfor
+        
     endfor
-
-    ;; draw holes
-    for j=0L, nper-1L do begin
-        circlecolor=circlecolors[abs(holes[ii[isort[j]]].fiberid)-1L-i*nper]
-        theta= findgen(100)/float(99.)*!DPI*2.
-        xcurr= holes[ii[isort[j]]].xfocal+ circle* cos(theta)
-        ycurr= holes[ii[isort[j]]].yfocal+ circle* sin(theta)
-        djs_oplot, xcurr, ycurr, color=circlecolor
-    endfor
-
 endfor
 
 ;; finally, draw guides
