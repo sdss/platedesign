@@ -39,8 +39,8 @@ while(gotall eq 0) do begin
     icurr=where(test_design.holetype eq instrument)
     fiberids= call_function('fiberid_'+instrument, $
                             default, test_fibercount, $
-                            test_design[icurr], /quiet, $
-                            _EXTRA=extra_for_fiberid)
+                            test_design[icurr], $
+                            /quiet, _EXTRA=extra_for_fiberid)
 
     ;; check if the standards filled up the fibers
     ion=where(fiberids ge 1 AND $
