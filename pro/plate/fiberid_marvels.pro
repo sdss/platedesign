@@ -38,7 +38,8 @@ function fiberid_marvels, default, fibercount, design, $
                           minstdinblock=minstdinblock, $
                           minskyinblock=minskyinblock, $
                           nosky=nosky, nostd=nostd, noscience=noscience, $
-                          quiet=quiet, block=block
+                          quiet=quiet, block=block, $
+  respect_fiberid=respect_fiberid
 
 platescale = 217.7358           ; mm/degree
 limitdegree=8.*0.1164 ;; limit of fiber reach
@@ -48,10 +49,6 @@ nperblock=4L
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
-
-if(tag_exist(default, 'RESPECT_FIBERID')) then begin
-    respect_fiberid= long(default.respect_fiberid)
-endif
 
 fiberid=lonarr(n_elements(design))
 npointings= long(default.npointings)
