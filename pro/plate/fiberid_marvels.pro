@@ -222,7 +222,7 @@ if(NOT keyword_set(noscience)) then begin
     for ip=1L, npointings do begin
         isci= where(strupcase(design.targettype) ne 'SKY' AND $
                     strupcase(design.targettype) ne 'STANDARD' AND $
-                    fiberid eq -9999 AND $
+                    fiberid le 0 AND $
                     design.pointing eq ip, nsci)
         tmp_fiberused=0
         if(keyword_set(fiberused[ip-1])) then $
