@@ -85,6 +85,8 @@ if(NOT keyword_set(noscience)) then begin
         tmp_fiberused=0
         if(keyword_set(fiberused[ip-1])) then $
           tmp_fiberused=*fiberused[ip-1]
+        ;; right now doesn't work well if only SOME of the 
+        ;; fibers are respected. 
 
         isci= where(strupcase(design.targettype) ne 'SKY' AND $
                     strupcase(design.targettype) ne 'STANDARD' AND $
@@ -97,7 +99,7 @@ if(NOT keyword_set(noscience)) then begin
             sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
               tmp_fiberid, limitdegree=limitdegree, $
               maxinblock=nperblock-minstdinblock-minskyinblock, $
-              blockfile=blockfile, fiberused=tmp_fiberused
+              blockfile=blockfile
             
             ;; which block is each in
             block= lonarr(n_elements(tmp_fiberid))-1L
