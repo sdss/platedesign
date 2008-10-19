@@ -32,9 +32,13 @@ function fiberid_sdss, default, fibercount, design, $
                        minstdinblock=minstdinblock, $
                        minskyinblock=minskyinblock, $
                        nosky=nosky, nostd=nostd, noscience=noscience, $
-                       quiet=quiet, block=block
+                       quiet=quiet, block=block, $
+  respect_fiberid=respect_fiberid
 
 common com_fiberid_sdss, fiberblocks
+
+if(keyword_set(respect_fiberid)) then $
+  message, 'SDSS spectrograph designs cannot respect fiberid'
 
 platescale = 217.7358           ; mm/degree
 limitdegree=7.*0.1164 ;; limit of fiber reach

@@ -85,6 +85,12 @@ for i=0L, n_tags(default)-1L do begin
     endfor
 endfor
 
+;; see if we should respect the fiberid
+if(tag_exist(definition, 'RESPECT_FIBERID')) then begin
+    respect_fiberid= long(definition.respect_fiberid)
+endif
+
+
 ;; Now do some sanity checks
 racen= double((strsplit(definition.racen,/extr))[0])
 deccen= double((strsplit(definition.deccen,/extr))[0])
@@ -353,7 +359,8 @@ if(keyword_set(clobber) gt 0 OR $
                                     default, fibercount, design[icurr], $
                                     minstdinblock=minstdinblock[iinst], $
                                     minskyinblock=minskyinblock[iinst], $
-                                    block=block)
+                                    block=block, $
+                                    respect_fiberid=respect_fiberid)
             design[icurr].fiberid= fiberids
             design[icurr].block= block
             iassigned= where(design[icurr].fiberid ge 1, nassigned)
