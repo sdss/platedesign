@@ -223,6 +223,7 @@ if(NOT keyword_set(noscience)) then begin
     for ip=1L, npointings do begin
         isci= where(strupcase(design.targettype) ne 'SKY' AND $
                     strupcase(design.targettype) ne 'STANDARD' AND $
+                    fiberid eq -9999 AND $
                     design.pointing eq ip, nsci)
         tmp_fiberused=0
         if(keyword_set(fiberused[ip-1])) then $
@@ -256,8 +257,8 @@ if(NOT keyword_set(noscience)) then begin
     endfor
 endif
     
+block= lonarr(n_elements(fiberid))-1L
 for ip=1L, npointings do begin
-    block= lonarr(n_elements(fiberid))-1L
     igood= where(fiberid ge 1 and design.pointing eq ip, ngood)
     fiber_offset= n_elements(fiberblocks)*(ip-1)
     if(ngood gt 0) then begin
@@ -271,9 +272,11 @@ for ip=1L, npointings do begin
         if(nii gt 0) then begin
             toblock=lonarr(n_elements(design))
             toblock[igood[ii]]=block[igood[ii]]
-            sdss_plugprob, design[igood].xf_default, design[igood].yf_default, $
-              tmp_fiberid, toblock=toblock[igood], limitdegree=limitdegree, $
-              blockfile=blockfile
+            sdss_plugprob, design[igood].xf_default, $
+                           design[igood].yf_default, $
+                           tmp_fiberid, toblock=toblock[igood], $
+                           limitdegree=limitdegree, $
+                           blockfile=blockfile
             fiberid[igood]= fiber_offset+tmp_fiberid
         endif
     endif
