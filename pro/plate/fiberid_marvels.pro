@@ -49,10 +49,25 @@ nperblock=4L
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
 
+if(tag_exist(default, 'RESPECT_FIBERID')) then begin
+    respect_fiberid= long(default.respect_fiberid)
+endif
+
 fiberid=lonarr(n_elements(design))
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 fiberused=ptrarr(npointings)
+
+if(keyword_set(respect_fiberid)) then begin
+    for ip=1L, npointings do begin
+        iset= where(design.fiberid ge 1 AND design.pointing eq ip, nset)
+        fiber_offset= n_elements(fiberblocks)*(ip-1)
+        if(nset gt 0) then begin
+            fiberid[iset]=design[iset].fiberid
+            fiberused[ip-1]=ptr_new(fiberid[iset]-fiber_offset)
+        endif
+    endfor
+endif
 
 ;; default centers of blocks
 blockfile=getenv('PLATEDESIGN_DIR')+'/data/marvels/fiberBlocksMarvels.par'
@@ -70,6 +85,10 @@ endfor
 ;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
 if(NOT keyword_set(noscience)) then begin
     for ip=1L, npointings do begin
+        tmp_fiberused=0
+        if(keyword_set(fiberused[ip-1])) then $
+          tmp_fiberused=*fiberused[ip-1]
+
         isci= where(strupcase(design.targettype) ne 'SKY' AND $
                     strupcase(design.targettype) ne 'STANDARD' AND $
                     design.pointing eq ip, nsci)
@@ -81,7 +100,7 @@ if(NOT keyword_set(noscience)) then begin
             sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
               tmp_fiberid, limitdegree=limitdegree, $
               maxinblock=nperblock-minstdinblock-minskyinblock, $
-              blockfile=blockfile
+              blockfile=blockfile, fiberused=tmp_fiberused
             
             ;; which block is each in
             block= lonarr(n_elements(tmp_fiberid))-1L
