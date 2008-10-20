@@ -106,6 +106,7 @@ endif
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
+npointings= long(default.npointings)
 nextrafibers=lonarr(npointings)
 while(keyword_set(clobber) gt 0 OR $
       file_test(designfile) eq 0 OR $
@@ -116,7 +117,6 @@ while(keyword_set(clobber) gt 0 OR $
     
     ;; What instruments are being used, and how many science,
     ;; standard and sky fibers do we assign to each?
-    npointings= long(default.npointings)
     noffsets= long(default.noffsets)
     instruments= strsplit(default.instruments, /extr)
     ninstruments= n_elements(instruments)
