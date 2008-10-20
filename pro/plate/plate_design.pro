@@ -106,10 +106,10 @@ endif
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
-nextrafibers=0
+nextrafibers=lonarr(npointings)
 while(keyword_set(clobber) gt 0 OR $
       file_test(designfile) eq 0 OR $
-      keyword_set(nextrafibers) gt 0) do begin
+      total(nextrafibers) gt 0) do begin
     
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
@@ -367,28 +367,31 @@ while(keyword_set(clobber) gt 0 OR $
                                     respect_fiberid=respect_fiberid)
             design[icurr].fiberid= fiberids
             design[icurr].block= block
-            iassigned= where(design[icurr].fiberid ge 1, nassigned)
-            if(nassigned gt 0) then $
-              keep[icurr[iassigned]]=1L
-            if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
-              then begin
-                splog, 'Some fibers not assigned to targets!'
-                if(NOT keyword_set(debug)) then begin
-                    if(NOT keyword_set(replace_fibers)) then begin
-                        splog, 'Not completing plate design '+ $
-                               strtrim(string(designid),2)
-                        return
+            for ip=1L, npointings do begin 
+                iassigned= where(design[icurr].fiberid ge 1 AND $
+                                 design[icurr].pointing eq ip, nassigned)
+                if(nassigned gt 0) then $
+                  keep[icurr[iassigned]]=1L
+                if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
+                  then begin
+                    splog, 'Some fibers not assigned to targets!'
+                    if(NOT keyword_set(debug)) then begin
+                        if(NOT keyword_set(replace_fibers)) then begin
+                            splog, 'Not completing plate design '+ $
+                                   strtrim(string(designid),2)
+                            return
+                        endif else begin
+                            nextrafibers[ip-1]=nextrafibers[ip-1]+10L
+                        endelse
                     endif else begin
-                        nextrafibers=nextrafibers+1L
+                        stop
                     endelse
                 endif else begin
-                    stop
+                    ;; if we had replaced some fibers before, things
+                    ;; worked out OK this time so no need to repeat
+                    nextrafibers=lonarr(npointings)
                 endelse
-            endif else begin
-                ;; if we had replaced some fibers before, things
-                ;; worked out OK this time so no need to repeat
-                nextrafibers=0
-            endelse
+            endfor
         endif
     endfor
     ikeep=where(keep gt 0, nkeep)
@@ -396,7 +399,7 @@ while(keyword_set(clobber) gt 0 OR $
 
 ;; Write out plate assignments to 
 ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    if(NOT keyword_set(nextrafibers)) then begin
+    if(total(nextrafibers) eq 0) then begin
         pdata= ptr_new(design)
         spawn, 'mkdir -p '+designdir
         hdrstr=struct_combine(default, definition)
