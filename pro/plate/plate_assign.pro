@@ -10,13 +10,6 @@
 ;                have .RACEN and .DECCEN)
 ;   fibercount - structure with number of science, sky, standards 
 ;                used and total for each instrument:
-;                  .INSTRUMENTS[NINSTRUMENT]
-;                  .NSCIENCE_TOT[NINSTRUMENT]
-;                  .NSCIENCE_USED[NINSTRUMENT]
-;                  .NSTANDARD_TOT[NINSTRUMENT]
-;                  .NSTANDARD_USED[NINSTRUMENT]
-;                  .NSKY_TOT[NINSTRUMENT]
-;                  .NSKY_USED[NINSTRUMENT]
 ;   design - [Nalready] design structure
 ;   new_design - [Nnew] target structure
 ; OPTIONAL INPUTS:
@@ -41,8 +34,11 @@ tilerad=1.49
 nlimit=fibercount.ntot
 if(keyword_set(collect)) then $
   nlimit=fibercount.ncollect
-if(keyword_set(nextra)) then $
-  nlimit=nlimit+nextra
+if(keyword_set(nextra)) then begin
+    for i=0L, n_elements(nextra)-1L do begin
+        nlimit[*,*,i,*]=nlimit[*,*,i,*]+nextra
+    endfor
+endif
 
 ;; step through targets in order of priority;
 ;; at this step we shuffle the targets to remove 
