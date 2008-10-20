@@ -387,7 +387,6 @@ while(keyword_set(clobber) gt 0 OR $
             iassigned= where(design[icurr].fiberid ge 1, nassigned)
             if(nassigned gt 0) then $
               keep[icurr[iassigned]]=1L
-            fibers_to_replace=0
             if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
               then begin
                 splog, 'Some fibers not assigned to targets!'
@@ -401,12 +400,20 @@ while(keyword_set(clobber) gt 0 OR $
                                             nnotassigned)
                         if(nnotassigned eq 0) then $
                           message, 'uh ... really?'
-                        fibers_to_replace=design[icurr[inotassigned]]
+                        if(n_tags(fibers_to_replace) gt 0) then $
+                          fibers_to_replace=[fibers_to_replace, $
+                                             design[icurr[inotassigned]]]
+                        else $
+                          fibers_to_replace=design[icurr[inotassigned]]
                     endelse
                 endif else begin
                     stop
                 endelse
-            endif
+            endif else begin
+                ;; if we had replaced some fibers before, things
+                ;; worked out OK this time so no need to repeat
+                fibers_to_replace=0
+            endelse
         endif
     endfor
     ikeep=where(keep gt 0, nkeep)
