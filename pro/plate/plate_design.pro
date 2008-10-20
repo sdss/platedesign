@@ -105,8 +105,9 @@ endif
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
-if(keyword_set(clobber) gt 0 OR $
-   file_test(designfile) eq 0) then begin
+while(keyword_set(clobber) gt 0 OR $
+      file_test(designfile) eq 0 OR $
+      n_tags(fibers_to_replace) gt 0) do begin
     
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
@@ -200,7 +201,8 @@ if(keyword_set(clobber) gt 0 OR $
             ;; typed double
             if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
                datatype(tmp_targets[0].dec) ne 'DOU') then begin
-                message, 'Aborting: RA and Dec MUST be typed as double precision!'
+                message, $
+                  'Aborting: RA and Dec MUST be typed as double precision!'
             endif
             
             ;; convert target information to design structure
@@ -208,6 +210,25 @@ if(keyword_set(clobber) gt 0 OR $
             target2design, definition, default, tmp_targets, tmp_design, $
                            info=hdrstr
             tmp_design.iplateinput= k+1L
+
+            if(n_tags(fibers_to_replace) gt 0) then begin
+                icurr= where(fibers_to_replace.iplateinput eq k+1L, ncurr)
+                if(ncurr gt 0) then begin
+                    spherematch, fibers_to_replace[icurr].target_ra, $
+                                 fibers_to_replace[icurr].target_dec, $
+                                 tmp_design.target_ra, $
+                                 tmp_design.target_dec, $
+                                 1./3600., m1, m2, d12
+                    if(m1[0] eq -1 OR $
+                       n_elements(m1) ne n_elements(fibers_to_replace)) then $
+                      message, 'fibers to replace not in list!'
+                    keep=bytarr(n_elements(tmp_design))+1L
+                    keep[m2]=0
+                    ikeep=where(keep gt 0, nkeep)
+                    if(nkeep gt 0) then $
+                      tmp_design= tmp_design[ikeep]
+                endif
+            endif
             
             if(n_tags(new_design) eq 0) then begin
                 new_design=tmp_design 
@@ -366,13 +387,22 @@ if(keyword_set(clobber) gt 0 OR $
             iassigned= where(design[icurr].fiberid ge 1, nassigned)
             if(nassigned gt 0) then $
               keep[icurr[iassigned]]=1L
+            fibers_to_replace=0
             if(nassigned ne long(total(fibercount.ntot[iinst,*,*,*]))) $
               then begin
                 splog, 'Some fibers not assigned to targets!'
-                if(not keyword_set(debug)) then begin
-                    splog, 'Not completing plate design '+ $
-                           strtrim(string(designid),2)
-                    return
+                if(NOT keyword_set(debug)) then begin
+                    if(NOT keyword_set(replace_fibers)) then begin
+                        splog, 'Not completing plate design '+ $
+                               strtrim(string(designid),2)
+                        return
+                    endif else begin
+                        inotassigned= where(design[icurr].fiberid le 0, $
+                                            nnotassigned)
+                        if(nnotassigned eq 0) then $
+                          message, 'uh ... really?'
+                        fibers_to_replace=design[icurr[inotassigned]]
+                    endelse
                 endif else begin
                     stop
                 endelse
@@ -393,7 +423,7 @@ if(keyword_set(clobber) gt 0 OR $
             'platedesign_version '+platedesign_version()]
     yanny_write, designfile, pdata, hdr=outhdr
 
-endif
+endwhile
 
 ;; Convert plateDesign to plateHoles
 plate_holes, designid, plateid, ha, temp
