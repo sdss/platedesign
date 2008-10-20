@@ -20,6 +20,7 @@
 ;   design - [Nalready] design structure
 ;   new_design - [Nnew] target structure
 ; OPTIONAL INPUTS:
+;   nextra - number of extra fibers to collect
 ;   seed - random seed for shuffling
 ;   nmax - maximum number to assign
 ; COMMENTS:
@@ -29,7 +30,7 @@
 ;   8-May-2008  Written by MRB, NYU
 ;-
 pro plate_assign, definition, default, fibercount, design, new_design, $
-                  seed=seed, collect=collect
+                  seed=seed, collect=collect, nextra=nextra
 
 tilerad=1.49
 
@@ -40,6 +41,8 @@ tilerad=1.49
 nlimit=fibercount.ntot
 if(keyword_set(collect)) then $
   nlimit=fibercount.ncollect
+if(keyword_set(nextra)) then $
+  nlimit=nlimit+nextra
 
 ;; step through targets in order of priority;
 ;; at this step we shuffle the targets to remove 

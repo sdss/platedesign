@@ -106,9 +106,10 @@ endif
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
+nextrafibers=0
 while(keyword_set(clobber) gt 0 OR $
       file_test(designfile) eq 0 OR $
-      n_tags(fibers_to_replace) gt 0) do begin
+      keyword_set(nextrafibers) gt 0) do begin
     
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
@@ -212,25 +213,6 @@ while(keyword_set(clobber) gt 0 OR $
                            info=hdrstr
             tmp_design.iplateinput= k+1L
 
-            if(n_tags(fibers_to_replace) gt 0) then begin
-                icurr= where(fibers_to_replace.iplateinput eq k+1L, ncurr)
-                if(ncurr gt 0) then begin
-                    spherematch, fibers_to_replace[icurr].target_ra, $
-                                 fibers_to_replace[icurr].target_dec, $
-                                 tmp_design.target_ra, $
-                                 tmp_design.target_dec, $
-                                 1./3600., m1, m2, d12
-                    if(m1[0] eq -1 OR $
-                       n_elements(m1) ne n_elements(fibers_to_replace)) then $
-                      message, 'fibers to replace not in list!'
-                    keep=bytarr(n_elements(tmp_design))+1L
-                    keep[m2]=0
-                    ikeep=where(keep gt 0, nkeep)
-                    if(nkeep gt 0) then $
-                      tmp_design= tmp_design[ikeep]
-                endif
-            endif
-            
             if(n_tags(new_design) eq 0) then begin
                 new_design=tmp_design 
             endif else begin
@@ -240,7 +222,7 @@ while(keyword_set(clobber) gt 0 OR $
         
         ;; assign holes to each plateInput file
         plate_assign, definition, default, fibercount, design, new_design, $
-                      seed=seed
+                      seed=seed, nextra=nextrafibers
 
         ;; output results for this set
         iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
@@ -397,15 +379,7 @@ while(keyword_set(clobber) gt 0 OR $
                                strtrim(string(designid),2)
                         return
                     endif else begin
-                        inotassigned= where(design[icurr].fiberid le 0, $
-                                            nnotassigned)
-                        if(nnotassigned eq 0) then $
-                          message, 'uh ... really?'
-                        if(n_tags(fibers_to_replace) gt 0) then $
-                          fibers_to_replace=[fibers_to_replace, $
-                                             design[icurr[inotassigned]]] $
-                        else $
-                          fibers_to_replace=design[icurr[inotassigned]]
+                        nextrafibers=nextrafibers+1L
                     endelse
                 endif else begin
                     stop
@@ -413,7 +387,7 @@ while(keyword_set(clobber) gt 0 OR $
             endif else begin
                 ;; if we had replaced some fibers before, things
                 ;; worked out OK this time so no need to repeat
-                fibers_to_replace=0
+                nextrafibers=0
             endelse
         endif
     endfor
@@ -422,14 +396,16 @@ while(keyword_set(clobber) gt 0 OR $
 
 ;; Write out plate assignments to 
 ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    pdata= ptr_new(design)
-    spawn, 'mkdir -p '+designdir
-    hdrstr=struct_combine(default, definition)
-    outhdr=struct2lines(hdrstr)
-    outhdr=[outhdr, $
-            'platerun '+plan.platerun, $
-            'platedesign_version '+platedesign_version()]
-    yanny_write, designfile, pdata, hdr=outhdr
+    if(NOT keyword_set(nextrafibers)) then begin
+        pdata= ptr_new(design)
+        spawn, 'mkdir -p '+designdir
+        hdrstr=struct_combine(default, definition)
+        outhdr=struct2lines(hdrstr)
+        outhdr=[outhdr, $
+                'platerun '+plan.platerun, $
+                'platedesign_version '+platedesign_version()]
+        yanny_write, designfile, pdata, hdr=outhdr
+    endif
 
 endwhile
 
