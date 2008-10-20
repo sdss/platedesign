@@ -17,6 +17,7 @@
 ;------------------------------------------------------------------------------
 pro plate_design, plateid, debug=debug, clobber=clobber
 
+
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(plateid)-1L do begin
@@ -402,7 +403,7 @@ while(keyword_set(clobber) gt 0 OR $
                           message, 'uh ... really?'
                         if(n_tags(fibers_to_replace) gt 0) then $
                           fibers_to_replace=[fibers_to_replace, $
-                                             design[icurr[inotassigned]]]
+                                             design[icurr[inotassigned]]] $
                         else $
                           fibers_to_replace=design[icurr[inotassigned]]
                     endelse
