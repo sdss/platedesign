@@ -430,7 +430,6 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
 
 endif ;; end of clobber & file exists tests
 
-
 ;; Convert plateDesign to plateHoles
 plate_holes, designid, plateid, ha, temp
 
