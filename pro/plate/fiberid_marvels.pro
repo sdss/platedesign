@@ -237,7 +237,7 @@ if(NOT keyword_set(noscience)) then begin
             
             ;; do store results
             iassigned=where(tmp_fiberid ge 1, nassigned)
-            help, nassigned
+            help, ip, nassigned
             if(nassigned gt 0) then begin
                 if(NOT keyword_set(tmp_fiberused)) then $
                   tmp_fiberused=tmp_fiberid[iassigned] $
