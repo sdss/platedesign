@@ -36,7 +36,7 @@ if(keyword_set(collect)) then $
   nlimit=fibercount.ncollect
 if(keyword_set(nextra)) then begin
     for i=0L, n_elements(nextra)-1L do begin
-        nlimit[*,*,i,*]=nlimit[*,*,i,*]+nextra
+        nlimit[*,*,i,*]=nlimit[*,*,i,*]+nextra[i]
     endfor
 endif
 
