@@ -26,10 +26,16 @@ if(n_elements(plateid) gt 1) then begin
 endif
 
 ;; read plan file for settings
-plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+plans= yanny_readone(platePlans_file)
 iplate=where(plans.plateid eq plateid, nplate)
-if(nplate ne 1) then $
-  message, 'error in platePlans.par file!'
+if(nplate gt 1) then begin
+  message, 'Error: More than one entry for plateid (' + string(plateid) + ') found in ' + platePlans_file + '.'
+endif
+if (nplate eq 0) then begin
+    message, 'Error: The plate id given (' + string(plateid) + ') was not found in ' + platePlans_file + '.'
+endif
+
 plan=plans[iplate]
 designid=plan.designid
 ha=plan.ha
@@ -60,8 +66,8 @@ definitionfile=definitiondir+'/'+ $
                'plateDefinition-'+ $
                string(f='(i6.6)', designid)+'.par'
 dum= yanny_readone(definitionfile, hdr=hdr)
-if(NOT keyword_set(hdr)) then begin
-    message, 'no plateDefinition file '+definitionfile
+if(~keyword_set(hdr)) then begin
+    message, 'Error: plateDefinition file not found: ' + definitionfile + ' (plate id: (' + string(plateid) + ')'
 endif
 definition= lines2struct(hdr)
 
@@ -72,7 +78,7 @@ defaultfile= defaultdir+'/plateDefault-'+ $
              definition.platetype+'-'+ $
              definition.platedesignversion+'.par'
 dum= yanny_readone(defaultfile, hdr=hdr)
-if(NOT keyword_set(hdr)) then begin
+if(~keyword_set(hdr)) then begin
     message, 'no plateDefaults file '+defaultfile
 endif
 default= lines2struct(hdr)
@@ -112,308 +118,318 @@ designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
 npointings= long(default.npointings)
 nextrafibers=lonarr(npointings)
-needmorefibers=0
-while(keyword_set(clobber) gt 0 OR $
-      file_test(designfile) eq 0 OR $
-      keyword_set(needmorefibers) gt 0) do begin
-    
-    ;; Initialize design structure, including a center hole
-    design=design_blank(/center)
-    
-    ;; What instruments are being used, and how many science,
-    ;; standard and sky fibers do we assign to each?
-    noffsets= long(default.noffsets)
-    instruments= strsplit(default.instruments, /extr)
-    ninstruments= n_elements(instruments)
-    targettypes= strsplit(default.targettypes, /extr)
-    ntargettypes= n_elements(targettypes)
-    ntot=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
-    nused=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
-    for i=0L, ninstruments-1L do begin
-        for j=0L, ntargettypes-1L do begin
-            itag= tag_indx(default, 'n'+ $
-                           strtrim(string(instruments[i]),2)+ $
-                           '_'+strtrim(string(targettypes[j]),2))
-            if(itag eq -1) then $
-              message, 'must specify n'+ $
-                       strtrim(string(instruments[i]),2)+ $
-                       '_'+strtrim(string(targettypes[j]),2)
-            ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
-        endfor
-    endfor
-    if(tag_exist(default, 'COLLECTFACTOR')) then $
-      collectfactor= long(default.collectfactor) $
-    else $
-      collectfactor= 10L
-    fibercount= {instruments:instruments, $
-                 targettypes:targettypes, $
-                 ntot:ntot, $
-                 nused:nused, $
-                 ncollect:ntot*collectfactor}
 
-    ;; What conditions on fiber placement exist for each instrument?
-    minstdinblock=lonarr(ninstruments) ;; how many standards per block?
-    minskyinblock=lonarr(ninstruments) ;; how many skies per block?
-    for iinst=0L, ninstruments-1L do begin
-        ;; get minimum number of standards per block per pointing, if desired
-        itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
-        if(itagminstd eq -1) then $
-          minstdinblock[iinst]=0L $
-        else $
-          minstdinblock[iinst]=long(default.(itagminstd))
+;; Design the plate if "clobber" is not set or if the output file doesn't exist.
+if (keyword_set(clobber) OR ~file_test(designfile)) then begin
 
-        ;; get minimum number of skies per block per pointing, if desired
-        itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
-        if(itagminsky eq -1) then $
-          minskyinblock[iinst]=0L $
-        else $
-          minskyinblock[iinst]=long(default.(itagminsky))
-    endfor
-    
-    ;; For each class of input priorities, run plate_assign 
-    ;; Note input files root path is $PLATELIST_DIR/inputs
+    ;; The algorithm to assign fibers to targets.
+    ;; If any fibers remain unassigned, add additional targets to
+    ;; the list to use the remaining fibers. Initialise the flag
+    ;; that indicates this to start the loop.
+    needmorefibers=1
 
-    ;; first, convert inputs into priority list
-    ninputs= long(definition.ninputs)
-    hdrs=ptrarr(ninputs)
-    priority=lindgen(ninputs)
-    if(tag_exist(definition, 'priority')) then $
-      priority= long(strsplit(definition.priority, /extr))
+    while(keyword_set(needmorefibers) gt 0) do begin
 
-    ;; second, treat each priority list separately
-    isort=sort(priority)
-    iuniq=uniq(priority[isort])
-    istart=0L
-    for i=0L, n_elements(iuniq)-1L do begin
-        iend=iuniq[i]
-        icurr=isort[istart:iend]
-        ncurr=n_elements(icurr)
+        ;; Initialize design structure, including a center hole
+        design=design_blank(/center)
         
-        ;; read in each plateInput file at this priority level
-        new_design=0
-        for j=0L, ncurr-1L do begin
-            k=icurr[j]
-            itag=tag_indx(definition, 'plateInput'+strtrim(string(k+1),2))
-            if(itag eq -1) then $
-              message, 'no plateInput'+strtrim(string(k+1),2)+' param set'
-            infile=getenv('PLATELIST_DIR')+ $
-                   '/inputs/'+definition.(itag)
-            tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
-            if(n_tags(tmp_targets) eq 0) then $
-              message, 'empty plateInput file '+infile
-            hdrs[k]=ptr_new(hdr)
-            hdrstr=lines2struct(hdr)
-
-            ;; check data type of ra and dec -- abort if they are not
-            ;; typed double
-            if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
-               datatype(tmp_targets[0].dec) ne 'DOU') then begin
-                message, $
-                  'Aborting: RA and Dec MUST be typed as double precision!'
-            endif
-            
-            ;; convert target information to design structure
-            ;; (record which plate input file this came from)
-            target2design, definition, default, tmp_targets, tmp_design, $
-                           info=hdrstr
-            tmp_design.iplateinput= k+1L
-
-            if(n_tags(new_design) eq 0) then begin
-                new_design=tmp_design 
-            endif else begin
-                new_design=[new_design, tmp_design]
-            endelse
-        endfor
-        
-        ;; assign holes to each plateInput file
-        plate_assign, definition, default, fibercount, design, new_design, $
-                      seed=seed, nextra=nextrafibers
-
-        ;; output results for this set
-        iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
-        for j=0L, n_elements(iplate)-1L do begin
-            ithis= where(new_design.iplateinput eq iplate[j], nthis)
-            if(nthis gt 0) then begin
-                outstr= new_design[ithis]
-                pdata= ptr_new(outstr)
-                itag=tag_indx(definition, 'plateInput'+ $
-                              strtrim(string(iplate[j]),2))
+        ;; What instruments are being used, and how many science,
+        ;; standard and sky fibers do we assign to each?
+        noffsets= long(default.noffsets)
+        instruments= strsplit(default.instruments, /extr)
+        ninstruments= n_elements(instruments)
+        targettypes= strsplit(default.targettypes, /extr)
+        ntargettypes= n_elements(targettypes)
+        ntot=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
+        nused=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
+        for i=0L, ninstruments-1L do begin
+            for j=0L, ntargettypes-1L do begin
+                itag= tag_indx(default, 'n'+ $
+                            strtrim(string(instruments[i]),2)+ $
+                            '_'+strtrim(string(targettypes[j]),2))
                 if(itag eq -1) then $
-                  message, 'no plateInput'+strtrim(string(iplate[j]+1),2)+ $
-                           ' param set'
-                infile=getenv('PLATELIST_DIR')+ '/inputs/'+definition.(itag)
-                filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
-                                   /extr, /sub))[1]
-                yanny_write, designdir+'/'+filebase+'-output.par', pdata, $
-                             hdr=(*hdrs[iplate[j]-1])
-            endif
+                message, 'must specify n'+ $
+                        strtrim(string(instruments[i]),2)+ $
+                        '_'+strtrim(string(targettypes[j]),2)
+                ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
+            endfor
+        endfor
+        if(tag_exist(default, 'COLLECTFACTOR')) then $
+        collectfactor= long(default.collectfactor) $
+        else $
+        collectfactor= 10L
+        fibercount= {instruments:instruments, $
+                    targettypes:targettypes, $
+                    ntot:ntot, $
+                    nused:nused, $
+                    ncollect:ntot*collectfactor}
+    
+        ;; What conditions on fiber placement exist for each instrument?
+        minstdinblock=lonarr(ninstruments) ;; how many standards per block?
+        minskyinblock=lonarr(ninstruments) ;; how many skies per block?
+        for iinst=0L, ninstruments-1L do begin
+            ;; get minimum number of standards per block per pointing, if desired
+            itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
+            if(itagminstd eq -1) then $
+            minstdinblock[iinst]=0L $
+            else $
+            minstdinblock[iinst]=long(default.(itagminstd))
+    
+            ;; get minimum number of skies per block per pointing, if desired
+            itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
+            if(itagminsky eq -1) then $
+            minskyinblock[iinst]=0L $
+            else $
+            minskyinblock[iinst]=long(default.(itagminsky))
         endfor
         
-        istart=iend+1L
-    endfor
-
-    ;; Find guide fibers and assign them (if we're supposed to)
-    ;; Make sure to assign proper guides to each pointing
-    for pointing=1L, npointings do begin
-        iguidenums= $
-          tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
-        if(iguidenums eq -1) then $
-          message, 'Must specify guide fiber numbers for pointing '+ $
-                   strtrim(string(pointing),2)
-        guidenums=long(strsplit(default.(iguidenums),/extr))
-        guide_design= plate_guide(definition, default, pointing, $
-                                  rerun=rerun, epoch=epoch)
-        if(n_tags(guide_design) gt 0) then $
-          plate_assign_guide, definition, default, design, guide_design, $
-                              pointing, guidenums=guidenums $
-        else $
-          message, 'there are no guide fibers! aborting!'
-    endfor
-
-    ;; Assign standards 
-    for pointing=1L, npointings do begin
-        for offset=0L, noffsets do begin
-            for iinst=0L, ninstruments-1L do begin
-
-                ;; get appropriate list of standards
-                sphoto_design= plate_standard(definition, default, $
-                                              instruments[iinst], $
-                                              pointing, offset, $
-                                              rerun=rerun)
-
-                if(n_tags(sphoto_design) gt 0) then begin
-                    ;; assign, applying constraints imposed in the
-                    ;; "FIBERID_[INSTRUMENT]" procedure; this code
-                    ;; slowly increases number of considered targets 
-                    ;; until constraints are satisfied; because
-                    ;; pointing and offsets are considered separately,
-                    ;; this does not constitute a guarantee on the
-                    ;; final design
-                    plate_assign_constrained, definition, default, $
-                      instruments[iinst], $
-                      'standard', fibercount, pointing, offset, design, $
-                      sphoto_design, seed=seed, $
-                      minstdinblock=minstdinblock[iinst], $
-                      minskyinblock=minskyinblock[iinst], $
-                      /nosky, /noscience
-                endif
-            endfor
-        endfor 
-    endfor
+        ;; For each class of input priorities, run plate_assign 
+        ;; Note input files root path is $PLATELIST_DIR/inputs
     
-    ;; Find sky fibers and assign them
-    for pointing=1L, npointings do begin
-        for offset=0L, noffsets do begin
-            for iinst=0L, ninstruments-1L do begin
-                sky_design= plate_sky(definition, default, $
-                                      instruments[iinst], pointing, offset, $
-                                      rerun=rerun)
-                if(n_tags(sky_design) gt 0) then begin
-                    ;; assign, applying constraints imposed in the
-                    ;; "FIBERID_[INSTRUMENT]" procedure; this code
-                    ;; slowly increases number of considered targets 
-                    ;; until constraints are satisfied; because
-                    ;; pointing and offsets are considered separately,
-                    ;; this does not constitute a guarantee on the
-                    ;; final design
-                    plate_assign_constrained, definition, default, $
-                      instruments[iinst], $
-                      'sky', fibercount, pointing, offset, design, $
-                      sky_design, seed=seed, $
-                      minstdinblock=minstdinblock[iinst], $
-                      minskyinblock=minskyinblock[iinst], $
-                      /nostd, /noscience
-                endif
-            endfor 
-        endfor 
-    endfor
+        ;; first, convert inputs into priority list
+        ninputs= long(definition.ninputs)
+        hdrs=ptrarr(ninputs)
+        priority=lindgen(ninputs)
+        if(tag_exist(definition, 'priority')) then $
+        priority= long(strsplit(definition.priority, /extr))
     
-    ;; Check for extra fibers
-    iunused=where(fibercount.nused lt fibercount.ntot, nunused)
-    if(nunused gt 0) then begin
-        splog, 'Unused fibers found. Please specify more targets!'
-        splog, 'Not completing plate design '+strtrim(string(designid),2)
-        if(not keyword_set(debug)) then return else stop
-    endif
-
-    ;; Find light traps and assign them
-    ;; (Note that assignment here checks for conflicts:
-    ;; so if a light trap overlaps an existing hole, the
-    ;; light trap is not drilled)
-    for pointing=1L, npointings do begin
-        for offset=0L, noffsets do begin
-            ;; find bright stars
-            trap_design= plate_trap(definition, default, pointing, offset)
+        ;; second, treat each priority list separately
+        isort=sort(priority)
+        iuniq=uniq(priority[isort])
+        istart=0L
+        for i=0L, n_elements(iuniq)-1L do begin
+            iend=iuniq[i]
+            icurr=isort[istart:iend]
+            ncurr=n_elements(icurr)
             
-            ;; add them if they don't conflict
-            if(n_tags(trap_design) gt 0) then begin
-                for i=0L, n_elements(trap_design)-1L do begin
-                    trap_design[i].conflicted= $
-                      check_conflicts(design, trap_design[i])
-                    if(NOT trap_design[i].conflicted) then $
-                      design= [design, trap_design[i]]
-                endfor
-            endif
-        endfor
-    endfor
-
-    ;; Assign fiberid's for each instrument
-    keep=lonarr(n_elements(design))+1L
-    needmorefibers=0
-    for iinst=0L, ninstruments-1L do begin
-        icurr= where(design.holetype eq instruments[iinst], ncurr)
-
-        if(ncurr gt 0) then begin
-            keep[icurr]=0L
-            fiberids= call_function('fiberid_'+instruments[iinst], $
-                                    default, fibercount, design[icurr], $
-                                    minstdinblock=minstdinblock[iinst], $
-                                    minskyinblock=minskyinblock[iinst], $
-                                    block=block, $
-                                    respect_fiberid=respect_fiberid)
-            design[icurr].fiberid= fiberids
-            design[icurr].block= block
-            for ip=1L, npointings do begin 
-                iassigned= where(design[icurr].fiberid ge 1 AND $
-                                 design[icurr].pointing eq ip, nassigned)
-                if(nassigned gt 0) then $
-                  keep[icurr[iassigned]]=1L
-                if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
-                  then begin
-                    splog, 'Some fibers not assigned to targets!'
-                    if(NOT keyword_set(debug)) then begin
-                        if(NOT keyword_set(replace_fibers)) then begin
-                            splog, 'Not completing plate design '+ $
-                                   strtrim(string(designid),2)
-                            return
-                        endif else begin
-                            nextrafibers[ip-1]=nextrafibers[ip-1]+1L
-                            needmorefibers=1
-                        endelse
-                    endif else begin
-                        stop
-                    endelse
-                endif 
+            ;; read in each plateInput file at this priority level
+            new_design=0
+            for j=0L, ncurr-1L do begin
+                k=icurr[j]
+                itag=tag_indx(definition, 'plateInput'+strtrim(string(k+1),2))
+                if(itag eq -1) then $
+                message, 'no plateInput'+strtrim(string(k+1),2)+' param set'
+                infile=getenv('PLATELIST_DIR')+ $
+                    '/inputs/'+definition.(itag)
+                tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
+                if(n_tags(tmp_targets) eq 0) then $
+                message, 'empty plateInput file '+infile
+                hdrs[k]=ptr_new(hdr)
+                hdrstr=lines2struct(hdr)
+    
+                ;; check data type of ra and dec -- abort if they are not
+                ;; typed double
+                if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
+                datatype(tmp_targets[0].dec) ne 'DOU') then begin
+                    message, $
+                    'Aborting: RA and Dec MUST be typed as double precision!'
+                endif
+                
+                ;; convert target information to design structure
+                ;; (record which plate input file this came from)
+                target2design, definition, default, tmp_targets, tmp_design, $
+                            info=hdrstr
+                tmp_design.iplateinput= k+1L
+    
+                if(n_tags(new_design) eq 0) then begin
+                    new_design=tmp_design 
+                endif else begin
+                    new_design=[new_design, tmp_design]
+                endelse
             endfor
+            
+            ;; assign holes to each plateInput file
+            plate_assign, definition, default, fibercount, design, new_design, $
+                        seed=seed, nextra=nextrafibers
+    
+            ;; output results for this set
+            iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
+            for j=0L, n_elements(iplate)-1L do begin
+                ithis= where(new_design.iplateinput eq iplate[j], nthis)
+                if(nthis gt 0) then begin
+                    outstr= new_design[ithis]
+                    pdata= ptr_new(outstr)
+                    itag=tag_indx(definition, 'plateInput'+ $
+                                strtrim(string(iplate[j]),2))
+                    if(itag eq -1) then $
+                    message, 'no plateInput'+strtrim(string(iplate[j]+1),2)+ $
+                            ' param set'
+                    infile=getenv('PLATELIST_DIR')+ '/inputs/'+definition.(itag)
+                    filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
+                                    /extr, /sub))[1]
+                    yanny_write, designdir+'/'+filebase+'-output.par', pdata, $
+                                hdr=(*hdrs[iplate[j]-1])
+                endif
+            endfor
+            
+            istart=iend+1L
+        endfor
+    
+        ;; Find guide fibers and assign them (if we're supposed to)
+        ;; Make sure to assign proper guides to each pointing
+        for pointing=1L, npointings do begin
+            iguidenums= $
+            tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
+            if(iguidenums eq -1) then $
+            message, 'Must specify guide fiber numbers for pointing '+ $
+                    strtrim(string(pointing),2)
+            guidenums=long(strsplit(default.(iguidenums),/extr))
+            guide_design= plate_guide(definition, default, pointing, $
+                                    rerun=rerun, epoch=epoch)
+            if(n_tags(guide_design) gt 0) then $
+            plate_assign_guide, definition, default, design, guide_design, $
+                                pointing, guidenums=guidenums $
+            else $
+            message, 'there are no guide fibers! aborting!'
+        endfor
+    
+        ;; Assign standards 
+        for pointing=1L, npointings do begin
+            for offset=0L, noffsets do begin
+                for iinst=0L, ninstruments-1L do begin
+    
+                    ;; get appropriate list of standards
+                    sphoto_design= plate_standard(definition, default, $
+                                                instruments[iinst], $
+                                                pointing, offset, $
+                                                rerun=rerun)
+    
+                    if(n_tags(sphoto_design) gt 0) then begin
+                        ;; assign, applying constraints imposed in the
+                        ;; "FIBERID_[INSTRUMENT]" procedure; this code
+                        ;; slowly increases number of considered targets 
+                        ;; until constraints are satisfied; because
+                        ;; pointing and offsets are considered separately,
+                        ;; this does not constitute a guarantee on the
+                        ;; final design
+                        plate_assign_constrained, definition, default, $
+                        instruments[iinst], $
+                        'standard', fibercount, pointing, offset, design, $
+                        sphoto_design, seed=seed, $
+                        minstdinblock=minstdinblock[iinst], $
+                        minskyinblock=minskyinblock[iinst], $
+                        /nosky, /noscience
+                    endif
+                endfor
+            endfor 
+        endfor
+        
+        ;; Find sky fibers and assign them
+        for pointing=1L, npointings do begin
+            for offset=0L, noffsets do begin
+                for iinst=0L, ninstruments-1L do begin
+                    sky_design= plate_sky(definition, default, $
+                                        instruments[iinst], pointing, offset, $
+                                        rerun=rerun)
+                    if(n_tags(sky_design) gt 0) then begin
+                        ;; assign, applying constraints imposed in the
+                        ;; "FIBERID_[INSTRUMENT]" procedure; this code
+                        ;; slowly increases number of considered targets 
+                        ;; until constraints are satisfied; because
+                        ;; pointing and offsets are considered separately,
+                        ;; this does not constitute a guarantee on the
+                        ;; final design
+                        plate_assign_constrained, definition, default, $
+                        instruments[iinst], $
+                        'sky', fibercount, pointing, offset, design, $
+                        sky_design, seed=seed, $
+                        minstdinblock=minstdinblock[iinst], $
+                        minskyinblock=minskyinblock[iinst], $
+                        /nostd, /noscience
+                    endif
+                endfor 
+            endfor 
+        endfor
+        
+        ;; Check for extra fibers
+        iunused=where(fibercount.nused lt fibercount.ntot, nunused)
+        if(nunused gt 0) then begin
+            splog, 'Unused fibers found. Please specify more targets!'
+            splog, 'Not completing plate design '+strtrim(string(designid),2)
+            if(not keyword_set(debug)) then return else stop
         endif
-    endfor
-    ikeep=where(keep gt 0, nkeep)
-    design=design[ikeep]
+    
+        ;; Find light traps and assign them
+        ;; (Note that assignment here checks for conflicts:
+        ;; so if a light trap overlaps an existing hole, the
+        ;; light trap is not drilled)
+        for pointing=1L, npointings do begin
+            for offset=0L, noffsets do begin
+                ;; find bright stars
+                trap_design= plate_trap(definition, default, pointing, offset)
+                
+                ;; add them if they don't conflict
+                if(n_tags(trap_design) gt 0) then begin
+                    for i=0L, n_elements(trap_design)-1L do begin
+                        trap_design[i].conflicted= $
+                        check_conflicts(design, trap_design[i])
+                        if(NOT trap_design[i].conflicted) then $
+                        design= [design, trap_design[i]]
+                    endfor
+                endif
+            endfor
+        endfor
+    
+        ;; Assign fiberid's for each instrument
+        keep=lonarr(n_elements(design))+1L
+        needmorefibers=0
+        for iinst=0L, ninstruments-1L do begin
+            icurr= where(design.holetype eq instruments[iinst], ncurr)
+    
+            if(ncurr gt 0) then begin
+                keep[icurr]=0L
+                fiberids= call_function('fiberid_'+instruments[iinst], $
+                                        default, fibercount, design[icurr], $
+                                        minstdinblock=minstdinblock[iinst], $
+                                        minskyinblock=minskyinblock[iinst], $
+                                        block=block, $
+                                        respect_fiberid=respect_fiberid)
+                design[icurr].fiberid= fiberids
+                design[icurr].block= block
+                for ip=1L, npointings do begin 
+                    iassigned= where(design[icurr].fiberid ge 1 AND $
+                                    design[icurr].pointing eq ip, nassigned)
+                    if(nassigned gt 0) then $
+                        keep[icurr[iassigned]]=1L
+                    if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
+                    then begin
+                        splog, 'Some fibers not assigned to targets!'
+                        if(NOT keyword_set(debug)) then begin
+                            if(keyword_set(replace_fibers) eq 0) then begin
+                                splog, 'Not completing plate design '+ $
+                                    strtrim(string(designid),2) + '. Rerun with keyword "replace_fibers" to attempt to assign unallocated fibers.'
+                                return
+                            endif else begin
+                                nextrafibers[ip-1]=nextrafibers[ip-1]+1L
+                                needmorefibers=1
+                            endelse
+                        endif else begin
+                            stop
+                        endelse
+                    endif 
+                endfor ;; end loop over pointings
+            endif 
+        endfor ;; end loop over instruments
+        ikeep=where(keep gt 0, nkeep)
+        design=design[ikeep]
+    
+    ;; Write out plate assignments to 
+    ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
+        if(keyword_set(needmorefibers) eq 0) then begin
+            pdata= ptr_new(design)
+            spawn, 'mkdir -p '+designdir
+            hdrstr=struct_combine(default, definition)
+            outhdr=struct2lines(hdrstr)
+            outhdr=[outhdr, $
+                    'platerun '+plan.platerun, $
+                    'platedesign_version '+platedesign_version()]
+            yanny_write, designfile, pdata, hdr=outhdr
+        endif
+    
+    endwhile ;; end loop if fibers unassigned
 
-;; Write out plate assignments to 
-;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-    if(total(nextrafibers) eq 0) then begin
-        pdata= ptr_new(design)
-        spawn, 'mkdir -p '+designdir
-        hdrstr=struct_combine(default, definition)
-        outhdr=struct2lines(hdrstr)
-        outhdr=[outhdr, $
-                'platerun '+plan.platerun, $
-                'platedesign_version '+platedesign_version()]
-        yanny_write, designfile, pdata, hdr=outhdr
-    endif
+endif ;; end of clobber & file exists tests
 
-endwhile
 
 ;; Convert plateDesign to plateHoles
 plate_holes, designid, plateid, ha, temp

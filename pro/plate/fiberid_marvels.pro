@@ -41,8 +41,8 @@ function fiberid_marvels, default, fibercount, design, $
                           quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid
 
-platescale = 217.7358           ; mm/degree
-limitdegree=8.*0.1164 ;; limit of fiber reach
+platescale = 217.7358       ;; mm/degree
+limitdegree=9.*0.1164       ;; limit of fiber reach in degrees (n * degrees/inch)
 skylimitdegree= limitdegree ;; stretch just as far for skies
 stdlimitdegree= limitdegree ;; ... and standards
 nperblock=4L
