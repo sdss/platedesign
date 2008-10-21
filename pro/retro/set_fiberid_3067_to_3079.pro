@@ -12,14 +12,16 @@ plinputnew_1= replicate(create_struct(plinput_1[0], 'fiberid', -9999L), $
                         n_elements(plinput_1))
 struct_assign, plinput_1, plinputnew_1, /nozero
 
-for i=0L, n_elements(plinputnew_1)-1L do begin & $
-  if(strtrim(plinputnew_1[i].targetids,2) ne 'NA') then begin & $
-  ii=where(strtrim(plinputnew_1[i].targetids,2) eq $
-           strtrim(oldfibers_1.targetids,2), nii) & $
-  if(nii gt 1) then stop & $
- if(nii eq 1) then $
-  plinputnew_1[i].fiberid= oldfibers_1[ii].fiberid & $
-  endif & $
+for i=0L, n_elements(plinputnew_1)-1L do begin 
+    if(strtrim(plinputnew_1[i].targetids,2) ne 'NA') then begin 
+        ii=where(strtrim(plinputnew_1[i].targetids,2) eq $
+                 strtrim(oldfibers_1.targetids,2), nii) 
+        if(nii gt 1) then stop 
+        if(nii eq 1) then $
+          plinputnew_1[i].fiberid= oldfibers_1[ii].fiberid $
+        else $
+          plinputnew_1[i].priority= plinputnew_1[i].priority+1000L 
+    endif 
 endfor
 
 yanny_write, plinputnewfile_1, ptr_new(plinputnew_1), hdr=hdr
@@ -36,14 +38,16 @@ plinputnew_2= replicate(create_struct(plinput_2[0], 'fiberid', -9999L), $
                         n_elements(plinput_2))
 struct_assign, plinput_2, plinputnew_2, /nozero
 
-for i=0L, n_elements(plinputnew_2)-1L do begin & $
-  if(strtrim(plinputnew_2[i].targetids,2) ne 'NA') then begin & $
+for i=0L, n_elements(plinputnew_2)-1L do begin 
+  if(strtrim(plinputnew_2[i].targetids,2) ne 'NA') then begin 
   ii=where(strtrim(plinputnew_2[i].targetids,2) eq $
-           strtrim(oldfibers_2.targetids,2), nii) & $
-  if(nii gt 1) then stop & $
+           strtrim(oldfibers_2.targetids,2), nii) 
+  if(nii gt 1) then stop 
  if(nii eq 1) then $
-  plinputnew_2[i].fiberid= oldfibers_2[ii].fiberid+60 & $
-  endif & $
+  plinputnew_2[i].fiberid= oldfibers_2[ii].fiberid+60 $
+else $
+  plinputnew_2[i].priority= plinputnew_2[i].priority+1000L 
+  endif 
 endfor
 
 yanny_write, plinputnewfile_2, ptr_new(plinputnew_2), hdr=hdr
