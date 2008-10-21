@@ -76,7 +76,7 @@ yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
 for i=0L, n_elements(plateid)-1L do begin
     platelines_marvels, plateid[i]
     spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
-      strtrim(string(plateid[i], f='(i6.6)'),2)+'.par '+ $
+      strtrim(string(plateid[i], f='(i6.6)'),2)+'.ps '+ $
       platerun_dir
 endfor
 
