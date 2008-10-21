@@ -17,7 +17,6 @@
 ;------------------------------------------------------------------------------
 pro plate_design, plateid, debug=debug, clobber=clobber
 
-
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(plateid)-1L do begin
@@ -91,6 +90,11 @@ if(tag_exist(definition, 'RESPECT_FIBERID')) then begin
     respect_fiberid= long(definition.respect_fiberid)
 endif
 
+;; see if we should replace fibers
+if(tag_exist(definition, 'REPLACE_FIBERS')) then begin
+    replace_fibers= long(definition.replace_fibers)
+endif
+
 
 ;; Now do some sanity checks
 racen= double((strsplit(definition.racen,/extr))[0])
@@ -108,9 +112,10 @@ designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
 npointings= long(default.npointings)
 nextrafibers=lonarr(npointings)
+needmorefibers=0
 while(keyword_set(clobber) gt 0 OR $
       file_test(designfile) eq 0 OR $
-      total(nextrafibers) gt 0) do begin
+      keyword_set(needmorefibers) gt 0) do begin
     
     ;; Initialize design structure, including a center hole
     design=design_blank(/center)
@@ -354,6 +359,7 @@ while(keyword_set(clobber) gt 0 OR $
 
     ;; Assign fiberid's for each instrument
     keep=lonarr(n_elements(design))+1L
+    needmorefibers=0
     for iinst=0L, ninstruments-1L do begin
         icurr= where(design.holetype eq instruments[iinst], ncurr)
 
@@ -381,16 +387,13 @@ while(keyword_set(clobber) gt 0 OR $
                                    strtrim(string(designid),2)
                             return
                         endif else begin
-                            nextrafibers[ip-1]=nextrafibers[ip-1]+10L
+                            nextrafibers[ip-1]=nextrafibers[ip-1]+1L
+                            needmorefibers=1
                         endelse
                     endif else begin
                         stop
                     endelse
-                endif else begin
-                    ;; if we had replaced some fibers before, things
-                    ;; worked out OK this time so no need to repeat
-                    nextrafibers=lonarr(npointings)
-                endelse
+                endif 
             endfor
         endif
     endfor
