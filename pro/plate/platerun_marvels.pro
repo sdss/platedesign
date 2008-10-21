@@ -72,6 +72,14 @@ endfor
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
   ptr_new(plobs), hdr=plhdr, structs=plstructs
 
+;; make the plateLines files
+for i=0L, n_elements(plateid)-1L do begin
+    platelines_marvels, plateid[i]
+    spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
+      strtrim(string(plateid[i], f='(i6.6)'),2)+'.par '+ $
+      platerun_dir
+endfor
+
 print, 'In the "plate" product run the following commands:"'
 print, '   makeFanucET'
 print, '   makeDrillPos'
