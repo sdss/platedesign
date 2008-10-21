@@ -111,6 +111,7 @@ pro/plate/target2design.pro -text
 pro/plate/xyfocal2ad.pro -text
 pro/retro/retrofit_segue2_jul08.pro -text
 pro/retro/set_fiberid_3067_to_3079.pro -text
+pro/retro/set_fiberid_brians.pro -text
 pro/strategy/QUESTIONS -text
 pro/strategy/apo_almanac.pro -text
 pro/strategy/apo_in_interval.pro -text
