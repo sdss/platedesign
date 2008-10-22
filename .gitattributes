@@ -55,6 +55,7 @@ pro/misc/check_new_cover.pro -text
 pro/misc/check_old_cover.pro -text
 pro/misc/lines2struct.pro -text
 pro/misc/make_dummy_marvels_blocks.pro -text
+pro/misc/plate_log.pro -text
 pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
 pro/misc/struct_combine.pro -text
