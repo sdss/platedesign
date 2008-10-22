@@ -16,6 +16,8 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_design, plateid, debug=debug, clobber=clobber
+true = 1
+false = 0
 
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
@@ -348,7 +350,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         if(nunused gt 0) then begin
             splog, 'Unused fibers found. Please specify more targets!'
             splog, 'Not completing plate design '+strtrim(string(designid),2)
-            if(not keyword_set(debug)) then return else stop
+            if(keyword_set(debug) eq false) then return else stop
         endif
     
         ;; Find light traps and assign them
@@ -365,8 +367,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     for i=0L, n_elements(trap_design)-1L do begin
                         trap_design[i].conflicted= $
                         check_conflicts(design, trap_design[i])
-                        if(NOT trap_design[i].conflicted) then $
-                        design= [design, trap_design[i]]
+                        if(trap_design[i].conflicted eq false) then $
+                            design= [design, trap_design[i]]
                     endfor
                 endif
             endfor
@@ -396,8 +398,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
                     then begin
                         splog, 'Some fibers not assigned to targets!'
-                        if(NOT keyword_set(debug)) then begin
-                            if(keyword_set(replace_fibers) eq 0) then begin
+                        if(keyword_set(debug) eq false) then begin
+                            if(keyword_set(replace_fibers) eq false) then begin
                                 splog, 'Not completing plate design '+ $
                                     strtrim(string(designid),2) + '. Rerun with keyword "replace_fibers" to attempt to assign unallocated fibers.'
                                 return
@@ -417,7 +419,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
     ;; Write out plate assignments to 
     ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
-        if(keyword_set(needmorefibers) eq 0) then begin
+        if(keyword_set(needmorefibers) eq false) then begin
             pdata= ptr_new(design)
             spawn, 'mkdir -p '+designdir
             hdrstr=struct_combine(default, definition)
@@ -436,7 +438,7 @@ endif ;; end of clobber & file exists tests
 plate_holes, designid, plateid, ha, temp
 
 ;; Produce plugfiles of desired style
-if(NOT tag_exist(default, 'plugmapstyle')) then $
+if(tag_exist(default, 'plugmapstyle') eq false) then $
   plugmapstyle='plplugmap' $
 else $
   plugmapstyle= default.plugmapstyle

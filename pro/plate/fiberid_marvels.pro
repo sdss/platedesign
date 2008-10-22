@@ -41,14 +41,17 @@ function fiberid_marvels, default, fibercount, design, $
                           quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid
 
+true = 1
+false = 0
+
 platescale = 217.7358       ;; mm/degree
 limitdegree=9.*0.1164       ;; limit of fiber reach in degrees (n * degrees/inch)
 skylimitdegree= limitdegree ;; stretch just as far for skies
 stdlimitdegree= limitdegree ;; ... and standards
 nperblock=4L
 
-if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
-if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
+if(keyword_set(minstdinblock) eq false) then minstdinblock=0L
+if(keyword_set(minskyinblock) eq false) then minskyinblock=0L
 
 fiberid=lonarr(n_elements(design))
 npointings= long(default.npointings)
@@ -80,7 +83,7 @@ endfor
 
 ;; first assign science, and reset block centers to follow science
 ;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
-if(NOT keyword_set(noscience)) then begin
+if(keyword_set(noscience) eq false) then begin
     for ip=1L, npointings do begin
         tmp_fiberused=0
         if(keyword_set(fiberused[ip-1])) then $
@@ -119,13 +122,13 @@ if(NOT keyword_set(noscience)) then begin
                 endfor
             endif
         endif else begin
-            if(NOT keyword_set(quiet)) then $
+            if(keyword_set(quiet) eq false) then $
               splog, 'No science targets in this plate/pointing.'
         endelse
     endfor
 endif
 
-if(NOT keyword_set(nostd)) then begin
+if(keyword_set(nostd) eq false) then begin
     ;; assign standards, if any exist
     ;; ask for minstdinblock in each block for each pointing, at least
     for ip=1L, npointings do begin
@@ -154,7 +157,7 @@ if(NOT keyword_set(nostd)) then begin
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
                 if(nassigned gt 0) then begin
-                    if(NOT keyword_set(tmp_fiberused)) then $
+                    if(keyword_set(tmp_fiberused) eq false) then $
                       tmp_fiberused=tmp_fiberid[iassigned] $
                     else $
                       tmp_fiberused=[fiberused, tmp_fiberid[iassigned]] 
@@ -162,7 +165,7 @@ if(NOT keyword_set(nostd)) then begin
                       fiber_offset+tmp_fiberid[iassigned]
                 endif 
             endif else begin
-                if(NOT keyword_set(quiet)) then $
+                if(keyword_set(quiet) eq false) then $
                   splog, 'No standards in pointing '+strtrim(string(ip),2)+ $
                          ' / offset '+strtrim(string(io),2)
             endelse
@@ -172,7 +175,7 @@ if(NOT keyword_set(nostd)) then begin
     endfor
 endif
 
-if(NOT keyword_set(nosky)) then begin
+if(keyword_set(nosky) eq false) then begin
     ;; assign skies, if any exist
     ;; ask for minskyinblock in each block for each pointing, at least
     for ip=1L, npointings do begin
@@ -199,7 +202,7 @@ if(NOT keyword_set(nosky)) then begin
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
                 if(nassigned gt 0) then begin
-                    if(NOT keyword_set(tmp_fiberused)) then $
+                    if(keyword_set(tmp_fiberused) eq false) then $
                       tmp_fiberused=tmp_fiberid[iassigned] $
                     else $
                       tmp_fiberused=[fiberused, tmp_fiberid[iassigned]] 
@@ -207,7 +210,7 @@ if(NOT keyword_set(nosky)) then begin
                       fiber_offset+tmp_fiberid[iassigned]
                 endif 
             endif else begin
-                if(NOT keyword_set(quiet)) then $
+                if(keyword_set(quiet) eq false) then $
                   splog, 'No skies in pointing '+strtrim(string(ip),2)+ $
                          ' / offset '+strtrim(string(io),2)
             endelse
@@ -218,7 +221,7 @@ if(NOT keyword_set(nosky)) then begin
 endif
 
 ;; finally, assign science again
-if(NOT keyword_set(noscience)) then begin
+if(keyword_set(noscience) eq false) then begin
     for ip=1L, npointings do begin
         isci= where(strupcase(design.targettype) ne 'SKY' AND $
                     strupcase(design.targettype) ne 'STANDARD' AND $
@@ -239,7 +242,7 @@ if(NOT keyword_set(noscience)) then begin
             iassigned=where(tmp_fiberid ge 1, nassigned)
             help, ip, nassigned
             if(nassigned gt 0) then begin
-                if(NOT keyword_set(tmp_fiberused)) then $
+                if(keyword_set(tmp_fiberused) eq false) then $
                   tmp_fiberused=tmp_fiberid[iassigned] $
                 else $
                   tmp_fiberused=[tmp_fiberused, tmp_fiberid[iassigned]] 
@@ -248,7 +251,7 @@ if(NOT keyword_set(noscience)) then begin
             endif 
             
         endif else begin
-            if(NOT keyword_set(quiet)) then $
+            if(keyword_set(quiet) false) then $
               splog, 'No science targets in this plate/pointing.'
         endelse
         if(keyword_set(tmp_fiberused)) then $
