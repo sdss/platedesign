@@ -48,13 +48,13 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
 common com_plugprob, fiberblocks, blockfile
 
 platescale = 217.7358           ; mm/degree
-if(NOT keyword_set(limitdegree)) then $
+if(~keyword_set(limitdegree)) then $
   limitdegree= 7.*0.1164        ; limit of fiber reach
-if(NOT keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
-if(NOT keyword_set(mininblock)) then mininblock= 0L
-if(NOT keyword_set(maxinblock)) then maxinblock= 20L
-if(NOT keyword_set(minavail)) then minavail= (8L) < maxinblock
-if(NOT keyword_set(in_blockfile)) then $
+if(~keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
+if(~keyword_set(mininblock)) then mininblock= 0L
+if(~keyword_set(maxinblock)) then maxinblock= 20L
+if(~keyword_set(minavail)) then minavail= (8L) < maxinblock
+if(~keyword_set(in_blockfile)) then $
   in_blockfile=getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par'
 quiet= long(keyword_set(in_quiet))
 
@@ -89,7 +89,7 @@ endif
 xfiber= double(fiberblocks.fibercenx)
 yfiber= double(fiberblocks.fiberceny)
 nfibers=n_elements(xfiber)
-if(NOT keyword_set(nmax)) then nmax= nfibers
+if(~keyword_set(nmax)) then nmax= nfibers
 iblock=where(fiberblocks.blockid eq 1, nfibersblock)
 
 ;; convert target positions from mm to deg

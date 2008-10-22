@@ -16,6 +16,8 @@
 ;   10-Jun-2008  MRB, NYU
 ;-
 pro plate_holes, designid, plateid, ha, temp
+true = 1
+false = 0
 
 ;; import design file and settings in header
 designdir= design_dir(designid)
@@ -81,7 +83,7 @@ endfor
 holes= [holes, align]
 
 tmpstr= lines2struct(hdr)
-if(NOT tag_exist(tmpstr, 'locationid')) then begin
+if(tag_exist(tmpstr, 'locationid') eq false) then begin
     plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
     iplate= where(plans.plateid eq plateid, nplate)
     if(nplate eq 0) then $
