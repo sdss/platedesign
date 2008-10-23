@@ -251,7 +251,7 @@ if(keyword_set(noscience) eq false) then begin
             endif 
             
         endif else begin
-            if(keyword_set(quiet) false) then $
+            if(keyword_set(quiet) eq false) then $
               splog, 'No science targets in this plate/pointing.'
         endelse
         if(keyword_set(tmp_fiberused)) then $
