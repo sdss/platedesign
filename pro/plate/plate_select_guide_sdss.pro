@@ -24,6 +24,7 @@
 ;   All magnitudes and colors are without extinction-correction.
 ;   Changed to use datasweeps; requires $PHOTO_SWEEP to be set.
 ;     (rerun input still allowed, but ignored)
+;   Keeps stars away from edge (limits at 1.45 deg)
 ; REVISION HISTORY:
 ;   10-Oct-2007  Written by D. Schlegel, LBL
 ;-
@@ -37,7 +38,7 @@ if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
   message,'Must specify RACEN, DECCEN, EPOCH'
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
-else tilerad = 1.49
+else tilerad = 1.45
 
 if(NOT keyword_set(gminmax)) then $
   gminmax=[13., 14.5]
