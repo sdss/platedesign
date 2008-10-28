@@ -123,7 +123,7 @@ pro platelog, plateid, log_string, clobber=clobber
 
     printf, lun, log_string
 
-    close, lun
+    free_lun, lun ;; which will close
 
 end
 ;------------------------------------------------------------------------------
