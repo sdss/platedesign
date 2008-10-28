@@ -49,7 +49,7 @@ if(NOT keyword_set(tiny)) then tiny=1.d-4
 !P.COLOR= djs_icolor('black')
 device, file=filename,/inches,xsize=xsize,ysize=ysize, $
   xoffset=(8.5-xsize)/2.0,yoffset=(11.0-ysize)/2.0,/color, $
-  bits_per_pixel=64
+  bits_per_pixel=64, /encap
 !P.THICK= 2.0
 !P.CHARTHICK= !P.THICK & !X.THICK= !P.THICK & !Y.THICK= !P.THICK
 !P.CHARSIZE= 1.0
