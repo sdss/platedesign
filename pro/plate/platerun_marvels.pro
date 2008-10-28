@@ -11,7 +11,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro platerun_marvels, platerun, plateid
+pro platerun_marvels, platerun, plateid, nolines=nolines
 
 platerun_dir= getenv('PLATELIST_DIR')+'/runs/'+platerun
 
@@ -30,7 +30,7 @@ plhdr = [plhdr, "parameters    " + "plParam-"+platerun+".par"]
 plhdr = [plhdr, "plObsFile     " + platerun_dir+"/plObs-"+platerun+".par"]
 plhdr = [plhdr, "outFileDir    " + platerun_dir]
 plhdr = [plhdr, "tileDir       " + platerun_dir]
-planname='plPlan-'+platerun+'.par'
+planname= 'plPlan-'+platerun+'.par'
 planfile= platerun_dir+'/'+planname
 yanny_write, planfile, hdr=plhdr
 
@@ -73,12 +73,14 @@ yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
   ptr_new(plobs), hdr=plhdr, structs=plstructs
 
 ;; make the plateLines files
-for i=0L, n_elements(plateid)-1L do begin
-    platelines_marvels, plateid[i]
-    spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
-      strtrim(string(plateid[i], f='(i6.6)'),2)+'.ps '+ $
-      platerun_dir
-endfor
+if(keyword_set(nolines) eq 0) then begin
+    for i=0L, n_elements(plateid)-1L do begin
+        platelines_marvels, plateid[i]
+        spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
+               strtrim(string(plateid[i], f='(i6.6)'),2)+'.ps '+ $
+               platerun_dir
+    endfor
+endif
 
 print, 'In the "plate" product run the following commands:"'
 print, '   makeFanucET'
