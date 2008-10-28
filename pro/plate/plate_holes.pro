@@ -27,6 +27,10 @@ designs= yanny_readone(designfile, hdr=hdr)
 definition= lines2struct(hdr)
 default= definition
 
+;; special flag to omit guide fibers
+if(tag_exist(default, 'OMIT_GUIDES')) then $
+  omit_guides= long(default.omit_guides)
+
 ;; create output structure
 holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
 holes= replicate(holes0, n_elements(designs))
@@ -59,8 +63,10 @@ for pointing=1L, npointings do begin
     ;; for each guide fiber, make an alignment hole
     iguide= where(holes.pointing eq pointing AND $
                   strupcase(holes.holetype) eq 'GUIDE', nguide)
-    if(nguide eq 0) then $
-      message, 'Each pointing needs some guide fibers!'
+    if(nguide eq 0) then begin
+        if(keyword_set(omit_guides) eq 0) then $
+          message, 'Each pointing needs some guide fibers!'
+    endif
     for i=0L, nguide-1L do begin
         alignment_fiber, holes[iguide[i]].iguide, $
           holes[iguide[i]].xfocal, holes[iguide[i]].yfocal, $
@@ -80,7 +86,8 @@ for pointing=1L, npointings do begin
     
 endfor
 
-holes= [holes, align]
+if(n_tags(align) gt 0) then $
+  holes= [holes, align]
 
 tmpstr= lines2struct(hdr)
 if(tag_exist(tmpstr, 'locationid') eq false) then begin
