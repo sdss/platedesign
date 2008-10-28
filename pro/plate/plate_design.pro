@@ -105,6 +105,15 @@ if(tag_exist(definition, 'REPLACE_FIBERS')) then begin
     replace_fibers= long(definition.replace_fibers)
 endif
 
+;; special flag to omit guide fibers
+if(tag_exist(default, 'OMIT_GUIDES')) then begin
+    omit_guides= long(default.omit_guides)
+endif
+
+;; special flag to omit traps
+if(tag_exist(default, 'OMIT_TRAPS')) then begin
+    omit_traps= long(default.omit_traps)
+endif
 
 ;; Now do some sanity checks
 racen= double((strsplit(definition.racen,/extr))[0])
@@ -271,21 +280,24 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
         ;; Find guide fibers and assign them (if we're supposed to)
         ;; Make sure to assign proper guides to each pointing
-        for pointing=1L, npointings do begin
-            iguidenums= $
-            tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
-            if(iguidenums eq -1) then $
-            message, 'Must specify guide fiber numbers for pointing '+ $
-                    strtrim(string(pointing),2)
-            guidenums=long(strsplit(default.(iguidenums),/extr))
-            guide_design= plate_guide(definition, default, pointing, $
-                                    rerun=rerun, epoch=epoch)
-            if(n_tags(guide_design) gt 0) then $
-            plate_assign_guide, definition, default, design, guide_design, $
-                                pointing, guidenums=guidenums $
-            else $
-            message, 'there are no guide fibers! aborting!'
-        endfor
+        if(NOT keyword_set(omit_guides)) then begin
+            for pointing=1L, npointings do begin
+                iguidenums= $
+                  tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
+                if(iguidenums eq -1) then $
+                  message, 'Must specify guide fiber numbers for pointing '+ $
+                           strtrim(string(pointing),2)
+                guidenums=long(strsplit(default.(iguidenums),/extr))
+                guide_design= plate_guide(definition, default, pointing, $
+                                          rerun=rerun, epoch=epoch)
+                if(n_tags(guide_design) gt 0) then $
+                  plate_assign_guide, definition, default, design, $
+                                      guide_design, $
+                                      pointing, guidenums=guidenums $
+                else $
+                  message, 'there are no guide fibers! aborting!'
+            endfor
+        endif
     
         ;; Assign standards 
         for pointing=1L, npointings do begin
@@ -357,23 +369,26 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; (Note that assignment here checks for conflicts:
         ;; so if a light trap overlaps an existing hole, the
         ;; light trap is not drilled)
-        for pointing=1L, npointings do begin
-            for offset=0L, noffsets do begin
-                ;; find bright stars
-                trap_design= plate_trap(definition, default, pointing, offset)
-                
-                ;; add them if they don't conflict
-                if(n_tags(trap_design) gt 0) then begin
-                    for i=0L, n_elements(trap_design)-1L do begin
-                        trap_design[i].conflicted= $
-                        check_conflicts(design, trap_design[i])
-                        if(trap_design[i].conflicted eq false) then $
-                            design= [design, trap_design[i]]
-                    endfor
-                endif
+        if(NOT keyword_set(omit_traps)) then begin
+            for pointing=1L, npointings do begin
+                for offset=0L, noffsets do begin
+                    ;; find bright stars
+                    trap_design= plate_trap(definition, default, $
+                                            pointing, offset)
+                    
+                    ;; add them if they don't conflict
+                    if(n_tags(trap_design) gt 0) then begin
+                        for i=0L, n_elements(trap_design)-1L do begin
+                            trap_design[i].conflicted= $
+                              check_conflicts(design, trap_design[i])
+                            if(trap_design[i].conflicted eq false) then $
+                              design= [design, trap_design[i]]
+                        endfor
+                    endif
+                endfor
             endfor
-        endfor
-    
+        endif
+            
         ;; Assign fiberid's for each instrument
         keep=lonarr(n_elements(design))+1L
         needmorefibers=0
