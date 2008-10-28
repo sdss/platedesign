@@ -252,8 +252,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             endfor
             
             ;; assign holes to each plateInput file
-            plate_assign, definition, default, fibercount, design, new_design, $
-                        seed=seed, nextra=nextrafibers
+            plate_assign, definition, default, fibercount, design, $
+              new_design, seed=seed, nextra=nextrafibers
     
             ;; output results for this set
             iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
