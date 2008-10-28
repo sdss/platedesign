@@ -47,7 +47,6 @@ yanny_write, getenv('PLATELIST_DIR')+ $
   '/inputs/seguetest/plateInput-SEGUEtest-000099.par', pdata, hdr=hdr
 ptr_free, pdata
 
-
 gfiber= gfiber_params()
 
 guide0= create_struct(design_blank(/guide), 'ra', 0.D, 'dec', 0.D)
