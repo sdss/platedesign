@@ -38,6 +38,7 @@ defaults/plateDefault-MARVELS_PRESELECT-v0_0.par -text
 defaults/plateDefault-SEGUE2-v0_1.par -text
 defaults/plateDefault-SEGUEtest-v0_7.par -text
 defaults/plateDefault-example-v0_0.par -text
+defaults/plateDefault-gridtest-v0_7.par -text
 lib/.svnignore -text
 obsolete/pro/coo_read.pro -text
 obsolete/pro/make_example.pro -text
@@ -70,6 +71,7 @@ pro/plate/design_dir.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/gfiber_params.pro -text
+pro/plate/make_gridtest.pro -text
 pro/plate/make_seguetest.pro -text
 pro/plate/marvels_fiberblocks.pro -text
 pro/plate/plate_ad2xy.pro -text
