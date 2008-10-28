@@ -68,6 +68,7 @@ pro/plate/alignment_fiber.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
+pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/gfiber_params.pro -text
