@@ -221,7 +221,7 @@ for pointing=1L, npointings do begin
               'raCen ' + string(racen[pointing-1],format='(f30.8)'), $
               'decCen ' + string(deccen[pointing-1],format='(f30.8)'), $
               'platedesign_version '+platedesign_version(), $
-              'plateId ' + string(plateid)+pointing_post[pointing-1], $
+              'plateId ' + string(plateid), $
               'temp ' + string(temp), $
               'haMin ' + string(ha[pointing-1]), $
               'haMax ' + string(ha[pointing-1]), $
