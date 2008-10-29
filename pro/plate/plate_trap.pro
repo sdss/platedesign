@@ -54,7 +54,15 @@ if(NOT file_test(trapfile)) then begin
         
         ;; NEED TO WRITE HEADER
         pdata= ptr_new(trap_design)
-        yanny_write, trapfile, pdata
+        hdrstr=struct_combine(default, definition)
+        outhdr=struct2lines(hdrstr)
+        outhdr=[outhdr, $
+                'pointing '+strtrim(string(pointing),2), $
+                'offset '+strtrim(string(offset),2), $
+                'platedesign_version '+platedesign_version()]
+        if(keyword_set(rerun)) then $
+          outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
+        yanny_write, trapfile, pdata, hdr=outhdr
     endif
 endif else begin
     in_trap_design= yanny_readone(trapfile, /anon)
