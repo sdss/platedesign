@@ -86,7 +86,7 @@ colorname= ['red','green','blue','magenta','cyan','dark yellow', $
 ncolor= n_elements(colorname)
 loadct,0
 
-djs_plot, [0], [0], /nodata, xra=[-340., 340.], yra=[-340., 340.], $
+djs_plot, [0], [0], /nodata, xra=[340., -340.], yra=[-340., 340.], $
   xstyle=5, ystyle=5
 
 linecolors=strarr(15,2)
@@ -119,7 +119,7 @@ for ip=0L, npointings-1L do begin
         ii= where(-holes[iobj].fiberid ge i*nper+1+foff and $
                   -holes[iobj].fiberid le (i+1)*nper+foff, nii)
         ii=iobj[ii]
-        isort= sort(holes[ii].yfocal)
+        isort= sort(abs(holes[ii].fiberid))
         linecolor= linecolors[i,ip]
         
         ;; connect lines
