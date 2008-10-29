@@ -253,12 +253,16 @@ proc makeFanucET { args } {
 	copyGCodeFile $objectCodesFileName $fanucFile
 
 	close $fanucFile
-	if {$verbose > 1} {
-	    set numPathFixed [ plMakeFanucCodes $guideHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 1 -verbose 1 ]
+  if {[chainSize $guideHolesChn]} {
+	  if {$verbose > 1} {
+	      set numPathFixed [ plMakeFanucCodes $guideHolesChn $plateInfo\
+	  	    $bendDistort $surfaceShape $fanucFilePath 1 -verbose 1 ]
+	  } else {
+	      set numPathFixed [ plMakeFanucCodes $guideHolesChn $plateInfo\
+	  	    $bendDistort $surfaceShape $fanucFilePath 1 ]
+	  }
 	} else {
-	    set numPathFixed [ plMakeFanucCodes $guideHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 1 ]
+			set numPathFixed 0
 	}
 	set fanucFile [open $fanucFilePath a]
 
@@ -281,12 +285,17 @@ proc makeFanucET { args } {
 	copyGCodeFile $alignCodesFileName $fanucFile
 
 	close $fanucFile
-	if {$verbose > 1} {
-	    set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 3 -verbose 1 ]
+  if {[chainSize $alignHolesChn]} {
+			if {$verbose > 1} {
+					set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo \
+																	$bendDistort $surfaceShape $fanucFilePath \ 
+															3 -verbose 1 ]
+			} else {
+					set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo\
+																	$bendDistort $surfaceShape $fanucFilePath 3 ]
+			}
 	} else {
-	    set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 3 ]
+			set numPathFixed3 0
 	}
 
 	# tclMakeFanucCodes will return a -1 if there was a bad hole 
