@@ -83,7 +83,7 @@ endif
 ;; Prioritize the **brightest** stars
 ;; Priority values between [1,100]
 if (keyword_set(objt)) then begin
-    priority_t = 1 + floor( 100. * (max(objt.tmass_j) - objt.tmass_j) $
+    priority_t = 1 + floor( 100. * (objt.tmass_j - min(objt.tmass_j)) $
                             / (max(objt.tmass_j) - min(objt.tmass_j) + 0.1) )
     
     sphoto_design= replicate(design_blank(), n_elements(objt))
