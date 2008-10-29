@@ -12,7 +12,7 @@
 function plate_standard, definition, default, instrument, $
                          pointing, offset, rerun=rerun
 
-if(NOT tag_exist(default, 'PLATEDESIGNSTANDARDS')) then begin
+if(tag_exist(default, 'PLATEDESIGNSTANDARDS') eq 0) then begin
     return, 0
 endif 
 
