@@ -66,7 +66,7 @@ for i=0L, n_elements(plateid)-1L do begin
     plobs[i].hamin= float(hdrstr.hamin)
     plobs[i].hamax= float(hdrstr.hamax)
     spawn, 'cp -f '+plate_dir(plateid[i])+'/plPlugMapP-'+ $
-      strtrim(string(plateid[i], f='(i4.4)'),2)+'.par '+ $
+      strtrim(string(plateid[i], f='(i4.4)'),2)+'*.par '+ $
       platerun_dir
 endfor
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
