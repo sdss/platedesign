@@ -64,6 +64,7 @@ pro/misc/plate_log.pro -text
 pro/misc/platedesign_version.pro -text
 pro/misc/struct2lines.pro -text
 pro/misc/struct_combine.pro -text
+pro/misc/test_apo_refrac.pro -text
 pro/misc/test_fiber.pro -text
 pro/misc/test_plug.pro -text
 pro/misc/test_segue2_inputs.pro -text
