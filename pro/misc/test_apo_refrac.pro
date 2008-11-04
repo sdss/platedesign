@@ -1,6 +1,6 @@
 pro test_apo_refrac
 
-pl= yanny_readone('plPlugMapP-2792.par', hdr=hdr)
+pl= yanny_readone('plPlugMapP-1660.par', hdr=hdr)
 hdrstr= lines2struct(hdr)
 racen= double(hdrstr.racen)
 deccen= double(hdrstr.deccen)
