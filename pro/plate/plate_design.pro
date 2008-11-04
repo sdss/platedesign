@@ -32,12 +32,18 @@ splog, 'Working on plateid= '+strtrim(string(plateid),2)
 ;; read plan file for settings
 platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
 plans= yanny_readone(platePlans_file)
+
 iplate=where(plans.plateid eq plateid, nplate)
+
+; === Check performed in preflight - to remove ===
 if(nplate gt 1) then begin
   message, 'Error: More than one entry for plateid (' + string(plateid) + ') found in ' + platePlans_file + '.'
 endif
+; ===
+
 if (nplate eq 0) then begin
     message, 'Error: The plate id given (' + string(plateid) + ') was not found in ' + platePlans_file + '.'
+    return
 endif
 
 plan=plans[iplate]
@@ -60,7 +66,7 @@ platedir= getenv('PLATELIST_DIR')+'/plates/'+ $
 spawn, 'mkdir -p '+platedir
 
 ;; Read in the plate definition file
-;; Should be at 
+;; Should be at (with did = designid)
 ;;   $PLATELIST_DIR/definitions/[did/100]00/plateDefinition-[did].par
 ;; as in 
 ;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
