@@ -150,6 +150,11 @@ pro/test/test_ad2xy.pro -text
 pro/test/test_guide_stars.pro -text
 pro/test/test_tmass_conversion.pro -text
 pro/test/write_platelines_run.pro -text
+pro/third_party/galloy/dir-overview.html -text
+pro/third_party/galloy/mgabstractiterator__define.pro -text
+pro/third_party/galloy/mgabstractlist__define.pro -text
+pro/third_party/galloy/mgarraylist__define.pro -text
+pro/third_party/galloy/mgarraylistiterator__define.pro -text
 src/Makefile -text
 src/cs2/.svnignore -text
 src/cs2/COPYRIGHT -text
