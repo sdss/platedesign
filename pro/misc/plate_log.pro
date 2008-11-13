@@ -24,7 +24,7 @@
 ;
 ;   If reporting an error, specify what went wrong and what steps can be taken
 ;   to correct the problem.
-;   This routine does not write anything to STDOUT.
+;   This routine does not write anything to STDOUT unless a file cannot be written to.
 ; REVISION HISTORY:
 ;   21-Oct-2008 DNM, NYU 
 ;-

@@ -68,6 +68,10 @@ pro/misc/test_apo_refrac.pro -text
 pro/misc/test_fiber.pro -text
 pro/misc/test_plug.pro -text
 pro/misc/test_segue2_inputs.pro -text
+pro/objects/plate_plan__define.pro -text
+pro/objects/platedesign__define.pro -text
+pro/objects/pointing__define.pro -text
+pro/objects/xml2design_list__define.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/alignment_fiber.pro -text
 pro/plate/check_conflicts.pro -text
@@ -165,5 +169,7 @@ src/fiber/idl_write_plugprob.c -text
 src/fiber/plugprob.c -text
 src/skycalc/Makefile -text
 src/skycalc/skycalc.c -text
+src/xml/platePlans.xsl -text
+src/xml/plate_designs.dtd -text
 tcl/makeFanucET.tcl -text
 ups/platedesign.table -text
