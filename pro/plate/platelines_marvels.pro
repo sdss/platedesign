@@ -42,8 +42,8 @@ if(keyword_set(fullsize)) then begin
     ysize=26.7717 ;; in inches
     encap=1
 endif else begin
-    xsize=7.
-    ysize=7.
+    xsize=6.559
+    ysize=6.559
     encap=0
 endelse
 
