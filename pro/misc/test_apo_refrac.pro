@@ -1,21 +1,71 @@
 pro test_apo_refrac
 
-pl= yanny_readone('plPlugMapP-1660.par', hdr=hdr)
-hdrstr= lines2struct(hdr)
-racen= double(hdrstr.racen)
-deccen= double(hdrstr.deccen)
-temp= double(hdrstr.temp)
-hamin= double(hdrstr.hamin)
+files= file_search('/global/data/sdss/tiling/opdb/drillRuns/dr*.[0-9]/plPlugMapP-*.par')
 
-lst= racen+ hamin
+k_print, filename='apo_refrac.ps'
+temparr= fltarr(n_elements(files))
+haminarr= fltarr(n_elements(files))
+sigdiffarr= fltarr(n_elements(files))
+maxdiffarr= fltarr(n_elements(files))
+for i=0L, n_elements(files)-1L do begin
+    pl= yanny_readone(files[i], hdr=hdr)
+    hdrstr= lines2struct(hdr)
+    racen= double(hdrstr.racen)
+    deccen= double(hdrstr.deccen)
+    temp= double(hdrstr.temp)
+    hamin= double(hdrstr.hamin)
+    
+    lst= racen+ hamin
+    
+    ad2xyfocal, pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
+      airtemp=temp, lst=lst
+    
+    ii=where(pl.holetype eq 'OBJECT', nii)
 
-ad2xyfocal, pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
-  airtemp=temp, lst=lst
-  
-ii=where(pl.holetype eq 'OBJECT')
-splot_vec, pl[ii].xfocal, pl[ii].yfocal, $
-  (xf[ii]-pl[ii].xfocal)*500., (yf[ii]-pl[ii].yfocal)*500.
-  
-rr= sqrt((xf[ii]-pl[ii].xfocal)^2+(yf[ii]-pl[ii].yfocal)^2)*1000.
+    if(nii gt 0) then begin
+        xdiff= (xf[ii]-pl[ii].xfocal)*1000.
+        ydiff= (yf[ii]-pl[ii].yfocal)*1000.
+        rdiff= sqrt(xdiff^2+ydiff^2)
+        words= strsplit(files[i], '/', /extr)
+        ff= words[n_elements(words)-1]
+        plothist, rdiff, xra=[0.,60.], title=ff, $
+          xtitle= 'offset (microns)', ytitle='Nfiber'
+        temparr[i]=temp
+        haminarr[i]=hamin
+        sigdiffarr[i]=total(rdiff^2)/float(n_elements(rdiff))
+        maxdiffarr[i]=max(rdiff)
+    endif
+    
+endfor
+k_end_print
 
+racen=dblarr(n_elements(files))
+deccen=dblarr(n_elements(files))
+for i=0L, n_elements(files)-1L do begin & $
+splog, i & $
+    yanny_read, files[i], hdr=hdr & $
+    hdrstr= lines2struct(hdr) & $
+   racen[i]=hdrstr.racen & $
+   deccen[i]=hdrstr.deccen & $
+  endfor
+
+
+save, filename='apo_refrac.sav'
+
+for i=0L, n_elements(jj)-1 do begin & $
+tt= files[jj[20]] & $
+pl=yanny_readone(tt, hdr=hdr) & $
+    hdrstr= lines2struct(hdr) & $
+    racen= double(hdrstr.racen) & $
+    deccen= double(hdrstr.deccen) & $
+    temp= double(hdrstr.temp) & $
+    hamin= double(hdrstr.hamin) & $
+    lst= racen+ hamin & $
+    ad2xyfocal, pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
+      airtemp=temp, lst=lst & $
+    ii=where(pl.holetype eq 'OBJECT', nii) & $
+       xdiff= (xf[ii]-pl[ii].xfocal)*1000. & $
+        ydiff= (yf[ii]-pl[ii].yfocal)*1000. & $
+splot_vec, xf[ii], yf[ii], xdiff, ydiff & $
+  endfor
 end
