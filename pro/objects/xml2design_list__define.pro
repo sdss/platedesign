@@ -1,7 +1,29 @@
+; docformat = 'idl'
 ;+
+; NAME:
+;	XML2DESIGN_LIST
+; 
+; PURPOSE:
+;	Use this object to read in a plate design file that is in the
+;	XML format. Use the methods defined below to extract the
+;	desired data from this object. See examples below.
 ;
+; EXAMPLE:
+;	
+;	xmlObj = OBJ_NEW('xml2design_list')  ; create an instance of this object
+;	filename = 'path/to/xml_datafile.xml'
+;	xmlObj->ParseFile, filename          ; reads the xml file into IDL objects
+;	designs = xmlObj->GetDesignList()
 ;
+;	id = designs[0]->designid() ; get the id of the first design
+;	plates = designs[0]->plateplans() ; get the plates of this design
 ;
+;	plate_id = plates[0]->plateid()  ; get the plate id of the first plate
+;	plate_id = (designs[0]->plateplans())[0]->plateid ; same as above
+;
+; REVISION HISTORY:
+;	
+;	2008.10.24 Demitri Muna, NYU
 ;-
 
 ;; The class definition must be the last thing declared in the
