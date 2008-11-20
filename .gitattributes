@@ -75,6 +75,7 @@ pro/objects/pointing__define.pro -text
 pro/objects/xml2design_list__define.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/alignment_fiber.pro -text
+pro/plate/assign_same_fiberid.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
