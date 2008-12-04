@@ -23,7 +23,7 @@
 ;   22-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_segue2, plateid
+pro platelines_segue2, plateid, fullsize=fullsize
 
 platescale = 217.7358D           ; mm/degree
 
@@ -34,9 +34,15 @@ holes= yanny_readone(plplug)
 
 filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.ps'
 
-xsize=26.7717 ;; in inches
-ysize=26.7717 ;; in inches
-encap=1
+if(keyword_set(fullsize)) then begin
+    xsize=26.7717 ;; in inches
+    ysize=26.7717 ;; in inches
+    encap=1
+endif else begin
+    xsize=6.559
+    ysize=6.559
+    encap=0
+endelse
 
 ;; setup postscript device
 pold=!P
