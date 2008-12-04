@@ -38,10 +38,14 @@ if(keyword_set(fullsize)) then begin
     xsize=26.7717 ;; in inches
     ysize=26.7717 ;; in inches
     encap=1
+    connect_thick=5
+    circle_thick=2
 endif else begin
     xsize=6.559
     ysize=6.559
     encap=0
+    connect_thick=3
+    circle_thick=2
 endelse
 
 ;; setup postscript device
@@ -125,7 +129,8 @@ for i=0L, nblocks-1L do begin
             ystart= (yhole1+sbuffer*ydir) 
             xend= (xhole1+ebuffer*xdir) 
             yend= (yhole1+ebuffer*ydir) 
-            djs_oplot, [xstart, xend], [ystart, yend], th=5, color=color
+            djs_oplot, [xstart, xend], [ystart, yend], th=connect_thick, $
+                       color=color
         endif
     endfor
 
@@ -140,7 +145,7 @@ for i=0L, nblocks-1L do begin
         theta= findgen(100)/float(99.)*!DPI*2.
         xcurr= holes[ii[isort[j]]].xfocal+ circle* cos(theta)
         ycurr= holes[ii[isort[j]]].yfocal+ circle* sin(theta)
-        djs_oplot, xcurr, ycurr, color=fibercolors[j]
+        djs_oplot, xcurr, ycurr, color=fibercolors[j], th=circle_thick
     endfor
 
 endfor
