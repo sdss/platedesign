@@ -176,7 +176,7 @@ PRO xml2design_list::StartElement, URI, local, strName, attrName, attrValue
 
         ; create a new design object and save a reference to it
         'DESIGN'         : BEGIN
-			self.current.design = OBJ_NEW('PLATEDESIGN')
+			self.current.design = OBJ_NEW('PLATE_DESIGN')
 ;           self.current.design = {DESIGN}
 ;           self.current.design.pPlateList = PTR_NEW(/ALLOCATE_HEAP)
 ;           self.current.design.pPointingsList = PTR_NEW(/ALLOCATE_HEAP)
@@ -474,7 +474,7 @@ PRO xml2design_list__define
     ; A structure to be used for bookkeeping
     ; --------------------------------------
     void = {CURRENT, 			   $ ; name of structure
-            design    : OBJ_NEW(), $  ; {PLATEDESIGN}, 	$ ; 
+            design    : OBJ_NEW(), $  ; {PLATE_DESIGN}, 	$ ; 
             platePlan : OBJ_NEW(), $  ; {PLATE_PLAN},	$ ; 
             pointing  : OBJ_NEW()  $  ; {POINTING} 		$ ; 
             }

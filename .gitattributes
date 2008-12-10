@@ -70,8 +70,8 @@ pro/misc/test_apo_refrac.pro -text
 pro/misc/test_fiber.pro -text
 pro/misc/test_plug.pro -text
 pro/misc/test_segue2_inputs.pro -text
+pro/objects/plate_design__define.pro -text
 pro/objects/plate_plan__define.pro -text
-pro/objects/platedesign__define.pro -text
 pro/objects/pointing__define.pro -text
 pro/objects/xml2design_list__define.pro -text
 pro/plate/ad2xyfocal.pro -text
@@ -158,6 +158,7 @@ pro/third_party/galloy/mgabstractiterator__define.pro -text
 pro/third_party/galloy/mgabstractlist__define.pro -text
 pro/third_party/galloy/mgarraylist__define.pro -text
 pro/third_party/galloy/mgarraylistiterator__define.pro -text
+pro/third_party/undefine.pro -text
 src/Makefile -text
 src/cs2/.svnignore -text
 src/cs2/COPYRIGHT -text
