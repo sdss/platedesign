@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   write the plateLines-????.ps file for a MARVELS plate
 ; CALLING SEQUENCE:
-;   platelines_marvels, plateid [, /fullsize
+;   platelines_marvels, plateid [, /fullsize]
 ; INPUTS:
 ;   plateid - plate ID to run on 
 ; OPTIONAL KEYWORDS:

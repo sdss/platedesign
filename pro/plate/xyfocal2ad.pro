@@ -72,5 +72,8 @@ for i=0L, n_elements(in_xfocal)-1L do begin
     dec[i]=params[1]
 endfor
 
+; explicitly undefine "extra_for_ad2xyfocal"
+temp = size(temporary(extra_for_ad2xyfocal))
+
 return
 end

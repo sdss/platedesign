@@ -158,6 +158,16 @@ END
 ; +
 ; 
 ; -
+FUNCTION PLATE_PLAN::XMLString
+	xml = '<PLATE_PLAN>to implement</PLATE_PLAN>'
+	
+	return, xml
+END
+
+; ------------------------------------------------------------
+; +
+; 
+; -
 PRO PLATE_PLAN__define
 
 	void = {PLATE_PLAN,		$ ; name of structure

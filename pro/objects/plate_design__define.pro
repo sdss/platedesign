@@ -1,7 +1,7 @@
 ; docformat = 'idl'
 ;+
 ; NAME:
-;	PLATEDESIGN
+;	PLATE_DESIGN
 ;
 ; PURPOSE:
 ;	An IDL object that contains the details of a plate design.
@@ -9,21 +9,25 @@
 ;	pointings and plate plans (e.g. arrays of "POINTING" and
 ;	"PLATE_PLAN" objects).
 ;
-; 	Valid drill styles are defined in the init method (PlateDesign::Init).
+; 	Valid drill styles are defined in the init method (Plate_Design::Init).
 ;
 ; EXAMPLE:
 ;
-;	design = OBJ_NEW('PLATEDESIGN')
-;	design->SetDesignID(12345)
+;	design = OBJ_NEW('PLATE_DESIGN')
+;	design->SetDesignID, 12345
 ;
 ;	plate = OBJ_NEW('PLATE_PLAN')
-;	plate->SetPlateID(8675309)
+;	plate->SetPlateID, 8675309
 ;	
 ;	pointing = OBJ_NEW('POINTING')
-;	pointing->SetRaCen(25.0)
+;	pointing->SetRaCen, 25.0
 ;
-;	design->AddPlatePlan(plate)
-;	design->AddPointing(pointing)
+;	design->AddPlatePlan, plate
+;	design->AddPointing, pointing
+;
+;	;accessing values
+;	print, design->DesignID()
+;	print, design->n_PlatePlans()
 ;
 ; REVISION HISTORY:
 ;   2008.11.04 Demitri Muna, NYU 
@@ -31,7 +35,7 @@
 
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::Init
+FUNCTION Plate_Design::Init
 
 ;	example = OBJ_NEW('PLATE_PLAN') ; mgArrayList needs an example of what is to be stored.
 	self.pPlateList = OBJ_NEW('MGARRAYLIST', example=obj_new()) ; PTR_NEW(/ALLOCATE_HEAP)
@@ -53,9 +57,9 @@ END
 ; ------------------------------------------------------------
 ; Called upon OBJ_DESTROY
 ; ------------------------------------------------------------
-PRO PlateDesign::Cleanup
+PRO Plate_Design::Cleanup
 
-	print, 'PlateDesign cleanup called'
+	print, 'Plate_Design cleanup called'
 
 	; This might be overkill - it certainly seems messy
 	;IF PTR_VALID(self.pPlateList) THEN BEGIN
@@ -75,7 +79,7 @@ PRO PlateDesign::Cleanup
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::PlatePlans, plate_run, count_returned=count_returned
+FUNCTION Plate_Design::PlatePlans, plate_run, count_returned=count_returned
 	
 	if (~keyword_set(plate_run)) then begin $
 		count_returned = self.pPlateList->Count()
@@ -105,7 +109,7 @@ FUNCTION PlateDesign::PlatePlans, plate_run, count_returned=count_returned
 		return, platesToReturn
 	endif else begin
 		OBJ_DESTROY, platelist
-		return, 0		
+		return, 0
 	end
 
 	
@@ -125,7 +129,7 @@ FUNCTION PlateDesign::PlatePlans, plate_run, count_returned=count_returned
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::N_PlatePlans
+FUNCTION Plate_Design::N_PlatePlans
 	return, self.pPlateList->count()
 	;if (PTR_VALID(self.pPlateList)) then $
 	;	return, n_elements(*self.pPlateList) $
@@ -134,7 +138,7 @@ FUNCTION PlateDesign::N_PlatePlans
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::AddPlatePlan, newPlatePlan
+PRO Plate_Design::AddPlatePlan, newPlatePlan
 	self.pPlateList->add, newPlatePlan
 	;if (n_elements(*self.pPlateList) eq 0) then $
 	;	*self.pPlateList = newPlatePlan $
@@ -143,7 +147,7 @@ PRO PlateDesign::AddPlatePlan, newPlatePlan
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::ClearPlatePlans
+PRO Plate_Design::ClearPlatePlans
 	;if PTR_VALID(self.pPlateList) then begin
 	;	PTR_FREE, self.pPlateList ; free variable pointed to by pointer
 	;	HEAP_FREE, self.pPlateList ; free pointer itself
@@ -153,12 +157,12 @@ PRO PlateDesign::ClearPlatePlans
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::Pointings
+FUNCTION Plate_Design::Pointings
 	return, *self.pPointingsList
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::AddPointing, new_pointing
+PRO Plate_Design::AddPointing, new_pointing
 	if (n_elements(*self.pPointingsList) eq 0) then $
 		*self.pPointingsList = new_pointing $
 	else $
@@ -166,7 +170,7 @@ PRO PlateDesign::AddPointing, new_pointing
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::ClearPointings
+PRO Plate_Design::ClearPointings
 	IF PTR_VALID(self.pPointingsList) THEN BEGIN
 		PTR_FREE, self.pPointingsList
 		HEAP_FREE, self.pPointingsList
@@ -175,14 +179,14 @@ PRO PlateDesign::ClearPointings
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::DesignID
+FUNCTION Plate_Design::DesignID
 	return, self.designid
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::SetDesignID, id
+PRO Plate_Design::SetDesignID, id
 
-	print, 'PlateDesign: setting id'
+	;print, 'Plate_Design: setting id'
 
 	; Test data type - should be long int
 
@@ -212,37 +216,37 @@ TYPE_CONVERSION_ERROR:
 DONE: 
 	BEGIN
 		self.designid = id
-		print, 'PlateDesign: id set'
+		;print, 'Plate_Design: id set'
 	END
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::LocationID
+FUNCTION Plate_Design::LocationID
 	return, self.locationid
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::SetLocationID, id
+PRO Plate_Design::SetLocationID, id
 	self.locationid = id
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::DrillStyle
+FUNCTION Plate_Design::DrillStyle
 	return, self.drillStyle
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::SetDrillStyle, drillStyle
+PRO Plate_Design::SetDrillStyle, drillStyle
 	
 	; Test data type - should be string
 	if (datatype(drillStyle) ne 'STR') THEN BEGIN
-		print, 'PlateDesign validation error: drillStyle specified must ' + $
+		print, 'Plate_Design validation error: drillStyle specified must ' + $
 			   'be a string data type.'
 		stop
 	end
 
 	if (where(*self.pValidDrillStyles eq strlowcase(drillStyle)) eq -1) then begin
-		print, 'PlateDesign validation error: drillStyle ' + drillStyle + $
+		print, 'Plate_Design validation error: drillStyle ' + drillStyle + $
 			   ' unknown.'
 		stop
 	end
@@ -251,39 +255,56 @@ PRO PlateDesign::SetDrillStyle, drillStyle
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::Comment
+FUNCTION Plate_Design::Comment
 	return, self.comment
 END
 
 ; ------------------------------------------------------------
-PRO PlateDesign::SetComment, c
+PRO Plate_Design::SetComment, c
 	self.comment = c
 END
 
 ; ------------------------------------------------------------
-FUNCTION PlateDesign::n_Pointings
+FUNCTION Plate_Design::n_Pointings
 	IF (PTR_VALID(self.pPointingsList)) THEN $
 		return, n_elements(*self.pPointingsList) $
 	ELSE $
 		return, 0
 END
 
+; ------------------------------------------------------------
+FUNCTION Plate_Design::XMLString
+	xml = '<DESIGN>'
+	xml = [xml, '    <DESIGN_ID>' + strcompress(self.designid, /remove) + '<DESIGN_ID>']
+	xml = [xml, '    <LOCATION_ID>' + strcompress(self.locationid, /remove) + '</LOCATION_ID>']
+	xml = [xml, '    <DRILL_STYLE>' + self.drillStyle + '</DRILL_STYLE>']
+	xml = [xml, '    <COMMENT>' + self.comment + '</COMMENT>']
+
+	platelist = self->PlatePlans(count_returned=n_plates)
+	for i=0, n_plates-1 do begin
+		plate = platelist[i]
+		xml = [xml, plate->XMLString()]
+	end
+
+	xml = [xml, '</DESIGN>' + string("15b)]
+	return, xml
+END
 
 ; ------------------------------------------------------------
-PRO platedesign__define
+PRO Plate_Design__define
 	
 	; TO DO - fill in defaults
 	
 	; Declaration of class instances.
 	; Refer to this within this file as self.instance
 	; (e.g. self.comment = 'Oh dear, squirrel in telescope')
-	void = {PLATEDESIGN,				$  ; name of structure
-            designid   : 0L,        	$  ;
-            locationid : 0L, 	    	$  ;
-            drillStyle : '', 	    	$  ;
-            comment    : '', 	    	$  ;
-            pPlateList : OBJ_NEW(),     $  ; will be mgArrayList
-            pPointingsList : PTR_NEW(), $  ; pointer to array of POINTINGs
+	void = {PLATE_DESIGN,				   $  ; name of structure
+            designid   : 0L,        	   $  ;
+            locationid : 0L, 	    	   $  ;
+            drillStyle : '', 	    	   $  ;
+            comment    : '', 	    	   $  ;
+            pPlateList : OBJ_NEW(),        $  ; will be mgArrayList
+            pPointingsList : PTR_NEW(),    $  ; pointer to array of POINTINGs
 
 			; below here are local instances defined for convenience
 			; and are not part of the data model

@@ -6,8 +6,8 @@
 ; API:
 ;        POINTING::Init
 ;        POINTING::Cleanup
-;        POINTING::SetFilename, s
-;        POINTING::Filename
+;        POINTING::SetInputFilename, s
+;        POINTING::InputFilename
 ;        POINTING::SetPriority, p
 ;        POINTING::Priority
 ;        POINTING::SetHourAngle, ha
@@ -44,8 +44,12 @@
 ; ------------------------------------------------------------
 FUNCTION POINTING::Init
 
-	; initialisations here
+	; initialisations / default values here
 
+	self.priority   = 1
+	self.ra_offset  = 0.0
+	self.dec_offset = 0.0
+	
 	return, self
 END
 
@@ -59,13 +63,13 @@ PRO POINTING::Cleanup
 END
 
 ; ------------------------------------------------------------
-PRO POINTING::SetFilename, s
-	self.filename = s
+PRO POINTING::SetInputFilename, s
+	self.inputFilename = s
 END
 
 ; ------------------------------------------------------------
-FUNCTION POINTING::Filename
-	return, self.filename
+FUNCTION POINTING::InputFilename
+	return, self.inputFilename
 END
 
 ; ------------------------------------------------------------
@@ -94,23 +98,79 @@ PRO POINTING::SetRaCen, newra
 END
 
 ; ------------------------------------------------------------
-FUNCTION POINTING::RaCen
-	return, self.ra_cen
-END
-
-; ------------------------------------------------------------
 PRO POINTING::SetDecCen, newdec
 	self.dec_cen = newdec
 END
 
 ; ------------------------------------------------------------
+PRO Pointing::SetRaDecCenFromInputFile
+	
+	; Read the ra, dec from the input file.
+	; -------------------------------------
+	if (n_elements(self.inputFilename)) then begin
+		print, 'Error: Attempt to read ra/dec from input file, but ' + $
+			   'input file has not been specified. Alternatively, you can ' + $
+			   'explicity set the ra/dec for this pointing.'
+		stop
+	end
+	
+	; Given the filename, find the file.
+	; ----------------------------------
+	fullPath = inputFilename ; we want the full path to the file.
+	if (file_test(fullPath) eq 0) then begin
+	
+		; we only have the filename itself - attempt to find the file
+		findCommand = 'find ' + getenv('PLATELIST_DIR') + ' -name ' + inputFilename + ' -print'
+		spawn, findCommand, result
+		
+		case (n_elements(result)) of
+		1:	begin
+				fullPath = result
+			end
+		0:  begin
+				print, 'Error: Could not find input file (' + self.inputFilename + ') ' + $
+					  'anywhere in $PLATELIST_DIR.'
+				stop
+			end
+		else: begin ; > 0
+				print, 'Error: The input file (' + self.inputFilename + ') ' + $
+					   'was found in more than one location. Please explicitly ' + $
+					   'set the full file path in relation to $PLATELIST_DIR'
+				stop
+			  end
+		endcase
+		
+	end
+
+	; fullPath is now a valid file.
+	dummy = yanny_readone(fullPath, hdr=hdr) ; read the input file for the header
+	header = lines2struct(hdr)
+	self->SetRaCen, header.racen
+	self->SetDecCen, header.deccen
+	
+END
+
+; ------------------------------------------------------------
+FUNCTION POINTING::RaCen
+
+	if (n_elements(ra_cen) eq 0) then $ ; if undefined, read from input file
+		self->SetRaDecCenFromInputFile
+		
+	return, self.ra_cen
+END
+
+; ------------------------------------------------------------
 FUNCTION POINTING::DecCen
+
+	if (n_elements(dec_cen) eq 0) then $ ; if undefined, read from input file
+		self->SetRaDecCenFromInputFile
+
 	return, self.de_cen
 END
 
 ; ------------------------------------------------------------
-PRO POINTING::SetRaOffset, newra
-	self.ra_offset = newra
+PRO POINTING::SetRaOffset, newra_offset
+	self.ra_offset = newra_offset
 END
 
 ; ------------------------------------------------------------
@@ -139,6 +199,23 @@ FUNCTION POINTING::Comment
 END
 
 ; ------------------------------------------------------------
+FUNCTION POINTING::FibersSameAsPlateID, pid
+	return, self.duplicateFiberIDsOfPlate
+END
+
+; ------------------------------------------------------------
+PRO POINTING::SetFibersSameAsPlateID, pid
+	self.duplicateFiberIDsOfPlate = pid
+END
+
+; ------------------------------------------------------------
+FUNCTION POINTING::XMLString
+	xml = '<POINTING>to implement</POINTING>'
+	
+	return, xml
+END
+
+; ------------------------------------------------------------
 ; ------------------------------------------------------------
 ; ------------------------------------------------------------
 ; ------------------------------------------------------------
@@ -147,15 +224,16 @@ END
 ; ------------------------------------------------------------
 PRO POINTING__define
 
-	void = {POINTING,		  $ ; name of structure
-		    filename   : '',  $ ;
-		    priority   : 0,   $ ;
-		    hour_angle : 0.0D,  $ ;
-		    ra_cen     : 0.0D,  $ ;
-		    dec_cen    : 0.0D,  $ ;
-		    ra_offset  : 0.0D,  $ ;
-		    dec_offset : 0.0D,  $ ;
-		    comment	   : ''  $
+	void = {POINTING,		 			  $ ; name of structure
+		    inputFilename : '',  		  $ ;
+		    priority      : 0,   		  $ ;
+		    hour_angle    : 0.0D, 		  $ ;
+		    ra_cen        : 0.0D, 		  $ ;
+		    dec_cen       : 0.0D, 		  $ ;
+		    ra_offset     : 0.0D,		  $ ;
+		    dec_offset    : 0.0D,  		  $ ;
+		    comment	      : '',			  $ ;
+            duplicateFiberIDsOfPlate : 0L $ ;
 		    }
 
 END
