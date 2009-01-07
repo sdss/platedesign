@@ -126,6 +126,7 @@ pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
 pro/plate/xyfocal2ad.pro -text
 pro/retro/copy_retro_jul08_to_plates.pro -text
+pro/retro/old_segue2_platelines.pro -text
 pro/retro/retrofit_segue2_aug08d.pro -text
 pro/retro/retrofit_segue2_jul08.pro -text
 pro/retro/set_fiberid_3067_to_3079.pro -text
