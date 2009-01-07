@@ -98,12 +98,12 @@ buffer= 48./3600. * platescale
 circle= 45./3600. * platescale
 
 ;; set colors of each brightness fiber
-brightcolor= 'red'
-medcolor= 'green'
-faintcolor= 'blue'
-fibercolors= [ replicate(faintcolor, 8), $
+brightcolor= 'blue'
+medcolor= 'yellow'
+faintcolor= 'red'
+fibercolors= [ replicate(faintcolor, 10), $
                replicate(medcolor, 6), $
-               replicate(brightcolor, 6)]
+               replicate(brightcolor, 4)]
 
 nblocks=32L
 nper=20L
@@ -136,11 +136,12 @@ for i=0L, nblocks-1L do begin
 
     ;; draw holes; sort from faintest to brightest, and color
     ;; according to fibercolors
-    mag= 0.5*(holes[ii].mag[1]+holes[ii].mag[3])
-    izero= where(mag eq 0, nzero)
+    gi_flux= 0.5*(10.^(-0.4*holes[ii].mag[1]) + 10.^(-0.4*holes[ii].mag[2]))
+    gi_synth= -2.5*alog10(gi_flux)
+    izero= where(gi_synth eq 0, nzero)
     if(nzero gt 0) then $
-      mag[izero]=30.
-    isort= reverse(sort(mag))
+      gi_synth[izero]=30.
+    isort= reverse(sort(gi_synth))
     for j=0L, nper-1L do begin
         theta= findgen(100)/float(99.)*!DPI*2.
         xcurr= holes[ii[isort[j]]].xfocal+ circle* cos(theta)
