@@ -100,50 +100,50 @@ if (keyword_set(noscience) eq true) then begin
 	
 endif;; first assign science, and reset block centers to follow science
 ;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
-;if(keyword_set(noscience) eq false) then begin
-;    for ip=1L, npointings do begin
-;        tmp_fiberused=0
-;        if(keyword_set(fiberused[ip-1])) then $
-;          tmp_fiberused=*fiberused[ip-1]
-;        ;; right now doesn't work well if only SOME of the 
-;        ;; fibers are respected. 
-;
-;        isci= where(strupcase(design.targettype) ne 'SKY' AND $
-;                    strupcase(design.targettype) ne 'STANDARD' AND $
-;                    design.pointing eq ip, nsci)
-;
-;        block_offset=(ip-1L)*nblocks
-;        if(nsci gt 0) then begin
-;            
-;            ;; assign the fibers 
-;            sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
-;              tmp_fiberid, limitdegree=limitdegree, $
-;              maxinblock=nperblock-minstdinblock-minskyinblock, $
-;              blockfile=blockfile
-;            
-;            ;; which block is each in
-;            block= lonarr(n_elements(tmp_fiberid))-1L
-;            igood= where(tmp_fiberid ge 1, ngood)
-;            if(ngood gt 0) then begin
-;                block[igood]= (tmp_fiberid[igood]-1L)/nperblock+1L
-;                
-;                ;; now find the center location for each block
-;                for i=1L, nblocks do begin
-;                    ib= where(block eq i, nb)
-;                    if(nb gt 0) then begin
-;                        blockcenx[i-1, ip-1]= $
-;                          mean(design[ib].xf_default)/platescale
-;                        blockceny[i-1, ip-1]= $
-;                          mean(design[ib].yf_default)/platescale
-;                    endif 
-;                endfor
-;            endif
-;        endif else begin
-;            if(keyword_set(quiet) eq false) then $
-;              splog, 'No science targets in this plate/pointing.'
-;        endelse
-;    endfor
-;endif
+if(keyword_set(noscience) eq false) then begin
+    for ip=1L, npointings do begin
+        tmp_fiberused=0
+        if(keyword_set(fiberused[ip-1])) then $
+          tmp_fiberused=*fiberused[ip-1]
+        ;; right now doesn't work well if only SOME of the 
+        ;; fibers are respected. 
+
+        isci= where(strupcase(design.targettype) ne 'SKY' AND $
+                    strupcase(design.targettype) ne 'STANDARD' AND $
+                    design.pointing eq ip, nsci)
+
+        block_offset=(ip-1L)*nblocks
+        if(nsci gt 0) then begin
+            
+            ;; assign the fibers 
+            sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
+              tmp_fiberid, limitdegree=limitdegree, $
+              maxinblock=nperblock-minstdinblock-minskyinblock, $
+              blockfile=blockfile
+            
+            ;; which block is each in
+            block= lonarr(n_elements(tmp_fiberid))-1L
+            igood= where(tmp_fiberid ge 1, ngood)
+            if(ngood gt 0) then begin
+                block[igood]= (tmp_fiberid[igood]-1L)/nperblock+1L
+                
+                ;; now find the center location for each block
+                for i=1L, nblocks do begin
+                    ib= where(block eq i, nb)
+                    if(nb gt 0) then begin
+                        blockcenx[i-1, ip-1]= $
+                          mean(design[ib].xf_default)/platescale
+                        blockceny[i-1, ip-1]= $
+                          mean(design[ib].yf_default)/platescale
+                    endif 
+                endfor
+            endif
+        endif else begin
+            if(keyword_set(quiet) eq false) then $
+              splog, 'No science targets in this plate/pointing.'
+        endelse
+    endfor
+endif
 ;
 ; -------------------------------------------
 ; MARVELS does not assign standards. Delete this block when I'm 100% sure
