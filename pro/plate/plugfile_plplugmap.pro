@@ -20,6 +20,7 @@ platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
+; Read definition
 definition= lines2struct(hdr)
 default= definition
 
@@ -206,8 +207,7 @@ for pointing=1L, npointings do begin
     deccen[pointing-1L]=tmp_deccen
 endfor
 
-pointing_post=['', 'B', 'C', 'D', 'E', 'F']
-pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
+pointing_name = strsplit(definition.pointing_name, /extract)
 for pointing=1L, npointings do begin
 
     ;; add header keywords
@@ -240,8 +240,11 @@ for pointing=1L, npointings do begin
     endif else begin
         platestr= strtrim(string(f='(i4.4)', plateid),2)
     endelse
+    
+    pointing_post = pointing_name[pointing-1]
+    if (pointing_post eq 'A') then pointing_post = ''
     plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
-      pointing_post[pointing-1]+'.par' 
+      pointing_post+'.par' 
     
     ;; for holes that aren't in this pointing, replace values with sky
     ;; values
@@ -265,6 +268,12 @@ for pointing=1L, npointings do begin
     yanny_write, plugmapfile, ptr_new(thisplug), hdr=outhdr, $
       enums=plugenum, structs=plugstruct
 endfor
+
+plain_plug_map_name = plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par'
+if (~file_test(plain_plug_map_name)) then begin
+	file_link, 'plPlugMapP-'+platestr+ pointing_post+'.par', $
+      plain_plug_map_name
+endif
 
 end
 ;------------------------------------------------------------------------------

@@ -32,6 +32,7 @@ data/test/icon.png -text
 defaults/plateDefault-MARVELS-v0_0.par -text
 defaults/plateDefault-MARVELS-v0_5.par -text
 defaults/plateDefault-MARVELS-v0_6.par -text
+defaults/plateDefault-MARVELS-v0_7.par -text
 defaults/plateDefault-MARVELS_3-v0_5.par -text
 defaults/plateDefault-MARVELS_PRE-v0_1.par -text
 defaults/plateDefault-MARVELS_PRE-v0_2.par -text
@@ -70,6 +71,7 @@ pro/misc/test_apo_refrac.pro -text
 pro/misc/test_fiber.pro -text
 pro/misc/test_plug.pro -text
 pro/misc/test_segue2_inputs.pro -text
+pro/misc/tostring.pro -text
 pro/objects/plate_design__define.pro -text
 pro/objects/plate_plan__define.pro -text
 pro/objects/pointing__define.pro -text
@@ -80,6 +82,10 @@ pro/plate/assign_same_fiberid.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
+pro/plate/dss_cache_lookup.pro -text
+pro/plate/dss_cache_no_sky_for_input.pro -text
+pro/plate/dss_cache_populate_sky.pro -text
+pro/plate/dss_cache_setup.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
@@ -161,6 +167,7 @@ pro/third_party/galloy/mgabstractiterator__define.pro -text
 pro/third_party/galloy/mgabstractlist__define.pro -text
 pro/third_party/galloy/mgarraylist__define.pro -text
 pro/third_party/galloy/mgarraylistiterator__define.pro -text
+pro/third_party/hashtable__define.pro -text
 pro/third_party/undefine.pro -text
 src/Makefile -text
 src/cs2/.svnignore -text

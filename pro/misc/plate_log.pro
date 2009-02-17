@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   platelog
+;   plate_log
 ; PURPOSE:
 ;   Append to a human readable log written for each platerun run.
 ; CALLING SEQUENCE:
-;   platelog, plateid, log_string [, /clobber]
+;   plate_log, plateid, log_string [, /clobber]
 ; INPUTS:
 ;   plateid - the current plate id
 ;   logString - string(s) to be written to the log
@@ -29,19 +29,19 @@
 ;   21-Oct-2008 DNM, NYU 
 ;-
 
-pro platelog, plateid, log_string, clobber=clobber
+pro plate_log, plateid, log_string, clobber=clobber
     COMPILE_OPT logical_predicate
     COMPILE_OPT idl2
     true = 1
     false = 0
 
-    ;;common platelog_commonm, logFilesHash
+    ;;common platelog_common, logFilesHash
 
     ;; Checks that plateid is defined, nothing is done if not. Alternately,
     ;; this could send log strings to a "catch all" file, but this will
     ;; probably do more to mask bugs than be useful.
     if (n_elements(plateid) eq 0) then begin
-        print, 'platelog called without the plateid specified. No logging will be done.'
+        print, 'plate_log called without the plateid specified. No logging will be done.'
         return
     endif
 
@@ -62,7 +62,7 @@ pro platelog, plateid, log_string, clobber=clobber
             print, 'PLATELOG ERROR: An invalid plate id was specified; "plateid" ' + $
                    'must be an integer, you specified:'
             print, '                "' + plateid + '".'
-            print, '                Calling format: platelog, <plateid>, <log string>'
+            print, '                Calling format: plate_log, <plateid>, <log string>'
             return
         endif
         ON_IOError, type_conversion_error

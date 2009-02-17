@@ -4,25 +4,34 @@
 ; PURPOSE:
 ;   Run the plate design for a drill run
 ; CALLING SEQUENCE:
-;   plate_design, plateid [, /debug, /clobber]
+;   plate_design, plateid [, /debug, /clobber, /superclobber]
 ; INPUTS:
 ;   plateid - plateid number
 ; OPTIONAL KEYWORDS:
 ;   /debug - run in debug mode 
 ;   /clobber - clobber the existing design files 
 ;              (otherwise uses existing designs for a given designid)
+;   /superclobber - delete any and all output files associated with this
+;					plate before running.
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
+;  23-Jan-2008, Demitri Muna, NYU - added superclobber option
 ;-
 ;------------------------------------------------------------------------------
-pro plate_design, plateid, debug=debug, clobber=clobber
+pro plate_design, plateid, debug=debug, clobber=clobber, superclobber=superclobber, succeeded=succeeded
+
+COMPILE_OPT idl2
+COMPILE_OPT logical_predicate
+
 true = 1
 false = 0
+
+succeeded = false
 
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(plateid)-1L do begin
-        plate_design, plateid[i], debug=debug, clobber=clobber
+        plate_design, plateid[i], debug=debug, clobber=clobber, superclobber=superclobber, succeeded=succeeded
     endfor
     return
 endif
@@ -64,6 +73,16 @@ platedir= getenv('PLATELIST_DIR')+'/plates/'+ $
           string((plateid/100L), f='(i4.4)')+'XX/'+ $
           string(plateid, f='(i6.6)')
 spawn, 'mkdir -p '+platedir
+
+;; Delete any output files from a previous run
+if (keyword_set(superclobber)) then begin
+	
+	old_files = file_search(designdir + "/*", count=old_files_count)
+	if (old_files_count gt 0) then file_delete, old_files
+
+	old_files = file_search(platedir + "/*", count=old_files_count)
+	if (old_files_count gt 0) then file_delete, old_files
+endif
 
 ;; Read in the plate definition file
 ;; Should be at (with did = designid)
@@ -286,7 +305,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
         ;; Find guide fibers and assign them (if we're supposed to)
         ;; Make sure to assign proper guides to each pointing
-        if(NOT keyword_set(omit_guides)) then begin
+        if(~keyword_set(omit_guides)) then begin
             for pointing=1L, npointings do begin
                 iguidenums= $
                   tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
@@ -368,6 +387,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         if(nunused gt 0) then begin
             splog, 'Unused fibers found. Please specify more targets!'
             splog, 'Not completing plate design '+strtrim(string(designid),2)
+            plate_log, plateid, 'Unused fibers found. Please specify more targets!'
+            plate_log, plateid, 'Not completing plate design '+strtrim(string(designid),2)
             if(keyword_set(debug) eq false) then return else stop
         endif
     
@@ -375,7 +396,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; (Note that assignment here checks for conflicts:
         ;; so if a light trap overlaps an existing hole, the
         ;; light trap is not drilled)
-        if(NOT keyword_set(omit_traps)) then begin
+        if(~keyword_set(omit_traps)) then begin
             for pointing=1L, npointings do begin
                 for offset=0L, noffsets do begin
                     ;; find bright stars
@@ -418,7 +439,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         keep[icurr[iassigned]]=1L
                     if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
                     then begin
-                        splog, 'Some fibers not assigned to targets!'
+                        splog, 'Some fibers not assigned to targets! ' 
                         if(keyword_set(debug) eq false) then begin
                             if(keyword_set(replace_fibers) eq false) then begin
                                 splog, 'Not completing plate design '+ $
@@ -464,6 +485,8 @@ if(tag_exist(default, 'plugmapstyle') eq false) then $
 else $
   plugmapstyle= default.plugmapstyle
 call_procedure, 'plugfile_'+plugmapstyle, plateid
+
+succeeded = true
 
 return
 end
