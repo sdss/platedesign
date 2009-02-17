@@ -56,9 +56,17 @@ plobs0 = create_struct(name='PLOBS', $
                        'MJDDESIGN', current_mjd())
 plobs= replicate(plobs0, n_elements(plateid))
 for i=0L, n_elements(plateid)-1L do begin
-    plug= yanny_readone(plate_dir(plateid[i])+'/plPlugMapP-'+ $
-                        strtrim(string(plateid[i],f='(i4.4)'),2)+'.par', $
-                        hdr=hdr)
+	mapfile = plate_dir(plateid[i])+'/plPlugMapP-'+ $
+			  strtrim(string(plateid[i],f='(i4.4)'),2)+'.par'
+    plug= yanny_readone(mapfile, hdr=hdr)
+
+	; Error checking
+	if (~file_test(mapfile)) then begin
+		plate_log, plateid[i], 'platerun_marvels attempted to open a file that ' + $
+			'was not found (' + mapfile + ').'
+			stop
+	endif
+	
     hdrstr= lines2struct(hdr, /relaxed)
     plobs[i].plateid= plateid[i]
     plobs[i].tileid= plateid[i]
@@ -97,7 +105,9 @@ spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
   planfile+'" | plate -noTk'
 
 ;; finally, create the web page
-plate_writepage, platerun
+;;plate_writepage, platerun
+
+splog, '"plate_writepage, ' + platerun + '" can now be run.'
 
 end
 ;------------------------------------------------------------------------------

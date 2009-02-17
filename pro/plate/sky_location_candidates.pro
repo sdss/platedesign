@@ -22,10 +22,38 @@
 ;   11-Sep-2007  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro sky_location_candidates, ra, dec, radius, cand_ra, cand_dec, $
-                             exclude=exclude, rerun=rerun, seed=seed
+pro sky_location_candidates, ra, dec, radius,   $ ; inputs
+							 cand_ra, cand_dec, $ ; output
+                             exclude=exclude, rerun=rerun, seed=seed ; options
 
-if(NOT keyword_set(exclude)) then exclude=120.
+COMPILE_OPT idl2
+COMPILE_OPT logical_predicate
+
+common common_dss_cache, dss_cache
+
+true = 1
+false = 0
+
+if (~keyword_set(dss_cache)) then $
+	dss_cache_setup
+
+if (~keyword_set(exclude)) then exclude=120.
+
+; Look in database cache to see if we have done this lookup before.
+; If nothing is found, input_id = 0.
+dss_cache_lookup, ra, dec, radius, exclude, cand_ra, cand_dec, input_id
+
+;splog, 'testing input_id: ' + toString(input_id)
+if (n_elements(cand_ra) gt 0 and input_id) then begin
+	; we have the result, cand_ra and cand_dec are defined, can just return!
+	splog, 'ra/dec found in local cache.'
+	return
+endif
+
+splog, 'ra     = ' + string(ra)
+splog, 'dec    = ' + string(dec)
+;splog, 'radius = ' + string(radius)
+;splog, 'rerun/seed = ' + toString(rerun) + '/' + toString(seed)
 
 cand_ra=0
 cand_dec=0
@@ -44,20 +72,24 @@ if(keyword_set(rerun)) then begin
     endelse
 endif
 
-;; if not, track down ten candidates from DSS: basically, we want to
+;; If not, track down ten candidates from DSS: basically, we want to
 ;; make sure we don't land in any detected object, and otherwise we
 ;; want to be in the lowest flux part of the VERY SMOOTHED image 
 ;;   a. download image
-ncand=10L
+ncand=25L
 splog, 'Querying DSS.'
 querydss, [ra, dec], image, hdr, survey='2r', imsize=radius*2.*60.
 iz=where(image eq 0, nz)
-while(float(nz)/float(n_elements(image)) gt 0.25) do begin
+
+iteration_count = 0
+
+while((float(nz)/float(n_elements(image)) gt 0.25) AND iteration_count lt 6) do begin
     querydss, [ra, dec]+randomn(seed,2)*0.01, image, hdr, $
       survey='2r', imsize=radius*2.*60.
     iz=where(image eq 0, nz)
+    iteration_count = iteration_count + 1
 endwhile
-if(NOT keyword_set(image)) then begin
+if(~keyword_set(image)) then begin
     splog, 'no DSS imaging available.'
     return
 endif
@@ -106,7 +138,10 @@ cand_ra=dblarr(ncand)
 cand_dec=dblarr(ncand)
 i=0L
 ic=0L
-while(i lt nkeep AND ic lt ncand) do begin
+
+iteration_count = 0
+
+while((i lt nkeep) AND (ic lt ncand) AND (iteration_count lt 10000)) do begin
     curr_ra= tmp_ra[isort[i]]
     curr_dec= tmp_dec[isort[i]]
     useit=1L
@@ -121,7 +156,14 @@ while(i lt nkeep AND ic lt ncand) do begin
         ic=ic+1L
     endif
     i=i+1L
+
+	;if ((iteration_count mod 150) eq 0) then $
+	;	print, 'iteration step: ' + strtrim(string(iteration_count), 2)
+	iteration_count = iteration_count + 1
+	
 endwhile
+
+;splog, 'Iteration count: ' + strtrim(string(iteration_count), 2)
 
 splog, 'Done.'
 
@@ -129,12 +171,20 @@ if(ic eq 0) then begin
     splog, 'NO SKY HERE'
     cand_ra=0
     cand_dec=0
+    
+    dss_cache_no_sky_for_input, ra, dec, radius, exclude
+    
     return
 endif
 
 cand_ra=cand_ra[0:ic-1]
 cand_dec=cand_dec[0:ic-1]
 
+dss_cache_populate_sky, ra, dec, radius, exclude, cand_ra, cand_dec
+
 return
 
 end
+
+; ===========================================================
+

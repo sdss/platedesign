@@ -3,7 +3,8 @@
 ;
 ; http://www.dfanning.com/tips/variable_undefine.html
 ;
-PRO UNDEFINE, varname  
-   tempvar = SIZE(TEMPORARY(varname))
+PRO UNDEFINE, var
+	if (keyword_set(var) eq 1) then $
+		tempvar = SIZE(TEMPORARY(var))
 END
-   
+      

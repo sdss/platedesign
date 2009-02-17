@@ -125,9 +125,12 @@ plug.throughput= 0
 plug.primtarget= holes.segue2_target1
 plug.sectarget= holes.segue2_target2
 plug.objid[0]= holes.run
-inotblank=where(keyword_set(holes.rerun) ne 0, nnotblank)
+
+rerun_values = strtrim(holes.rerun, 2) ; 2 = trim both ends
+inotblank = where(rerun_values ne '', nnotblank)
 if(nnotblank gt 0) then $
-  plug[inotblank].objid[1]= long(holes[inotblank].rerun)
+ plug[inotblank].objid[1]= long(holes[inotblank].rerun)
+
 plug.objid[2]= holes.camcol
 plug.objid[3]= holes.field
 plug.objid[4]= holes.id

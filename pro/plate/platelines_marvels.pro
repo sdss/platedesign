@@ -53,8 +53,8 @@ xold=!X
 yold=!Y
 !P.FONT= -1
 set_plot, "PS"
-if(NOT keyword_set(axis_char_scale)) then axis_char_scale= 1.75
-if(NOT keyword_set(tiny)) then tiny=1.d-4
+if(~keyword_set(axis_char_scale)) then axis_char_scale= 1.75
+if(~keyword_set(tiny)) then tiny=1.d-4
 !P.BACKGROUND= djs_icolor('white')
 !P.COLOR= djs_icolor('black')
 device, file=filename,/inches,xsize=xsize,ysize=ysize, $
@@ -112,12 +112,38 @@ fibercolors= [ replicate(faintcolor, 8), $
 nblocks=15L
 nper=4L
 linestyles=[0,2,1]
-for ip=0L, npointings-1L do begin
-    iobj= where(holes.holetype eq 'OBJECT')
-    foff= ip*nblocks*nper
+
+; change ip to pointing 2
+
+for index=0L, npointings-1L do begin
+
+	pointing_name = STRSPLIT(hdrstr.pointing_name, /extract)
+	case pointing_name[index] of
+		'A' : ip = 0;
+		'B' : ip = 1;
+		'C' : ip = 2;
+		'D' : ip = 3;
+		'E' : ip = 4;
+		'F' : ip = 5;
+		else : message, 'Invalid pointing specified (' + pointing_name[index] + ')'
+	endcase
+
+	; select all fibers
+    iobj= where(holes.holetype eq 'OBJECT') ; index of OBJECTs
+
+	; For two pointings, the first will cover a range of fiberids
+	; (e.g. -1 to -60), and the second pointing will be another
+	; range (e.g. -61 to -120). "foff" determines the fiberid offset
+	; based on the current pointing.
+    foff= ip*nblocks*nper ; fiber offset
+
+	; Thus, we expect foff = 0            for pointing 1
+	;             and foff = nblocks*nper for pointing 2
+
     for i=0L, nblocks-1L do begin
-        ii= where(-holes[iobj].fiberid ge i*nper+1+foff and $
-                  -holes[iobj].fiberid le (i+1)*nper+foff, nii)
+
+        ii= where(-holes[iobj].fiberid ge i*nper+1+foff and $  ; 1
+                  -holes[iobj].fiberid le (i+1)*nper+foff, nii); 4
         ii=iobj[ii]
         isort= sort(abs(holes[ii].fiberid))
         linecolor= linecolors[i,ip]

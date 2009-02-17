@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   Run a particular plate run
 ; CALLING SEQUENCE:
-;   platerun, platerun  [, inputs to plate_design ]
+;   platerun, platerun [, inputs to plate_design ]
 ; INPUTS:
 ;   platerun - name of run to execute
 ; COMMENTS:
@@ -29,7 +29,9 @@ if(nplate eq 0) then begin
 endif
   
 ;; run plate_design for each one
-plate_design, plans[iplate].plateid, _EXTRA=extra_for_plate_design
+plate_design, plans[iplate].plateid, succeeded=succeeded, _EXTRA=extra_for_plate_design
+
+if (~succeeded) then return
 
 ;; now run the low level plate routines
 drillstyle= strtrim(plans[iplate].drillstyle,2)
@@ -39,6 +41,8 @@ if(n_elements(iuniq) gt 1) then $
   message, 'cannot include more than one drillstyle in a single plate run!'
 drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid
+
+splog, 'Completed.'
 
 end
 ;------------------------------------------------------------------------------
