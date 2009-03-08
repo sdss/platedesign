@@ -44,7 +44,7 @@ if (~keyword_set(exclude)) then exclude=120.
 dss_cache_lookup, ra, dec, radius, exclude, cand_ra, cand_dec, input_id
 
 ;splog, 'testing input_id: ' + toString(input_id)
-if (n_elements(cand_ra) gt 0 and input_id) then begin
+if (input_id) then begin
 	; we have the result, cand_ra and cand_dec are defined, can just return!
 	splog, 'ra/dec found in local cache.'
 	return
@@ -123,6 +123,9 @@ if(nkeep eq 0) then begin
     splog, 'NO SKY HERE'
     cand_ra=0
     cand_dec=0
+
+    dss_cache_no_sky_for_input, ra, dec, radius, exclude
+
     return
 endif
 
@@ -180,7 +183,11 @@ endif
 cand_ra=cand_ra[0:ic-1]
 cand_dec=cand_dec[0:ic-1]
 
-dss_cache_populate_sky, ra, dec, radius, exclude, cand_ra, cand_dec
+if (ra eq 0 or dec eq 0) then begin
+	splog, 'sky candidates ra, dec = 0, not caching.'
+endif else begin
+	dss_cache_populate_sky, ra, dec, radius, exclude, cand_ra, cand_dec
+endelse
 
 return
 
