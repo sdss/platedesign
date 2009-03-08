@@ -109,6 +109,7 @@ pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
 pro/plate/plate_select_guide_sdss.pro -text
 pro/plate/plate_select_sky_sdss.pro -text
+pro/plate/plate_select_sky_tmass.pro -text
 pro/plate/plate_select_sphoto.pro -text
 pro/plate/plate_select_sphoto_2mass.pro -text
 pro/plate/plate_select_sphoto_sdss.pro -text
