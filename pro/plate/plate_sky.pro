@@ -20,14 +20,20 @@ designid= long(definition.designid)
 
 ;; what instruments are we designing skies for?
 platedesignskies= strsplit(default.platedesignskies, /extr)
-standardtype= strsplit(default.standardtype, /extr)
 
 ;; check if the current instrument is included, if not, return
 iinst= where(instrument eq platedesignskies, ninst)
 if(ninst eq 0) then begin
     return, 0
 endif
-standardtype= standardtype[iinst[0]]
+
+;; what type of sky should we use?
+if(NOT tag_exist(default, 'SKYTYPE')) then begin
+    skytype= 'SDSS'
+endif else begin
+    skytype= strsplit(default.skytype, /extr)
+    skytype= skytype[pointing-1]
+endelse
 
 itag= tag_indx(default, 'n'+ $
                strtrim(string(instrument),2)+ $
@@ -51,10 +57,18 @@ if(nsky gt 0) then begin
         plate_center, definition, default, pointing, offset, $
                       racen=racen, deccen=deccen
         
-        ;; find SDSS skies and assign them
-        plate_select_sky_sdss, racen, deccen, $
-          nsky=nsky, seed=seed, rerun=rerun, $
-          sky_design=sky_design
+        ;; find skies and assign them
+        case skytype of 
+            'SDSS': $
+              plate_select_sky_sdss, racen, deccen, $
+                nsky=nsky, seed=seed, rerun=rerun, $
+                sky_design=sky_design
+            '2MASS': $
+              plate_select_sky_tmass, racen, deccen, $
+                nsky=nsky, seed=seed, sky_design=sky_design
+            else: $
+              message, 'No such skytype '+skytype
+        endcase
         sky_design.pointing=pointing
         sky_design.offset=offset
         sky_design.holetype=instrument
