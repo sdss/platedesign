@@ -76,3 +76,5 @@ nguidemax 600
 # Mininum and maximum standard star magnitudes
 # (g-band)
 standardmag_minmax_sdss 10. 13.5
+
+pointing_name A B C D E F

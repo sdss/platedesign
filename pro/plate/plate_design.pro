@@ -476,15 +476,29 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
 
 endif ;; end of clobber & file exists tests
 
+;; ----------------------------------------
 ;; Convert plateDesign to plateHoles
+;; ----------------------------------------
 plate_holes, designid, plateid, ha, temp
 
+;; ----------------------------------------
 ;; Produce plugfiles of desired style
+;; ----------------------------------------
 if(tag_exist(default, 'plugmapstyle') eq false) then $
   plugmapstyle='plplugmap' $
 else $
   plugmapstyle= default.plugmapstyle
 call_procedure, 'plugfile_'+plugmapstyle, plateid
+
+;; ----------------------------------------
+;; Generate platelines files (SEGUE-2 only)
+;; ----------------------------------------
+if (strpos(strlowcase(plan.platerun), 'segue2') gt -1) then begin
+	
+	platelines_segue2, plateid
+	spawn, 'cp -f ' + plate_dir(plateid) + '/plateLines*.ps ' + $
+		getenv('PLATELIST_DIR') + '/runs/' + plan.platerun
+end
 
 succeeded = true
 

@@ -11,6 +11,20 @@ PRO dss_cache_populate_sky, ra, dec, radius, exclude, cand_ra, cand_dec
 	radius_s = strtrim(string(radius),2)
 	exclude_s = strtrim(string(exclude),2)
 
+	; DEBUG
+	dss_cache_lookup, ra, dec, radius, exclude, cand_ra_tmp, cand_dec_tmp, input_id
+	if (input_id) then begin
+		splog, 'Duplicate input found: ' + toString(input_id)
+		stop
+	endif
+	
+	if (ra eq 0 OR dec eq 0) then begin
+		splog, 'Zeros.'
+		stop
+	endif
+	
+	if ((n_elements(cand_ra) eq 1) OR (n_elements(cand_dec) eq 1)) then return
+
 	; Create a new input row
 	command = dss_cache.sqlite3 + dss_cache.database + ' "' + $
 		'INSERT INTO input (ra, dec, radius, exclusion_area) VALUES (' + $
@@ -21,11 +35,11 @@ PRO dss_cache_populate_sky, ra, dec, radius, exclude, cand_ra, cand_dec
 	; Get the input.id that was just created
 	command = dss_cache.sqlite3 + dss_cache.database + ' "' + $
 ;		'SELECT last_insert_rowid()"'
-		'SELECT max(id) FROM input' + '"'
+		'SELECT id FROM input WHERE ra = ' + ra_s + ' AND dec = ' + dec_s +	'"'
 	spawn, command, result
 	
 	if (~keyword_set(result)) then begin
-		splog, 'Attempted to create a new input record in database failed.'
+		splog, 'Attempt to create a new input record in database failed.'
 		return
 	endif
 	
