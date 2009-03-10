@@ -34,27 +34,25 @@ usno=usno_read(racen, deccen, 1.5)
 spherematch, standards.target_ra, standards.target_dec, $
   usno.ra, usno.dec, 2./3600., m1, m2
 
-splot, gmag[m1], usno[m2].mag[1], psym=4
+;;splot, gmag[m1], usno[m2].mag[1], psym=4
 
 iobj=where(pl.holetype eq 'OBJECT')
 spherematch, pl[iobj].ra, pl[iobj].dec, $
   usno.ra, usno.dec, 2./3600., m1, m2
 ii=where(pl[iobj[m1]].objtype eq 'SPECTROPHOTO_STD')
 help,ii
-soplot, pl[iobj[m1[ii]]].mag[1], usno[m2[ii]].mag[1], psym=6, color='green'
+;;soplot, pl[iobj[m1[ii]]].mag[1], usno[m2[ii]].mag[1], psym=6, color='green'
 
 jj=where(pl[iobj[m1]].objtype eq 'SERENDIPITY_MANUAL')
 help,jj
-soplot, pl[iobj[m1[jj]]].mag[1], usno[m2[jj]].mag[1], psym=6, color='yellow'
+;;soplot, pl[iobj[m1[jj]]].mag[1], usno[m2[jj]].mag[1], psym=6, color='yellow'
 
-stop 
-spherematch, standards.target_ra, standards.target_dec, $
-  usno.ra, usno.dec, 2./3600., sm1, sm2
+;;spherematch, standards.target_ra, standards.target_dec, $
+;;  usno.ra, usno.dec, 2./3600., sm1, sm2
 
-splot, usno[sm2].mag[1], standards[sm1].priority, psym=4 
+;;splot, usno[sm2].mag[1], standards[sm1].priority, psym=4 
 
-stop
-splot, usno.mag[1], usno.mag[0]-usno.mag[1], psym=3
+splot, usno.mag[1], usno.mag[0]-usno.mag[1], psym=3, xra=[8., 16.], yra=[-0.5, 4.5]
 spherematch, standards.target_ra, standards.target_dec, $
   usno.ra, usno.dec, 2./3600., sm1, sm2
 soplot, usno[sm2].mag[1], usno[sm2].mag[0]-usno[sm2].mag[1], psym=4,color='red', th= 3
