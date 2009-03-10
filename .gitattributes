@@ -162,7 +162,10 @@ pro/strategy/sweep_sgc_904.pro -text
 pro/strategy/trial_lrgs_for_tile.pro -text
 pro/strategy/trim_tiles.pro -text
 pro/strategy/window_sgc_904.pro -text
+pro/test/extinction_check.pro -text
+pro/test/guides_check.pro -text
 pro/test/radec2kml.pro -text
+pro/test/standards_check.pro -text
 pro/test/test_ad2xy.pro -text
 pro/test/test_guide_stars.pro -text
 pro/test/test_tmass_conversion.pro -text
