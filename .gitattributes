@@ -3,6 +3,7 @@
 /README -text
 bin/.svnignore -text
 bin/drillrun2zip -text
+bin/get_plugmap_files.py -text
 bin/platedesign_version -text
 data/marvels/anchor-block-map-2008-09-10.pdf -text
 data/marvels/anchordiagram.jpg -text
