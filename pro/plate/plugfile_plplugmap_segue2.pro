@@ -82,10 +82,17 @@ if(nmarvels gt 0) then begin
     plug[imarvels].mag[1]= holes[imarvels].tyc_bmag
     plug[imarvels].mag[2]= holes[imarvels].gsc_vmag
 endif
-isegue2= where(holes.run gt 0, nsegue2)
-if(nsegue2 gt 0) then begin
-    plug[isegue2].mag= holes[isegue2].fibermag
-endif
+
+; Change made to copy *all* fibermag fields to mag.
+; - Demitri Muna, 30 March 2009
+;isegue2= where(holes.run gt 0, nsegue2)
+;if(nsegue2 gt 0) then begin
+;    plug[isegue2].mag= holes[isegue2].fibermag
+;endif
+
+plug.mag= holes.fibermag
+
+
 isdssother= where(holes.run gt 0 and $
                   total(plug.mag,1) eq 0, nsdssother)
 if(nsdssother gt 0) then begin
