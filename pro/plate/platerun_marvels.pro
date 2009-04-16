@@ -17,6 +17,10 @@ platerun_dir= getenv('PLATELIST_DIR')+'/runs/'+platerun
 
 spawn, 'mkdir -p '+platerun_dir
 
+cd, platerun_dir
+
+platerun_dir= '.'
+
 spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/marvels/plParam.par '+ $
   platerun_dir+'/plParam-'+platerun+'.par'
 spawn, 'cp -f '+getenv('PLATEDESIGN_DIR')+'/data/marvels/g_codes*.txt '+ $
