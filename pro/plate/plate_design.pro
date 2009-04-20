@@ -496,8 +496,11 @@ call_procedure, 'plugfile_'+plugmapstyle, plateid
 if (strpos(strlowcase(plan.platerun), 'segue2') gt -1) then begin
 	
 	platelines_segue2, plateid
+
+	spawn, 'mkdir -p '+ getenv('PLATELIST_DIR') + '/runs/' + plan.platerun
+
 	spawn, 'cp -f ' + plate_dir(plateid) + '/plateLines*.ps ' + $
-		getenv('PLATELIST_DIR') + '/runs/' + plan.platerun
+		getenv('PLATELIST_DIR') + '/runs/' + plan.platerun + '/'
 end
 
 succeeded = true
