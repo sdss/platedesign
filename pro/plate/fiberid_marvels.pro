@@ -38,6 +38,7 @@
 function fiberid_marvels, default, fibercount, design, $
                           minstdinblock=minstdinblock, $
                           minskyinblock=minskyinblock, $
+                          maxskyinblock=maxskyinblock, $
                           nosky=nosky, nostd=nostd, noscience=noscience, $
                           quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid
@@ -53,6 +54,7 @@ nperblock=4L
 
 if(keyword_set(minstdinblock) eq false) then minstdinblock=0L
 if(keyword_set(minskyinblock) eq false) then minskyinblock=0L
+if(keyword_set(maxskyinblock) eq false) then maxskyinblock=0L
 
 fiberid=lonarr(n_elements(design))
 npointings= long(default.npointings)
