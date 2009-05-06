@@ -71,6 +71,8 @@ design0={DESIGN_TARGET, $
          psfflux_ivar:fltarr(5), $
          fiberflux:fltarr(5), $
          fiberflux_ivar:fltarr(5), $
+         fiber2flux:fltarr(5), $
+         fiber2flux_ivar:fltarr(5), $
          psfmag:fltarr(5), $
          fibermag:fltarr(5), $
          targetids:'NA' $
