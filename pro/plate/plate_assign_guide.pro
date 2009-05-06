@@ -30,7 +30,11 @@ pro plate_assign_guide, definition, default, design, guide_design, $
 
 tilerad=1.49
 
-gfiber= gfiber_params()
+if(tag_indx(default, 'GFIBERTYPE') ge 0) then $
+  gfibertype= default.gfibertype $
+else $
+  gfibertype= 'gfiber'
+gfiber= call_function(gfibertype+'_params')
 
 for i=0l, n_elements(guidenums)-1L do begin
     iguide= guidenums[i]
