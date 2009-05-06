@@ -205,6 +205,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; What conditions on fiber placement exist for each instrument?
         minstdinblock=lonarr(ninstruments) ;; how many standards per block?
         minskyinblock=lonarr(ninstruments) ;; how many skies per block?
+        maxskyinblock=lonarr(ninstruments) ;; how many skies per block?
         for iinst=0L, ninstruments-1L do begin
             ;; get minimum number of standards per block per pointing, if desired
             itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
@@ -216,9 +217,16 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             ;; get minimum number of skies per block per pointing, if desired
             itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
             if(itagminsky eq -1) then $
-            minskyinblock[iinst]=0L $
+              minskyinblock[iinst]=0L $
             else $
-            minskyinblock[iinst]=long(default.(itagminsky))
+              minskyinblock[iinst]=long(default.(itagminsky))
+    
+            ;; get minimum number of skies per block per pointing, if desired
+            itagmaxsky=tag_indx(default, 'maxskyinblock'+instruments[iinst])
+            if(itagmaxsky eq -1) then $
+              maxskyinblock[iinst]=0L $
+            else $
+              maxskyinblock[iinst]=long(default.(itagmaxsky))
         endfor
         
         ;; For each class of input priorities, run plate_assign 
@@ -349,6 +357,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         sphoto_design, seed=seed, $
                         minstdinblock=minstdinblock[iinst], $
                         minskyinblock=minskyinblock[iinst], $
+                        maxskyinblock=maxskyinblock[iinst], $
                         /nosky, /noscience
                     endif
                 endfor
@@ -376,6 +385,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         sky_design, seed=seed, $
                         minstdinblock=minstdinblock[iinst], $
                         minskyinblock=minskyinblock[iinst], $
+                        maxskyinblock=maxskyinblock[iinst], $
                         /nostd, /noscience
                     endif
                 endfor 
@@ -428,6 +438,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                                         default, fibercount, design[icurr], $
                                         minstdinblock=minstdinblock[iinst], $
                                         minskyinblock=minskyinblock[iinst], $
+                                        maxskyinblock=maxskyinblock[iinst], $
                                         block=block, $
                                         respect_fiberid=respect_fiberid)
                 design[icurr].fiberid= fiberids
