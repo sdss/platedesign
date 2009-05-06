@@ -31,6 +31,7 @@
 function fiberid_sdss, default, fibercount, design, $
                        minstdinblock=minstdinblock, $
                        minskyinblock=minskyinblock, $
+                       maxskyinblock=maxskyinblock, $
                        nosky=nosky, nostd=nostd, noscience=noscience, $
                        quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid
@@ -47,6 +48,7 @@ stdlimitdegree= limitdegree ;; ... and standards
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
+if(NOT keyword_set(maxskyinblock)) then maxskyinblock=20L
 
 fiberused=0L
 fiberid=lonarr(n_elements(design))
@@ -153,6 +155,7 @@ if(NOT keyword_set(nosky)) then begin
                 sdss_plugprob, design[isky].xf_default, $
                   design[isky].yf_default, $
                   tmp_fiberid, mininblock=minskyinblock, $
+                               maxinblock=maxskyinblock, $
                   minavail=8L, fiberused=fiberused, nmax=nmax, $
                   limitdegree=skylimitdegree, $
                   blockcenx=blockcenx, blockceny=blockceny, /quiet
