@@ -23,6 +23,7 @@
 function fiberid_dummy, default, fibercount, design, $
   minstdinblock=minstdinblock, $
   minskyinblock=minskyinblock, $
+  maxskyinblock=maxskyinblock, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid
