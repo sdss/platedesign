@@ -1,0 +1,60 @@
+# Default settings for MARVELS_PRE plate 
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE
+instruments dummy 
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes sky 
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 1
+nOffsets 0
+pointing_name A
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p1/o1 ... p1/oN .. pM/o0 ... pM/oN
+# (for M pointings and N offsets).
+ndummy_science 0
+ndummy_sky 0
+ndummy_standard 0
+
+# What are conditions on number of skies and standards per block?
+# (per pointing -- one entry per instrument)
+minstdinblockSDSS 0
+minskyinblockSDSS 0
+
+# Expected exposure time for each pointing in seconds; 
+# not used in operations! Just for the record. The pointingExpTime
+# values are those before any offset.
+pointingExpTime1 300.   
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# (Include guide instrument here)
+ferruleSizedummy 3.738
+bufferSizedummy 0.0957550
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+gfiberType gfiber2 
+guideType SDSS
+nGuides
+guideNums1 1 
+
+omit_traps 1 
+omit_center 1
+
+# Use BOSS plugmap style
+# XXX need to write this 
+plugmapstyle plplugmap
