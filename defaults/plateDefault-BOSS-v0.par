@@ -9,6 +9,7 @@
 #     ditto above
 # XXX are the guides changing ...
 #     their alignment orientation?
+#     NEED TO PASS guideType to ALIGNMENT_FIBER
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
@@ -45,7 +46,7 @@ maxskyinblockBOSS 4
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
-guideType 2MASS
+guideType SDSS
 guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
