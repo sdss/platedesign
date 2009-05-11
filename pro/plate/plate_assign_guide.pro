@@ -39,7 +39,9 @@ gfiber= call_function(gfibertype+'_params')
 for i=0l, n_elements(guidenums)-1L do begin
     iguide= guidenums[i]
 
-    icheck= where(design.iguide eq iguide, ncheck)
+    ncheck=0
+    if(n_tags(design) gt 0) then $
+      icheck= where(design.iguide eq iguide, ncheck)
     if(ncheck gt 1) then $
       message, 'why are there two assignments for guide #'+ $
                strtrim(string(iguide),2)
@@ -88,7 +90,10 @@ for i=0l, n_elements(guidenums)-1L do begin
         ;; now add it:
         guide_design[imin].assigned=1L
         guide_design[imin].iguide=iguide
-        design=[design, guide_design[imin]]
+        if(n_tags(design) gt 0) then $
+          design=[design, guide_design[imin]] $
+        else $
+          design=guide_design[imin]
     endif
 endfor
 
