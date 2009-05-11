@@ -23,16 +23,19 @@ hdrstr= lines2struct(hdr, /relax)
 racen=double(hdrstr.racen)
 deccen=double(hdrstr.deccen)
 
-ugriz= plate_tmass_to_sdss(standards.tmass_j, standards.tmass_h, $
-                           standards.tmass_k)
-red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
-glactc, standards.target_ra, standards.target_dec, 2000., gl, gb, 1, /deg
-ebv= dust_getval(gl,gb)
-gmag= ugriz[1,*] ;;+ebv*red_fac[1]
-
 usno=usno_read(racen, deccen, 1.5)
-spherematch, standards.target_ra, standards.target_dec, $
-  usno.ra, usno.dec, 2./3600., m1, m2
+
+if(n_tags(standards) gt 0) then begin
+  ugriz= plate_tmass_to_sdss(standards.tmass_j, standards.tmass_h, $
+                             standards.tmass_k)
+  red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+  glactc, standards.target_ra, standards.target_dec, 2000., gl, gb, 1, /deg
+  ebv= dust_getval(gl,gb)
+  gmag= ugriz[1,*] ;;+ebv*red_fac[1]
+  spherematch, standards.target_ra, standards.target_dec, $
+    usno.ra, usno.dec, 2./3600., m1, m2
+endif
+
 
 ;;splot, gmag[m1], usno[m2].mag[1], psym=4
 
@@ -52,11 +55,13 @@ help,jj
 
 ;;splot, usno[sm2].mag[1], standards[sm1].priority, psym=4 
 
-splot, usno.mag[1], usno.mag[0]-usno.mag[1], psym=3, xra=[8., 16.], yra=[-0.5, 4.5]
-spherematch, standards.target_ra, standards.target_dec, $
-  usno.ra, usno.dec, 2./3600., sm1, sm2
-soplot, usno[sm2].mag[1], usno[sm2].mag[0]-usno[sm2].mag[1], psym=4,color='red', th= 3
-soplot, usno[m2[ii]].mag[1], usno[m2[ii]].mag[0]-usno[m2[ii]].mag[1],psym=6, color='green', th=2
-soplot, usno[m2[jj]].mag[1], usno[m2[jj]].mag[0]-usno[m2[jj]].mag[1],psym=6, color='yellow'
+splot, usno.mag[0], usno.mag[0]-usno.mag[1], psym=3, xra=[8., 16.], yra=[-0.5, 4.5]
+if(n_tags(standards) gt 0) then begin
+  spherematch, standards.target_ra, standards.target_dec, $
+    usno.ra, usno.dec, 2./3600., sm1, sm2
+  soplot, usno[sm2].mag[0], usno[sm2].mag[0]-usno[sm2].mag[1], psym=4,color='red', th= 3
+endif
+soplot, usno[m2[ii]].mag[0], usno[m2[ii]].mag[0]-usno[m2[ii]].mag[1],psym=6, color='green', th=2
+soplot, usno[m2[jj]].mag[0], usno[m2[jj]].mag[0]-usno[m2[jj]].mag[1],psym=6, color='yellow'
 
 end
