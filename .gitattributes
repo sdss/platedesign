@@ -91,6 +91,7 @@ pro/plate/dss_cache_lookup.pro -text
 pro/plate/dss_cache_no_sky_for_input.pro -text
 pro/plate/dss_cache_populate_sky.pro -text
 pro/plate/dss_cache_setup.pro -text
+pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
