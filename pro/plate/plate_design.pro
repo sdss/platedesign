@@ -135,6 +135,11 @@ if(tag_exist(default, 'OMIT_GUIDES')) then begin
     omit_guides= long(default.omit_guides)
 endif
 
+;; special flag to omit guide fibers
+if(tag_exist(default, 'OMIT_CENTER')) then begin
+    omit_center= long(default.omit_center)
+endif
+
 ;; special flag to omit traps
 if(tag_exist(default, 'OMIT_TRAPS')) then begin
     omit_traps= long(default.omit_traps)
@@ -169,7 +174,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     while(keyword_set(needmorefibers) gt 0) do begin
 
         ;; Initialize design structure, including a center hole
-        design=design_blank(/center)
+        if(~keyword_set(omit_center)) then $
+          design=design_blank(/center)
         
         ;; What instruments are being used, and how many science,
         ;; standard and sky fibers do we assign to each?
@@ -234,83 +240,90 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
         ;; first, convert inputs into priority list
         ninputs= long(definition.ninputs)
-        hdrs=ptrarr(ninputs)
-        priority=lindgen(ninputs)
-        if(tag_exist(definition, 'priority')) then $
-        priority= long(strsplit(definition.priority, /extr))
+        if(ninputs gt 0) then begin
+            hdrs=ptrarr(ninputs)
+            priority=lindgen(ninputs)
+            if(tag_exist(definition, 'priority')) then $
+              priority= long(strsplit(definition.priority, /extr))
     
-        ;; second, treat each priority list separately
-        isort=sort(priority)
-        iuniq=uniq(priority[isort])
-        istart=0L
-        for i=0L, n_elements(iuniq)-1L do begin
-            iend=iuniq[i]
-            icurr=isort[istart:iend]
-            ncurr=n_elements(icurr)
-            
-            ;; read in each plateInput file at this priority level
-            new_design=0
-            for j=0L, ncurr-1L do begin
-                k=icurr[j]
-                itag=tag_indx(definition, 'plateInput'+strtrim(string(k+1),2))
-                if(itag eq -1) then $
-                message, 'no plateInput'+strtrim(string(k+1),2)+' param set'
-                infile=getenv('PLATELIST_DIR')+ $
-                    '/inputs/'+definition.(itag)
-                tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
-                if(n_tags(tmp_targets) eq 0) then $
-                message, 'empty plateInput file '+infile
-                hdrs[k]=ptr_new(hdr)
-                hdrstr=lines2struct(hdr)
-    
-                ;; check data type of ra and dec -- abort if they are not
-                ;; typed double
-                if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
-                datatype(tmp_targets[0].dec) ne 'DOU') then begin
-                    message, $
-                    'Aborting: RA and Dec MUST be typed as double precision!'
-                endif
+            ;; second, treat each priority list separately
+            isort=sort(priority)
+            iuniq=uniq(priority[isort])
+            istart=0L
+            for i=0L, n_elements(iuniq)-1L do begin
+                iend=iuniq[i]
+                icurr=isort[istart:iend]
+                ncurr=n_elements(icurr)
                 
-                ;; convert target information to design structure
-                ;; (record which plate input file this came from)
-                target2design, definition, default, tmp_targets, tmp_design, $
-                            info=hdrstr
-                tmp_design.iplateinput= k+1L
-    
-                if(n_tags(new_design) eq 0) then begin
-                    new_design=tmp_design 
-                endif else begin
-                    new_design=[new_design, tmp_design]
-                endelse
-            endfor
-            
-            ;; assign holes to each plateInput file
-            plate_assign, definition, default, fibercount, design, $
-              new_design, seed=seed, nextra=nextrafibers
-    
-            ;; output results for this set
-            iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
-            for j=0L, n_elements(iplate)-1L do begin
-                ithis= where(new_design.iplateinput eq iplate[j], nthis)
-                if(nthis gt 0) then begin
-                    outstr= new_design[ithis]
-                    pdata= ptr_new(outstr)
-                    itag=tag_indx(definition, 'plateInput'+ $
-                                strtrim(string(iplate[j]),2))
+                ;; read in each plateInput file at this priority level
+                new_design=0
+                for j=0L, ncurr-1L do begin
+                    k=icurr[j]
+                    itag=tag_indx(definition, $
+                                  'plateInput'+strtrim(string(k+1),2))
                     if(itag eq -1) then $
-                    message, 'no plateInput'+strtrim(string(iplate[j]+1),2)+ $
-                            ' param set'
-                    infile=getenv('PLATELIST_DIR')+ '/inputs/'+definition.(itag)
-                    filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
-                                    /extr, /sub))[1]
-                    yanny_write, designdir+'/'+filebase+'-output.par', pdata, $
-                                hdr=(*hdrs[iplate[j]-1])
-                endif
+                      message, 'no plateInput'+strtrim(string(k+1),2)+ $
+                               ' param set'
+                    infile=getenv('PLATELIST_DIR')+ $
+                           '/inputs/'+definition.(itag)
+                    tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
+                    if(n_tags(tmp_targets) eq 0) then $
+                      message, 'empty plateInput file '+infile
+                    hdrs[k]=ptr_new(hdr)
+                    hdrstr=lines2struct(hdr)
+                    
+                    ;; check data type of ra and dec -- abort if they are not
+                    ;; typed double
+                    if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
+                       datatype(tmp_targets[0].dec) ne 'DOU') then begin
+                        message, $
+                          'Aborting: RA and Dec MUST be typed as '+ $
+                          'double precision!'
+                    endif
+                    
+                    ;; convert target information to design structure
+                    ;; (record which plate input file this came from)
+                    target2design, definition, default, tmp_targets, $
+                                   tmp_design, info=hdrstr
+                    tmp_design.iplateinput= k+1L
+                    
+                    if(n_tags(new_design) eq 0) then begin
+                        new_design=tmp_design 
+                    endif else begin
+                        new_design=[new_design, tmp_design]
+                    endelse
+                endfor
+                
+                ;; assign holes to each plateInput file
+                plate_assign, definition, default, fibercount, design, $
+                              new_design, seed=seed, nextra=nextrafibers
+                
+                ;; output results for this set
+                iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
+                for j=0L, n_elements(iplate)-1L do begin
+                    ithis= where(new_design.iplateinput eq iplate[j], nthis)
+                    if(nthis gt 0) then begin
+                        outstr= new_design[ithis]
+                        pdata= ptr_new(outstr)
+                        itag=tag_indx(definition, 'plateInput'+ $
+                                      strtrim(string(iplate[j]),2))
+                        if(itag eq -1) then $
+                          message, 'no plateInput'+ $
+                                   strtrim(string(iplate[j]+1),2)+ $
+                                   ' param set'
+                        infile=getenv('PLATELIST_DIR')+ '/inputs/'+ $
+                               definition.(itag)
+                        filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
+                                           /extr, /sub))[1]
+                        yanny_write, designdir+'/'+filebase+'-output.par', $
+                                     pdata, hdr=(*hdrs[iplate[j]-1])
+                    endif
+                endfor
+                
+                istart=iend+1L
             endfor
+        endif
             
-            istart=iend+1L
-        endfor
-    
         ;; Find guide fibers and assign them (if we're supposed to)
         ;; Make sure to assign proper guides to each pointing
         if(~keyword_set(omit_guides)) then begin
