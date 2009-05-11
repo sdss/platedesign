@@ -134,6 +134,7 @@ pro/plate/platerun_marvels.pro -text
 pro/plate/platerun_sdss.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
+pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sky_location_candidates.pro -text
