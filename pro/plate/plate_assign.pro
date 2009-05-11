@@ -98,7 +98,11 @@ for i=0L, ntargets-1L do begin
                                  curr_pointing-1L, curr_offset]= $
                   fibercount.nused[iinstrument, itarget, $
                                    curr_pointing-1L, curr_offset]+1L
-                design= [design, new_design[icurr]]
+                if(n_tags(design) gt 0) then begin
+                    design= [design, new_design[icurr]]
+                endif else begin
+                    design= new_design[icurr]
+                endelse
             endif
         endif else begin
             new_design[icurr].ranout=1

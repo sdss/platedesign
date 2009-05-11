@@ -20,15 +20,15 @@
 ;   Conflict is registered if new target is within 
 ;       (DIAMETER_NEW/2+BUFFER_NEW) + (DIAMETER_OLD/2+BUFFER_OLD) 
 ;     of any old target
-;   Design is ALWAYS assumed to have some element 
-;    (since all designs will have the center hole)
 ; REVISION HISTORY:
 ;   9-May-2008 MRB, NYU (based on DJS's design_append)
 ;-
 function check_conflicts, design, new
 
-if(n_tags(design) eq 0) then $
-  message, 'empty design structure'
+if(n_tags(design) eq 0) then begin
+    splog, 'Empty design structure, no conflict.'
+    return, 0
+endif
 
 xx_design=fltarr(2,n_elements(design))
 xx_design[0,*]= design.xf_default

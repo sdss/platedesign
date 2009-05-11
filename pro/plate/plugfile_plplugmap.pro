@@ -139,9 +139,13 @@ if(nhole gt 0) then $
 ;; (just for first pointing)
 indx = where(strtrim(plug.holetype,2) EQ 'OBJECT' AND $
              holes.pointing eq 1, nobj)
-euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
-reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
-  * median(dust_getval(ll, bb, /interp))
+if(nobj gt 0) then begin
+    euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
+    reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+                * median(dust_getval(ll, bb, /interp))
+endif else begin
+    reddenvec= [0., 0., 0., 0., 0.]
+endelse
 
 ;; resort fibers
 ihole= where(plug.holetype eq 'LIGHT_TRAP', nhole)
