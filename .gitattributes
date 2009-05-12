@@ -132,6 +132,7 @@ pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plate_xy2ad.pro -text
+pro/plate/platelines_boss.pro -text
 pro/plate/platelines_marvels.pro -text
 pro/plate/platelines_segue2.pro -text
 pro/plate/platerun.pro -text
