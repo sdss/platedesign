@@ -28,6 +28,9 @@ temp= float(definition.temp)
 ha= float(strsplit(definition.ha, /extr))
 npointings= long(definition.npointings)
 
+if(tag_indx(default,'BOSSMAGTYPE') eq -1) then $
+  message, 'Must define BOSSMAGTYPE in default or definition file for BOSS plates.'
+
 plug0= plplugmap_blank(enums=plugenum, struct=plugstruct)
 plug= replicate(plug0, n_elements(holes))
 
@@ -64,7 +67,17 @@ if(nhole gt 0) then plug[ihole].holetype= 'LIGHT_TRAP'
 plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
-plug.mag= 22.5-2.5*alog10(holes.fiber2flux > 0.1)
+magtype= default.bossmagtype
+itag= tag_indx(holes[0], magtype)
+if(itag eq -1) then $
+  message, 'No tag '+magtype+' in holes structure.'
+if(strmatch(strupcase(magtype), '*FLUX')) then begin
+    plug.mag= 22.5-2.5*alog10(holes.(itag) > 0.1)
+endif else if (strmatch(strupcase(magtype), '*MAG')) then begin
+    plug.mag= holes.(itag) 
+endif else begin
+    message, 'MAGTYPE must match either *MAG or *FLUX'
+endelse
 
 ;; We will ignore these likelihood columns
 plug.starl=0.
