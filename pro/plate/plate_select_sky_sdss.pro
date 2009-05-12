@@ -4,11 +4,10 @@
 ; PURPOSE:
 ;   Given a plate center, pick appropriate sky locations from SDSS
 ; CALLING SEQUENCE:
-;   plate_select_sky, racen, deccen, [ rerun=  nsky=, $
+;   plate_select_sky, racen, deccen, [ nsky=, $
 ;    tilerad=, seed=, sky_design= ]
 ; INPUTS:
 ;   racen, deccen - center of plate, J2000 degrees 
-;   rerun - reruns to use for SDSS imaging, if not set, then use DSS
 ; OPTIONAL INPUTS:
 ;   tilerad - radius of tile in deg (default 1.49 deg)
 ;   nsky - number of sky fibers desired (default 64)
@@ -21,7 +20,7 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_sky_sdss, racen, deccen, nsky=nsky, tilerad=tilerad, $
-  seed=seed, rerun=rerun, sky_design=sky_design, nper=nper
+  seed=seed, sky_design=sky_design, nper=nper
 
 if(NOT keyword_set(nper)) then nper=2L
 if(NOT keyword_set(tilerad)) then tilerad=1.49
@@ -85,7 +84,7 @@ while(i lt ngrid AND $
     endif
     if(keyword_set(use_grid)) then begin
         sky_location_candidates, tmp_ra, tmp_dec, nspace/2., $
-          cand_ra, cand_dec, exclude=exclude, rerun=rerun, seed=seed
+          cand_ra, cand_dec, exclude=exclude, seed=seed
         gotone=0L
         if(keyword_set(cand_ra)) then begin
             keep=lonarr(n_elements(cand_ra))
