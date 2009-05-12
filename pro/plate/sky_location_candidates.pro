@@ -24,7 +24,7 @@
 ;------------------------------------------------------------------------------
 pro sky_location_candidates, ra, dec, radius,   $ ; inputs
 							 cand_ra, cand_dec, $ ; output
-                             exclude=exclude, rerun=rerun, seed=seed ; options
+                             exclude=exclude, seed=seed ; options
 
 COMPILE_OPT idl2
 COMPILE_OPT logical_predicate
@@ -59,12 +59,13 @@ cand_ra=0
 cand_dec=0
 
 ;; if SDSS exists, use its determinations
-if(keyword_set(rerun)) then begin
+if(keyword_set(getenv('PHOTO_SWEEP')) gt 0) then begin
     objs= sdss_sweep_circle(ra, dec, radius, type='sky', /all, /silent)
     if(n_tags(objs) gt 0) then begin
         ing=spheregroup(objs.ra, objs.dec, exclude/3600., firstg=firstg)
-        cand_ra=objs[firstg].ra
-        cand_dec=objs[firstg].dec
+        nmult=max(ing)+1L
+        cand_ra=objs[firstg[0:nmult-1]].ra
+        cand_dec=objs[firstg[0:nmult-1]].dec
         return
     endif else begin
         cand_ra=0
