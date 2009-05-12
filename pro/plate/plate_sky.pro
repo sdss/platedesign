@@ -9,8 +9,7 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function plate_sky, definition, default, instrument, pointing, offset, $
-                    rerun=rerun
+function plate_sky, definition, default, instrument, pointing, offset
 
 if(NOT tag_exist(default, 'PLATEDESIGNSKIES')) then begin
     return, 0
@@ -61,7 +60,7 @@ if(nsky gt 0) then begin
         case skytype of 
             'SDSS': $
               plate_select_sky_sdss, racen, deccen, $
-                nsky=nsky, seed=seed, rerun=rerun, $
+                nsky=nsky, seed=seed, $
                 sky_design=sky_design
             '2MASS': $
               plate_select_sky_tmass, racen, deccen, $
@@ -85,8 +84,6 @@ if(nsky gt 0) then begin
             outhdr=[outhdr, $
                     'pointing '+strtrim(string(pointing),2), $
                     'platedesign_version '+platedesign_version()]
-            if(keyword_set(rerun)) then $
-              outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
             yanny_write, skyfile, pdata, hdr=outhdr
         endif
     endif else begin
