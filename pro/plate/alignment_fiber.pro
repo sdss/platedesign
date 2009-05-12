@@ -13,9 +13,13 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro alignment_fiber, gnum, xf_guide, yf_guide, xf_align, yf_align
+pro alignment_fiber, gnum, xf_guide, yf_guide, xf_align, yf_align, $
+                     gfibertype=gfibertype
 
-gfiber= gfiber_params()
+if(keyword_set(gfibertype) eq 0) then $
+  gfibertype='gfiber'
+
+gfiber= call_function(gfibertype+'_params')
 
 dradeg= 180.D/!DPI
 
