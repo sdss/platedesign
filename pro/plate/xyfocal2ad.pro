@@ -73,7 +73,8 @@ for i=0L, n_elements(in_xfocal)-1L do begin
 endfor
 
 ; explicitly undefine "extra_for_ad2xyfocal"
-temp = size(temporary(extra_for_ad2xyfocal))
+if(keyword_set(extra_for_ad2xyfocal) gt 0) then $
+  temp = size(temporary(extra_for_ad2xyfocal))
 
 return
 end
