@@ -30,6 +30,10 @@ default= definition
 ;; special flag to omit guide fibers
 if(tag_exist(default, 'OMIT_GUIDES')) then $
   omit_guides= long(default.omit_guides)
+if(tag_exist(default, 'GFIBERTYPE')) then $
+  gfibertype= default.gfibertype $
+else $
+  gfibertype='gfiber'
 
 ;; create output structure
 holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
@@ -70,7 +74,7 @@ for pointing=1L, npointings do begin
     for i=0L, nguide-1L do begin
         alignment_fiber, holes[iguide[i]].iguide, $
           holes[iguide[i]].xfocal, holes[iguide[i]].yfocal, $
-          xf_align, yf_align
+          xf_align, yf_align, gfibertype=gfibertype
         align0= holes0
         align0.holetype= 'ALIGNMENT'
         align0.pointing=pointing
