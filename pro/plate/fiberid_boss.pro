@@ -42,10 +42,10 @@ if(keyword_set(respect_fiberid)) then $
   message, 'BOSS spectrograph designs cannot respect fiberid'
 
 platescale = 217.7358           ; mm/degree
-limitdegree=7.*0.1164 ;; limit of fiber reach
+limitdegree=6.5*0.1164 ;; limit of fiber reach
 skylimitdegree= limitdegree ;; stretch just as far for skies
 stdlimitdegree= limitdegree ;; ... and standards
-nperblock=40L
+nperblock=20L
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
