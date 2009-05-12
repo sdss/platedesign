@@ -1,15 +1,4 @@
 # Default settings for BOSS
-# XXX we need to make plugfile_plplugmap_boss.pro
-#     we want MAG to correspond to FIBER2FLUX, correct?
-#     we need bosstile to generate the TARGETTYPE and SOURCETYPE
-#     do the ops folks anticipate plPlugMapP changes?
-# XXX we need to write fiberid_boss
-#     for that, we need at least approximate positions of cartridges
-# XXX we need to write overlay code
-#     ditto above
-# XXX are the guides changing ...
-#     their alignment orientation?
-#     NEED TO PASS guideType to ALIGNMENT_FIBER
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
@@ -71,4 +60,5 @@ plateDesignSkies SDSS
 # Use BOSS plugmap style
 # XXX need to write this 
 plugmapstyle plplugmap_boss
+bossmagtype psfmag
 
