@@ -60,7 +60,6 @@ designid=plan.designid
 ha=plan.ha
 temp=plan.temp
 epoch=plan.epoch
-rerun=strsplit(plan.rerun, /extr)
 
 ;; set random seed 
 origseed=-designid
@@ -335,7 +334,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                            strtrim(string(pointing),2)
                 guidenums=long(strsplit(default.(iguidenums),/extr))
                 guide_design= plate_guide(definition, default, pointing, $
-                                          rerun=rerun, epoch=epoch)
+                                          epoch=epoch)
                 if(n_tags(guide_design) gt 0) then $
                   plate_assign_guide, definition, default, design, $
                                       guide_design, $
@@ -353,8 +352,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     ;; get appropriate list of standards
                     sphoto_design= plate_standard(definition, default, $
                                                 instruments[iinst], $
-                                                pointing, offset, $
-                                                rerun=rerun)
+                                                pointing, offset)
     
                     if(n_tags(sphoto_design) gt 0) then begin
                         ;; assign, applying constraints imposed in the
@@ -382,8 +380,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             for offset=0L, noffsets do begin
                 for iinst=0L, ninstruments-1L do begin
                     sky_design= plate_sky(definition, default, $
-                                        instruments[iinst], pointing, offset, $
-                                        rerun=rerun)
+                                          instruments[iinst], pointing, offset)
                     if(n_tags(sky_design) gt 0) then begin
                         ;; assign, applying constraints imposed in the
                         ;; "FIBERID_[INSTRUMENT]" procedure; this code
