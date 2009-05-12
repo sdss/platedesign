@@ -59,7 +59,7 @@ noffsets= long(default.noffsets)
 ;; default centers of blocks
 if(n_tags(fiberblocks) eq 0) then $
     fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                               '/data/boss/fiberBlocks.par')
+                               '/data/boss/fiberBlocksBOSS.par')
 nblocks=max(fiberblocks.blockid)
 blockcenx= fltarr(nblocks)
 blockceny= fltarr(nblocks)
