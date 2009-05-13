@@ -65,6 +65,9 @@ if(nsky gt 0) then begin
             '2MASS': $
               plate_select_sky_tmass, racen, deccen, $
                 nsky=nsky, seed=seed, sky_design=sky_design
+            'BOSS': $
+              plate_select_sky_boss, racen, deccen, $
+                nsky=nsky*4L, seed=seed, sky_design=sky_design
             else: $
               message, 'No such skytype '+skytype
         endcase
