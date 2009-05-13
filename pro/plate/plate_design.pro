@@ -198,15 +198,15 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             endfor
         endfor
         if(tag_exist(default, 'COLLECTFACTOR')) then $
-        collectfactor= long(default.collectfactor) $
+          collectfactor= long(default.collectfactor) $
         else $
-        collectfactor= 10L
+          collectfactor= 10L
         fibercount= {instruments:instruments, $
-                    targettypes:targettypes, $
-                    ntot:ntot, $
-                    nused:nused, $
-                    ncollect:ntot*collectfactor}
-    
+                     targettypes:targettypes, $
+                     ntot:ntot, $
+                     nused:nused, $
+                     ncollect:ntot*collectfactor}
+        
         ;; What conditions on fiber placement exist for each instrument?
         minstdinblock=lonarr(ninstruments) ;; how many standards per block?
         minskyinblock=lonarr(ninstruments) ;; how many skies per block?
