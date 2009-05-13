@@ -100,7 +100,7 @@ if(nhole gt 0) then plug[ihole].objtype= 'QSO'
 
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
              strupcase(holes.sourcetype) eq 'STAR', nhole)
-if(nhole gt 0) then plug[ihole].objtype= 'STAR'
+if(nhole gt 0) then plug[ihole].objtype= 'STAR_BHB'
 
 ihole= where(strupcase(holes.targettype) eq 'SKY', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
