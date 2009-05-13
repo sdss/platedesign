@@ -86,7 +86,6 @@ plug.devaucl=0.
 
 ;; set objtype
 ;; !! SOURCETYPE ISN'T BEING SET SO WE'RE STILL ON MANUAL!
-
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
 
@@ -142,8 +141,16 @@ if(nhole gt 0) then $
   plug[ihole].fiberid= -holes[ihole].fiberid
 
 ;; but guide fibers get fiberid set too
+;; this assumes guides are SDSS
 ihole=where(holes.iguide ge 1, nhole)
 plug[ihole].fiberid= holes[ihole].iguide
+if(default.guidetype eq 'SDSS') then begin
+    plug[ihole].mag= 22.5-2.5*alog10(holes[ihole].fiberflux>0.1)
+endif else begin
+    message, 'Cannot make guide magnitudes for non-SDSS style '+ $
+      'guides in BOSS plate.'
+endelse
+
 
 ;; Compute the median reddening for objects on this plate
 ;; (just for first pointing)
