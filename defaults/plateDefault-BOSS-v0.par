@@ -30,8 +30,8 @@ nBOSS_standard 20
 # What are conditions on number of skies and standards per block?
 # (per pointing)
 minstdinblockBOSS 0
-minskyinblockBOSS 0
-maxskyinblockBOSS 20
+minskyinblockBOSS 1
+maxskyinblockBOSS 2
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
@@ -57,9 +57,9 @@ standardType SDSS
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
 plateDesignSkies BOSS
+skyType BOSS
 
 # Use BOSS plugmap style
-# XXX need to write this 
 plugmapstyle plplugmap_boss
-bossmagtype psfmag
+bossmagtype fibermag
 
