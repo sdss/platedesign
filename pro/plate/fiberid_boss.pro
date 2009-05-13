@@ -57,9 +57,9 @@ npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 
 ;; default centers of blocks
+blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
 if(n_tags(fiberblocks) eq 0) then $
-    fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                               '/data/boss/fiberBlocksBOSS.par')
+    fiberblocks= yanny_readone(blockfile)
 nblocks=max(fiberblocks.blockid)
 blockcenx= fltarr(nblocks)
 blockceny= fltarr(nblocks)
@@ -71,36 +71,35 @@ endfor
 
 ;; first assign science, and reset block centers to follow science
 ;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
-if(NOT keyword_set(noscience)) then begin
-    isci= where(strupcase(design.targettype) ne 'SKY' AND $
-                strupcase(design.targettype) ne 'STANDARD', nsci)
-    if(nsci gt 0) then begin
+isci= where(strupcase(design.targettype) ne 'SKY' AND $
+            strupcase(design.targettype) ne 'STANDARD', nsci)
+if(nsci gt 0) then begin
+    
+    ;; assign the fibers 
+    sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
+      tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree, $
+      maxinblock=nperblock-minstdinblock-minskyinblock, $
+      blockfile=blockfile
+    
+    ;; which block is each in
+    block= lonarr(n_elements(tmp_fiberid))-1L
+    igood= where(tmp_fiberid ge 1, ngood)
+    if(ngood gt 0) then begin
+        block[igood]= (tmp_fiberid[igood]-1L)/nperblock+1L
         
-        ;; assign the fibers 
-        sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
-          tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree, $
-          maxinblock=nperblock-minstdinblock-minskyinblock
-        
-        ;; which block is each in
-        block= lonarr(n_elements(tmp_fiberid))-1L
-        igood= where(tmp_fiberid ge 1, ngood)
-        if(ngood gt 0) then begin
-            block[igood]= (tmp_fiberid[igood]-1L)/nperblock+1L
-            
-            ;; now find the center location for each block
-            for i=1L, nblocks do begin
-                ib= where(block eq i, nb)
-                ;;if(nb gt 0) then begin
-                    ;;blockcenx[i-1]= mean(design[ib].xf_default)/platescale
-                    ;;blockceny[i-1]= mean(design[ib].yf_default)/platescale
-                ;;endif 
-            endfor
-        endif
-    endif else begin
-        if(NOT keyword_set(quiet)) then $
-          splog, 'No science targets in this plate.'
-    endelse
-endif
+        ;; now find the center location for each block
+        for i=1L, nblocks do begin
+            ib= where(block eq i, nb)
+            if(nb gt 0) then begin
+                blockcenx[i-1]= mean(design[ib].xf_default)/platescale
+                blockceny[i-1]= mean(design[ib].yf_default)/platescale
+            endif 
+        endfor
+    endif
+endif else begin
+    if(NOT keyword_set(quiet)) then $
+      splog, 'No science targets in this plate.'
+endelse
 
 if(NOT keyword_set(nostd)) then begin
     ;; assign standards, if any exist
@@ -121,7 +120,8 @@ if(NOT keyword_set(nostd)) then begin
                   tmp_fiberid, mininblock=minstdinblock, $
                   minavail=8L, fiberused=fiberused, nmax=nmax, $
                   limitdegree=stdlimitdegree, $
-                  blockcenx=blockcenx, blockceny=blockceny, /quiet
+                  blockcenx=blockcenx, blockceny=blockceny, /quiet, $
+                  blockfile=blockfile
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -159,7 +159,8 @@ if(NOT keyword_set(nosky)) then begin
                                maxinblock=maxskyinblock, $
                   minavail=8L, fiberused=fiberused, nmax=nmax, $
                   limitdegree=skylimitdegree, $
-                  blockcenx=blockcenx, blockceny=blockceny, /quiet
+                  blockcenx=blockcenx, blockceny=blockceny, /quiet, $
+                  blockfile=blockfile
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
@@ -187,7 +188,8 @@ if(NOT keyword_set(noscience)) then begin
         
         ;; assign the fibers 
         sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
-          tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree
+          tmp_fiberid, fiberused=fiberused, limitdegree=limitdegree, $
+          blockfile=blockfile
         
         ;; do store results
         iassigned=where(tmp_fiberid ge 1, nassigned)
@@ -220,11 +222,11 @@ if(ngood gt 0) then begin
         toblock=lonarr(n_elements(design))
         toblock[igood[ii]]=block[igood[ii]]
         sdss_plugprob, design[igood].xf_default, design[igood].yf_default, $
-          tmp_fiberid, toblock=toblock[igood], limitdegree=limitdegree
+          tmp_fiberid, toblock=toblock[igood], limitdegree=limitdegree, $
+          blockfile=blockfile
         fiberid[igood]= tmp_fiberid
     endif
 endif
-
     
 return, fiberid
 
