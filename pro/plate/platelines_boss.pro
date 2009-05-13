@@ -98,14 +98,7 @@ buffer= 48./3600. * platescale
 circle= 45./3600. * platescale
 
 ;; set colors of each brightness fiber
-brightcolor= 'blue'
-medcolor= 'yellow'
-faintcolor= 'red'
-fibercolors= [ replicate(faintcolor, 10), $
-               replicate(medcolor, 6), $
-               replicate(brightcolor, 4)]
-
-nblocks=32L
+nblocks=50L
 nper=20L
 for i=0L, nblocks-1L do begin
     ii= where(-holes.fiberid ge i*nper+1L and $
@@ -134,26 +127,27 @@ for i=0L, nblocks-1L do begin
         endif
     endfor
 
-    ;; draw holes; sort from faintest to brightest, and color
-    ;; according to fibercolors
-    gi_flux= 0.5*(10.^(-0.4*holes[ii].mag[1]) + 10.^(-0.4*holes[ii].mag[2]))
-    gi_synth= -2.5*alog10(gi_flux)
-    izero= where(gi_synth eq 0, nzero)
-    if(nzero gt 0) then $
-      gi_synth[izero]=30.
-    isort= reverse(sort(gi_synth))
+    ;; draw holes; 
+    ;; SKY as green, 
+    ;; SPECTROPHOTO_STD as red, 
+    ;; any other as black
     for j=0L, nper-1L do begin
         theta= findgen(100)/float(99.)*!DPI*2.
-        xcurr= holes[ii[isort[j]]].xfocal+ circle* cos(theta)
-        ycurr= holes[ii[isort[j]]].yfocal+ circle* sin(theta)
-        djs_oplot, xcurr, ycurr, color=fibercolors[j], th=circle_thick
+        xcurr= holes[ii[j]].xfocal+ circle* cos(theta)
+        ycurr= holes[ii[j]].yfocal+ circle* sin(theta)
+        case strupcase(holes[ii[j]].objtype) of
+            'SKY': currcolor='green'
+            'SPECTROPHOTO_STD': currcolor='red'
+            else: currcolor='black'
+        endcase
+        djs_oplot, xcurr, ycurr, color=currcolor, th=circle_thick
     endfor
 
 endfor
 
 ;; finally, draw guides
 iguide= where(holes.holetype eq 'GUIDE')
-for i=0L, 10L do begin
+for i=0L, 15L do begin
     djs_xyouts, holes[iguide[i]].xfocal+2.*buffer, $
       holes[iguide[i]].yfocal, $
       strtrim(string(holes[iguide[i]].fiberid),2), align=0.5
