@@ -42,6 +42,9 @@ noffsets= long(default.noffsets)
 nsky= 3L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
                  noffsets+1L))[pointing-1L, offset]
 
+if(skytype eq 'BOSS') then $
+  nsky= 160L > (long(default.nboss_sky)*2L)
+
 sky_design=0
 if(nsky gt 0) then begin
     ;; file name
@@ -67,7 +70,7 @@ if(nsky gt 0) then begin
                 nsky=nsky, seed=seed, sky_design=sky_design
             'BOSS': $
               plate_select_sky_boss, racen, deccen, $
-                nsky=nsky*4L, seed=seed, sky_design=sky_design
+                nsky=nsky, seed=seed, sky_design=sky_design
             else: $
               message, 'No such skytype '+skytype
         endcase
