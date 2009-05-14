@@ -103,6 +103,15 @@ if (keyword_set(objs)) then begin
     guide_design.target_ra= ra
     guide_design.target_dec= dec
 
+    ;; Transfer psf and fiber fluxes to mags for completeness
+    counts_err=fltarr(5, n_elements(objs))+1.
+    sdss_flux2lups, objs.psfflux, objs.psfflux_ivar, counts_err, $
+      psfmag, psfmag_err
+    sdss_flux2lups, objs.fiberflux, objs.fiberflux_ivar, counts_err, $
+      fibermag, fibermag_err
+    guide_design.psfmag= psfmag
+    guide_design.fibermag= fibermag
+
     ;; Finally, set priority; note that for guide stars priority is
     ;; used differently than elsewhere (see plate_assign_guide.pro)
     isort= reverse(sort(guide_design.psfflux[1]))
