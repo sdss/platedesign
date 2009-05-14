@@ -35,6 +35,8 @@ sky_design.target_ra= objs.ra
 sky_design.target_dec= objs.dec
 sky_design.targettype= 'SKY'
 sky_design.sourcetype= 'NA'
+sky_design.fibermag=25.
+sky_design.psfmag=25.
 
 return
 
