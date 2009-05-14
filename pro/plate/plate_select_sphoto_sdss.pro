@@ -95,6 +95,16 @@ if (keyword_set(objs)) then begin
     sphoto_design.priority= priority_s
     sphoto_design.targettype= 'STANDARD'
     sphoto_design.sourcetype= 'STAR'
+
+    counts_err=fltarr(5, n_elements(objs))+1.
+    sdss_flux2lups, objs.psfflux, objs.psfflux_ivar, counts_err, $
+      psfmag, psfmag_err
+    sdss_flux2lups, objs.fiberflux, objs.fiberflux_ivar, counts_err, $
+      fibermag, fibermag_err
+    
+    sphoto_design.psfmag= psfmag
+    sphoto_design.fibermag= fibermag
+
     
 endif
 
