@@ -15,7 +15,9 @@ int write_plugprob(double xtarget[],
 									 double blockcenx[],
 									 double blockceny[],
 									 int blockconstrain,
-									 char probfile[]);
+									 char probfile[], 
+									 int noycost, 
+									 double blockylimits[]);
 
 int read_plugprob(double xtarget[],
 									double ytarget[],

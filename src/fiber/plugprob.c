@@ -41,9 +41,11 @@ int write_plugprob(double xtarget[],
 									 double blockcenx[],
 									 double blockceny[],
 									 int blockconstrain,
-									 char probfile[])
+									 char probfile[],
+									 int noycost, 
+									 double blockylimits[])
 {
-	double sep2,limit2,bsep2;
+	double sep2,xsep2,ysep2,limit2,bsep2,xbsep2,ybsep2;
 	int i,j,jFiber,nArcs,nNodes,block;
 	long cost;
 	FILE *fp;
@@ -69,7 +71,9 @@ int write_plugprob(double xtarget[],
 			block=(int) floor(j/nFibersBlock);
 			sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
 				(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
-			if(sep2<limit2) 
+			if(sep2<limit2 && 
+				 ytarget[i]>blockylimits[block*2+0] &&
+				 ytarget[i]<blockylimits[block*2+1]) 
 				nTargetBlocks[block]++;
 		} /* end for j */
 
@@ -138,16 +142,25 @@ int write_plugprob(double xtarget[],
 
 			/* get fiber separation */
 			jFiber=fiberTargets[i*nFibers+j];
-			sep2=(xtarget[i]-xfiber[jFiber])*(xtarget[i]-xfiber[jFiber])+
-				(ytarget[i]-yfiber[jFiber])*(ytarget[i]-yfiber[jFiber]);
+			xsep2=(xtarget[i]-xfiber[jFiber])*(xtarget[i]-xfiber[jFiber]);
+			ysep2=(ytarget[i]-yfiber[jFiber])*(ytarget[i]-yfiber[jFiber]);
+			sep2=xsep2+ysep2;
 
 			/* get distance from block center (a lesser consideration */
 			block=(int) floor(jFiber/nFibersBlock);
-			bsep2=(xtarget[i]-blockcenx[block])*(xtarget[i]-blockcenx[block])+
-				(ytarget[i]-blockceny[block])*(ytarget[i]-blockceny[block]);
-			if(blockconstrain>0) sep2=bsep2;
+			xbsep2=(xtarget[i]-blockcenx[block])*(xtarget[i]-blockcenx[block]);
+			ybsep2=(ytarget[i]-blockceny[block])*(ytarget[i]-blockceny[block]);
+			bsep2=xbsep2+ybsep2;
+			if(blockconstrain>0) {
+				sep2=bsep2;
+				xsep2=xbsep2;
+				ysep2=ybsep2;
+			}
 
-			cost=(long) floor(0.5*COSTFACTOR*sep2);
+			if(noycost==0) 
+				cost=(long) floor(0.5*COSTFACTOR*sep2);
+			else 
+				cost=(long) floor(0.5*COSTFACTOR*xsep2);
 			fprintf(fp,"a %d %d %d %d %ld\n",i+1,nTargets+jFiber+1,0, 
 							1-fiberused[jFiber],cost);
 		} /* end for j */
