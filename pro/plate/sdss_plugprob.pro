@@ -25,6 +25,8 @@
 ;                          instead of normal distance-to-fiber cost)
 ;   blockfile - file to read in for fibers
 ; OPTIONAL KEYWORDS:
+;   /noycost - don't reward for being closer than necessary in y
+;              [useful to keep skies spread out OK]
 ;   /quiet - be quiet about warnings
 ; OUTPUTS:
 ;   fiberid - 1-indexed list of assigned fibers 
@@ -43,7 +45,8 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    mininblock=mininblock, fiberused=fiberused, $
                    nmax=nmax, quiet=in_quiet, limitdegree=limitdegree, $
                    toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
-                   maxinblock=maxinblock, blockfile=in_blockfile
+                   maxinblock=maxinblock, blockfile=in_blockfile, $
+                   noycost=noycost, ylimits=ylimits
 
 common com_plugprob, fiberblocks, blockfile
 
@@ -56,6 +59,7 @@ if(~keyword_set(maxinblock)) then maxinblock= 20L
 if(~keyword_set(minavail)) then minavail= (8L) < maxinblock
 if(~keyword_set(in_blockfile)) then $
   in_blockfile=getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par'
+if(~keyword_set(noycost)) then noycost=0
 quiet= long(keyword_set(in_quiet))
 
 reload=0L
@@ -83,6 +87,13 @@ if(keyword_set(blockcenx) eq 0 OR $
         blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
     endfor
     blockconstrain=0L
+endif
+
+if(keyword_set(ylimits) eq 0) then begin
+    nblocks=max(fiberblocks.blockid)
+    ylimits=dblarr(2, nblocks)
+    ylimits[0,*]=-10.
+    ylimits[1,*]=+10.
 endif
 
 ;; get fiber positions
@@ -114,7 +125,8 @@ retval = call_external(soname, 'idl_write_plugprob', $
                        long(nfibersblock), double(limitdegree), $
                        long(minavail), long(mininblock), long(maxinblock), $
                        double(blockcenx), double(blockceny), $
-                       long(blockconstrain), string(probfile))
+                       long(blockconstrain), string(probfile), long(noycost), $
+                       double(ylimits))
 
 spawn, 'cat '+tmpdir+'/tmp_prob.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $

@@ -362,14 +362,20 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         ;; pointing and offsets are considered separately,
                         ;; this does not constitute a guarantee on the
                         ;; final design
-                        plate_assign_constrained, definition, default, $
-                        instruments[iinst], $
-                        'standard', fibercount, pointing, offset, design, $
-                        sphoto_design, seed=seed, $
-                        minstdinblock=minstdinblock[iinst], $
-                        minskyinblock=minskyinblock[iinst], $
-                        maxskyinblock=maxskyinblock[iinst], $
-                        /nosky, /noscience
+                        if(minstdinblock[iinst] gt 0) then begin
+                            plate_assign_constrained, definition, default, $
+                              instruments[iinst], $
+                              'standard', fibercount, pointing, offset, $
+                              design, sphoto_design, seed=seed, $
+                              minstdinblock=minstdinblock[iinst], $
+                              minskyinblock=minskyinblock[iinst], $
+                              maxskyinblock=maxskyinblock[iinst], $
+                              /nosky, /noscience
+                        endif else begin
+                            plate_assign, definition, default, fibercount, $
+                              design, sphoto_design, seed=seed, $
+                              nextra=nextrafibers
+                        endelse
                     endif
                 endfor
             endfor 
