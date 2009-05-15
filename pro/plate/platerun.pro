@@ -13,7 +13,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro platerun, platerun, _EXTRA=extra_for_plate_design
+pro platerun, platerun, nolines=nolines, _EXTRA=extra_for_plate_design
 
 if(keyword_set(platerun) EQ 0) then begin
     print, 'Usage: platerun, runname [, drillstyle ]'
@@ -40,7 +40,8 @@ iuniq=uniq(drillstyle[isort])
 if(n_elements(iuniq) gt 1) then $
   message, 'cannot include more than one drillstyle in a single plate run!'
 drillstyle=drillstyle[0]
-call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid
+call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
+  nolines=nolines
 
 splog, 'Completed.'
 
