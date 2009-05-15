@@ -53,6 +53,7 @@ plateDesignStandards BOSS
 
 # For each pointing, what type of standard star?
 standardType SDSS
+standardMag_minmax_BOSS 15.5 17.0
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
