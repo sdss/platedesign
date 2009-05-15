@@ -1691,11 +1691,9 @@ finishup ( obj_ad );
 }
 
 
-void main ( argc, argv )
-
+int main ( argc, argv )
 int   argc;
 char *argv[];
-
 {
 
 double t;
