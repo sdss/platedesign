@@ -52,8 +52,8 @@ for icol=0L, n_elements(outer_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
     fibers[indx].fibercenx= outer_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow]+ $
-      fspace*(findgen(nperblock)-float(nperblock)/2.)
+    fibers[indx].fiberceny= rows_mm[irow] $
+      +fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
@@ -64,8 +64,8 @@ for icol=0L, n_elements(inner_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
     fibers[indx].fibercenx= inner_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow]+ $
-      fspace*(findgen(nperblock)-float(nperblock)/2.)
+    fibers[indx].fiberceny= rows_mm[irow] $
+      +fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
@@ -76,8 +76,8 @@ for icol=0L, n_elements(inner_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
     fibers[indx].fibercenx= inner_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow]+ $
-      fspace*(findgen(nperblock)-float(nperblock)/2.)
+    fibers[indx].fiberceny= rows_mm[irow] $
+      -fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
@@ -88,8 +88,8 @@ for icol=0L, n_elements(outer_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
     fibers[indx].fibercenx= outer_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow]+ $
-      fspace*(findgen(nperblock)-float(nperblock)/2.)
+    fibers[indx].fiberceny= rows_mm[irow] $
+      -fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor

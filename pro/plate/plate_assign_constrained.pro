@@ -65,6 +65,7 @@ while(gotall eq 0) do begin
            n_elements(new_design)) then begin
             splog, 'Not enough targets for plate_assign_constrained!'
             if(keyword_set(debug)) then stop
+            stop
             return
         endif
         
@@ -81,6 +82,5 @@ while(gotall eq 0) do begin
     endelse
 
 endwhile
-
 
 end
