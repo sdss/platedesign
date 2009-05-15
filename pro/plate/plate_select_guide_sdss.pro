@@ -43,7 +43,6 @@ else tilerad = 1.45
 if(NOT keyword_set(gminmax)) then $
   gminmax=[13., 14.5]
 
-
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
@@ -76,7 +75,6 @@ if (keyword_set(objs)) then begin
         objs = 0
     endelse
 endif
-help,objs
 
 if (keyword_set(objs)) then begin
 
