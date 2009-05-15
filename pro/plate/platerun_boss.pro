@@ -11,7 +11,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro platerun_boss, platerun, plateid
+pro platerun_boss, platerun, plateid, nolines=nolines
 
 platerun_dir= getenv('PLATELIST_DIR')+'/runs/'+platerun
 
