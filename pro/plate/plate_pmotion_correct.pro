@@ -18,7 +18,8 @@
 ;   10-Oct-2007  Written by D. Schlegel, LBL
 ;-
 ;------------------------------------------------------------------------------
-pro plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd
+pro plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
+  mura=mura, mudec=mudec
 
 matchrad = 2./3600
 for i=0L, n_elements(ra)-1L do begin
@@ -26,9 +27,11 @@ for i=0L, n_elements(ra)-1L do begin
     if (n_elements(dat1) EQ 1) then begin
         if (tag_exist(dat1,'MURA') EQ 0) then $
           message, 'Old version of USNO catalog is set up!'
+        mura= dat1.mura
+        mudec= dat1.mudec
         cosd= cos(dec[i]*!DPI/180.)
-        ra[i] += (to_mjd - from_mjd[i])/365. * dat1.mura/3600./1000./cosd
-        dec[i] += (to_mjd - from_mjd[i])/365. * dat1.mudec/3600./1000.
+        ra[i] += (to_mjd - from_mjd[i])/365. * mura/3600./1000./cosd
+        dec[i] += (to_mjd - from_mjd[i])/365. * mudec/3600./1000.
     endif
 endfor
 
