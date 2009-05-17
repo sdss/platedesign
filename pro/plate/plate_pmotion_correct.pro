@@ -22,16 +22,20 @@ pro plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
   mura=mura, mudec=mudec
 
 matchrad = 2./3600
+mura=dblarr(n_elements(ra))
+mudec=dblarr(n_elements(ra))
 for i=0L, n_elements(ra)-1L do begin
     dat1 = usno_read(ra[i], dec[i], matchrad)
     if (n_elements(dat1) EQ 1) then begin
         if (tag_exist(dat1,'MURA') EQ 0) then $
           message, 'Old version of USNO catalog is set up!'
-        mura= dat1.mura
-        mudec= dat1.mudec
+        tmp_mura= dat1.mura
+        tmp_mudec= dat1.mudec
         cosd= cos(dec[i]*!DPI/180.)
-        ra[i] += (to_mjd - from_mjd[i])/365. * mura/3600./1000./cosd
-        dec[i] += (to_mjd - from_mjd[i])/365. * mudec/3600./1000.
+        ra[i] += (to_mjd - from_mjd[i])/365. * tmp_mura/3600./1000./cosd
+        dec[i] += (to_mjd - from_mjd[i])/365. * tmp_mudec/3600./1000.
+        mura[i]=tmp_mura
+        mudec[i]=tmp_mudec
     endif
 endfor
 
