@@ -92,6 +92,13 @@ endif
 
 plug.mag= holes.fibermag
 
+;; check if guides need fixed
+if(default.guidetype eq '2MASS') then begin
+    iguide= where(holes.holetype eq 'GUIDE', nguide)
+    plug[iguide].mag= plate_tmass_to_sdss(holes[iguide].tmass_j, $
+                                          holes[iguide].tmass_h, $
+                                          holes[iguide].tmass_k)
+endif
 
 isdssother= where(holes.run gt 0 and $
                   total(plug.mag,1) eq 0, nsdssother)
