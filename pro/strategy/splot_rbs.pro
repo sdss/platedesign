@@ -1,8 +1,9 @@
 pro splot_rbs, tiles
 
-splot, tiles.ra, tiles.dec, psym=3
-ii=where(tiles.dark)
-soplot, tiles[ii].ra, tiles[ii].dec, psym=3, color='red'
+splot, tiles.ra, tiles.dec, psym=3, xra=[360., 0.]
+ii=where(tiles.dark gt 0, nii)
+if(nii gt 0) then $
+  soplot, tiles[ii].ra, tiles[ii].dec, psym=3, color='red'
 
 year=long(strmid(tiles.date, 7, 4))
 months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', $
