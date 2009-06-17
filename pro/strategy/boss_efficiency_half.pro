@@ -18,14 +18,12 @@
 ;   11-Sep-2007  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function boss_efficiency_half, night, intervals
-
-useable=bytarr(n_elements(intervals))
+function boss_efficiency_half, night
 
 if(randomu(seed) lt 0.5) then $
-  useable[*]=1 $
+  useable=1 $
 else $
-  useable[*]=0
+  useable=0
 
 return, useable
 
