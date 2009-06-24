@@ -165,8 +165,11 @@ sdss_plugprob, design[icomplete].xf_default, $
   design[icomplete].yf_default, $
   tmp_fiberid, toblock=toblock[icomplete], $
   limitdegree=limitdegree, $
-  blockfile=blockfile, blockcenx=blockcenx, $
-  blockceny=blockceny
+  blockfile=blockfile 
+
+;; blocks are already fully assigned, so THIS 
+;; time we want to ignore block centers
+;;, blockcenx=blockcenx, blockceny=blockceny
 
 fiberid[icomplete]= tmp_fiberid
 
