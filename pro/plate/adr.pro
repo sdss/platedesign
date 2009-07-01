@@ -23,7 +23,7 @@
 function adr, trualt, height=height, pressure=pressure, $
               temperature=temperature, lambda=lambda
 
-reflambda=5013.
+reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
 if(NOT keyword_set(height)) then height=0.
 if(NOT keyword_set(pressure)) then pressure=1013.25
