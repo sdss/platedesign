@@ -40,7 +40,7 @@ hdr=['targettype SKY', $
      'pointing 1']
 
 pdata= ptr_new(design)
-yanny_write, design_dir(703)+'/plateGuide-000703-p1.par', pdata, hdr=hdr
+yanny_write, design_dir(708)+'/plateGuide-000708-p1.par', pdata, hdr=hdr
 ptr_free, pdata
 
 end
