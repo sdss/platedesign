@@ -13,6 +13,8 @@
 ; OPTIONAL INPUTS:
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5)
+;   lambda     - scalar or [N], optimum wavelength in angstroms
+;                (default 5500)
 ; OPTIONAL KEYWORDS:
 ;   /norefrac - do not account for refraction
 ;   /nodistort - do not account for optical plate distortion
@@ -50,8 +52,14 @@ end
 ;;
 pro ad2xyfocal, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
-                nodistort=nodistort
+                nodistort=nodistort, lambda=lambda
 
+if(n_elements(lambda) eq 0) then $
+  lambda=5500.
+
+if(n_elements(lambda) ne 1 AND $
+   n_elements(lambda) ne n_elements(ra)) then $
+  message, 'LAMBDA must have same number of elements as RA'
 
 ;; from $PLATE_DIR/test/plParam.par
 rcoeffs=[-0.000137627D, -0.00125238D, 1.5447D-09, 8.23673D-08, $
@@ -62,13 +70,18 @@ rcoeffs=[-0.000137627D, -0.00125238D, 1.5447D-09, 8.23673D-08, $
 rafid= racen
 decfid= deccen+1.5
 
-;; deal with atmospheric refraction and get to alt/az
+;; deal with atmospheric refraction and get to alt/az for 5500
+;; angstroms
 plate_apo_refrac, ra, dec, lst=lst, airtemp=airtemp, $
-                  alt=alt, az=az, norefrac=norefrac
+  alt=alt, az=az, norefrac=norefrac
 plate_apo_refrac, rafid, decfid, lst=lst, airtemp=airtemp, $
-                  alt=altfid, az=azfid, norefrac=norefrac
+  alt=altfid, az=azfid, norefrac=norefrac
 plate_apo_refrac, racen, deccen, lst=lst, airtemp=airtemp, $
-                  alt=altcen, az=azcen, norefrac=norefrac
+  alt=altcen, az=azcen, norefrac=norefrac
+
+;; handle differential refraction relative to 5500
+adr= adr(alt, lambda=lambda)
+alt= alt+ adr/3600.
 
 ;; and convert to focal plane position
 ;; (adjusting position angle to be relative to N)
