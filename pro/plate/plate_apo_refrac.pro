@@ -22,6 +22,7 @@
 ;   Without setting LST explicitly, it assumes that you will observe
 ;     at an hour angle of 0. 
 ;   Assumes pressure = 1013.25 millbars
+;   Assumes wavelength near 5500 angstroms
 ; REVISION HISTORY:
 ;   26-Oct-2006  Written by MRB, NYU (cribbed from PRIMUS code by Burles)
 ;-
