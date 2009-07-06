@@ -34,15 +34,9 @@ endif else begin
     skytype= skytype[pointing-1]
 endelse
 
-;; what diameter do we set?
-itag= tag_indx(definition, 'ferruleSize'+ $
-               strtrim(string(instrument),2))
-if(itag eq -1) then begin
-    itag= tag_indx(default, 'ferruleSize'+ $
-                   strtrim(string(instrument),2))
-    if(itag eq -1) then $
-      message, 'Need ferruleSize set for SKY'
-endif
+;; what diameter and buffer do we set?
+ferrulesize= get_ferrulesize(definition, default, instrument)
+buffersize= get_buffersize(definition, default, instrument)
 
 itag= tag_indx(default, 'n'+ $
                strtrim(string(instrument),2)+ $
@@ -89,6 +83,8 @@ if(nsky gt 0) then begin
                      xf=xf, yf=yf
         sky_design.xf_default=xf
         sky_design.yf_default=yf
+        sky_design.diameter= ferrulesize
+        sky_design.buffer= buffersize
         
         if(n_tags(sky_design) gt 0) then begin
             pdata= ptr_new(sky_design)
