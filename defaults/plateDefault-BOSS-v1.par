@@ -41,7 +41,7 @@ guidemag_minmax 13. 15.5
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
 ferruleSizeBOSS 3.738
-bufferSizeBOSS 0.025
+bufferSizeBOSS 0.006
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
