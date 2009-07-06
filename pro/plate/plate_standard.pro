@@ -36,6 +36,10 @@ if(itag ne -1) then begin
     gminmax=float(strsplit(default.(itag), /extr))
 endif
 
+;; what diameter and buffer do we set?
+ferrulesize= get_ferrulesize(definition, default, instrument)
+buffersize= get_buffersize(definition, default, instrument)
+
 ;; file name
 outdir= design_dir(designid)
 stdfile=outdir+'/plateStandard'+instrument+'-'+ $
@@ -74,6 +78,8 @@ if(NOT file_test(stdfile)) then begin
           xf=xf, yf=yf
         sphoto_design.xf_default=xf
         sphoto_design.yf_default=yf
+        sphoto_design.diameter= ferrulesize
+        sphoto_design.buffer= buffersize
     endif
     
     if(n_tags(sphoto_design) gt 0) then begin
