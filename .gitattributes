@@ -98,6 +98,8 @@ pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
+pro/plate/get_buffersize.pro -text
+pro/plate/get_ferrulesize.pro -text
 pro/plate/gfiber2_params.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/make_gridtest.pro -text
