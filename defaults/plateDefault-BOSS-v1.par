@@ -1,0 +1,66 @@
+# Default settings for BOSS
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE
+instruments BOSS
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes science sky standard
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 1
+nOffsets 0
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
+# (for M pointings and N offsets).
+nBOSS_science 900
+nBOSS_sky 80 
+nBOSS_standard 20 
+
+# What are conditions on number of skies and standards per block?
+# (per pointing)
+minstdinblockBOSS 0
+minskyinblockBOSS 1
+maxskyinblockBOSS 2
+
+# Guide fibers to use for each pointing
+gfiberType gfiber2 
+guideType SDSS
+guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+guidemag_minmax 13. 15.5
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+ferruleSizeBOSS 3.738
+bufferSizeBOSS 0.025
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+# Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
+plateDesignStandards BOSS
+
+# For each pointing, what type of standard star?
+standardType SDSS
+standardMag_minmax_BOSS 15.5 17.0
+
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
+plateDesignSkies BOSS
+skyType BOSS
+
+# Use BOSS plugmap style
+plugmapstyle plplugmap_boss
+bossmagtype fibermag
+
