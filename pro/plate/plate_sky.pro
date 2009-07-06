@@ -34,6 +34,16 @@ endif else begin
     skytype= skytype[pointing-1]
 endelse
 
+;; what diameter do we set?
+itag= tag_indx(definition, 'ferruleSize'+ $
+               strtrim(string(instrument),2))
+if(itag eq -1) then begin
+    itag= tag_indx(default, 'ferruleSize'+ $
+                   strtrim(string(instrument),2))
+    if(itag eq -1) then $
+      message, 'Need ferruleSize set for SKY'
+endif
+
 itag= tag_indx(default, 'n'+ $
                strtrim(string(instrument),2)+ $
                '_sky')
