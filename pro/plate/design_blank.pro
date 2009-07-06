@@ -37,7 +37,7 @@ design0={DESIGN_TARGET, $
          yf_default:0., $
          lambda_eff:5500., $
          zoffset:0., $
-         diameter:3.32, $
+         diameter:1000., $
          buffer:0., $
          priority:0L, $
          assigned:0L, $
