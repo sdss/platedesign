@@ -83,14 +83,10 @@ design.pointing=pointing
 design.offset=offset
 
 ;; get hole size for this type
-ferrulestr= 'ferruleSize'+strtrim(info.instrument,2)
-iferrule= tag_indx(default, ferrulestr)
-ferrulesize= float(default.(iferrule))
+ferrulesize= get_ferrulesize(definition, default, info.instrument)
 
 ;; get hole size for this type
-bufferstr= 'bufferSize'+strtrim(info.instrument,2)
-ibuffer= tag_indx(default, bufferstr)
-buffersize= float(default.(ibuffer))
+buffersize= get_buffersize(definition, default, info.instrument)
 
 ;; add per target data 
 design.sourcetype= targets.sourcetype
