@@ -56,8 +56,10 @@ design0={DESIGN_TARGET, $
          sp_param_err:fltarr(4), $
          marvels_target1:0L, $
          marvels_target2:0L, $
-         boss_target1:0L, $
-         boss_target2:0L, $
+         boss_target1:long64(0), $
+         boss_target2:long64(0), $
+         ancillary_target1:long64(0), $
+         ancillary_target2:long64(0), $
          segue2_target1:0L, $
          segue2_target2:0L, $
          segueb_target1:0L, $
