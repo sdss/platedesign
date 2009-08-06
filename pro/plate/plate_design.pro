@@ -273,8 +273,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     
                     ;; check data type of ra and dec -- abort if they are not
                     ;; typed double
-                    if(datatype(tmp_targets[0].ra) ne 'DOU' OR $
-                       datatype(tmp_targets[0].dec) ne 'DOU') then begin
+                    if(size(tmp_targets[0].ra, /tname) ne 'DOUBLE' OR $
+                       size(tmp_targets[0].dec, /tname) ne 'DOUBLE') then begin
                         message, $
                           'Aborting: RA and Dec MUST be typed as '+ $
                           'double precision!'
