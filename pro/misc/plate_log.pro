@@ -48,7 +48,7 @@ pro plate_log, plateid, log_string, clobber=clobber
     ;; Keys must be of type string; start by converting plateid
     ;; and trimming whitespace.
     ;; If "plateid" is already a string, make sure it is a valid intenger.
-    if (datatype(plateid) eq 'STR') then begin
+    if (size(plateid, /tname) eq 'STRING') then begin
 
         ;; -------------------
         ;; Set up catch routine for data type conversion error.
