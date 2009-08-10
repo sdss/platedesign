@@ -5,18 +5,17 @@
 ;   Get RA and Dec from xfocal, yfocal for targets on SDSS plate
 ; CALLING SEQUENCE:
 ;   plate_xy2ad, definition, default, pointing, offset, xfocal, yfocal, $
-;     ra=, dec=
+;     lambda, ra=, dec= [, lst=, airtemp= ]
 ; INPUTS:
 ;   definition - plate definition structure
 ;   default - plate default structure
-;   xfocal, yfocal - position in focal plane in mm
+;   xfocal, yfocal - [N] position in focal plane in mm
+;   lambda     - [N] optimum wavelength in angstroms
 ;   pointing - pointing # 
 ;   offset - offset # 
 ; OPTIONAL INPUTS:
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5)
-;   lambda     - scalar or [N], optimum wavelength in angstroms
-;                (default 5500)
 ; OUTPUTS:
 ;   ra, dec - target coords
 ; COMMENTS:
@@ -29,7 +28,7 @@
 ;   8-May-2008  Written by MRB, NYU
 ;-
 pro plate_xy2ad, definition, default, pointing, offset, xfocal, yfocal, $
-                 ra=ra, dec=dec, lst=lst, airtemp=airtemp, lambda=lambda
+                 lambda, ra=ra, dec=dec, lst=lst, airtemp=airtemp
 
 ntargets=n_elements(xfocal)
 
