@@ -75,7 +75,7 @@ plate_center, definition, default, pointing, offset, $
 ;; convert targets to xfocal and yfocal for this pointing, offset
 ad2xyfocal, ra, dec, xfocal, yfocal, lambda=lambda, $
             racen=racen, deccen=deccen, lst=lst, $
-            airtemp=airtemp
+            airtemp=airtemp, lambda=lambda
 
 return
 end
