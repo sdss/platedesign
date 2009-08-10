@@ -35,6 +35,8 @@ int write_plugprob(double xtarget[],
 									 int nMax,
 									 int nFibersBlock,
 									 double limitDegree, 
+									 int fiberTargetsPossible[],
+									 int inputPossible,
 									 int minAvailInBlock,
 									 int minFibersInBlock,
 									 int maxFibersInBlock,
@@ -54,11 +56,33 @@ int write_plugprob(double xtarget[],
 	nTargetBlocks=(int *) malloc(nBlocks*sizeof(int));
 	
 	/* 
-	 * Find which fibers can be assigned to which targets
+	 * Find which fibers could possibly assigned to which targets; no
+	 * need if it is already input. We assume in any case that
+	 * fiberTargetsPossible is input already allocated as a
+	 * nTargets*nFibers sized array.
 	 */
+	if(inputPossible==0) {
+		/* if an explicit match hasn't been passed in, let's check radii */
+		limit2=limitDegree*limitDegree;
+		for(i=0;i<nTargets*nFibers;i++) 
+			fiberTargetsPossible[i]=0;
+		for(i=0;i<nTargets;i++) {
+			/* add up the number of fibers in each block which
+			 * can reach the target */
+			for(j=0;j<nBlocks;j++) 
+				nTargetBlocks[j]=0;
+			for(j=0;j<nFibers;j++) {
+				block=(int) floor(j/nFibersBlock);
+				sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
+					(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
+				if(sep2<limit2)
+					fiberTargetsPossible[i*nFibers+j]=1;
+			} /* end for j */
+		} /* end for */
+	} 
+
 	fiberTargets=(int *) malloc(nTargets*nFibers*sizeof(int));
 	nFiberTargets=(int *) malloc(nTargets*sizeof(int));
-	limit2=limitDegree*limitDegree;
 	for(i=0;i<nTargets*nFibers;i++) 
 		fiberTargets[i]=-1;
 	for(i=0;i<nTargets;i++) {
@@ -69,9 +93,7 @@ int write_plugprob(double xtarget[],
 			nTargetBlocks[j]=0;
 		for(j=0;j<nFibers;j++) {
 			block=(int) floor(j/nFibersBlock);
-			sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
-				(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
-			if(sep2<limit2 && 
+			if(fiberTargetsPossible[i*nFibers+j]>0 &&
 				 ytarget[i]>blockylimits[block*2+0] &&
 				 ytarget[i]<blockylimits[block*2+1]) 
 				nTargetBlocks[block]++;
@@ -88,9 +110,7 @@ int write_plugprob(double xtarget[],
 			block=(int) floor(j/nFibersBlock);
 			if(nTargetBlocks[block]>=minAvailInBlock && 
 				 (toblock[i]==0 || block==toblock[i]-1)) {
-				sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
-					(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
-				if(sep2<limit2) {
+				if(fiberTargetsPossible[i*nFibers+j]>0) {
 					fiberTargets[i*nFibers+nFiberTargets[i]]=j;
 					nFiberTargets[i]++;
 				} /* end if */
