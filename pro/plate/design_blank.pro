@@ -81,7 +81,7 @@ design0={DESIGN_TARGET, $
          psfmag:fltarr(5), $
          fibermag:fltarr(5), $
          fiber2mag:fltarr(5), $
-         epoch:2010., $
+         epoch:default_epoch(), $
          pmra:0., $
          pmdec:0., $
          targetids:'NA' $
