@@ -15,6 +15,8 @@
 ; OPTIONAL INPUTS:
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5)
+;   lambda     - scalar or [N], optimum wavelength in angstroms
+;                (default 5500)
 ; OUTPUTS:
 ;   ra, dec - target coords
 ; COMMENTS:
@@ -27,7 +29,7 @@
 ;   8-May-2008  Written by MRB, NYU
 ;-
 pro plate_xy2ad, definition, default, pointing, offset, xfocal, yfocal, $
-                 ra=ra, dec=dec, lst=lst, airtemp=airtemp
+                 ra=ra, dec=dec, lst=lst, airtemp=airtemp, lambda=lambda
 
 ntargets=n_elements(xfocal)
 
@@ -38,7 +40,7 @@ plate_center, definition, default, pointing, offset, $
 ;; convert targets to xfocal and yfocal for this pointing, offset
 xyfocal2ad, xfocal, yfocal, ra, dec, $
   racen=racen, deccen=deccen, lst=lst, $
-  airtemp=airtemp
+  airtemp=airtemp, lambda=lambda
 
 return
 end
