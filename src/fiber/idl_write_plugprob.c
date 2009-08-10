@@ -11,7 +11,7 @@ IDL_LONG idl_write_plugprob (int      argc,
 {
 	int nTargets, nFibersBlock, nFibers, minFibersInBlock, *fiberused;
 	int nMax,minAvailInBlock, maxFibersInBlock, *toblock, blockconstrain;
-	int noycost;
+	int noycost, inputPossible, *fiberTargetsPossible;
 	double *xtarget, *ytarget, *xfiber, *yfiber, limitDegree;
 	double *blockcenx, *blockceny, *blockylimits;
 	char probfile[1000];
@@ -33,6 +33,8 @@ IDL_LONG idl_write_plugprob (int      argc,
 	nMax=*((int *)argv[i]); i++;
 	nFibersBlock=*((int *)argv[i]); i++;
 	limitDegree=*((double *)argv[i]); i++;
+	fiberTargetsPossible=((int *)argv[i]); i++;
+	inputPossible=*((int *)argv[i]); i++;
 	minAvailInBlock=*((int *)argv[i]); i++;
 	minFibersInBlock=*((int *)argv[i]); i++;
 	maxFibersInBlock=*((int *)argv[i]); i++;
@@ -48,6 +50,7 @@ IDL_LONG idl_write_plugprob (int      argc,
 	retval=(IDL_LONG) write_plugprob(xtarget, ytarget, nTargets,
 																	 xfiber, yfiber, fiberused, toblock, nFibers,
 																	 nMax, nFibersBlock, limitDegree, 
+																	 fiberTargetsPossible, inputPossible,
 																	 minAvailInBlock, minFibersInBlock, 
 																	 maxFibersInBlock, blockcenx, blockceny, 
 																	 blockconstrain, probfile, noycost, 
