@@ -90,13 +90,17 @@ if (keyword_set(objt)) then begin
     dec=objt.tmass_dec
     from_mjd=objt.tmass_jdate-2400000.5D
     to_mjd = (epoch - 2000.)*365.25 + 51544.5d0
-    plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd
+    plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
+      mura=mura, mudec=mudec
     
     ;; Now put results into a design structure
     guide_design= replicate(design_blank(/guide), n_elements(objt))
     struct_assign, objt, guide_design, /nozero
     guide_design.target_ra= ra
     guide_design.target_dec= dec
+    guide_design.epoch=epoch
+    guide_design.pmra=mura
+    guide_design.pmdec=mudec
 
     ;; Finally, set priority; note that for guide stars priority is
     ;; used differently than elsewhere (see plate_assign_guide.pro)

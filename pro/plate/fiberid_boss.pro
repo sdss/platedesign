@@ -25,6 +25,7 @@
 ;   First, assigns standards, guaranteeing at least one per block
 ;   Second, assigns skies, guaranteeing at least one per block
 ;   Finally, assigns all others, guaranteeing at least one per block
+;   Uses boss_reachcheck.pro to decide if a fiber reaches a target
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU 
 ;-
@@ -46,8 +47,6 @@ if(keyword_set(minstdinblock)) then $
   message, 'Cannot set block constraints for standards in BOSS'
 
 platescale = 217.7358           ; mm/degree
-limitdegree=6.5*0.1164 ;; limit of fiber reach
-skylimitdegree= limitdegree
 nperblock=20L
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
@@ -81,11 +80,11 @@ if(nsci gt 0) then begin
     
     ;; assign the fibers 
     sdss_plugprob, design[isci].xf_default, design[isci].yf_default, $
-      tmp_fiberid, limitdegree=limitdegree, fiberused=fiberused, $
+      tmp_fiberid, fiberused=fiberused, $
       maxinblock=nperblock-minskyinblock, $
       mininblock=nperblock-maxskyinblock, $
-      blockfile=blockfile
-
+      blockfile=blockfile, reachfunc='boss_reachcheck'
+    
     iassigned=where(tmp_fiberid ge 1, nassigned)
     if(nassigned gt 0) then begin
         if(NOT keyword_set(fiberused)) then $
@@ -136,7 +135,7 @@ if(NOT keyword_set(nosky)) then begin
                   design[isky].yf_default, $
                   tmp_fiberid, mininblock=minskyinblock, $
                   maxinblock=maxskyinblock, $
-                  nmax=nmax, limitdegree=skylimitdegree, $
+                  nmax=nmax, reachfunc='boss_reachcheck', $
                   blockcenx=blockcenx, blockceny=blockceny, /quiet, $
                   blockfile=blockfile, ylimits=blockylimits, $
                   /noycost, fiberused=fiberused
@@ -162,14 +161,23 @@ toblock= lonarr(n_elements(design))-1L
 toblock[icomplete]=(fiberid[icomplete]-1L)/nperblock+1L
 
 sdss_plugprob, design[icomplete].xf_default, $
-  design[icomplete].yf_default, $
-  tmp_fiberid, toblock=toblock[icomplete], $
-  limitdegree=limitdegree, $
-  blockfile=blockfile 
+               design[icomplete].yf_default, $
+               tmp_fiberid, toblock=toblock[icomplete], $
+               reachfunc='boss_reachcheck', $
+               blockfile=blockfile 
 
-;; blocks are already fully assigned, so THIS 
-;; time we want to ignore block centers
-;;, blockcenx=blockcenx, blockceny=blockceny
+;; make sure ALL science targets are assigned
+isci=where(strupcase(design.targettype) eq 'SCIENCE', nsci)
+if(nsci gt 0) then begin
+    ibad= where(tmp_fiberid[isci] le 0, nbad)
+    if(nbad gt 0) then begin
+        splog, 'Parameters and target locations yield inconsistency in plugging!'
+        splog, 'No solution possible for this set of targets.  Look at the '
+        splog, 'distribution, and also verify that you are not being too'
+        splog, 'restrictive on the block assignments (minskytinblock, maxskyinblock)'
+        message, 'Bombing out for your own good!'
+    endif
+endif
 
 fiberid[icomplete]= tmp_fiberid
 

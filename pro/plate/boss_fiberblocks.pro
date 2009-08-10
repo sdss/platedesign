@@ -6,18 +6,8 @@
 ; CALLING SEQUENCE:
 ;   boss_fiberblocks
 ; COMMENTS:
-;   Based on Larry Carey's email sdss3-infrastructure/687
-;     I just spoke with French. The model on the WIKI is obsolete. The
-;     new anchor rails are designed to mount 16 science harnesses (20
-;     fibers per harness) equally spaced on the inner rail and 9
-;     harnesses equally spaced on the outer rail. there is a limited
-;     adjustment of final position that is possible, but based on the
-;     experience with SDSS1 and 2 the intent is to evenly space the
-;     harnesses at 1.8" increments along each rail. The mounting
-;     positions on the outer rail are staggered relative to the inner
-;     rail. I'm getting a model from French today and will try to get you
-;     a dimensioned drawing by tomorrow of the proposed mounting
-;     positions, with fiber positions relative to mounting positions.
+;   Original version was based on Larry Carey's email sdss3-infrastructure/687
+;   This version based on his sdss3-infrastructure/907
 ;   Creates the file:
 ;    $PLATEDESIGN_DIR/data/boss/fiberBlocksBOSS.par
 ;   with a structure inside with the elements:
@@ -25,7 +15,7 @@
 ;      .FIBERCENX   (position in deg, +X = +RA)
 ;      .FIBERCENY   (position in deg, +Y = +Dec)
 ; REVISION HISTORY:
-;   10-Sept-2008  MRB, NYU
+;   7-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
 pro boss_fiberblocks
@@ -38,16 +28,18 @@ fibers= replicate({TIFIBERBLOCK, blockid:0L, fibercenx:0.D, $
                    fiberceny:0.D}, 1000L)
 nperblock=20L
 
-rows_mm=[-10.35, -5.15, 5.15, 10.35]*inch2mm
-outer_cols_mm= (-7.2+findgen(9)*1.8)*inch2mm
-inner_cols_mm= (-13.5+findgen(16)*1.8)*inch2mm
+rows_mm=[-114.6, -277.5]
+inner_cols_mm= [-284.9, -239.1, -193.4, -147.7, -102.0, -56.3, -10.5, $
+                35.2, 80.9, 126.6, 172.3, 218.1, 263.8, 309.5]
+outer_cols_mm= [-216.3, -170.6, -124.8, -79.1, -33.4, $
+                12.3, 58.0, 103.8, 149.5, 195.2, 240.9]
 fspace=4.055
 
 iblock=1L
 offset=0L
-irow=0L
 
 ;; do bottom row
+irow=1L
 for icol=0L, n_elements(outer_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
@@ -57,9 +49,9 @@ for icol=0L, n_elements(outer_cols_mm)-1L do begin
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
-irow=irow+1L
 
 ;; do second row
+irow=0
 for icol=0L, n_elements(inner_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
@@ -71,29 +63,29 @@ for icol=0L, n_elements(inner_cols_mm)-1L do begin
 endfor
 irow=irow+1L
 
-;; do third row
+;; do third row (same 
+irow=0
 for icol=0L, n_elements(inner_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
-    fibers[indx].fibercenx= inner_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow] $
+    fibers[indx].fibercenx= -reverse(inner_cols_mm[icol])
+    fibers[indx].fiberceny= -rows_mm[irow] $
       -fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
-irow=irow+1L
 
 ;; do top row
+irow=1
 for icol=0L, n_elements(outer_cols_mm)-1L do begin
     indx= offset+lindgen(nperblock)
     fibers[indx].blockid= iblock
-    fibers[indx].fibercenx= outer_cols_mm[icol]
-    fibers[indx].fiberceny= rows_mm[irow] $
+    fibers[indx].fibercenx= -reverse(outer_cols_mm[icol])
+    fibers[indx].fiberceny= -rows_mm[irow] $
       -fspace*findgen(nperblock)
     iblock=iblock+1L
     offset=offset+nperblock
 endfor
-irow=irow+1L
 
 fibers.fibercenx= fibers.fibercenx/platescale
 fibers.fiberceny= fibers.fiberceny/platescale
@@ -101,8 +93,8 @@ fibers.fiberceny= fibers.fiberceny/platescale
 hdr=['#', $
      '# Positions of fibers in harnesses in degrees on the focal plane.', $
      '#', $
-     '# This file is based on Larey Carey email sdss3-infrastructure/687.', $
-     '# Real cartridges may vary.', $
+     '# This file is based on Larey Carey email sdss3-infrastructure/907.', $
+     '# Based on an actual cartridge.', $
      '#', $
      '# Units of fiberCenX and fiberCenY are degrees.', $
      '#', $

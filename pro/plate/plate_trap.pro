@@ -29,7 +29,9 @@ if(NOT file_test(trapfile)) then begin
                   racen=racen, deccen=deccen
 
     tycvlimit = 7.5
-    tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.48)
+    ;; ADD PMRA, PMDEC, EPOCH HERE
+    tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.48, $
+                        epoch=default_epoch())
     if (keyword_set(tycdat)) then begin
         ;; Sort so that we add the brightest Tycho stars first.
         tycdat = tycdat[sort(tycdat.vtmag)]
@@ -48,11 +50,11 @@ if(NOT file_test(trapfile)) then begin
         plate_ad2xy, definition, default, pointing, offset, $
                      trap_design.target_ra, $
                      trap_design.target_dec, $
+                     trap_design.lambda_eff, $
                      xf=xf, yf=yf
         trap_design.xf_default=xf
         trap_design.yf_default=yf
         
-        ;; NEED TO WRITE HEADER
         pdata= ptr_new(trap_design)
         hdrstr=struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)

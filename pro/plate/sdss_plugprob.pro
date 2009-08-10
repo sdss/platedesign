@@ -7,9 +7,9 @@
 ;   sdss_plugprob, xtarget, ytarget, fiberid, [fiberused=, $
 ;      mininblock=, maxinblock=, minavail=, nmax=, blockfile= ]
 ; INPUTS:
-;   xtarget, ytarget - focal plane positions (mm)
+;   xtarget, ytarget - [Ntarg] focal plane positions (mm)
 ; OPTIONAL INPUTS:
-;   fiberused - [N] 1-indexed indices of already used fibers
+;   fiberused - [Nused] 1-indexed indices of already used fibers
 ;   mininblock - minimum numbers of fibers to assign per block
 ;                [default 0]
 ;   maxinblock - maximum numbers of fibers to assign per block
@@ -18,12 +18,15 @@
 ;              minavail fibers in the same block can also reach it
 ;              [default 8, or maxinblock if < 8]
 ;   nmax - use at most this many fibers total
-;   toblock - [N] assign each fiber to this particular block (0 for
+;   toblock - [Ntarg] assign each fiber to this particular block (0 for
 ;             no constraint)
 ;   blockcenx, blockceny - [20] centers of cost for assigning a fiber
 ;                          in each block to a target (if set, this cost used
 ;                          instead of normal distance-to-fiber cost)
 ;   blockfile - file to read in for fibers
+;   reachfunc - code to call to check whether a fiber reaches target
+;               (e.g. boss_checkreach)
+;   limitdegree - maximal radial reach, degrees (if reachfunc not set)
 ; OPTIONAL KEYWORDS:
 ;   /noycost - don't reward for being closer than necessary in y
 ;              [useful to keep skies spread out OK]
@@ -46,12 +49,12 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    nmax=nmax, quiet=in_quiet, limitdegree=limitdegree, $
                    toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
                    maxinblock=maxinblock, blockfile=in_blockfile, $
-                   noycost=noycost, ylimits=ylimits
+                   noycost=noycost, ylimits=ylimits, reachfunc=reachfunc
 
 common com_plugprob, fiberblocks, blockfile
 
 platescale = 217.7358           ; mm/degree
-if(~keyword_set(limitdegree)) then $
+if(~keyword_set(limitdegree) AND ~keyword_set(reachfunc)) then $
   limitdegree= 7.*0.1164        ; limit of fiber reach
 if(~keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
 if(~keyword_set(mininblock)) then mininblock= 0L
@@ -61,6 +64,10 @@ if(~keyword_set(in_blockfile)) then $
   in_blockfile=getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par'
 if(~keyword_set(noycost)) then noycost=0
 quiet= long(keyword_set(in_quiet))
+
+if(keyword_set(limitdegree) gt 0 AND $
+   keyword_set(reachfunc) gt 0) then $
+  message, 'Both LIMITDEGREE and REACHFUNC should not be set, use one or other'
 
 reload=0L
 if(n_tags(fiberblocks) eq 0) then reload=1
@@ -113,6 +120,21 @@ used=lonarr(nfibers)
 if(keyword_set(fiberused)) then $
   used[fiberused-1]=1
 
+if(keyword_set(reachfunc)) then begin
+    ;; set whether fibers reach targets, if using reachfunc
+    fibertargetspossible=lonarr(nfibers, ntargets)
+    for i=0L, nfibers-1L do $
+          fibertargetspossible[i,*]= $
+            call_function(reachfunc, xfiber[i], yfiber[i], $
+                          xtarget, ytarget)
+    inputpossible=1L
+    limitdegree=0.
+endif else begin
+    ;; otherwise, still need to set the array up
+    fibertargetspossible=lonarr(nfibers, ntargets)
+    inputpossible=0L
+endelse
+
 tmpdir=getenv('PLATELIST_DIR')+'/tmp'
 
 probfile=tmpdir+'/tmp_prob.txt'
@@ -123,6 +145,7 @@ retval = call_external(soname, 'idl_write_plugprob', $
                        double(xfiber), double(yfiber), long(used), $
                        long(toblock), long(nfibers), long(nmax), $
                        long(nfibersblock), double(limitdegree), $
+                       long(fibertargetspossible), long(inputpossible), $
                        long(minavail), long(mininblock), long(maxinblock), $
                        double(blockcenx), double(blockceny), $
                        long(blockconstrain), string(probfile), long(noycost), $

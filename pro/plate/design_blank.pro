@@ -37,6 +37,7 @@ design0={DESIGN_TARGET, $
          yf_default:0., $
          lambda_eff:5500., $
          zoffset:0., $
+         bluefiber:0, $
          diameter:1000., $
          buffer:0., $
          priority:0L, $
@@ -79,6 +80,10 @@ design0={DESIGN_TARGET, $
          fiber2flux_ivar:fltarr(5), $
          psfmag:fltarr(5), $
          fibermag:fltarr(5), $
+         fiber2mag:fltarr(5), $
+         epoch:2010., $
+         pmra:0., $
+         pmdec:0., $
          targetids:'NA' $
         }
 
@@ -93,6 +98,7 @@ if(keyword_set(guide)) then begin
     design0.sourcetype='STAR'
     design0.diameter=3.175
     design0.buffer=3.75
+    design0.lambda_eff=5400.
 endif
 
 if(keyword_set(trap)) then begin

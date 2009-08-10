@@ -4,11 +4,10 @@
 ; PURPOSE:
 ;   Calculate observed altitude in presence of ADR, given true altitude
 ; CALLING SEQUENCE:
-;   adr= adr( trualt [, height=, pressure=, temperature=, lambda=] )
+;   adr= adr( trualt [, pressure=, temperature=, lambda=] )
 ; INPUTS:
 ;   trualt - [N] true altitude(s), in deg
 ; OPTIONAL INPUTS:
-;   height - height of observing location, meters (default 0)
 ;   pressure - air pressure, millibars (default 1013.25)
 ;   temperature - temperature, C (default 5)
 ;   lambda - wavelength, angstroms (default 5500)
@@ -20,12 +19,11 @@
 ;   26-Jun-2009  Written by MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function adr, trualt, height=height, pressure=pressure, $
+function adr, trualt, pressure=pressure, $
               temperature=temperature, lambda=lambda
 
 reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
-if(NOT keyword_set(height)) then height=0.
 if(NOT keyword_set(pressure)) then pressure=1013.25
 if(n_elements(temperature) eq 0) then temperature=5.
 
