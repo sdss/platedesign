@@ -31,7 +31,8 @@ if(n_elements(radii) eq 0) then begin
     radii= ((180.D)/!DPI)*asin(sinradii)*platescale
     readcol, comment='#', getenv('PLATEDESIGN_DIR')+ $
              '/data/sdss/image-heights.txt', lambda, off0, off1, off2, $
-             off3, off4, off5, off6, off7, off8, off9
+             off3, off4, off5, off6, off7, off8, off9, $
+             f='(f,f,f,f,f,f,f,f,f,f,f)'
 
     ;; reinterpret as fractional offsets relative to 5300
     nl= n_elements(lambda)
