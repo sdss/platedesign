@@ -156,8 +156,10 @@ pro/retro/retrofit_segue2_aug08d.pro -text
 pro/retro/retrofit_segue2_jul08.pro -text
 pro/retro/set_fiberid_3067_to_3079.pro -text
 pro/retro/set_fiberid_brians.pro -text
+pro/test/check_adr.pro -text
 pro/test/extinction_check.pro -text
 pro/test/guides_check.pro -text
+pro/test/plot_heights.pro -text
 pro/test/radec2kml.pro -text
 pro/test/standards_check.pro -text
 pro/test/test_ad2xy.pro -text
