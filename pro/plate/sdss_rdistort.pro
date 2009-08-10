@@ -19,7 +19,7 @@
 ;------------------------------------------------------------------------------
 function sdss_rdistort, rfocal, inlambda
 
-common com_reachcheck, radii, lambda, fracd
+common com_rdistort, radii, lambda, fracd
 
 if(n_elements(rfocal) ne n_elements(inlambda)) then $
   message, 'RFOCAL and LAMBDA must be same # of elements'
