@@ -86,8 +86,8 @@ if(NOT file_test(stdfile)) then begin
         plate_pmotion_star, sphoto_design.target_ra, $
                             sphoto_design.target_dec, $
                             pmra= tmp_pmra, pmdec= tmp_pmdec
-        sphoto_design.tmp_pmra
-        sphoto_design.tmp_pmdec
+        sphoto_design.pmra= tmp_pmra
+        sphoto_design.pmdec= tmp_pmdec
     endif
     
     if(n_tags(sphoto_design) gt 0) then begin
