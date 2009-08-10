@@ -29,7 +29,6 @@ if(NOT file_test(trapfile)) then begin
                   racen=racen, deccen=deccen
 
     tycvlimit = 7.5
-    ;; ADD PMRA, PMDEC, EPOCH HERE
     tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.48, $
                         epoch=default_epoch())
     if (keyword_set(tycdat)) then begin
@@ -46,6 +45,9 @@ if(NOT file_test(trapfile)) then begin
         trap_design.target_dec= tycdat.demdeg
         trap_design.pointing= pointing
         trap_design.offset= offset
+        trap_design.pmra= tycdat.pmra
+        trap_design.pmdec= tycdat.pmde
+        trap_design.epoch= default_epoch()
         
         plate_ad2xy, definition, default, pointing, offset, $
                      trap_design.target_ra, $

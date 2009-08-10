@@ -52,7 +52,8 @@ end
 ;;
 pro ad2xyfocal, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
-                nodistort=nodistort, lambda=lambda
+                nodistort=nodistort, lambda=lambda, height=height, $
+                clambda=clambda
 
 if(n_elements(lambda) eq 0) then $
   lambda=replicate(5500., n_elements(ra))
@@ -88,6 +89,13 @@ plate_apo_refrac, racen, deccen, lst=lst, airtemp=airtemp, $
 ;; handle differential refraction relative to 5500
 adrval= adr(alt, lambda=lambda, temperature=airtemp, pressure=pressure)
 alt= alt+ adrval/3600.
+
+;; differentially refract the CENTER too
+if(keyword_set(clambda)) then begin
+    adrcenval= adr(altcen, lambda=clambda, temperature=airtemp, $
+                   pressure=pressure)
+    altcen= altcen+adrval/3600.
+endif
 
 ;; and convert to focal plane position
 ;; (adjusting position angle to be relative to N)
