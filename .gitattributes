@@ -5,6 +5,9 @@ bin/.svnignore -text
 bin/drillrun2zip -text
 bin/get_plugmap_files.py -text
 bin/platedesign_version -text
+data/boss/SDSS3FiberReach.pdf -text
+data/boss/SDSS3FiberReachData.pdf -text
+data/boss/SDSS3SFAnchrBlcks.pdf -text
 data/boss/fiberBlocksBOSS.par -text
 data/boss/fiberBlocksBOSS.ps -text
 data/marvels/anchor-block-map-2008-09-10.pdf -text
