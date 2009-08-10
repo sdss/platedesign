@@ -105,6 +105,11 @@ if (keyword_set(objs)) then begin
     sphoto_design.psfmag= psfmag
     sphoto_design.fibermag= fibermag
 
+    ;; set epoch
+    allruns= (uniqtag(sphoto_design, 'RUN')).run
+    runmjd= lonarr(max(allruns)+1L)
+    mjd= runmjd[tmp_data.run]
+    sphoto_design.epoch= (mjd-(51544.5D))/365.25+2000.
     
 endif
 

@@ -93,6 +93,11 @@ if (keyword_set(objt)) then begin
     sphoto_design.priority= priority_t
     sphoto_design.targettype= 'STANDARD'
     sphoto_design.sourcetype= 'STAR'
+
+    ;; convert jdate to epoch
+    mjd=objt.tmass_jdate-2400000.5D
+    sphoto_design.epoch= (mjd-(51544.5D))/365.25+2000.
+
 endif
 
 return

@@ -85,7 +85,10 @@ pro/plate/adr.pro -text
 pro/plate/alignment_fiber.pro -text
 pro/plate/assign_same_fiberid.pro -text
 pro/plate/boss_fiberblocks.pro -text
+pro/plate/boss_reachcheck.pro -text
+pro/plate/boss_reachvalues.pro -text
 pro/plate/check_conflicts.pro -text
+pro/plate/default_epoch.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
 pro/plate/dss_cache_lookup.pro -text
@@ -115,6 +118,7 @@ pro/plate/plate_dir.pro -text
 pro/plate/plate_guide.pro -text
 pro/plate/plate_holes.pro -text
 pro/plate/plate_pmotion_correct.pro -text
+pro/plate/plate_pmotion_star.pro -text
 pro/plate/plate_refract_list.pro -text
 pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
@@ -144,6 +148,7 @@ pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/sdss_plugprob.pro -text
+pro/plate/sdss_rdistort.pro -text
 pro/plate/sky_location_candidates.pro -text
 pro/plate/target2design.pro -text
 pro/plate/xyfocal2ad.pro -text

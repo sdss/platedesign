@@ -1,34 +1,19 @@
 ;+
 ; NAME:
-;   target2design
+;   default_epoch
 ; PURPOSE:
-;   Convert target structure to design structure
+;   Return default epoch to use for XF_DEFAULT, YF_DEFAULT
 ; CALLING SEQUENCE:
-;   target2design, definition, default, targets, design, info=
-; INPUTS:
-;   definition - plate definition structure
-;   default - plate default structure
-;   targets - target structure
-;   design - design structure
-;   info - structure with information tags for various options
+;   toepoch= default_epoch()
 ; COMMENTS:
-;   Designed to be run at first input of plateInput file in plate_drillrun
-;   Required in default structure:
-;     nPointings
-;     nOffsets
-;   Required in definition structure:
-;     raCen1 [, ... as necessary]
-;     decCen1 [, ... as necessary]
-;   Writes in XF_DEFAULT, YF_DEFAULT, which are the positions to
-;     assume for the sake of collisions. They are zero-hour angle, 5C
-;     epoch 2011. results. (Actually, the epoch is whatever is
-;     returned by default_epoch())
+;   Used by routines building the plateDesign files, so that they pick
+;     appropriate defaults.
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
 ;-
 pro target2design, definition, default, targets, design, info=info
 
-toepoch=default_epoch()
+default_epoch=default_epoch()
 
 ;; which pointing are we adding these targets to?
 pointing= 1L
@@ -72,7 +57,7 @@ if(tag_exist(targets, 'PMRA')) then begin
 endif else begin
     pmra= fltarr(n_elements(targets))
     pmdec= fltarr(n_elements(targets))
-    epoch= replicate(default_epoch(), n_elements(targets))
+    epoch= replicate(2011., n_elements(targets))
 endelse
 
 ;; Get default xf_default and yf_default
@@ -80,7 +65,7 @@ endelse
 plate_ad2xy, definition, default, pointing, offset, targets.ra, $
              targets.dec, targets.lambda_eff, xfocal=xf_default, $
              yfocal=yf_default, pmra=pmra, pmdec=pmdec, fromepoch=epoch, $
-             toepoch=toepoch
+             toepoch=default_epoch
 
 ;; create structure for targets
 ntargets=n_elements(targets)

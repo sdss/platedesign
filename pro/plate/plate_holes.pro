@@ -15,7 +15,8 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plate_holes, designid, plateid, ha, temp
+pro plate_holes, designid, plateid, ha, temp, epoch
+
 true = 1
 false = 0
 
@@ -42,7 +43,6 @@ struct_assign, designs, holes
 holes.xfocal= holes.xf_default
 holes.yfocal= holes.yf_default
 
-
 ;; for each pointing and offset, find the final
 ;; xfocal and yfocal and set them
 npointings= long(default.npointings)
@@ -57,8 +57,11 @@ for pointing=1L, npointings do begin
           racen=racen, deccen=deccen
         if(nin gt 0) then begin
             plate_ad2xy, definition, default, pointing, offset, $
-              holes[iin].target_ra, holes[iin].target_dec, $
-              lst=racen+ha[pointing-1L], airtemp=temp, xfocal=xf, yfocal=yf
+                         holes[iin].target_ra, holes[iin].target_dec, $
+                         holes[iin].lambda_eff, lst=racen+ha[pointing-1L], $
+                         airtemp=temp, xfocal=xf, yfocal=yf, $
+                         pmra=holes[iin].pmra, pmdec=holes[iin].pmdec, $
+                         fromepoch=holes[iin].epoch, toepoch=epoch
             holes[iin].xfocal= xf
             holes[iin].yfocal= yf
         endif

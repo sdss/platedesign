@@ -75,11 +75,19 @@ if(NOT file_test(stdfile)) then begin
         plate_ad2xy, definition, default, pointing, offset, $
           sphoto_design.target_ra, $
           sphoto_design.target_dec, $
+          sphoto_design.lambda_eff, $
           xf=xf, yf=yf
         sphoto_design.xf_default=xf
         sphoto_design.yf_default=yf
         sphoto_design.diameter= ferrulesize
         sphoto_design.buffer= buffersize
+        sphoto_design.bluefiber= 1
+        
+        plate_pmotion_star, sphoto_design.target_ra, $
+                            sphoto_design.target_dec, $
+                            pmra= tmp_pmra, pmdec= tmp_pmdec
+        sphoto_design.tmp_pmra
+        sphoto_design.tmp_pmdec
     endif
     
     if(n_tags(sphoto_design) gt 0) then begin

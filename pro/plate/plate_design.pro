@@ -506,7 +506,7 @@ endif ;; end of clobber & file exists tests
 ;; ----------------------------------------
 ;; Convert plateDesign to plateHoles
 ;; ----------------------------------------
-plate_holes, designid, plateid, ha, temp
+plate_holes, designid, plateid, ha, temp, epoch
 
 ;; ----------------------------------------
 ;; Produce plugfiles of desired style
