@@ -50,9 +50,8 @@ if(file_test(guidefile) eq 0 OR $
           gminmax=gminmax
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
-                         guide_design.target_ra, $
-                         guide_design.target_dec, $
-                         xf=xf, yf=yf
+              guide_design.target_ra, guide_design.target_dec, $
+              guide_design.lambda_eff, xf=xf, yf=yf
             guide_design.xf_default=xf
             guide_design.yf_default=yf
         endif
@@ -65,9 +64,8 @@ if(file_test(guidefile) eq 0 OR $
           gminmax=gminmax
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
-                         guide_design.target_ra, $
-                         guide_design.target_dec, $
-                         xf=xf, yf=yf
+              guide_design.target_ra, guide_design.target_dec, $
+              guide_design.lambda_eff, xf=xf, yf=yf
             guide_design.xf_default=xf
             guide_design.yf_default=yf
         endif

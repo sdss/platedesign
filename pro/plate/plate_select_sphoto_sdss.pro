@@ -108,7 +108,8 @@ if (keyword_set(objs)) then begin
     ;; set epoch
     allruns= (uniqtag(sphoto_design, 'RUN')).run
     runmjd= lonarr(max(allruns)+1L)
-    mjd= runmjd[tmp_data.run]
+    runmjd[allruns]= sdss_run2mjd(allruns)
+    mjd= runmjd[sphoto_design.run]
     sphoto_design.epoch= (mjd-(51544.5D))/365.25+2000.
     
 endif

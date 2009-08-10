@@ -95,15 +95,15 @@ if (keyword_set(objs)) then begin
     to_mjd = (epoch - 2000.)*365.25 + 51544.5d0
     plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
       mura=mura, mudec=mudec
-    guide_design.epoch=epoch
-    guide_design.pmra=mura
-    guide_design.pmdec=mudec
     
     ;; Now put results into a design structure
     guide_design= replicate(design_blank(/guide), n_elements(objs))
     struct_assign, objs, guide_design, /nozero
     guide_design.target_ra= ra
     guide_design.target_dec= dec
+    guide_design.epoch=epoch
+    guide_design.pmra=mura
+    guide_design.pmdec=mudec
 
     ;; Transfer psf and fiber fluxes to mags for completeness
     counts_err=fltarr(5, n_elements(objs))+1.
