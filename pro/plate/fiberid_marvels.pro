@@ -165,7 +165,8 @@ if(keyword_set(noscience) eq false) then begin
             
         endif else begin
             if(keyword_set(quiet) eq false) then $
-              splog, 'No science targets in this plate/pointing.'
+              splog, 'No science targets in this plate/pointing ' + $
+              		 'or else redesigning an existing plug map.'
         endelse
         if(keyword_set(tmp_fiberused)) then $
           fiberused[ip-1]= ptr_new(tmp_fiberused)

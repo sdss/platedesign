@@ -164,7 +164,7 @@ retval = call_external(soname, 'idl_read_plugprob', $
                        long(fiberblock), long(ntargets), $
                        long(nfibersblock), long(nfibers), $
                        long(quiet), string(ansfile))
-
+stop
 fiberid=targetfiber+1L
 
 end

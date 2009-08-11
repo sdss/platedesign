@@ -33,8 +33,10 @@ printf, unit, '<Style id="circleIcon">'
 printf, unit, '<IconStyle>'
 if(keyword_set(color)) then begin
     printf, unit, '<color>'+color+'</color>'
-endif
-printf, unit, '<Icon><href>'+getenv('PLATEDESIGN_DIR')+'/data/test/icon.png</href></Icon>'
+endif else begin color = 'white'
+endelse
+;printf, unit, '<Icon><href>'+getenv('PLATEDESIGN_DIR')+'/data/test/icon.png</href></Icon>'
+printf, unit, '<Icon><href>http://demitri.com/' + color + '_icon.png</href></Icon>'
 printf, unit, '</IconStyle>'    
 printf, unit, '</Style>'    
 
