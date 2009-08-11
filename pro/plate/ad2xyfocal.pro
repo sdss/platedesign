@@ -15,9 +15,13 @@
 ;   airtemp    - Design temperature (in C, default to 5)
 ;   lambda     - scalar or [N], optimum wavelength in angstroms
 ;                (default 5500)
+;   clambda    - wavelength to assume for plate center diffraction
+;                (default 5500)
 ; OPTIONAL KEYWORDS:
 ;   /norefrac - do not account for refraction
 ;   /nodistort - do not account for optical plate distortion
+;   /nordistort - do not account for wavelength dependence of 
+;                 optical plate distortion
 ; OUTPUTS:
 ;   xfocal, yfocal - [N] arrays of focal plane positions
 ; COMMENTS:
@@ -27,6 +31,12 @@
 ;   Technique copied from plMakePlateFromTile (plPlateDesign.c) 
 ;     and plCoordTransform (plPlateUtils.c) in the plate product
 ;     (due to Steve Kent, Aronne Merrelli, Ron Kollgaard, Bob Nichol)
+;   Normally "clambda" should have no practical effect, i.e. will just
+;     be a shift in XFOCAL, YFOCAL, but no rotation or scale. It is
+;     included to facilitate comparisons to old results from plate.
+; BUGS:
+;   Call to "rdistort" assumes things are relative to 5500, when the
+;   main radial distortion is actually appropriate to 5000 Angstroms.
 ; REVISION HISTORY:
 ;   26-Oct-2006  Written by MRB, NYU
 ;-
@@ -53,14 +63,14 @@ end
 pro ad2xyfocal, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
                 nodistort=nodistort, lambda=lambda, height=height, $
-                clambda=clambda
+                clambda=clambda, nordistort=nordistort
 
 if(n_elements(lambda) eq 0) then $
   lambda=replicate(5500., n_elements(ra))
 
 if n_elements(airtemp) EQ 0 then airtemp = 5.
 airtemp_k=airtemp+273.155  ; C to Kelvin
-if n_elements(height) EQ 0 then height = 2788.D
+if n_elements(height) EQ 0 then height = 2797.D
 if n_elements(pressure) EQ 0 then $
   pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
 
@@ -94,7 +104,10 @@ alt= alt+ adrval/3600.
 if(keyword_set(clambda)) then begin
     adrcenval= adr(altcen, lambda=clambda, temperature=airtemp, $
                    pressure=pressure)
-    altcen= altcen+adrval/3600.
+    altcen= altcen+adrcenval/3600.
+    adrfidval= adr(altfid, lambda=clambda, temperature=airtemp, $
+                   pressure=pressure)
+    altfid= altfid+adrfidval/3600.
 endif
 
 ;; and convert to focal plane position
@@ -113,7 +126,8 @@ if(NOT keyword_set(nodistort)) then begin
 
     ;; now wavelength dependence in radial distortion due to the
     ;; telescope optics
-    rfocal= sdss_rdistort(rfocal, lambda)
+    if(NOT keyword_set(nordistort)) then $
+      rfocal= sdss_rdistort(rfocal, lambda)
 endif
 
 xfocal= rfocal*sin(posang) 
