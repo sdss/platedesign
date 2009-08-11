@@ -34,9 +34,6 @@
 ;   Normally "clambda" should have no practical effect, i.e. will just
 ;     be a shift in XFOCAL, YFOCAL, but no rotation or scale. It is
 ;     included to facilitate comparisons to old results from plate.
-; BUGS:
-;   Call to "rdistort" assumes things are relative to 5500, when the
-;   main radial distortion is actually appropriate to 5000 Angstroms.
 ; REVISION HISTORY:
 ;   26-Oct-2006  Written by MRB, NYU
 ;-
@@ -118,6 +115,8 @@ posang= posang-posang_fid
 
 ;; apply radial distortions
 if(NOT keyword_set(nodistort)) then begin
+
+    ;; note that these distortions are appropriate for 5000 Angstroms
     correction=replicate(rcoeffs[0], n_elements(rfocal))
     for i=1L, n_elements(rcoeffs)-1L do begin
         correction=correction+rcoeffs[i]*((double(rfocal))^(double(i)))
@@ -126,8 +125,13 @@ if(NOT keyword_set(nodistort)) then begin
 
     ;; now wavelength dependence in radial distortion due to the
     ;; telescope optics
-    if(NOT keyword_set(nordistort)) then $
-      rfocal= sdss_rdistort(rfocal, lambda)
+    if(NOT keyword_set(nordistort)) then begin
+        rf5000= sdss_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
+        rfthis= sdss_rdistort(rfocal, lambda)
+        rfoff= rfthis-rf5000
+        rfocal= rfocal+rfoff
+    endif
+        
 endif
 
 xfocal= rfocal*sin(posang) 

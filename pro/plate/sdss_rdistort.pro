@@ -13,6 +13,7 @@
 ; COMMENTS:
 ;   Uses $PLATEDESIGN_DIR/data/sdss/image-heights.txt
 ;   Supplied by Jim Gunn, message sdss3-boss/1016
+;   Returns distortion relative to 5500 Angstroms
 ; REVISION HISTORY:
 ;   7-Aug-2008  MRB, NYU
 ;-
