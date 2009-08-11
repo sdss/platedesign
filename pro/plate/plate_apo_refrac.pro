@@ -31,9 +31,9 @@
 pro plate_apo_refrac, ra, dec, lat=lat, airtemp=airtemp, lst=lst, $
   alt=alt, az=az, norefrac=norefrac, pressure=pressure
 
-if n_elements(lat) EQ 0 then lat = 32.7803D
+if n_elements(lat) EQ 0 then lat = 32.7797556D
 if n_elements(lst) EQ 0 then lst = double(ra)
-if n_elements(height) EQ 0 then height = 2788.D
+if n_elements(height) EQ 0 then height = 2797.D
 if n_elements(airtemp) EQ 0 then airtemp = 5.D
 airtemp_k=airtemp+273.155  ; C to Kelvin
 if n_elements(pressure) EQ 0 then $
@@ -43,6 +43,7 @@ ha = lst - ra
 hadec2altaz, ha, dec, lat, alt, az
 if(NOT keyword_set(norefrac)) then $
   alt= plate_refract_list(alt, epsilon=0.00001, temperature=airtemp_k, $
-                          /to_observed, pressure=pressure)
+                          /to_observed, pressure=pressure, $
+                          altitude=height)
 
 end
