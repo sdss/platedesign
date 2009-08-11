@@ -40,9 +40,12 @@ guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 guidemag_minmax 13. 15.5
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
-# This is 62 arcsec at the average plate scale
-ferruleSizeBOSS 3.738
-bufferSizeBOSS 0.004
+# Schlegel measured a minimum separation of 3.72231 mm. 
+# This is 61.5 arcsec at the average plate scale; no BOSS targets 
+# should appear closer than 62 arcsec
+#ferruleSizeBOSS 3.738 <- this is design #!!
+ferruleSizeBOSS 3.72231
+bufferSizeBOSS 0.000
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
