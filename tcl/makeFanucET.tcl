@@ -196,6 +196,7 @@ proc makeFanucET { args } {
 
 	set plugMapFileName [format plPlugMapP-%04d.par $plateId]
 	set plugMapFilePath [format %s/%s $outFileDir $plugMapFileName]
+   echo $plugMapFilePath
 	set plugMapData [ param2Chain $plugMapFilePath plugMapHdr ]
 
 	if {$verbose} {
@@ -234,6 +235,15 @@ proc makeFanucET { args } {
 	    
 #	copyGCodeFile $objectCodesFileName $fanucFile
 	copyGCodeFile $etobjectCodesFileName $fanucFile
+
+	if {[chainSize $objHolesChn] == 0} {
+			echo "No objects found! returning"
+			echo  [chainSize $plugMapData] 
+			echo  [chainSize $objHolesChn] 
+			echo  [chainSize $allHolesChn] 
+			echo  [chainSize $guideHolesChn] 
+      exit
+	}
 
 	close $fanucFile
 	if {$verbose} {
