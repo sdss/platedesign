@@ -95,6 +95,7 @@ if(nsky gt 0) then begin
                     'pointing '+strtrim(string(pointing),2), $
                     'platedesign_version '+platedesign_version()]
             yanny_write, skyfile, pdata, hdr=outhdr
+            ptr_free, pdata
         endif
     endif else begin
         in_sky_design= yanny_readone(skyfile, /anon)

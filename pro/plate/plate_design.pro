@@ -316,6 +316,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                                            /extr, /sub))[1]
                         yanny_write, designdir+'/'+filebase+'-output.par', $
                                      pdata, hdr=(*hdrs[iplate[j]-1])
+                        ptr_free, pdata
                     endif
                 endfor
                 
@@ -497,6 +498,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     'platerun '+plan.platerun, $
                     'platedesign_version '+platedesign_version()]
             yanny_write, designfile, pdata, hdr=outhdr
+            ptr_free, design
         endif
     
     endwhile ;; end loop if fibers unassigned

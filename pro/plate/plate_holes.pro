@@ -118,6 +118,7 @@ platedir= plate_dir(plateid)
 platefile=platedir+'/plateHoles-'+ $
   string(plateid, f='(i6.6)')+'.par'
 yanny_write, platefile, pdata, hdr=outhdr
+ptr_free, pdata
 
 end
 ;------------------------------------------------------------------------------
