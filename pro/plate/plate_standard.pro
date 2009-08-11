@@ -100,6 +100,7 @@ if(NOT file_test(stdfile)) then begin
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
         yanny_write, stdfile, pdata, hdr=outhdr
+        ptr_free, pdata
     endif
 endif else begin
     in_sphoto_design= yanny_readone(stdfile, /anon)

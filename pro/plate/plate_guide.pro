@@ -85,6 +85,7 @@ if(file_test(guidefile) eq 0 OR $
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
         yanny_write, guidefile, pdata, hdr=outhdr
+        ptr_free, pdata
     endif
 endif else begin
     in_guide_design= yanny_readone(guidefile, /anon)
