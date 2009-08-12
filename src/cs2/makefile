@@ -12,7 +12,7 @@ CCOMP = cc
 #CFLAGS = -g -Wall
 #CFLAGS = -O4 -i486 -DNDEBUG
 #CFLAGS = -O4
-CFLAGS = -O
+CFLAGS = -O -m32
 
 INSTALL_DIR   = $(TILING_INSTALL_DIR)$(CTILE_INSTALL_DIR)
 INSTALL_FILES = *.c *.h makefile COPYRIGHT README sample.input version cs2
