@@ -214,7 +214,9 @@ holes=newholes
 
 sortedplatefile= platedir+'/plateHolesSorted-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
-yanny_write, sortedplatefile, ptr_new(holes), hdr=hdr
+pdata= ptr_new(holes)
+yanny_write, sortedplatefile, pdata, hdr=hdr
+ptr_free, pdata
 
 racen=dblarr(npointings)
 deccen=dblarr(npointings)
@@ -281,8 +283,10 @@ for pointing=1L, npointings do begin
     thisplug.ra= ra
     thisplug.dec= dec
     
-    yanny_write, plugmapfile, ptr_new(thisplug), hdr=outhdr, $
+    pdata= ptr_new(thisplug)
+    yanny_write, plugmapfile, pdata, hdr=outhdr, $
       enums=plugenum, structs=plugstruct
+    ptr_free, pdata
 endfor
 
 end

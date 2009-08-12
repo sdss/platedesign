@@ -67,6 +67,7 @@ pdata= ptr_new(mblocks)
 yanny_write, $
   getenv('PLATEDESIGN_DIR')+'/data/marvels/fiberBlocksMarvels.par', $
   pdata, hdr=hdr
+ptr_free, pdata
 
 return
 end

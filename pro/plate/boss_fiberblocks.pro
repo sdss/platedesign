@@ -105,6 +105,7 @@ pdata= ptr_new(fibers)
 yanny_write, $
   getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par', $
   pdata, hdr=hdr
+ptr_free, pdata
 
 ;; now create PS file for QA
 xmm= fibers.fibercenx*platescale

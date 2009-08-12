@@ -81,8 +81,10 @@ for i=0L, n_elements(plateid)-1L do begin
       strtrim(string(plateid[i], f='(i4.4)'),2)+'*.par '+ $
       platerun_dir
 endfor
+pdata=ptr_new(plobs)
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
-  ptr_new(plobs), hdr=plhdr, structs=plstructs
+  pdata, hdr=plhdr, structs=plstructs
+ptr_free, pdata
 
 ;; make the plateLines files
 if(keyword_set(nolines) eq 0) then begin
