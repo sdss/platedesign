@@ -92,6 +92,7 @@ pro/plate/check_conflicts.pro -text
 pro/plate/default_epoch.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
+pro/plate/design_pm.pro -text
 pro/plate/dss_cache_lookup.pro -text
 pro/plate/dss_cache_no_sky_for_input.pro -text
 pro/plate/dss_cache_populate_sky.pro -text
