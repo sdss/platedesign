@@ -36,6 +36,9 @@ if(tag_exist(default, 'GFIBERTYPE')) then $
 else $
   gfibertype='gfiber'
 
+;; adjust design for new epoch
+design_pm, designs, toepoch=epoch
+
 ;; create output structure
 holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
 holes= replicate(holes0, n_elements(designs))
@@ -57,11 +60,9 @@ for pointing=1L, npointings do begin
           racen=racen, deccen=deccen
         if(nin gt 0) then begin
             plate_ad2xy, definition, default, pointing, offset, $
-                         holes[iin].target_ra, holes[iin].target_dec, $
-                         holes[iin].lambda_eff, lst=racen+ha[pointing-1L], $
-                         airtemp=temp, xfocal=xf, yfocal=yf, $
-                         pmra=holes[iin].pmra, pmdec=holes[iin].pmdec, $
-                         fromepoch=holes[iin].epoch, toepoch=epoch
+              holes[iin].target_ra, holes[iin].target_dec, $
+              holes[iin].lambda_eff, lst=racen+ha[pointing-1L], $
+              airtemp=temp, xfocal=xf, yfocal=yf
             holes[iin].xfocal= xf
             holes[iin].yfocal= yf
         endif
