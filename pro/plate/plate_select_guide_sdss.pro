@@ -114,6 +114,14 @@ if (keyword_set(objs)) then begin
     guide_design.psfmag= psfmag
     guide_design.fibermag= fibermag
 
+    if(tag_indx(objs, 'fiber2flux') eq -1) then begin
+      guide_design.fiber2mag= guide_design.fibermag+0.5
+    endif else begin
+      sdss_flux2lups, objs.fiber2flux, objs.fiber2flux_ivar, counts_err, $
+        fiber2mag, fiber2mag_err
+      guide_design.fiber2mag= fiber2mag
+    endelse
+
     ;; Finally, set priority; note that for guide stars priority is
     ;; used differently than elsewhere (see plate_assign_guide.pro)
     isort= reverse(sort(guide_design.psfflux[1]))
