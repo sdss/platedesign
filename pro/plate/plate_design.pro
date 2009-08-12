@@ -216,7 +216,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         minskyinblock=lonarr(ninstruments) ;; how many skies per block?
         maxskyinblock=lonarr(ninstruments) ;; how many skies per block?
         for iinst=0L, ninstruments-1L do begin
-            ;; get minimum number of standards per block per pointing, if desired
+            ;; get minimum number of standards per block per pointing, 
+            ;; if desired
             itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
             if(itagminstd eq -1) then $
             minstdinblock[iinst]=0L $
@@ -296,6 +297,9 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         new_design=[new_design, tmp_design]
                     endelse
                 endfor
+
+                ;; apply proper motions to the designs
+                design_pm, new_design, toepoch=epoch
                 
                 ;; assign holes to each plateInput file
                 plate_assign, definition, default, fibercount, design, $
@@ -340,6 +344,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                 guidenums=long(strsplit(default.(iguidenums),/extr))
                 guide_design= plate_guide(definition, default, pointing, $
                                           epoch=epoch)
+                design_pm, guide_design, toepoch=epoch
                 if(n_tags(guide_design) gt 0) then $
                   plate_assign_guide, definition, default, design, $
                                       guide_design, $
@@ -354,11 +359,13 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             for offset=0L, noffsets do begin
                 for iinst=0L, ninstruments-1L do begin
     
-                    ;; get appropriate list of standards
+                    ;; get appropriate list of standards, and apply
+                    ;; proper motions
                     sphoto_design= plate_standard(definition, default, $
-                                                instruments[iinst], $
-                                                pointing, offset)
-    
+                                                  instruments[iinst], $
+                                                  pointing, offset)
+                    design_pm, sphoto_design, toepoch=epoch
+                    
                     if(n_tags(sphoto_design) gt 0) then begin
                         ;; assign, applying constraints imposed in the
                         ;; "FIBERID_[INSTRUMENT]" procedure; this code
@@ -419,7 +426,8 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             splog, 'Unused fibers found. Please specify more targets!'
             splog, 'Not completing plate design '+strtrim(string(designid),2)
             plate_log, plateid, 'Unused fibers found. Please specify more targets!'
-            plate_log, plateid, 'Not completing plate design '+strtrim(string(designid),2)
+            plate_log, plateid, 'Not completing plate design '+ $
+              strtrim(string(designid),2)
             if(keyword_set(debug) eq false) then return else stop
         endif
     
@@ -469,13 +477,15 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                                     design[icurr].pointing eq ip, nassigned)
                     if(nassigned gt 0) then $
                         keep[icurr[iassigned]]=1L
-                    if(nassigned ne long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
+                    if(nassigned ne $
+                       long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
                     then begin
                         splog, 'Some fibers not assigned to targets! ' 
                         if(keyword_set(debug) eq false) then begin
                             if(keyword_set(replace_fibers) eq false) then begin
                                 splog, 'Not completing plate design '+ $
-                                    strtrim(string(designid),2) + '. Rerun with keyword "replace_fibers" to attempt to assign unallocated fibers.'
+                                    strtrim(string(designid),2) + $
+                                  '. Rerun with keyword "replace_fibers" to attempt to assign unallocated fibers.'
                                 return
                             endif else begin
                                 nextrafibers[ip-1]=nextrafibers[ip-1]+1L
@@ -491,9 +501,15 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ikeep=where(keep gt 0, nkeep)
         design=design[ikeep]
     
-    ;; Write out plate assignments to 
-    ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
+        ;; Write out plate assignments to 
+        ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
         if(keyword_set(needmorefibers) eq false) then begin
+
+            ;; sanity check EPOCHs
+            ibad=where(design.epoch lt 1900. OR design.epoch gt 2100., nbad)
+            if(nbad gt 0) then $
+              message, 'EPOCH found <1900 or >2100, not realistic!'
+            
             pdata= ptr_new(design)
             spawn, 'mkdir -p '+designdir
             hdrstr=struct_combine(default, definition)
