@@ -35,7 +35,7 @@ design0={DESIGN_TARGET, $
          iguide:-9999L, $
          xf_default:0., $
          yf_default:0., $
-         lambda_eff:5500., $
+         lambda_eff:5400., $
          zoffset:0., $
          bluefiber:0, $
          diameter:1000., $
