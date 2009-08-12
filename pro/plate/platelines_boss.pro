@@ -4,9 +4,9 @@
 ; PURPOSE:
 ;   write the plateLines-????.ps file for a BOSS plate
 ; CALLING SEQUENCE:
-;   platelines_boss, plateid
+;   platelines_boss, plateid [, /fullsize, /sky, /std ]
 ; INPUTS:
-;   plateid - plate ID to run on 
+;   plateid - plate ID to run on
 ; COMMENTS:
 ;   Appropriate for BOSS data
 ;   Makes a PostScript file 26.7717 by 26.7717 inches; mapping
@@ -23,7 +23,7 @@
 ;   22-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_boss, plateid, fullsize=fullsize
+pro platelines_boss, plateid, fullsize=fullsize, sky=sky, std=std
 
 platescale = 217.7358D           ; mm/degree
 
@@ -31,8 +31,22 @@ platedir= plate_dir(plateid)
 plplug= platedir+'/plPlugMapP-'+ $
   strtrim(string(f='(i4.4)',plateid),2)+'.par'
 holes= yanny_readone(plplug)
+fullfile= platedir+'/plateHolesSorted-'+ $
+  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+full= yanny_readone(fullfile)
 
-filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.ps'
+if(keyword_set(sky) gt 0 AND $
+   keyword_set(std) gt 0) then $
+  message, 'Must set at most one of /SKY and /STD'
+
+postfix=''
+if(keyword_set(sky)) then $
+  postfix='-sky'
+if(keyword_set(std)) then $
+  postfix='-std'
+
+filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
+  postfix+'.ps'
 
 if(keyword_set(fullsize)) then begin
     xsize=26.7717 ;; in inches
@@ -47,6 +61,11 @@ endif else begin
     connect_thick=3
     circle_thick=2
 endelse
+
+if(keyword_set(sky)) then $
+  connect_thick=1
+if(keyword_set(std)) then $
+  connect_thick=1
 
 ;; setup postscript device
 pold=!P
@@ -103,7 +122,7 @@ nper=20L
 for i=0L, nblocks-1L do begin
     ii= where(-holes.fiberid ge i*nper+1L and $
               -holes.fiberid le (i+1L)*nper, nii)
-    isort= sort(holes[ii].yfocal)
+    isort= lindgen(nii)
     color= colors[i mod n_elements(colors)]
 
     ;; connect lines
@@ -128,19 +147,47 @@ for i=0L, nblocks-1L do begin
     endfor
 
     ;; draw holes; 
-    ;; SKY as green, 
-    ;; SPECTROPHOTO_STD as red, 
-    ;; any other as black
     for j=0L, nper-1L do begin
         theta= findgen(100)/float(99.)*!DPI*2.
         xcurr= holes[ii[j]].xfocal+ circle* cos(theta)
         ycurr= holes[ii[j]].yfocal+ circle* sin(theta)
-        case strupcase(holes[ii[j]].objtype) of
-            'SKY': currcolor='green'
-            'SPECTROPHOTO_STD': currcolor='red'
-            else: currcolor='black'
-        endcase
-        djs_oplot, xcurr, ycurr, color=currcolor, th=circle_thick
+        if(keyword_set(sky)) then begin
+            ;; SKY as thick RED, 
+            ;; any other as thin black
+            case strupcase(holes[ii[j]].objtype) of
+                'SKY': begin
+                    currcolor='red'
+                    currthick=4
+                end
+                else: begin 
+                    currcolor='black'
+                    currthick=1
+                end
+            endcase
+        endif else if (keyword_set(std)) then begin
+            ;; standard as thick blue
+            ;; any other as thin black
+            case strupcase(holes[ii[j]].objtype) of
+                'SPECTROPHOTO_STD': begin
+                    currcolor='blue'
+                    currthick=4
+                end
+                else: begin 
+                    currcolor='black'
+                    currthick=1
+                end
+            endcase
+        endif else begin
+            ;; normally should color according to blue fiber
+            currthick=circle_thick
+            if(full[ii[j]].bluefiber gt 0) then begin
+                currcolor='blue'
+            endif else begin
+                currcolor='red'
+            endelse
+            currthick=circle_thick
+        endelse
+        djs_oplot, xcurr, ycurr, color=currcolor, th=currthick
     endfor
 
 endfor

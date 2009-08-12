@@ -31,7 +31,7 @@ nBOSS_standard 20
 # (per pointing)
 minstdinblockBOSS 0
 minskyinblockBOSS 1
-maxskyinblockBOSS 10
+maxskyinblockBOSS 2
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
