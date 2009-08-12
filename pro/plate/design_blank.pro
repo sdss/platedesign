@@ -38,6 +38,10 @@ design0={DESIGN_TARGET, $
          lambda_eff:5400., $
          zoffset:0., $
          bluefiber:0, $
+         chunk:0L, $
+         ifinal:-1L, $
+         origfile:' ', $
+         fileindx:-1L, $
          diameter:1000., $
          buffer:0., $
          priority:0L, $
