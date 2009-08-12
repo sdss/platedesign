@@ -13,8 +13,9 @@
 ;                  .XPREFER - preferred location (X)
 ;                  .YPREFER - preferred location (Y)
 ; COMMENTS:
-;   The info is from Larry Carey, sdss3-infrastructure/672 and following
-;   PDF is in $PLATEDESIGN_DIR/docs/SDSS3GdFbrAnchrPtandRch955.pdf
+;   The original info as from Larry Carey, sdss3-infrastructure/672.
+;   Numbers updated from Harding, based on Carey's
+;   sdss3-infrastructure/904
 ;   Output units in mm
 ;   Moving +RA is +XFOCAL, +DEC is +YFOCAL.
 ;   Guides 1-14 are SMALL
@@ -37,15 +38,18 @@ gfiber = create_struct( $
          'yprefer'  , 0.d )
 gfiber = replicate(gfiber, nguide)
 
-inch2mm= 25.4
+rows_mm= [-277.5, -137.8, 137.8, 277.5]
 
-rows_mm=[-10.35, -5.15, 5.15, 10.35]*inch2mm
+;; S = Short ferrule
+;; F = In Focus ferrule
+;; A =  1.5mm acquisition fiber
+;; L =  Long ferrule
+innercols_mm= [-205.74, -68.58, 114.30, 205.74]   ;; [S,F,A,L,F]
+outercols_mm= [-91.4, 0, 91.4]    ;; [L,F,S]
 
-innercols_mm= inch2mm*[-9.20, -3.68, 2.58, 8.10] ;; sign needs to be verified
-outercols_mm= inch2mm*[-5.00, -0.55, 3.90] ;; sign needs to be verified
-
-small_rreach_mm= 165.0  ;; needs to be verified
-large_rreach_mm= 139.5  ;; needs to be verified
+;; reaches are in reality larger: 170 mm is the minimum
+small_rreach_mm= 170.0  
+large_rreach_mm= 170.0  
 
 gfiber.guidenum = lindgen(nguide)+1L
 
@@ -58,21 +62,21 @@ gfiber[3:6].xreach= innercols_mm
 gfiber[3:6].yreach= rows_mm[1]
 
 ;; third row
-gfiber[7:10].xreach= innercols_mm
+gfiber[7:10].xreach= -innercols_mm
 gfiber[7:10].yreach= rows_mm[2]
 
 ;; top row
-gfiber[11:13].xreach= outercols_mm
+gfiber[11:13].xreach= -outercols_mm
 gfiber[11:13].yreach= rows_mm[3]
 
 ;; set all reaches the same
 gfiber[0:13].rreach = small_rreach_mm
 
 ;; set the large guide fibers
-gfiber[14].xreach= 0.
+gfiber[14].xreach= 22.86
 gfiber[14].yreach= rows_mm[1]
 gfiber[14].rreach= large_rreach_mm
-gfiber[15].xreach= 0.
+gfiber[15].xreach= -22.86
 gfiber[15].yreach= rows_mm[2]
 gfiber[15].rreach= large_rreach_mm
 
