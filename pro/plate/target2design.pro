@@ -28,8 +28,6 @@
 ;-
 pro target2design, definition, default, targets, design, info=info
 
-toepoch=default_epoch()
-
 ;; which pointing are we adding these targets to?
 pointing= 1L
 if(tag_exist(info, 'pointing')) then $
@@ -79,8 +77,7 @@ endelse
 ;; (not particular position for this LST and temp)
 plate_ad2xy, definition, default, pointing, offset, targets.ra, $
              targets.dec, targets.lambda_eff, xfocal=xf_default, $
-             yfocal=yf_default, pmra=pmra, pmdec=pmdec, fromepoch=epoch, $
-             toepoch=toepoch
+             yfocal=yf_default
 
 ;; create structure for targets
 ntargets=n_elements(targets)
