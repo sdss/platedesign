@@ -179,6 +179,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; Initialize design structure, including a center hole
         if(~keyword_set(omit_center)) then $
           design=design_blank(/center)
+        design.epoch= epoch
         
         ;; What instruments are being used, and how many science,
         ;; standard and sky fibers do we assign to each?
@@ -344,13 +345,13 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                 guidenums=long(strsplit(default.(iguidenums),/extr))
                 guide_design= plate_guide(definition, default, pointing, $
                                           epoch=epoch)
-                design_pm, guide_design, toepoch=epoch
-                if(n_tags(guide_design) gt 0) then $
-                  plate_assign_guide, definition, default, design, $
-                                      guide_design, $
-                                      pointing, guidenums=guidenums $
-                else $
-                  message, 'there are no guide fibers! aborting!'
+                if(n_tags(guide_design) gt 0) then begin
+                    design_pm, guide_design, toepoch=epoch
+                    plate_assign_guide, definition, default, design, $
+                      guide_design, pointing, guidenums=guidenums 
+                endif else begin
+                    message, 'there are no guide fibers! aborting!'
+                endelse
             endfor
         endif
     
@@ -364,9 +365,12 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     sphoto_design= plate_standard(definition, default, $
                                                   instruments[iinst], $
                                                   pointing, offset)
-                    design_pm, sphoto_design, toepoch=epoch
                     
                     if(n_tags(sphoto_design) gt 0) then begin
+
+                        ;; apply proper motions
+                        design_pm, sphoto_design, toepoch=epoch
+
                         ;; assign, applying constraints imposed in the
                         ;; "FIBERID_[INSTRUMENT]" procedure; this code
                         ;; slowly increases number of considered targets 
@@ -400,6 +404,10 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     sky_design= plate_sky(definition, default, $
                                           instruments[iinst], pointing, offset)
                     if(n_tags(sky_design) gt 0) then begin
+
+                        ;; set epoch arbitarily current
+                        sky_design.epoch=epoch
+
                         ;; assign, applying constraints imposed in the
                         ;; "FIBERID_[INSTRUMENT]" procedure; this code
                         ;; slowly increases number of considered targets 
@@ -444,6 +452,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     
                     ;; add them if they don't conflict
                     if(n_tags(trap_design) gt 0) then begin
+                        design_pm, trap_design, toepoch=epoch
                         for i=0L, n_elements(trap_design)-1L do begin
                             trap_design[i].conflicted= $
                               check_conflicts(design, trap_design[i])
