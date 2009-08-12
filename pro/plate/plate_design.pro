@@ -18,7 +18,8 @@
 ;  23-Jan-2008, Demitri Muna, NYU - added superclobber option
 ;-
 ;------------------------------------------------------------------------------
-pro plate_design, plateid, debug=debug, clobber=clobber, superclobber=superclobber, succeeded=succeeded
+pro plate_design, plateid, debug=debug, clobber=clobber, $
+                  superclobber=superclobber, succeeded=succeeded
 
 COMPILE_OPT idl2
 COMPILE_OPT logical_predicate
@@ -31,7 +32,8 @@ succeeded = false
 ;; loop over multiple designs, etc
 if(n_elements(plateid) gt 1) then begin
     for i=0L, n_elements(plateid)-1L do begin
-        plate_design, plateid[i], debug=debug, clobber=clobber, superclobber=superclobber, succeeded=succeeded
+        plate_design, plateid[i], debug=debug, clobber=clobber, $
+                  superclobber=superclobber, succeeded=succeeded
     endfor
     return
 endif
@@ -46,12 +48,14 @@ iplate=where(plans.plateid eq plateid, nplate)
 
 ; === Check performed in preflight - to remove ===
 if(nplate gt 1) then begin
-  message, 'Error: More than one entry for plateid (' + string(plateid) + ') found in ' + platePlans_file + '.'
+  message, 'Error: More than one entry for plateid (' + string(plateid) + $
+    ') found in ' + platePlans_file + '.'
 endif
 ; ===
 
 if (nplate eq 0) then begin
-    message, 'Error: The plate id given (' + string(plateid) + ') was not found in ' + platePlans_file + '.'
+    message, 'Error: The plate id given (' + string(plateid) + $
+      ') was not found in ' + platePlans_file + '.'
     return
 endif
 
