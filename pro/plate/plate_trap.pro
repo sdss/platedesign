@@ -67,6 +67,7 @@ if(NOT file_test(trapfile)) then begin
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
         yanny_write, trapfile, pdata, hdr=outhdr
+        ptr_free, pdata
     endif
 endif else begin
     in_trap_design= yanny_readone(trapfile, /anon)
