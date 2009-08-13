@@ -97,7 +97,7 @@ plate_apo_refrac, racen, deccen, lst=lst, airtemp=airtemp, $
 adrval= adr(alt, lambda=lambda, temperature=airtemp, pressure=pressure)
 alt= alt+ adrval/3600.
 
-;; differentially refract the CENTER too
+;; differentially refract the CENTER too, if desired
 if(keyword_set(clambda)) then begin
     adrcenval= adr(altcen, lambda=clambda, temperature=airtemp, $
                    pressure=pressure)
@@ -124,7 +124,8 @@ if(NOT keyword_set(nodistort)) then begin
     rfocal= rfocal+correction
 
     ;; now wavelength dependence in radial distortion due to the
-    ;; telescope optics
+    ;; telescope optics. note that ASSUMES that the fibers are
+    ;; backstopped appropriately
     if(NOT keyword_set(nordistort)) then begin
         rf5000= sdss_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
         rfthis= sdss_rdistort(rfocal, lambda)
