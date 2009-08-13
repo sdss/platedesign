@@ -28,6 +28,7 @@ data/sdss/g_codes_object.txt -text
 data/sdss/holtzman-adr.txt -text
 data/sdss/image-heights.txt -text
 data/sdss/plParam.par -text
+data/sdss/plPlugMapP-blank-new.par -text
 data/sdss/plPlugMapP-blank.par -text
 data/test/guide_2mass.fits -text
 data/test/guide_2mass.kml -text
