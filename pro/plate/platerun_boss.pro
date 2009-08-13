@@ -84,8 +84,8 @@ ptr_free, pdata
 
 ;; make the plateLines files
 if(keyword_set(nolines) eq 0) then begin
+    platelines_boss_all, platerun
     for i=0L, n_elements(plateid)-1L do begin
-        platelines_boss, plateid[i]
         spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
           strtrim(string(plateid[i], f='(i6.6)'),2)+'.ps '+ $
           platerun_dir
