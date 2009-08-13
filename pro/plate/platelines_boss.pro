@@ -23,17 +23,46 @@
 ;   22-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_boss, plateid, fullsize=fullsize, sky=sky, std=std
+pro platelines_boss, in_plateid, fullsize=fullsize, sky=sky, std=std, $
+                     diesoft=diesoft
+
+common com_plb, plateid, full, holes
 
 platescale = 217.7358D           ; mm/degree
 
+if(NOT keyword_set(in_plateid)) then $
+  message, 'Plate ID must be given!'
+
+if(keyword_set(plateid) gt 0) then begin
+    if(plateid ne in_plateid) then begin
+        plateid= in_plateid
+        full=0
+        holes=0
+    endif
+endif else begin
+    plateid=in_plateid
+endelse
+
 platedir= plate_dir(plateid)
-plplug= platedir+'/plPlugMapP-'+ $
-  strtrim(string(f='(i4.4)',plateid),2)+'.par'
-holes= yanny_readone(plplug)
-fullfile= platedir+'/plateHolesSorted-'+ $
-  strtrim(string(f='(i6.6)',plateid),2)+'.par'
-full= yanny_readone(fullfile)
+
+if(n_tags(holes) eq 0) then begin
+    plplug= platedir+'/plPlugMapP-'+ $
+      strtrim(string(f='(i4.4)',plateid),2)+'.par'
+    holes= yanny_readone(plplug)
+    fullfile= platedir+'/plateHolesSorted-'+ $
+      strtrim(string(f='(i6.6)',plateid),2)+'.par'
+    full= yanny_readone(fullfile)
+endif
+
+if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
+    msg='Could not find plPlugMapP or plateHolesSorted file for '+ $
+      strtrim(string(plateid),2)
+    if(keyword_set(diesoft) eq 0) then $
+      message, msg
+    splog, msg
+    return
+endif
+      
 
 if(keyword_set(sky) gt 0 AND $
    keyword_set(std) gt 0) then $
