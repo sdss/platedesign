@@ -206,6 +206,16 @@ int write_plugprob(double xtarget[],
   fprintf(fp,"c end of flow problem\n");
   fclose(fp);
 
+	if(nTargetBlocks!=NULL) 
+    free((char *) nTargetBlocks);
+  nTargetBlocks=NULL;
+	if(nFiberTargets!=NULL) 
+    free((char *) nFiberTargets);
+  nFiberTargets=NULL;
+	if(fiberTargets!=NULL) 
+    free((char *) fiberTargets);
+  fiberTargets=NULL;
+
 	return(1);
 } /* end write_plugprob */
 
