@@ -12,8 +12,10 @@
 ;   rdistort - [N] distorted radii
 ; COMMENTS:
 ;   Uses $PLATEDESIGN_DIR/data/sdss/image-heights.txt
-;   Supplied by Jim Gunn, message sdss3-boss/1016
+;   Supplied by Jim Gunn, message sdss3-infrastructure/946
 ;   Returns distortion relative to 5500 Angstroms
+;   Note that these corrections are appropriate for BACKSTOPPED
+;     targets that follow the focal plane of the appropriate lambda
 ; REVISION HISTORY:
 ;   7-Aug-2008  MRB, NYU
 ;-
