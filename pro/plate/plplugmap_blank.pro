@@ -11,7 +11,7 @@
 function plplugmap_blank, enums=enums, structs=structs
 
 pl= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                  '/data/sdss/plPlugMapP-blank-new.par', $
+                  '/data/sdss/plPlugMapP-blank.par', $
                   enums=enums, structs=structs)
 
 return, pl
