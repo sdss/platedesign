@@ -30,6 +30,7 @@ data/sdss/image-heights.txt -text
 data/sdss/plParam.par -text
 data/sdss/plPlugMapP-blank-new.par -text
 data/sdss/plPlugMapP-blank.par -text
+data/sdss/plate-orientation.txt -text
 data/test/guide_2mass.fits -text
 data/test/guide_2mass.kml -text
 data/test/guide_sdss.fits -text
