@@ -85,16 +85,15 @@ plug.expl=0.
 plug.devaucl=0.
 
 ;; set objtype
-;; !! SOURCETYPE ISN'T BEING SET SO WE'RE STILL ON MANUAL!
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
 
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
-             strupcase(holes.sourcetype) eq 'GALAXY', nhole)
+             strtrim(strupcase(holes.sourcetype),2) eq 'LRG', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'GALAXY'
 
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
-             strupcase(holes.sourcetype) eq 'QSO', nhole)
+             strtrim(strupcase(holes.sourcetype),2) eq 'QSO', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'QSO'
 
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
