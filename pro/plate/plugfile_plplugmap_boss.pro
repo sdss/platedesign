@@ -36,6 +36,8 @@ plug= replicate(plug0, n_elements(holes))
 
 ;; set holetype
 
+plug.sectarget= 0
+
 ;; anything which is based on a target is called
 ;; an OBJECT in plPlugMap
 ihole= where(strupcase(holes.targettype) ne 'NA', nhole)
@@ -45,6 +47,7 @@ if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
 ;; holetype GUIDE in plPlugMap
 ihole= where(strupcase(holes.holetype) eq 'GUIDE', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'GUIDE'
+if(nhole gt 0) then plug[ihole].sectarget= 64
 
 ;; holetype ALIGNMENT in holes -> 
 ;; holetype ALIGNMENT in plPlugMap
@@ -76,22 +79,47 @@ endif else begin
     message, 'MAGTYPE must match either *MAG or *FLUX'
 endelse
 
+;; We will ignore these likelihood columns
+plug.starl=0.
+plug.expl=0.
+plug.devaucl=0.
+
 ;; set objtype
-ihole= where(strupcase(holes.targettype) eq 'SCIENCE' OR $
-             strupcase(holes.targettype) eq 'SKY' OR $
-             strupcase(holes.targettype) eq 'STANDARD', nhole)
-if(nhole gt 0) then begin
-    plug[ihole].holetype= 'OBJECT'
-    plug[ihole].objtype= holes[ihole].sourcetype
-endif
+;; !! SOURCETYPE ISN'T BEING SET SO WE'RE STILL ON MANUAL!
+ihole= where(strupcase(holes.targettype) eq 'SCIENCE', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
+
+ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
+             strupcase(holes.sourcetype) eq 'GALAXY', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'GALAXY'
+
+ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
+             strupcase(holes.sourcetype) eq 'QSO', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'QSO'
+
+ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
+             strupcase(holes.sourcetype) eq 'STAR', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'STAR_BHB'
+
+ihole= where(strupcase(holes.targettype) eq 'SKY', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
+if(nhole gt 0) then plug[ihole].objtype= 'SKY'
+if(nhole gt 0) then plug[ihole].sectarget= 16
+
+ihole= where(strupcase(holes.targettype) eq 'STANDARD', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
+if(nhole gt 0) then plug[ihole].objtype= 'SPECTROPHOTO_STD'
+if(nhole gt 0) then plug[ihole].sectarget= 32
 
 ;; xfocal and yfocal
 plug.xfocal=holes.xfocal
 plug.yfocal=holes.yfocal
 
-;; spectrographid, throughput
+;; spectrographid, throughput, primtarget not set
 plug.spectrographid= 0
 plug.throughput= 0
+plug.primtarget= holes.segue2_target1
+plug.sectarget= holes.segue2_target2
 plug.objid[0]= holes.run
 
 rerun_values = strtrim(holes.rerun, 2) ; 2 = trim both ends
@@ -226,6 +254,8 @@ for pointing=1L, npointings do begin
     if(nnotthis gt 0L) then begin
         thisplug[inotthis].objtype= 'SKY'
         thisplug[inotthis].mag= 25.
+        thisplug[inotthis].primtarget= 0
+        thisplug[inotthis].sectarget= 16
     endif
 
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
