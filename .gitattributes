@@ -28,9 +28,9 @@ data/sdss/g_codes_object.txt -text
 data/sdss/holtzman-adr.txt -text
 data/sdss/image-heights.txt -text
 data/sdss/plParam.par -text
-data/sdss/plPlugMapP-blank-new.par -text
 data/sdss/plPlugMapP-blank.par -text
 data/sdss/plate-orientation.txt -text
+data/sdss/plugMap-blank.par -text
 data/sdss/sdss_newguide.par -text
 data/test/guide_2mass.fits -text
 data/test/guide_2mass.kml -text
@@ -153,6 +153,7 @@ pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
+pro/plate/plugmap_blank.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sdss_rdistort.pro -text
 pro/plate/sky_location_candidates.pro -text
@@ -162,6 +163,7 @@ pro/retro/copy_retro_jul08_to_plates.pro -text
 pro/retro/dec_segue2_platelines.pro -text
 pro/retro/jan_segue2_platelines.pro -text
 pro/retro/old_segue2_platelines.pro -text
+pro/retro/retrofit_boss_200908.pro -text
 pro/retro/retrofit_segue2_200904.pro -text
 pro/retro/retrofit_segue2_aug08d.pro -text
 pro/retro/retrofit_segue2_jul08.pro -text
