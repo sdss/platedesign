@@ -1,0 +1,45 @@
+# File to describe mapping of "new" guider
+# fibers for the new 16-fiber system
+# installed in Summer 2009, to the old
+# system.
+#
+# We map to both the "best" original fiber 
+# from the old guide system ("origmatch") 
+# and to the first version of the new
+# fiber numbering used by platedesign 
+# ("firstmatch").
+# 
+# Based on file from Larry Carey:
+#   SDSS3GuideFbrHrnssNumSysV1.pdf
+# 
+# Guide types are:
+#   S - short ferrule
+#   F - in focus ferrule
+#   L - long ferrule
+#   A - 1.5mm acquisition fiber
+#
+# MRB, NYU 2009-08-24
+
+typedef struct {
+		int guidenum;
+    char guidetype[10];
+    int origmatch;
+    int firstmatch;
+} GUIDENUM;
+
+GUIDENUM  1 S  4   4
+GUIDENUM  2 F 10   5
+GUIDENUM  3 A 11  15
+GUIDENUM  4 L -1   6
+GUIDENUM  5 F  1   7
+GUIDENUM  6 L  3   1
+GUIDENUM  7 F  2   2
+GUIDENUM  8 S -1   3
+GUIDENUM  9 S  8   8
+GUIDENUM 10 F -1   9
+GUIDENUM 11 A  9  16
+GUIDENUM 12 L -1  10
+GUIDENUM 13 F  5  11
+GUIDENUM 14 L -1  12
+GUIDENUM 15 F  7  13
+GUIDENUM 16 S  6  14
