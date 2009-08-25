@@ -13,6 +13,8 @@
 ;-
 pro plugfile_plplugmap_boss, plateid
 
+makesimple=0
+
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
@@ -233,7 +235,6 @@ for pointing=1L, npointings do begin
               'theta 0 ', $
               khdr]
 
-
     ;; output file name
     if(plateid ge 10000) then begin
         splog, 'plateid exceeds 10000, which breaks data model'
@@ -264,10 +265,27 @@ for pointing=1L, npointings do begin
     thisplug.ra= ra
     thisplug.dec= dec
     
+    ;; write out the plPlugMapP file for plate
     pdata=ptr_new(thisplug)
     yanny_write, plugmapfile, pdata, hdr=outhdr, $
       enums=plugenum, structs=plugstruct
     ptr_free, pdata
+
+    ;; now make simple plugging file
+    if(keyword_set(makesimple)) then begin
+        plugsimplefile= plate_dir(plateid)+'/plugMap-'+platestr+ $
+                        pointing_post[pointing-1]+'.par' 
+        plugsimple0= plugmap_blank(enums=plugenum, struct=plugstruct)
+        plugsimple= replicate(plugsimple0, n_elements(thisplug))
+        struct_assign, thisplug, plugsimple
+        plugsimple.sourcetype= holes.sourcetype
+        plugsimple[inotthis].sourcetype= 'SKY'
+        pdata=ptr_new(plugsimple)
+        yanny_write, plugsimplefile, pdata, hdr=outhdr, $
+                     enums=plugenum, structs=plugstruct
+        ptr_free, pdata
+    endif
+        
 endfor
 
 end

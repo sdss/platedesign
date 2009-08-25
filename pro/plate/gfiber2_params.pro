@@ -29,14 +29,14 @@ nguide = 16
 if(n_elements(guidenums) eq 0) then $
   guidenums= lindgen(nguide)
 
-gfiber = create_struct( $
+gfiber0 = create_struct( $
          'guidenum' , 0L, $
          'xreach'   , 0.0, $
          'yreach'   , 0.0, $
          'rreach'   , 0.0, $
          'xprefer'  , 0.d, $
          'yprefer'  , 0.d )
-gfiber = replicate(gfiber, nguide)
+gfiber = replicate(gfiber0, nguide)
 
 rows_mm= [-277.5, -137.8, 137.8, 277.5]
 
@@ -87,6 +87,13 @@ gfiber.yprefer = gfiber.yreach
 ;; ... except for large ones, where we push inwards a bit
 gfiber[14].yprefer= rows_mm[1]*0.5
 gfiber[15].yprefer= rows_mm[2]*0.5
+
+;; finally, resort them to the final ordering
+newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par')
+newgfiber = replicate(gfiber0, nguide)
+newgfiber[newg.guidenum-1L]=gfiber[newg.firstmatch-1L]
+gfiber=newgfiber
+newgfiber=0
 
 return, gfiber
 
