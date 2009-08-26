@@ -518,14 +518,36 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             ibad=where(design.epoch lt 1900. OR design.epoch gt 2100., nbad)
             if(nbad gt 0) then $
               message, 'EPOCH found <1900 or >2100, not realistic!'
+
+            ;; get median reddening
+            iobj= where(strupcase(design.targettype) eq 'SCIENCE', nobj)
+            if(nobj eq 0) then begin
+                plate_log, plateid, 'WARNING: no science targets!'
+                iobj= lindgen(n_elements(design))
+            endif
+            extinct= reddenvec(design[iobj].target_ra, design[iobj].target_dec)
             
+            ;; set mapping params to defaults
+            design.orig_fiberid= design.fiberid
+            design.spectrographid= -1
+            design.throughput= -1.
+
+            ;; set SOS-style magnitude (lots of logic in there!)
+            design.mag= plate_mag(design, default=default)
+
             pdata= ptr_new(design)
             spawn, 'mkdir -p '+designdir
             hdrstr=struct_combine(default, definition)
             outhdr=struct2lines(hdrstr)
             outhdr=[outhdr, $
+                    'reddeningMed '+string(extinct,format='(5f8.4)'), $
+                    'tileId '+strtrim(string(plan.tileid),2), $
+                    'theta 0 ', $
                     'platerun '+plan.platerun, $
                     'platedesign_version '+platedesign_version()]
+            if(tag_indx(hdrstr, 'POINTING_NAME') eq -1) then $
+              outhdr= [outhdr, $
+                       'pointing_name A B C D E F']
             yanny_write, designfile, pdata, hdr=outhdr
             ptr_free, pdata
         endif
