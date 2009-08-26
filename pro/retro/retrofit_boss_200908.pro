@@ -20,9 +20,10 @@
 pro retrofit_boss_200908
 
 plateruns=['2009.08.a.boss']
-newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par')
+newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par', $
+                    /anon)
 
-plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par', /anon)
 for i=0L, n_elements(plans)-1L do begin
     ii=where(plans[i].platerun eq plateruns, nii)
     ;; act if it is in one of the affected plate runs
@@ -50,7 +51,7 @@ for i=0L, n_elements(plans)-1L do begin
           message, 'Original already exists!!'
         spawn, 'cp -f '+plugmapfile+' '+origplugmapfile
 
-        holes= yanny_readone(holesfile, hdr=hdr)
+        holes= yanny_readone(holesfile, hdr=hdr, /anon)
         iguide=where(holes.holetype eq 'GUIDE', nguide)
         if(nguide ne 16) then $
           message, 'Less than 16 guides!!!'
@@ -60,6 +61,32 @@ for i=0L, n_elements(plans)-1L do begin
               message, 'Inconsistency in guides!'
             holes[iguide[j]].iguide= newg[imatch].guidenum
         endfor
+
+        ;; add header keywords:
+        ;;  pointing_name
+        ;;  tileID
+        ;;  theta
+        ;;  reddenmed
+        iobj=where(holes.holetype eq 'BOSS')
+        extinct= reddenmed(holes[iobj].target_ra, holes[iobj].target_dec)
+        hdr= [hdr, $
+              'pointing_name A B C D E F', $
+              'theta 0', $
+              'tileid '+strtrim(string(plans[i].tileid),2), $
+              'reddeningMed '+string(extinct,format='(5f8.4)')]
+
+        ;; add columns:
+        ;;  orig_fiberid
+        ;;  mag
+        ;;  throughput
+        ;;  spectrographid
+        holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
+        new_holes= replicate(holes0, n_elements(holes))
+        struct_assign, holes, new_holes, /nozero
+        holes=new_holes
+        holes.orig_fiberid= holes.fiberid
+        default={bossmagtype:'fiber2mag'}
+        holes.mag= plate_mag(holes, default=default)
         
         pdata= ptr_new(holes)
         yanny_write, holesfile, pdata, hdr=hdr
