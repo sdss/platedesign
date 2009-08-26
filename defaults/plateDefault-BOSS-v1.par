@@ -67,3 +67,6 @@ collectfactor 3
 # Use BOSS plugmap style
 plugmapstyle plplugmap_boss
 bossmagtype fiber2mag
+
+# Default pointing_name
+pointing_name A B C D E F
