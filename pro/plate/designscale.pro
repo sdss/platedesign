@@ -94,12 +94,10 @@ for pointing= 1L, npointings do begin
     random_lambda= replicate(lambda_eff, n_elements(random_ra))
     plate_ad2xy, definition, default, pointing, 0, $
                  random_ra, random_dec, random_lambda, $
-                 airtemp=plan.temp, lst=lst, xf=xf, yf=yf, $
-                 /nodistort, /nordistort, /norefrac
+                 airtemp=plan.temp, lst=lst, xf=xf, yf=yf
     plate_ad2xy, definition, default, pointing, 0, $
                  off_ra, off_dec, random_lambda, $
-                 airtemp=plan.temp, lst=lst, xf=off_xf, yf=off_yf, $
-                 /nodistort, /nordistort, /norefrac
+                 airtemp=plan.temp, lst=lst, xf=off_xf, yf=off_yf
 
     ;; calculate dalt,daz (deg)
     random_ha= lst-random_ra
