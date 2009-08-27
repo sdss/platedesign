@@ -76,13 +76,13 @@ for i=0L, n_elements(plans)-1L do begin
               'reddeningMed '+string(extinct,format='(5f8.4)')]
         
         fixcaps=['raCen', 'decCen', 'plateId', 'tileId']
-        for i=0L, n_elements(hdr)-1L do begin
-            words= strsplit(hdr[i], /extr)
-            for j=0L, n_elements(fixcaps)-1L do begin
-                if(strupcase(words[0]) eq strupcase(fixcaps[j])) then $
-                  words[0]=fixcaps[j]
-            endfor
-            hdr[i]=strjoin(hdr, ' ')
+        for j=0L, n_elements(hdr)-1L do begin 
+            words= strsplit(hdr[j], /extr) 
+            for k=0L, n_elements(fixcaps)-1L do begin 
+                if(strupcase(words[0]) eq strupcase(fixcaps[k])) then $
+                  words[0]=fixcaps[k] 
+            endfor 
+            hdr[j]=strjoin(words, ' ') 
         endfor
 
         ;; add columns:
@@ -94,7 +94,6 @@ for i=0L, n_elements(plans)-1L do begin
         new_holes= replicate(holes0, n_elements(holes))
         struct_assign, holes, new_holes, /nozero
         holes=new_holes
-        holes.orig_fiberid= holes.fiberid
         default={bossmagtype:'fiber2mag'}
         holes.mag= plate_mag(holes, default=default)
         
