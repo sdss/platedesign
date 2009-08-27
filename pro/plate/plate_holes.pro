@@ -107,12 +107,13 @@ if(tag_exist(tmpstr, 'locationid') eq false) then begin
       message, 'plate '+strtrim(string(plateid),2)+ $
       ' has multiple entries in platePlans.par!'
     locationid= plans[iplate[0]].locationid
-    hdr=['locationID '+strtrim(string(locationid),2), hdr]
+    hdr=['locationId '+strtrim(string(locationid),2), hdr]
 endif
-    
-outhdr=['plateid '+strtrim(string(plateid),2), $
+
+outhdr=['plateId '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
         'temp '+strtrim(string(temp, f='(f40.3)'),2), $
+        guider_hdr(plateid), $
         hdr]
 pdata= ptr_new(holes)
 platedir= plate_dir(plateid)
