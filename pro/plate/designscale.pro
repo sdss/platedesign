@@ -78,34 +78,18 @@ for pointing= 1L, npointings do begin
     random_ra= racen+2.*tilerad*(randomu(seed, nrandom)-0.5)/ $
                cos(!DPI/180.*deccen)
     random_dec= deccen+2.*tilerad*(randomu(seed, nrandom)-0.5)
-    off_theta= randomu(seed,nrandom)*!DPI*2.*0.+45.*!DPI/180.
-    off_ra= random_ra+ doff*cos(off_theta)/cos(random_dec*!DPI/180.)
-    off_dec= random_dec+ doff*sin(off_theta)
     spherematch, racen, deccen, random_ra, random_dec, tilerad, $
                  m1, m2, max=0
     if(m2[0] eq -1) then $
       message, 'Inconsistency in distributing randoms!'
     random_ra=random_ra[m2]
     random_dec=random_dec[m2]
-    off_ra=off_ra[m2]
-    off_dec=off_dec[m2]
     
     ;; calculate X's and Y's
     random_lambda= replicate(lambda_eff, n_elements(random_ra))
     plate_ad2xy, definition, default, pointing, 0, $
                  random_ra, random_dec, random_lambda, $
                  airtemp=plan.temp, lst=lst, xf=xf, yf=yf
-    plate_ad2xy, definition, default, pointing, 0, $
-                 off_ra, off_dec, random_lambda, $
-                 airtemp=plan.temp, lst=lst, xf=off_xf, yf=off_yf
-
-    ;; calculate dalt,daz (deg)
-    random_ha= lst-random_ra
-    off_ha= lst-off_ra
-    hadec2altaz, random_ha, random_dec, lat, random_alt, random_az
-    hadec2altaz, off_ha, off_dec, lat, off_alt, off_az
-    dalt= random_alt-off_alt
-    daz= (random_az-off_az)*cos(!DPI/180.*0.5*(random_alt+off_alt))
     
     ;; calculate parallactic angle
     hadec2altaz, plan.ha[pointing-1L], deccen, lat, altcen, azcen
@@ -114,13 +98,37 @@ for pointing= 1L, npointings do begin
     dazoff=(azoff-azcen)/doff*cos(!DPI/180.*altcen)
     parad= atan(dazoff, daltoff)
     pa[pointing-1]= 180.D/!DPI*parad
+
+    ;; calculate dalt
+    random_ha= lst-random_ra
+    dalt= replicate(doff, n_elements(random_ra))
+    daz= replicate(0., n_elements(random_ra))
+    hadec2altaz, random_ha, random_dec, lat, random_alt, random_az
+    altaz2hadec, random_alt+dalt, random_az+daz/cos(random_alt*!DPI/180.), $
+                 lat, off_ha, off_dec
+    off_ra= lst-off_ha
     
-    ;; calculate dalt, daz (mm)
-    dazmm = (xf-off_xf)*cos(parad) - (yf-off_yf)*sin(parad)
+    plate_ad2xy, definition, default, pointing, 0, $
+                 off_ra, off_dec, random_lambda, $
+                 airtemp=plan.temp, lst=lst, xf=off_xf, yf=off_yf
+    
     daltmm= (xf-off_xf)*sin(parad) + (yf-off_yf)*cos(parad)
-    
-    ;; calculate median ratio of each
     altscale[pointing-1]= median(abs(daltmm/ dalt))
+
+    ;; calculate daz
+    random_ha= lst-random_ra
+    dalt= replicate(0., n_elements(random_ra))
+    daz= replicate(doff, n_elements(random_ra))
+    hadec2altaz, random_ha, random_dec, lat, random_alt, random_az
+    altaz2hadec, random_alt+dalt, random_az+daz/cos(random_alt*!DPI/180.), $
+                 lat, off_ha, off_dec
+    off_ra= lst-off_ha
+    
+    plate_ad2xy, definition, default, pointing, 0, $
+                 off_ra, off_dec, random_lambda, $
+                 airtemp=plan.temp, lst=lst, xf=off_xf, yf=off_yf
+    
+    dazmm = (xf-off_xf)*cos(parad) - (yf-off_yf)*sin(parad)
     azscale[pointing-1]= median(abs(dazmm/ daz))
 
 endfor
