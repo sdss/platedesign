@@ -36,7 +36,7 @@ pro plate_writepage, runname
 
 runpath= getenv('PLATELIST_DIR')+'/runs/'+runname
 
-;;spawn, 'cd '+runpath+' ; drillrun2zip '+runname
+spawn, 'cd '+runpath+' ; drillrun2zip '+runname
 
 openw, unit, runpath+'/'+runname+'.html', /get_lun
 printf, unit, '<html>'
