@@ -30,7 +30,6 @@ design0={DESIGN_TARGET, $
          iplateinput:-1L, $
          pointing:0L, $
          offset:0L, $
-         orig_fiberid:-9999L, $
          fiberid:-9999L, $
          block:-9999L, $
          iguide:-9999L, $
@@ -87,8 +86,6 @@ design0={DESIGN_TARGET, $
          fibermag:fltarr(5), $
          fiber2mag:fltarr(5), $
          mag:fltarr(5), $
-         spectrographid:-1L, $
-         throughput:-1., $
          epoch:default_epoch(), $
          pmra:0., $
          pmdec:0., $
