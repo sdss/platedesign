@@ -35,25 +35,11 @@ for i=0L, n_elements(plans)-1L do begin
 
         holesfile= platedir+'/plateHoles-'+platestr6+'.par'
         origholesfile= platedir+'/plateHoles-'+platestr6+'-orig.par'
-        if(file_test(origholesfile) gt 0) then $
-          message, 'Original already exists!!'
-        spawn, 'cp -f '+holesfile+' '+origholesfile
 
-        sholesfile= platedir+'/plateHolesSorted-'+platestr6+'.par'
-        origsholesfile= platedir+'/plateHolesSorted-'+platestr6+'-orig.par'
-        if(file_test(origsholesfile) gt 0) then $
-          message, 'Original already exists!!'
-        spawn, 'cp -f '+sholesfile+' '+origsholesfile
-
-        plugmapfile= platedir+'/plPlugMapP-'+platestr+'.par'
-        origplugmapfile= platedir+'/plPlugMapP-'+platestr+'-orig.par'
-        if(file_test(origplugmapfile) gt 0) then $
-          message, 'Original already exists!!'
-        spawn, 'cp -f '+plugmapfile+' '+origplugmapfile
-
-        holes= yanny_readone(holesfile, hdr=hdr, /anon)
-        iguide=where(holes.holetype eq 'GUIDE', nguide)
-        if(nguide ne 16) then $
+        holes= yanny_readone(origholesfile, hdr=hdr, /anon)
+        iguide=where(holes.holetype eq 'GUIDE' OR $
+                     holes.holetype eq 'ALIGNMENT', nguide)
+        if(nguide ne 32) then $
           message, 'Less than 16 guides!!!'
         for j=0L, nguide-1L do begin
             imatch= where(holes[iguide[j]].iguide eq newg.firstmatch, nmatch)
@@ -85,11 +71,7 @@ for i=0L, n_elements(plans)-1L do begin
             hdr[j]=strjoin(words, ' ') 
         endfor
 
-        ;; add columns:
-        ;;  orig_fiberid
-        ;;  mag
-        ;;  throughput
-        ;;  spectrographid
+        ;; add column mag
         holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
         new_holes= replicate(holes0, n_elements(holes))
         struct_assign, holes, new_holes, /nozero
@@ -102,10 +84,12 @@ for i=0L, n_elements(plans)-1L do begin
         ptr_free, pdata
         
         plugfile_plplugmap_boss, plateid
+        plugmapfile= platedir+'/plPlugMapP-'+platestr+'.par'
         spawn, 'cp -f '+plugmapfile+' '+getenv('PLATELIST_DIR')+'/runs/'+ $
                plateruns[ii[0]]
         
-        platelines_boss, plateid
+        ;;platelines_boss, plateid
+    stop
     endif
 endfor
 
