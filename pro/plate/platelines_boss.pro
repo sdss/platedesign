@@ -127,7 +127,7 @@ spawn, 'convert '+filebase+'.ps '+filebase+'.png'
 
 end
 ;
-pro platelines_boss, in_plateid, diesoft=diesoft
+pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty
 
 common com_plb
 
@@ -220,6 +220,8 @@ for k=0L, n_elements(versions)-1L do begin
         ii= where(-holes.fiberid ge i*nper+1L and $
                   -holes.fiberid le (i+1L)*nper, nii)
         isort= lindgen(nii)
+        if(keyword_set(sorty)) then $
+          isort= sort(holes[ii].yfocal)
         color= colors[i mod n_elements(colors)]
         
         ;; connect lines

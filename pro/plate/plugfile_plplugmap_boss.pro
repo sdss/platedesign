@@ -11,7 +11,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plugfile_plplugmap_boss, plateid
+pro plugfile_plplugmap_boss, plateid, keepoldcoords=keepoldcoords
 
 makesimple=0
 
@@ -259,11 +259,13 @@ for pointing=1L, npointings do begin
     endif
 
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
-    plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
-      thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
-      lst=racen[pointing-1]+ha[pointing-1], airtemp= temp
-    thisplug.ra= ra
-    thisplug.dec= dec
+    if(NOT keyword_set(keepoldcoords)) then begin
+        plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
+                     thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
+                     lst=racen[pointing-1]+ha[pointing-1], airtemp= temp 
+        thisplug.ra= ra
+        thisplug.dec= dec
+    endif
     
     ;; write out the plPlugMapP file for plate
     pdata=ptr_new(thisplug)
