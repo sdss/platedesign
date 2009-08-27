@@ -548,10 +548,21 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             if(tag_indx(hdrstr, 'POINTING_NAME') eq -1) then $
               outhdr= [outhdr, $
                        'pointing_name A B C D E F']
+        
+            fixcaps=['raCen', 'decCen', 'plateId', 'tileId']
+            for j=0L, n_elements(outhdr)-1L do begin 
+                words= strsplit(outhdr[j], /extr) 
+                for k=0L, n_elements(fixcaps)-1L do begin 
+                    if(strupcase(words[0]) eq strupcase(fixcaps[k])) then $
+                      words[0]=fixcaps[k] 
+                endfor 
+                outhdr[j]=strjoin(words, ' ') 
+            endfor
+
             yanny_write, designfile, pdata, hdr=outhdr
             ptr_free, pdata
         endif
-    
+        
     endwhile ;; end loop if fibers unassigned
 
 endif ;; end of clobber & file exists tests
