@@ -69,11 +69,21 @@ for i=0L, n_elements(plans)-1L do begin
         ;;  reddenmed
         iobj=where(holes.holetype eq 'BOSS')
         extinct= reddenmed(holes[iobj].target_ra, holes[iobj].target_dec)
-        hdr= [hdr, $
+        hdr= [hdr, guider_hdr(plateid), $
               'pointing_name A B C D E F', $
               'theta 0', $
-              'tileid '+strtrim(string(plans[i].tileid),2), $
+              'tileId '+strtrim(string(plans[i].tileid),2), $
               'reddeningMed '+string(extinct,format='(5f8.4)')]
+        
+        fixcaps=['raCen', 'decCen', 'plateId', 'tileId']
+        for i=0L, n_elements(hdr)-1L do begin
+            words= strsplit(hdr[i], /extr)
+            for j=0L, n_elements(fixcaps)-1L do begin
+                if(strupcase(words[0]) eq strupcase(fixcaps[j])) then $
+                  words[0]=fixcaps[j]
+            endfor
+            hdr[i]=strjoin(hdr, ' ')
+        endfor
 
         ;; add columns:
         ;;  orig_fiberid
