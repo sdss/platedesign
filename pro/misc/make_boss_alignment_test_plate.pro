@@ -70,7 +70,7 @@ xyfocal2ad, index_hole_x, index_hole_y, $
 
 ; Let's call these holes north, south, east, west...
 
-; Hole type: OBJECT
+; Hole type: LIGHT_TRAP
 
 r = 1.237 * 25.4 ; convert inches to mm
 
@@ -98,9 +98,9 @@ xyfocal2ad, east_holes_x, east_holes_y, $
 xyfocal2ad, west_holes_x, west_holes_y, $
 	west_holes_ra, west_holes_dec, racen=racen, deccen=deccen
 
-; Define the PLPLUGMAPOBJ structure
+; Define the PLUGMAPOBJ structure
 
-plPlugMapStruct = {plPlugMapObj, objId:intarr(5), holeType:'x', ra:0.D, dec:0.D, $
+plPlugMapStruct = {plugMapObj, objId:intarr(5), holeType:'x', ra:0.D, dec:0.D, $
 		mag:fltarr(5), starL:0.D, expL:0.D, deVaucL:0.D, objType:'x', xFocal:0.D, $
 		yFocal:0.D, spectrographId:0, fiberId:0, throughput:0, primTarget:0, secTarget:0}
 
@@ -123,7 +123,7 @@ index_holes.yFocal = index_hole_y
 index_holes.fiberID = indgen(16) + 1
 
 direction_holes = replicate(plPlugMapStruct, 4*16)
-direction_holes.holeType = 'OBJECT'
+direction_holes.holeType = 'LIGHT_TRAP'
 direction_holes.ra = [north_holes_ra, south_holes_ra, east_holes_ra, west_holes_ra]
 direction_holes.dec = [north_holes_dec, south_holes_dec, east_holes_dec, west_holes_dec]
 direction_holes.objType = 'NA'
