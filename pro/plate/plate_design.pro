@@ -525,7 +525,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                 plate_log, plateid, 'WARNING: no science targets!'
                 iobj= lindgen(n_elements(design))
             endif
-            extinct= reddenvec(design[iobj].target_ra, design[iobj].target_dec)
+            extinct= reddenmed(design[iobj].target_ra, design[iobj].target_dec)
             
             ;; set mapping params to defaults
             design.orig_fiberid= design.fiberid
