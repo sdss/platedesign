@@ -527,11 +527,6 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             endif
             extinct= reddenmed(design[iobj].target_ra, design[iobj].target_dec)
             
-            ;; set mapping params to defaults
-            design.orig_fiberid= design.fiberid
-            design.spectrographid= -1
-            design.throughput= -1.
-
             ;; set SOS-style magnitude (lots of logic in there!)
             design.mag= plate_mag(design, default=default)
 
