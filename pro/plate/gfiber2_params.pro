@@ -93,6 +93,7 @@ newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par')
 newgfiber = replicate(gfiber0, nguide)
 newgfiber[newg.guidenum-1L]=gfiber[newg.firstmatch-1L]
 gfiber=newgfiber
+gfiber.guidenum=newg.guidenum
 newgfiber=0
 
 return, gfiber
