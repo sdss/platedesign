@@ -7,7 +7,7 @@
 ;   retrofit_segue2_200905
 ; COMMENTS:
 ;   Retrofits the original plate drilling files for this set of plate
-;    runs: 2009.08.a.boss
+;    runs: 2009.05.b.boss
 ;   The desired guide numbering has changed.
 ;   In order to fix this, we rerun plugfile_plplugmap_boss, and 
 ;     replace the plugmaps in the plates and runs dirs
@@ -53,7 +53,7 @@ for i=0L, n_elements(plans)-1L do begin
         if(nguide ne 32) then $
           message, 'Less than 16 guides!!!'
         for j=0L, nguide-1L do begin
-            imatch= where(holes[iguide[j]].iguide eq newg.firstmatch, nmatch)
+            imatch= where(holes[iguide[j]].iguide eq newg.zeromatch, nmatch)
             if(nmatch eq 0) then $
               message, 'Inconsistency in guides!'
             holes[iguide[j]].iguide= newg[imatch].guidenum
