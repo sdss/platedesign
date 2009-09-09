@@ -229,7 +229,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             if(ntotsdss ne 640) then $
               message, 'Expect a total of 640 fibers for SDSS'
         endif
-        imarvels= where(strupcase(fibercount.instruments) eq 'SDSS', nm)
+        imarvels= where(strupcase(fibercount.instruments) eq 'MARVELS', nm)
         if(nm gt 0) then begin
             if(nm gt 1) then $
               message, 'Only expect one instance of MARVELS in instruments!'
