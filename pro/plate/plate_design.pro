@@ -211,6 +211,32 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                      ntot:ntot, $
                      nused:nused, $
                      ncollect:ntot*collectfactor}
+
+        ;; Sanity check known instruments 
+        iboss= where(strupcase(fibercount.instruments) eq 'BOSS', nm)
+        if(nm gt 0) then begin
+            if(nm gt 1) then $
+              message, 'Only expect one instance of BOSS in instruments!'
+            ntotboss= long(total(fibercount.ntot[iboss,*,*,*]))
+            if(ntotboss ne 1000) then $
+              message, 'Expect a total of 1000 fibers for BOSS'
+        endif
+        isdss= where(strupcase(fibercount.instruments) eq 'SDSS', nm)
+        if(nm gt 0) then begin
+            if(nm gt 1) then $
+              message, 'Only expect one instance of SDSS in instruments!'
+            ntotsdss= long(total(fibercount.ntot[isdss,*,*,*]))
+            if(ntotsdss ne 640) then $
+              message, 'Expect a total of 640 fibers for SDSS'
+        endif
+        imarvels= where(strupcase(fibercount.instruments) eq 'SDSS', nm)
+        if(nm gt 0) then begin
+            if(nm gt 1) then $
+              message, 'Only expect one instance of MARVELS in instruments!'
+            ntotmarvels= long(total(fibercount.ntot[imarvels,*,*,*]))
+            if(ntotmarvels ne 60 and ntotmarvels ne 120) then $
+              message, 'Expect a total of 60 or 120 fibers for MARVELS'
+        endif
         
         ;; What conditions on fiber placement exist for each instrument?
         minstdinblock=lonarr(ninstruments) ;; how many standards per block?
