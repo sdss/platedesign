@@ -4,7 +4,7 @@ x=2.5*randomu(seed, 100000)-1.25
 y=2.5*randomu(seed, 100000)-1.25
 
 xf=0
-yf=0
+yf=-0.1
 
 xh=x+xf
 yh=y+yf
