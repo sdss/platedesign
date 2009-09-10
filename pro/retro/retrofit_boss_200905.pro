@@ -20,8 +20,6 @@
 pro retrofit_boss_200905
 
 plateruns=['2009.05.b.boss']
-newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par', $
-                    /anon)
 
 plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par', /anon)
 for i=0L, n_elements(plans)-1L do begin
@@ -48,17 +46,18 @@ for i=0L, n_elements(plans)-1L do begin
         endif
 
         holes= yanny_readone(origholesfile, hdr=hdr, /anon)
-        iguide=where(holes.holetype eq 'GUIDE' OR $
-                     holes.holetype eq 'ALIGNMENT', nguide)
-        if(nguide ne 32) then $
-          message, 'Less than 16 guides!!!'
-        for j=0L, nguide-1L do begin
-            imatch= where(holes[iguide[j]].iguide eq newg.zeromatch, nmatch)
-            if(nmatch eq 0) then $
-              message, 'Inconsistency in guides!'
-            holes[iguide[j]].iguide= newg[imatch].guidenum
-        endfor
-
+        iguide=where(holes.holetype eq 'GUIDE', nguide)
+        if(nguide ne 16) then $
+          message, 'Less (or more!) than 16 guides!!!'
+        gf= gfiber2_params()
+        gnum= distribute_guides(gf,holes[iguide])
+        ialign=lonarr(nguide)-1L
+        for j=0L, nguide-1L do $
+              ialign[j]= where(holes.iguide eq holes[iguide[j]].iguide AND $
+                               holes.holetype eq 'ALIGNMENT')
+        holes[ialign].iguide= gnum
+        holes[iguide].iguide=gnum
+        
         ;; add header keywords:
         ;;  pointing_name
         ;;  tileID
