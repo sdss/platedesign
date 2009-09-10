@@ -35,10 +35,13 @@ matches=ptrarr(nguide)
 costs=ptrarr(nguide)
 nmtot=0L
 ismatched= lonarr(ntarget)
+platescale = 217.7358D          ; mm/degree
 for i=0L, n_elements(gfiber)-1L do begin
-    dist= sqrt((gfiber[i].xreach-design.xf_default)^2+ $
-               (gfiber[i].yreach-design.yf_default)^2)
-    imatch= where(dist lt gfiber[i].rreach, nmatch)
+    inrange= boss_reachcheck(gfiber[i].xreach/platescale, $
+                             gfiber[i].yreach/platescale, $
+                             design.xf_default/platescale, $
+                             design.yf_default/platescale)
+    imatch=where(inrange gt 0, nmatch)
     if(nmatch eq 0) then begin
         splog, 'No guide star available at ALL for #'+ $
                strtrim(string(gfiber[i].guidenum),2)+'!'
