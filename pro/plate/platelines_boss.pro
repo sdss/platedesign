@@ -366,7 +366,7 @@ note=''
 if(nnone gt 0) then begin
     note= 'No star for guide #'
     for i=0L, nnone-2L do $
-          note=note+strtrim(string(inone+1L),2)+','
+          note=note+strtrim(string(inone[i]+1L),2)+','
     note=note+strtrim(string(inone[nnone-1]+1L),2)
 endif
 
@@ -384,6 +384,12 @@ for i=0L, 15L do begin
                 holes[iguide[i]].xfocal, $
                 strtrim(string(holes[iguide[i]].fiberid),2), $
                 align=0.5
+
+    ;; red X if bad guy
+    if(holes[iguide[i]].fiberid le 0) then begin
+        djs_oplot, [holes[iguide[i]].yfocal], [holes[iguide[i]].xfocal], $
+                   color='red', th=3, symsize=1.5, psym=2
+    endif
 endfor
 
 plb_end_print
