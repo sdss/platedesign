@@ -102,7 +102,7 @@ djs_xyouts, [-330], [280], 'Program: '+strtrim(string(plan.programname),2), $
 
 djs_xyouts, [80], [325], label
 if(keyword_set(note)) then $
-  djs_xyouts, [100], [-315], note
+  djs_xyouts, [100], [-325], note
 
 arrow, -320, -320, -320, -270, /data, th=3, hsize=150
 arrow, -320, -320, -270, -320, /data, th=3, hsize=150
@@ -354,7 +354,23 @@ endfor
 filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
           '-guide'
 
-plb_set_print, filebase, 'guide fibers'
+noguide=lonarr(16)
+for i=0L, 15L do begin
+    ii=where(holes.holetype eq 'GUIDE' AND $
+             holes.fiberid eq i+1, nii)
+    if(nii eq 0) then $
+      noguide[i]=1
+endfor
+inone=where(noguide gt 0, nnone)
+note=''
+if(nnone gt 0) then begin
+    note= 'No star for guide #'
+    for i=0L, nnone-2L do $
+          note=note+strtrim(string(inone+1L),2)+','
+    note=note+strtrim(string(inone[nnone-1]+1L),2)
+endif
+
+plb_set_print, filebase, 'guide fibers', note=note
 
 ;; finally, draw guides
 iguide= where(holes.holetype eq 'GUIDE')
