@@ -55,8 +55,8 @@ itag= tag_indx(default, 'n'+ $
                '_sky')
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
-nsky= 3L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
-                 noffsets+1L))[pointing-1L, offset]
+nsky= 12L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
+                  noffsets+1L))[pointing-1L, offset]
 
 sky_design=0
 if(nsky gt 0) then begin
@@ -83,7 +83,7 @@ if(nsky gt 0) then begin
                 nsky=nsky, seed=seed, sky_design=sky_design
             'BOSS': $
               plate_select_sky_boss, racen, deccen, $
-                nsky=4L*nsky, seed=seed, sky_design=sky_design
+                nsky=nsky, seed=seed, sky_design=sky_design
             else: $
               message, 'No such skytype '+skytype
         endcase
