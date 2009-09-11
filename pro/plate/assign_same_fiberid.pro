@@ -25,6 +25,11 @@ oldfibersfile=plate_dir(plate)+ '/plateHolesSorted-'+ $
   strtrim(string(f='(i6.6)', plate),2)+'.par'
 oldfibers= yanny_readone(oldfibersfile, hdr=hdr, /anon)
 
+if (size(oldfibers, /type) ne 8) then begin ; test if the return value is a struct
+	message, 'The input file for the plate id specified could not be found; double check the plate id given.'
+	stop
+endif
+
 ;; read in current input file
 plinput= yanny_readone(inputfile, hdr=hdr, /anon)
 if(tag_indx(plinput[0], 'fiberid') eq -1) then $

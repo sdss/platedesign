@@ -73,18 +73,18 @@ endif else begin
     epoch= replicate(default_epoch(), n_elements(targets))
 endelse
 
-;; Get default xf_default and yf_default
-;; (not particular position for this LST and temp)
-plate_ad2xy, definition, default, pointing, offset, targets.ra, $
-             targets.dec, targets.lambda_eff, xfocal=xf_default, $
-             yfocal=yf_default
-
 ;; create structure for targets
 ntargets=n_elements(targets)
 design= replicate(design_blank(), ntargets)
 
 ;; now copy all appropriate tags to design from the target list
 struct_assign, targets, design, /nozero
+
+;; Get default xf_default and yf_default
+;; (not particular position for this LST and temp)
+plate_ad2xy, definition, default, pointing, offset, targets.ra, $
+             targets.dec, design.lambda_eff, xfocal=xf_default, $
+             yfocal=yf_default
 
 ;; add per plateInput data 
 instruments=strsplit(default.instruments, /extr)
