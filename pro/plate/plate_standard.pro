@@ -22,6 +22,18 @@ designid= long(definition.designid)
 platedesignstandards= strsplit(default.platedesignstandards, /extr)
 standardtype= strsplit(default.standardtype, /extr)
 
+for i=0L, n_elements(standardtype)-1L do begin
+    if(strupcase(standardtype[i]) ne 'NONE' AND $
+       strupcase(standardtype[i]) ne 'BOSS' AND $
+       strupcase(standardtype[i]) ne 'SDSS' AND $
+       strupcase(standardtype[i]) ne 'MARVELS' AND $
+       strupcase(standardtype[i]) ne 'APOGEE') then begin
+        message, 'No such instrument '+standardtype[i]+'; '+ $
+          'plateDesignStandards must specify NONE, BOSS, SDSS, MARVELS, '+ $
+          'or APOGEE'
+    endif
+endfor
+
 ;; check if the current instrument is included, if not, return
 iinst= where(strupcase(instrument) eq $
              strupcase(platedesignstandards), ninst)
