@@ -71,11 +71,11 @@ collectfactor 1
 
 # Mininum and maximum guide star magnitudes
 # (g-band)
-guidemag_minmax 13. 14.5
+guidemag_minmax 13. 16.5
 nguidemax 600
 
 # Mininum and maximum standard star magnitudes
 # (g-band)
-standardmag_minmax_sdss 9. 13.5
+standardmag_minmax_sdss 9. 16.5
 
 pointing_name A B C D E F
