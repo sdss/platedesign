@@ -22,13 +22,13 @@ designid= long(definition.designid)
 platedesignstandards= strsplit(default.platedesignstandards, /extr)
 standardtype= strsplit(default.standardtype, /extr)
 
-for i=0L, n_elements(standardtype)-1L do begin
-    if(strupcase(standardtype[i]) ne 'NONE' AND $
-       strupcase(standardtype[i]) ne 'BOSS' AND $
-       strupcase(standardtype[i]) ne 'SDSS' AND $
-       strupcase(standardtype[i]) ne 'MARVELS' AND $
-       strupcase(standardtype[i]) ne 'APOGEE') then begin
-        message, 'No such instrument '+standardtype[i]+'; '+ $
+for i=0L, n_elements(platedesignstandards)-1L do begin
+    if(strupcase(platedesignstandards[i]) ne 'NONE' AND $
+       strupcase(platedesignstandards[i]) ne 'BOSS' AND $
+       strupcase(platedesignstandards[i]) ne 'SDSS' AND $
+       strupcase(platedesignstandards[i]) ne 'MARVELS' AND $
+       strupcase(platedesignstandards[i]) ne 'APOGEE') then begin
+        message, 'No such instrument '+platedesignstandards[i]+'; '+ $
           'plateDesignStandards must specify NONE, BOSS, SDSS, MARVELS, '+ $
           'or APOGEE'
     endif
