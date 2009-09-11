@@ -18,10 +18,22 @@ function guider_hdr, plateid
 
 designscale, plateid, altscale=altscale, azscale=azscale, pa=pa
 
+altstr= ''
+for i=0L, n_elements(altscale)-1L do $
+      altstr=altstr+strtrim(string(altscale[i], f='(f40.7)'),2)+' '
+
+azstr= ''
+for i=0L, n_elements(azscale)-1L do $
+      azstr=azstr+strtrim(string(azscale[i], f='(f40.7)'),2)+' '
+
+pastr= ''
+for i=0L, n_elements(pa)-1L do $
+      pastr=pastr+strtrim(string(pa[i], f='(f40.7)'),2)+' '
+
 hdr= ['# Following keywords meant for guider', $
-      'design_platescale_alt '+strtrim(string(altscale, f='(f40.7)'),2), $
-      'design_platescale_az '+strtrim(string(azscale, f='(f40.7)'),2), $
-      'design_parallactic_angle '+strtrim(string(pa, f='(f40.7)'),2), $
+      'design_platescale_alt '+altstr, $
+      'design_platescale_az '+azstr, $
+      'design_parallactic_angle '+pastr, $
       'guider_coeff_0 0.', $
       'guider_coeff_1 0.', $
       'guider_coeff_2 0.', $
