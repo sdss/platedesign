@@ -55,10 +55,10 @@ bufferSizeGUIDE 0.3
 
 # Settings if platedesign is meant to find standards
 # Specify which instruments we need to find standards for
-plateDesignStandards 2MASS
+plateDesignStandards BOSS
 
 # For each pointing, what type of standard star?
-standardType 2MASS
+standardType BOSS
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
