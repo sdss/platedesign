@@ -30,39 +30,40 @@ if(NOT keyword_set(tilerad)) then tilerad=1.49
 exclusion=10./3600. ;; exclude 
 safetyfactor=10L
 
+tmass= tmass_read(racen, deccen, tilerad*1.1)
+
 ;; just make sure we have actually the right number of points
 while(n_elements(rasky) lt nsky) do begin
-    splog, 'trying'
 
     ;; pick some random points in a square
-    rasky= racen+ (2.*randomu(seed, nsky*safetyfactor)-1.)/ $
-           cos(!DPI/180.*deccen)*tilerad
-    decsky= deccen+ (2.*randomu(seed, nsky*safetyfactor)-1.)*tilerad
-
+    tmp_rasky= racen+ (2.*randomu(seed, nsky*safetyfactor)-1.)/ $
+      cos(!DPI/180.*deccen)*tilerad
+    tmp_decsky= deccen+ (2.*randomu(seed, nsky*safetyfactor)-1.)*tilerad
+    
     ;; close it off into a circle
-    spherematch, racen, deccen, rasky, decsky, tilerad, m1, m2, max=0
+    spherematch, racen, deccen, tmp_rasky, tmp_decsky, tilerad, m1, m2, max=0
     if(m2[0] ne -1) then begin
-        rasky=rasky[m2]
-        decsky=decsky[m2]
-    endif else begin
-        tmp=temporary(rasky)
-        tmp=temporary(decsky)
-    endelse
+        tmp_rasky=tmp_rasky[m2]
+        tmp_decsky=tmp_decsky[m2]
 
-    ;; find points that are far from any 2MASS
-    tmass= tmass_read(racen, deccen, tilerad*1.1)
-    spherematch, tmass.tmass_ra, tmass.tmass_dec, rasky, decsky, $
-                 10./3600., m1, m2
-    keep=bytarr(n_elements(rasky))+1
-    keep[m2]=0
-    ikeep=where(keep, nkeep)
-    if(nkeep gt 0) then begin
-        rasky= rasky[ikeep]
-        decsky= decsky[ikeep]
-    endif else begin
-        tmp=temporary(rasky)
-        tmp=temporary(decsky)
-    endelse
+        ;; find points that are far from any 2MASS
+        spherematch, tmass.tmass_ra, tmass.tmass_dec, tmp_rasky, tmp_decsky, $
+          10./3600., m1, m2
+        keep=bytarr(n_elements(tmp_rasky))+1
+        keep[m2]=0
+        ikeep=where(keep, nkeep)
+        if(nkeep gt 0) then begin
+            if(n_elements(rasky) eq 0) then begin
+                rasky= tmp_rasky[ikeep]
+                decsky= tmp_decsky[ikeep]
+            endif else begin
+                rasky= [rasky, tmp_rasky[ikeep]]
+                decsky= [decsky, tmp_decsky[ikeep]]
+            endelse
+        endif
+    endif
+
+    splog, 'found '+strtrim(string(n_elements(rasky)),2)+' so far'
 endwhile
 
 indx=shuffle_indx(n_elements(rasky), num_sub=nsky)
