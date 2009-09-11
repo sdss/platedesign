@@ -4,7 +4,7 @@
 # Which instruments are to be used? 
 # At least one argument required, from among:
 #   SDSS BOSS MARVELS APOGEE
-instruments BOSS 
+instruments MARVELS 
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
@@ -37,8 +37,8 @@ guideNums2 2  5  6  8  9 11 12 15
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # (Include guide instrument here)
 # BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
-ferruleSizeBOSS 3.72231
-bufferSizeBOSS 0.000
+ferruleSizeMARVELS 2.500
+bufferSizeMARVELS 1.000
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
@@ -46,9 +46,7 @@ bufferSizeGUIDE 0.3
 
 # Mininum and maximum guide star magnitudes
 # (g-band)
-guidemag_minmax 13. 14.5
+guidemag_minmax 13. 16.5
 nguidemax 600
 
 pointing_name A B C D E F
-
-plateDesignStandards BOSS

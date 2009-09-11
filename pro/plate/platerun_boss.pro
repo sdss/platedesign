@@ -100,7 +100,7 @@ spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
 spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
        planfile+'" | plate -noTk'
 
-splog, '"plate_writepage, ' + platerun + '" can now be run.'
+splog, '"plate_writepage, ''' + platerun + '''" can now be run.'
 
 end
 ;------------------------------------------------------------------------------

@@ -23,8 +23,6 @@ endif
 ;; run plate_design for each one
 for i=0L, nplate-1L do begin
     platelines_boss, plans[iplate[i]].plateid, /diesoft
-    platelines_boss, plans[iplate[i]].plateid, /sky, /diesoft
-    platelines_boss, plans[iplate[i]].plateid, /std, /diesoft
 endfor
 
 end
