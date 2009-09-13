@@ -331,6 +331,12 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                 ;; assign holes to each plateInput file
                 plate_assign, definition, default, fibercount, design, $
                               new_design, seed=seed, nextra=nextrafibers
+
+                ;; if first entry is a conflict, AND this is highest
+                ;; priority level, that is fishy: flag a warning
+                if(new_design[0].conflicted gt 0 and i eq 0) then begin
+                    plate_log, plateid, 'WARNING: First target conflicted with center!'
+                endif
                 
                 ;; output results for this set
                 iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
