@@ -317,10 +317,12 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     target2design, definition, default, tmp_targets, $
                                    tmp_design, info=hdrstr
                     tmp_design.iplateinput= k+1L
-                    
+
                     if(n_tags(new_design) eq 0) then begin
+                        ifirst= [0]
                         new_design=tmp_design 
                     endif else begin
+                        ifirst= [ifirst, n_elements(new_design)]
                         new_design=[new_design, tmp_design]
                     endelse
                 endfor
@@ -334,9 +336,11 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
 
                 ;; if first entry is a conflict, AND this is highest
                 ;; priority level, that is fishy: flag a warning
-                if(new_design[0].conflicted gt 0 and i eq 0) then begin
-                    plate_log, plateid, 'WARNING: First target conflicted with center!'
-                endif
+                for j=0L, n_elements(ifirst)-1L do begin
+                    if(new_design[ifirst[j]].conflicted gt 0 and i eq 0) then begin
+                        plate_log, plateid, 'WARNING: First target in a file conflicted with center!'
+                    endif
+                endfor
                 
                 ;; output results for this set
                 iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
