@@ -55,8 +55,15 @@ itag= tag_indx(default, 'n'+ $
                '_sky')
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
-nsky= 12L*(reform(long(strsplit(default.(itag),/extr)), npointings, $
-                  noffsets+1L))[pointing-1L, offset]
+nsky= (reform(long(strsplit(default.(itag),/extr)), npointings, $
+              noffsets+1L))[pointing-1L, offset]
+
+;; increase maximum # of skies by collection factor
+if(tag_exist(default, 'COLLECTFACTOR')) then $
+  collectfactor= long(default.collectfactor) $
+else $
+  collectfactor= 10L
+nsky=nsky*collectfactor
 
 sky_design=0
 if(nsky gt 0) then begin
