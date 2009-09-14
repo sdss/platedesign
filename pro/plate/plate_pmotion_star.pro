@@ -49,18 +49,21 @@ if(n_elements(racen) gt 0 OR $
 
     dat= usno_read(racen, deccen, tilerad)
     spherematch, ra, dec, dat.ra, dat.dec, matchrad, m1, m2, max=0
-    isort= sort(m1)
-    iuniq= uniq(m1[isort])
-    istart=0L
-    for i=0L, n_elements(iuniq)-1L do begin
-        iend=iuniq[i]
-        icurr= isort[istart:iend]
-        iusno= m2[icurr[0]]
-        pmra[m1[icurr]]= dat[iusno].mura
-        pmdec[m1[icurr]]= dat[iusno].mudec
-        src[m1[icurr]]= 'USNO-B'
-        istart=iend+1L
-    endfor
+
+    if(m1[0] ne -1) then begin
+        isort= sort(m1)
+        iuniq= uniq(m1[isort])
+        istart=0L
+        for i=0L, n_elements(iuniq)-1L do begin
+            iend=iuniq[i]
+            icurr= isort[istart:iend]
+            iusno= m2[icurr[0]]
+            pmra[m1[icurr]]= dat[iusno].mura
+            pmdec[m1[icurr]]= dat[iusno].mudec
+            src[m1[icurr]]= 'USNO-B'
+            istart=iend+1L
+        endfor
+    endif
     
     return
 endif
