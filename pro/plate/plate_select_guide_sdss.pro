@@ -94,7 +94,7 @@ if (keyword_set(objs)) then begin
     from_mjd=sdss_run2mjd(objs.run)
     to_mjd = (epoch - 2000.)*365.25 + 51544.5d0
     plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
-      mura=mura, mudec=mudec
+      mura=mura, mudec=mudec, racen=racen, deccen=deccen, tilerad=tilerad
     
     ;; Now put results into a design structure
     guide_design= replicate(design_blank(/guide), n_elements(objs))
