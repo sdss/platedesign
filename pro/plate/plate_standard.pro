@@ -12,6 +12,8 @@
 function plate_standard, definition, default, instrument, $
                          pointing, offset, rerun=rerun
 
+if(NOT keyword_set(tilerad)) then tilerad=1.49D
+
 if(tag_exist(default, 'PLATEDESIGNSTANDARDS') eq 0) then begin
     return, 0
 endif 
@@ -96,8 +98,9 @@ if(NOT file_test(stdfile)) then begin
         sphoto_design.bluefiber= 1
         
         plate_pmotion_star, sphoto_design.target_ra, $
-                            sphoto_design.target_dec, $
-                            pmra= tmp_pmra, pmdec= tmp_pmdec
+          sphoto_design.target_dec, pmra= tmp_pmra, pmdec= tmp_pmdec, $
+          racen=racen, deccen=deccen, tilerad=tilerad
+          
         sphoto_design.pmra= tmp_pmra
         sphoto_design.pmdec= tmp_pmdec
     endif
