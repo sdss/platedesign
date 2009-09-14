@@ -271,6 +271,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
         ;; first, convert inputs into priority list
         ninputs= long(definition.ninputs)
+        splog, 'Reading input files'
         if(ninputs gt 0) then begin
             hdrs=ptrarr(ninputs)
             priority=lindgen(ninputs)
@@ -297,6 +298,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                                ' param set'
                     infile=getenv('PLATELIST_DIR')+ $
                            '/inputs/'+definition.(itag)
+                    splog, 'Reading '+infile
                     tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
                     if(n_tags(tmp_targets) eq 0) then $
                       message, 'empty plateInput file '+infile
@@ -328,21 +330,27 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                 endfor
 
                 ;; apply proper motions to the designs
+                splog, 'Applying proper motions'
                 design_pm, new_design, toepoch=epoch
                 
                 ;; assign holes to each plateInput file
+                splog, 'Assigning holes (checking geometric constraints)'
                 plate_assign, definition, default, fibercount, design, $
                               new_design, seed=seed, nextra=nextrafibers
 
                 ;; if first entry is a conflict, AND this is highest
                 ;; priority level, that is fishy: flag a warning
                 for j=0L, n_elements(ifirst)-1L do begin
-                    if(new_design[ifirst[j]].conflicted gt 0 and i eq 0) then begin
-                        plate_log, plateid, 'WARNING: First target in a file conflicted with center!'
+                    if(new_design[ifirst[j]].conflicted gt 0 and $
+                       i eq 0) then begin
+                        plate_log, plateid, $
+                          'WARNING: First target in a file conflicted '+ $
+                          'with center!'
                     endif
                 endfor
                 
                 ;; output results for this set
+                splog, 'Writing results to the plateInput-output file(s)'
                 iplate=(uniqtag(new_design, 'iplateinput')).iplateinput
                 for j=0L, n_elements(iplate)-1L do begin
                     ithis= where(new_design.iplateinput eq iplate[j], nthis)
@@ -379,10 +387,16 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                   message, 'Must specify guide fiber numbers for pointing '+ $
                            strtrim(string(pointing),2)
                 guidenums=long(strsplit(default.(iguidenums),/extr))
+                splog, 'Finding guides for pointing #'+ $
+                  strtrim(string(pointing),2)
                 guide_design= plate_guide(definition, default, pointing, $
                                           epoch=epoch)
                 if(n_tags(guide_design) gt 0) then begin
+                    splog, 'Applying proper motions for pointing #'+ $
+                      strtrim(string(pointing),2)
                     design_pm, guide_design, toepoch=epoch
+                    splog, 'Assigning guides to fibers for pointing #'+ $
+                      strtrim(string(pointing),2)
                     plate_assign_guide, definition, default, design, $
                       guide_design, pointing, guidenums=guidenums 
                 endif else begin
@@ -398,6 +412,9 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
     
                     ;; get appropriate list of standards, and apply
                     ;; proper motions
+                    splog, 'Finding standards for pointing #'+ $
+                      strtrim(string(pointing),2)+', offset #'+ $
+                      strtrim(string(offset),2)
                     sphoto_design= plate_standard(definition, default, $
                                                   instruments[iinst], $
                                                   pointing, offset)
@@ -414,6 +431,9 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         ;; pointing and offsets are considered separately,
                         ;; this does not constitute a guarantee on the
                         ;; final design
+                        splog, 'Assigning initial fibers for standards in '+ $
+                          'pointing #'+strtrim(string(pointing),2)+ $
+                          ', offset #'+strtrim(string(offset),2)
                         if(minstdinblock[iinst] gt 0) then begin
                             plate_assign_constrained, definition, default, $
                               instruments[iinst], $
@@ -437,8 +457,12 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         for pointing=1L, npointings do begin
             for offset=0L, noffsets do begin
                 for iinst=0L, ninstruments-1L do begin
+                    splog, 'Finding skies for pointing #'+ $
+                      strtrim(string(pointing),2)+', offset #'+ $
+                      strtrim(string(offset),2)
                     sky_design= plate_sky(definition, default, $
-                                          instruments[iinst], pointing, offset)
+                                          instruments[iinst], pointing, $
+                                          offset, seed=seed)
                     if(n_tags(sky_design) gt 0) then begin
 
                         ;; set epoch arbitarily current
@@ -451,6 +475,9 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         ;; pointing and offsets are considered separately,
                         ;; this does not constitute a guarantee on the
                         ;; final design
+                        splog, 'Assigning initial fibers for skies in '+ $
+                          'pointing #'+strtrim(string(pointing),2)+ $
+                          ', offset #'+strtrim(string(offset),2)
                         if(minskyinblock[iinst] gt 0) then begin
                             plate_assign_constrained, definition, default, $
                               instruments[iinst], $
@@ -485,6 +512,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; (Note that assignment here checks for conflicts:
         ;; so if a light trap overlaps an existing hole, the
         ;; light trap is not drilled)
+        splog, 'Finding bright stars for light traps'
         if(~keyword_set(omit_traps)) then begin
             for pointing=1L, npointings do begin
                 for offset=0L, noffsets do begin
@@ -513,6 +541,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             icurr= where(design.holetype eq instruments[iinst], ncurr)
     
             if(ncurr gt 0) then begin
+                splog, 'Final fiber assignment for '+instruments[iinst]
                 keep[icurr]=0L
                 fiberids= call_function('fiberid_'+instruments[iinst], $
                                         default, fibercount, design[icurr], $
@@ -555,6 +584,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; Write out plate assignments to 
         ;;   $PLATELIST_DIR/designs/plateDesign-[designid] file
         if(keyword_set(needmorefibers) eq false) then begin
+            splog, 'Writing plateDesign file.'
 
             ;; sanity check EPOCHs
             ibad=where(design.epoch lt 1900. OR design.epoch gt 2100., nbad)
@@ -607,11 +637,13 @@ endif ;; end of clobber & file exists tests
 ;; ----------------------------------------
 ;; Convert plateDesign to plateHoles
 ;; ----------------------------------------
+splog, 'Writing plateHoles'
 plate_holes, designid, plateid, ha, temp, epoch
 
 ;; ----------------------------------------
 ;; Produce plugfiles of desired style
 ;; ----------------------------------------
+splog, 'Writing plug mapping files'
 if(tag_exist(default, 'plugmapstyle') eq false) then $
   plugmapstyle='plplugmap' $
 else $
