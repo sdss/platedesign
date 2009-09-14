@@ -27,22 +27,51 @@ for k=0L, n_elements(hadesvals)-1L do begin
         ad2xyfocal, ra, dec, hxf, hyf, racen=locs[i].ra, deccen=locs[i].dec, $
                     airtemp=randomu(seed)*15., lst=lst
         
-        xoff=mean(xf-hxf)
-        yoff=mean(yf-hyf)
-        
-        hxf=hxf+xoff
-        hyf=hyf+yoff
-        
-        rad= sqrt(xf^2+yf^2)
-        hrad= sqrt(hxf^2+hyf^2)
-        scale= median(rad/hrad)
-        
-        hxf=hxf*scale
-        hyf=hyf*scale
+
+        th= findgen(360)*2.*!DPI/360.
+        offsig= fltarr(n_elements(th))
+        for ith=0L, n_elements(th)-1L do begin
+
+            pxf= hxf*cos(th[ith])+hyf*sin(th[ith])
+            pyf= -hxf*sin(th[ith])+hyf*cos(th[ith])
+
+            xoff=mean(xf-pxf)
+            yoff=mean(yf-pyf)
+            
+            pxf=pxf+xoff
+            pyf=pyf+yoff
+            
+            rad= sqrt(xf^2+yf^2)
+            hrad= sqrt(pxf^2+pyf^2)
+            scale= median(rad/hrad)
+            
+            pxf=pxf*scale
+            pyf=pyf*scale
+
+            offsig[ith]= djsig((xf-pxf)^2+(yf-pyf)^2)
+        endfor
+        minoffsig=min(offsig, imin)
         
         help, xoff, yoff, scale
+
+        pxf= hxf*cos(th[imin])+hyf*sin(th[imin])
+        pyf= -hxf*sin(th[imin])+hyf*cos(th[imin])
         
-        doff= sqrt((xf-hxf)^2+(yf-hyf)^2)
+        xoff=mean(xf-pxf)
+        yoff=mean(yf-pyf)
+        
+        pxf=pxf+xoff
+        pyf=pyf+yoff
+        
+        rad= sqrt(xf^2+yf^2)
+        hrad= sqrt(pxf^2+pyf^2)
+        scale= median(rad/hrad)
+        
+        pxf=pxf*scale
+        pyf=pyf*scale
+        
+        doff= sqrt((xf-pxf)^2+(yf-pyf)^2)
+
         mdoff[i]= max(doff)
     endfor
 
