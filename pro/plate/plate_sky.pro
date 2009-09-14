@@ -9,7 +9,8 @@
 ;   7-May-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function plate_sky, definition, default, instrument, pointing, offset
+function plate_sky, definition, default, instrument, pointing, offset, $
+                    seed=seed
 
 if(NOT tag_exist(default, 'PLATEDESIGNSKIES')) then begin
     return, 0
@@ -58,12 +59,12 @@ noffsets= long(default.noffsets)
 nsky= (reform(long(strsplit(default.(itag),/extr)), npointings, $
               noffsets+1L))[pointing-1L, offset]
 
-;; increase maximum # of skies by collection factor
+;; increase maximum # of skies by collection factor * 2
 if(tag_exist(default, 'COLLECTFACTOR')) then $
   collectfactor= long(default.collectfactor) $
 else $
   collectfactor= 10L
-nsky=nsky*collectfactor
+nsky=nsky*collectfactor*2L
 
 sky_design=0
 if(nsky gt 0) then begin
