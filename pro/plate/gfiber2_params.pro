@@ -30,12 +30,13 @@ if(n_elements(guidenums) eq 0) then $
   guidenums= lindgen(nguide)
 
 gfiber0 = create_struct( $
-         'guidenum' , 0L, $
-         'xreach'   , 0.0, $
-         'yreach'   , 0.0, $
-         'rreach'   , 0.0, $
-         'xprefer'  , 0.d, $
-         'yprefer'  , 0.d )
+                         'guidenum' , 0L, $
+                         'xreach'   , 0.0, $
+                         'yreach'   , 0.0, $
+                         'rreach'   , 0.0, $
+                         'xprefer'  , 0.d, $
+                         'yprefer'  , 0.d, $
+                         'guidetype', ' ')
 gfiber = replicate(gfiber0, nguide)
 
 rows_mm= [-277.5, -137.8, 137.8, 277.5]
@@ -94,6 +95,7 @@ newgfiber = replicate(gfiber0, nguide)
 newgfiber[newg.guidenum-1L]=gfiber[newg.firstmatch-1L]
 gfiber=newgfiber
 gfiber.guidenum=newg.guidenum
+gfiber.guidetype=newg.guidetype
 newgfiber=0
 
 return, gfiber
