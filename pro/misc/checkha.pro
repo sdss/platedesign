@@ -28,7 +28,7 @@ for k=0L, n_elements(hadesvals)-1L do begin
                     airtemp=randomu(seed)*15., lst=lst
         
 
-        th= findgen(360)*2.*!DPI/360.
+        th= (findgen(300)/300.-0.5)*20.*!DPI/180.
         offsig= fltarr(n_elements(th))
         for ith=0L, n_elements(th)-1L do begin
 
