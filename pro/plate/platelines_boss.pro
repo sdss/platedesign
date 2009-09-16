@@ -23,113 +23,9 @@
 ;   22-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro plb_set_print, in_filebase, label, note=note
-
-common com_plb, plateid, full, holes
-common com_plb_print, pold, xold, yold, filebase, plans
-
-filebase=in_filebase
-xsize=6.559
-ysize=6.559
-encap=1
-scale=2.21706
-
-;; setup postscript device
-pold=!P
-xold=!X
-yold=!Y
-!P.FONT= -1
-set_plot, "PS"
-if(NOT keyword_set(axis_char_scale)) then axis_char_scale= 1.75
-if(NOT keyword_set(tiny)) then tiny=1.d-4
-!P.BACKGROUND= djs_icolor('white')
-!P.COLOR= djs_icolor('black')
-device, file=filebase+'.ps',/inches,xsize=xsize,ysize=ysize, $
-  xoffset=(8.5-xsize)/2.0,yoffset=(11.0-ysize)/2.0,/color, $
-  bits_per_pixel=64, encap=encap, scale=scale
-!P.THICK= 2.0
-!P.CHARTHICK= !P.THICK & !X.THICK= !P.THICK & !Y.THICK= !P.THICK
-!P.CHARSIZE= 1.0
-!P.PSYM= 0
-!P.LINESTYLE= 0
-!P.TITLE= ''
-!X.STYLE= 5
-!X.CHARSIZE= axis_char_scale
-!X.MARGIN= 0
-!X.OMARGIN= 0
-!X.RANGE= 0
-!X.TICKS= 0
-!Y.STYLE= 5
-!Y.CHARSIZE= !X.CHARSIZE
-!Y.MARGIN= 0.
-!Y.OMARGIN= 0.
-!Y.RANGE= 0
-!Y.TICKS= !X.TICKS
-!P.MULTI= [1,1,1]
-xyouts, 0,0,'!6'
-colorname= ['red','green','blue','magenta','cyan','dark yellow', $
-            'purple','light green','orange','navy','light magenta', $
-            'yellow green']
-ncolor= n_elements(colorname)
-loadct,0
-
-djs_plot, [0], [0], /nodata, xra=[-340., 340.], yra=[-340., 340.], $
-  xstyle=5, ystyle=5
-
-radius=324.426
-theta= findgen(1000)/float(99.)*!DPI*2.
-xcurr= radius* cos(theta)
-ycurr= radius* sin(theta)
-djs_oplot, ycurr, xcurr
-
-if(n_tags(plans) eq 0) then $
-  plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
-iplate=where(plans.plateid eq plateid)
-plan= plans[iplate]
-
-djs_xyouts, [-330], [330], 'Plate: '+strtrim(string(plateid),2), $
-            charsize=0.7
-djs_xyouts, [-330], [320], 'Chunk: '+strtrim(string(plan.chunk),2), $
-            charsize=0.7
-djs_xyouts, [-330], [310], 'Tile: '+strtrim(string(plan.tileid),2), $
-            charsize=0.7
-djs_xyouts, [-330], [300], 'Plate run: '+strtrim(string(plan.platerun),2), $
-            charsize=0.7
-djs_xyouts, [-330], [290], 'Survey: '+strtrim(string(plan.survey),2), $
-            charsize=0.7
-djs_xyouts, [-330], [280], 'Program: '+strtrim(string(plan.programname),2), $
-            charsize=0.7
-
-djs_xyouts, [80], [325], label
-if(keyword_set(note)) then $
-  djs_xyouts, [100], [-325], note
-
-arrow, -320, -320, -320, -270, /data, th=3, hsize=150
-arrow, -320, -320, -270, -320, /data, th=3, hsize=150
-
-djs_xyouts, [-335.], [-260], '+X, +RA', charsize=0.8
-djs_xyouts, [-260.], [-325], '+Y, +Dec', charsize=0.8
-
-end
-;
-pro plb_end_print
-
-common com_plb_print
-
-;; get out of postscript device
-device,/close
-!P=pold
-!X=xold
-!Y=yold
-set_plot,'x'
-
-spawn, 'convert '+filebase+'.ps '+filebase+'.png'
-
-end
-;
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty
 
-common com_plb
+common com_plb, plateid, full, holes
 
 platescale = 217.7358D           ; mm/degree
 
@@ -166,7 +62,6 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
     return
 endif
       
-
 ;; basic versions
 versions=['', 'sky', 'std']
 
@@ -206,7 +101,7 @@ for k=0L, n_elements(versions)-1L do begin
     if(keyword_set(version)) then $
       label=label+' ('+version+')'
     note=''
-    plb_set_print, filebase, label, note=note
+    platelines_start, plateid, filebase, label, note=note
     
     ;; set buffer for lines, and circle size
     ;; (48 and 45 arcsec respectively
@@ -216,6 +111,7 @@ for k=0L, n_elements(versions)-1L do begin
     ;; set colors of each brightness fiber
     nblocks=50L
     nper=20L
+    nperblue=10L
     for i=0L, nblocks-1L do begin
         ii= where(-holes.fiberid ge i*nper+1L and $
                   -holes.fiberid le (i+1L)*nper, nii)
@@ -223,6 +119,12 @@ for k=0L, n_elements(versions)-1L do begin
         if(keyword_set(sorty)) then $
           isort= sort(holes[ii].yfocal)
         color= colors[i mod n_elements(colors)]
+
+        bluefiber= lonarr(nii)
+        iblue=where(full[ii].bluefiber, nblue)
+        if(nblue gt nperblue) then $
+          iblue= iblue[shuffle_indx(nblue, num_sub=nperblue)]
+        bluefiber[iblue]=1
         
         ;; connect lines
         doblock=1
@@ -323,7 +225,7 @@ for k=0L, n_elements(versions)-1L do begin
             endif else begin
                 ;; normally should color according to blue fiber
                 currthick=circle_thick
-                if(full[ii[j]].bluefiber gt 0) then begin
+                if(bluefiber[j] gt 0) then begin
                     currcolor='blue'
                 endif else begin
                     currcolor='red'
@@ -348,52 +250,10 @@ for k=0L, n_elements(versions)-1L do begin
         endfor
     endfor
     
-    plb_end_print
+    platelines_end
 endfor
 
-filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
-          '-guide'
-
-noguide=lonarr(16)
-for i=0L, 15L do begin
-    ii=where(holes.holetype eq 'GUIDE' AND $
-             holes.fiberid eq i+1, nii)
-    if(nii eq 0) then $
-      noguide[i]=1
-endfor
-inone=where(noguide gt 0, nnone)
-note=''
-if(nnone gt 0) then begin
-    note= 'No star for guide #'
-    for i=0L, nnone-2L do $
-          note=note+strtrim(string(inone[i]+1L),2)+','
-    note=note+strtrim(string(inone[nnone-1]+1L),2)
-endif
-
-plb_set_print, filebase, 'guide fibers', note=note
-
-;; finally, draw guides
-iguide= where(holes.holetype eq 'GUIDE')
-for i=0L, 15L do begin
-    theta= findgen(100)/float(99.)*!DPI*2.
-    xcurr= holes[iguide[i]].xfocal+ circle* cos(theta)
-    ycurr= holes[iguide[i]].yfocal+ circle* sin(theta)
-    djs_oplot, ycurr, xcurr, color='black', th=circle_thick
-
-    djs_xyouts, holes[iguide[i]].yfocal+5.*buffer, $
-                holes[iguide[i]].xfocal, $
-                strtrim(string(holes[iguide[i]].fiberid),2), $
-                align=0.5
-
-    ;; red X if bad guy
-    if(holes[iguide[i]].fiberid le 0) then begin
-        djs_oplot, [holes[iguide[i]].yfocal], [holes[iguide[i]].xfocal], $
-                   color='red', th=3, symsize=1.5, psym=2
-    endif
-endfor
-
-plb_end_print
-
+platelines_guide, plateid, holes
 
 return
 end
