@@ -21,6 +21,16 @@ targettypes= strsplit(default.targettypes, /extr)
 instruments= strsplit(default.instruments, /extr)
 iinst=where(strlowcase(instruments) eq strlowcase(instrument), ninst)
 
+test_design= [design, in_new_design]
+icurr= where(strupcase(test_design.holetype) eq strupcase(instrument) AND $
+             strupcase(test_design.targettype) eq strupcase(targettype), $
+             ncurr)
+istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
+nneed= fibercount.ntot[iinst,istd, pointing-1, offset]
+if(ncurr lt nneed) then $
+  message, 'Not enough targets of type '+strupcase(targettype)+'!'
+test_design=0
+
 ;; do not alter new_design ...
 new_design=in_new_design
 
