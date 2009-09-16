@@ -253,7 +253,7 @@ for k=0L, n_elements(versions)-1L do begin
     platelines_end
 endfor
 
-platelines_guide, plateid, holes
+platelines_guide, plateid, holes, full, hdrstr
 
 return
 end
