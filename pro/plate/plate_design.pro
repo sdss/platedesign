@@ -99,7 +99,8 @@ definitionfile=definitiondir+'/'+ $
                string(f='(i6.6)', designid)+'.par'
 dum= yanny_readone(definitionfile, hdr=hdr)
 if(~keyword_set(hdr)) then begin
-    message, 'Error: plateDefinition file not found: ' + definitionfile + ' (plate id: (' + string(plateid) + ')'
+    message, 'Error: plateDefinition file not found: ' + $
+      definitionfile + ' (plate id: (' + string(plateid) + ')'
 endif
 definition= lines2struct(hdr)
 
@@ -448,7 +449,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                               design, sphoto_design, seed=seed, $
                               nextra=nextrafibers
                         endelse
-                    endif
+                    endif 
                 endfor
             endfor 
         endfor
@@ -478,20 +479,14 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                         splog, 'Assigning initial fibers for skies in '+ $
                           'pointing #'+strtrim(string(pointing),2)+ $
                           ', offset #'+strtrim(string(offset),2)
-                        if(minskyinblock[iinst] gt 0) then begin
-                            plate_assign_constrained, definition, default, $
-                              instruments[iinst], $
-                              'sky', fibercount, pointing, offset, design, $
-                              sky_design, seed=seed, $
-                              minstdinblock=minstdinblock[iinst], $
-                              minskyinblock=minskyinblock[iinst], $
-                              maxskyinblock=maxskyinblock[iinst], $
-                              /nostd, /noscience
-                        endif else begin
-                            plate_assign, definition, default, fibercount, $
-                              design, sky_design, seed=seed, $
-                              nextra=nextrafibers
-                       endelse
+                        plate_assign_constrained, definition, default, $
+                          instruments[iinst], $
+                          'sky', fibercount, pointing, offset, design, $
+                          sky_design, seed=seed, $
+                          minstdinblock=minstdinblock[iinst], $
+                          minskyinblock=minskyinblock[iinst], $
+                          maxskyinblock=maxskyinblock[iinst], $
+                          /nostd, /noscience
                     endif
                 endfor 
             endfor 
@@ -561,18 +556,23 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                        long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
                     then begin
                         splog, 'Some fibers not assigned to targets! ' 
+                        plate_log, plateid, $
+                          'Some fibers not assigned to targets! ' 
                         if(keyword_set(debug) eq false) then begin
                             if(keyword_set(replace_fibers) eq false) then begin
-                                splog, 'Not completing plate design '+ $
+                                msg= 'Not completing plate design '+ $
                                     strtrim(string(designid),2) + $
-                                  '. Rerun with keyword "replace_fibers" to attempt to assign unallocated fibers.'
+                                  '. Rerun with keyword "replace_fibers" '+ $
+                                  'to attempt to assign unallocated fibers.'
+                                splog, msg
+                                plate_log, plateid, msg
                                 return
                             endif else begin
                                 nextrafibers[ip-1]=nextrafibers[ip-1]+1L
                                 needmorefibers=1
                             endelse
                         endif else begin
-                            stop
+                            message, '/debug set, so stopping'
                         endelse
                     endif 
                 endfor ;; end loop over pointings
