@@ -100,6 +100,15 @@ spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
 spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
        planfile+'" | plate -noTk'
 
+for i=0L, n_elements(plateid)-1L do begin
+    fanucfile= getenv('PLATELIST_DIR')+'/runs/plFanuc-'+ $
+      string(plateid[i],f='(i4.4)')+'.par'
+    if(file_test(fanucfile) eq 0) then $
+      message, fanucfile+' not successfully made!'
+    if(file_test(fanucfile+'.BAD') ne 0) then $
+      plate_log, plateid[i], fanucfile+'.BAD exists --- why?'
+endfor
+
 splog, '"plate_writepage, ''' + platerun + '''" can now be run.'
 
 end
