@@ -1,4 +1,4 @@
-;+
+;+]
 ; NAME:
 ;   plugfile_plplugmap
 ; PURPOSE:
@@ -221,21 +221,26 @@ for pointing=1L, npointings do begin
                      strmatch(hdr, 'deccen *') eq 0, nnotradec)
     khdr= hdr[inotradec]
     outhdr = ['completeTileVersion   none', $
-              'reddeningMed ' + string(reddenvec,format='(5f8.4)'), $
-              '# tileId is set to designid for SDSS-III plates', $
-              'tileId ' + string(designid), $
-              'raCen ' + string(racen[pointing-1],format='(f30.8)'), $
-              'decCen ' + string(deccen[pointing-1],format='(f30.8)'), $
-              'platedesign_version '+platedesign_version(), $
-              'plateId ' + string(plateid), $
-              'temp ' + string(temp), $
               'haMin ' + string(ha[pointing-1]), $
               'haMax ' + string(ha[pointing-1]), $
               'mjdDesign ' + string(long(current_mjd())), $
               'pointing ' + pointing_name[pointing-1], $
               'mag_quality bad',  $
-              'theta 0 ', $
               khdr]
+    if(keyword_set(yanny_par(outhdr, 'reddeningMed')) eq 0) then $
+      outhdr=[outhdr, 'reddeningMed ' + string(reddenvec,format='(5f8.4)')]
+    if(keyword_set(yanny_par(outhdr, 'theta')) eq 0) then $
+      outhdr=[outhdr, 'theta 0']
+    if(keyword_set(yanny_par(outhdr, 'plateId')) eq 0) then $
+      outhdr=[outhdr, 'plateId ' + strtrim(string(plateid),2)]
+    if(keyword_set(yanny_par(outhdr, 'raCen')) eq 0) then $
+      outhdr=[outhdr, 'raCen ' + string(racen[pointing-1],format='(f30.8)')]
+    if(keyword_set(yanny_par(outhdr, 'decCen')) eq 0) then $
+      outhdr=[outhdr, 'decCen ' + string(deccen[pointing-1],format='(f30.8)')]
+    if(keyword_set(yanny_par(outhdr, 'temp')) eq 0) then $
+      outhdr= [outhdr, 'temp ' + string(temp)]
+    if(keyword_set(yanny_par(outhdr, 'platedesign_version')) eq 0) then $
+      outhdr= [outhdr, 'platedesign_version '+platedesign_version()]
 
 
     ;; output file name
