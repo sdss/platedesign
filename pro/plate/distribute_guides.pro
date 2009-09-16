@@ -13,6 +13,7 @@
 ;                .RREACH
 ;                .XPREFER
 ;                .YPREFER
+;                .GUIDETYPE
 ;   design - [Ntarget] design structure with potential guides; require
 ;            at least:
 ;                .XF_DEFAULT
@@ -36,6 +37,11 @@ costs=ptrarr(nguide)
 nmtot=0L
 ismatched= lonarr(ntarget)
 platescale = 217.7358D          ; mm/degree
+coff=lonarr(n_elements(gfiber))+90000L
+ibig= where(gfiber.guidetype eq 'A', nbig)
+if(nbig eq 0) then $
+  message, 'No acquisition fibers! Senseless.'
+coff[ibig]=0L
 for i=0L, n_elements(gfiber)-1L do begin
     inrange= boss_reachcheck(gfiber[i].xreach/platescale, $
                              gfiber[i].yreach/platescale, $
@@ -47,8 +53,9 @@ for i=0L, n_elements(gfiber)-1L do begin
                strtrim(string(gfiber[i].guidenum),2)+'!'
     endif else begin
         matches[i]= ptr_new(imatch)
-        cdist2= long((gfiber[i].xprefer-design[imatch].xf_default)^2+ $
-                     (gfiber[i].yprefer-design[imatch].yf_default)^2)
+        cdist2= coff[i]+ $
+          long((gfiber[i].xprefer-design[imatch].xf_default)^2+ $
+               (gfiber[i].yprefer-design[imatch].yf_default)^2)
         costs[i]= ptr_new(cdist2)
         nmtot= nmtot+nmatch
         ismatched[imatch]=1
@@ -87,7 +94,7 @@ for i=0L, ntarget-1L do $
               strtrim(string(nnode-1L),2)+' 0 1 0'
 printf, unit, 'c overflow arc'
 printf, unit, 'a 0 '+strtrim(string(nnode-1L),2)+' 0 '+ $
-        strtrim(string(nguide),2)+' 1000000'
+        strtrim(string(nguide),2)+' 10000000'
 printf, unit, 'c end of flow problem'
 free_lun, unit
 
