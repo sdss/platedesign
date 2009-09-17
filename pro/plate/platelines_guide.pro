@@ -122,6 +122,16 @@ for i=0L, n_elements(gfiber)-1L do begin
 
 endfor
 
+;; plot unused guide anchor blocks
+for j=0L, nnone-1L do begin
+    djs_oplot, [gfiber[inone[j]].yreach], [gfiber[inone[j]].xreach], $
+      psym=1, color='red'
+    if(tag_indx(gfiber, 'guidetype') ne -1) then $
+      djs_xyouts, [gfiber[inone[j]].yreach+5.*buffer], $
+      [gfiber[inone[j]].xreach], gfiber[inone[j]].guidetype, align=0.5, $
+      color='red'
+endfor
+
 platelines_end
 
 return
