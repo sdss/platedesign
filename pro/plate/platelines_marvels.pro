@@ -84,7 +84,11 @@ circle= 45./3600. * platescale
 
 for index=0L, npointings-1L do begin
 
-    pointing_name = STRSPLIT(hdrstr.pointing_name, /extract)
+    if(tag_indx(hdrstr, 'pointing_name') ne -1) then begin
+        pointing_name = STRSPLIT(hdrstr.pointing_name, /extract)
+    endif else begin
+        pointing_name= ['A', 'B', 'C', 'D', 'E', 'F']
+    endelse
     case pointing_name[index] of
         'A' : ip = 0            ;
         'B' : ip = 1            ;

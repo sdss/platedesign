@@ -65,7 +65,7 @@ if(nnone gt 0) then begin
 endif
 
 pointing_name= ['A', 'B', 'C', 'D', 'E', 'F']
-if(tag_indx(hdrstr, 'pointing_name')) then $
+if(tag_indx(hdrstr, 'pointing_name') ne -1) then $
   pointing_name= strsplit(hdrstr.pointing_name, /extr)
 
 platelines_start, plateid, filebase, 'guide fibers', note=note
