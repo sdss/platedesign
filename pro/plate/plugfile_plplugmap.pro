@@ -217,8 +217,8 @@ pointing_name = strsplit(definition.pointing_name, /extract)
 for pointing=1L, npointings do begin
 
     ;; add header keywords
-    inotradec= where(strmatch(hdr, 'racen *') eq 0 AND $
-                     strmatch(hdr, 'deccen *') eq 0, nnotradec)
+    inotradec= where(strmatch(hdr, 'racen *', /fold_case) eq 0 AND $
+                     strmatch(hdr, 'deccen *', /fold_case) eq 0, nnotradec)
     khdr= hdr[inotradec]
     outhdr = ['completeTileVersion   none', $
               'haMin ' + string(ha[pointing-1]), $
