@@ -219,8 +219,6 @@ for pointing=1L, npointings do begin
                      strmatch(hdr, 'deccen *') eq 0, nnotradec)
     khdr= hdr[inotradec]
     outhdr = ['completeTileVersion   none', $
-              'platedesign_version '+platedesign_version(), $
-              'temp ' + string(temp), $
               'haMin ' + string(ha[pointing-1]), $
               'haMax ' + string(ha[pointing-1]), $
               'mjdDesign ' + string(long(current_mjd())), $
@@ -239,6 +237,8 @@ for pointing=1L, npointings do begin
       outhdr=[outhdr, 'decCen ' + string(deccen[pointing-1],format='(f30.8)')]
     if(keyword_set(yanny_par(outhdr, 'temp')) eq 0) then $
       outhdr= ['temp ' + string(temp)]
+    if(keyword_set(yanny_par(outhdr, 'platedesign_version')) eq 0) then $
+      outhdr= [outhdr, 'platedesign_version '+platedesign_version()]
 
     ;; output file name
     if(plateid ge 10000) then begin
