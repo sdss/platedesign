@@ -39,12 +39,16 @@ if(file_test(guidefile) eq 0 OR $
 
     guidetype= (strsplit(default.guidetype, /extr))[pointing-1]
 
+    if(strupcase(guidetype) ne 'SDSS' AND $
+       strupcase(guidetype) ne '2MASS') then $
+      message, 'No such guide type '+guidetype+'!'
+
     ;; what is center for this pointing?
     plate_center, definition, default, pointing, 0L, $
                   racen=racen, deccen=deccen
     
     ;; find SDSS guide fibers 
-    if(guidetype eq 'SDSS') then begin
+    if(strupcase(guidetype) eq 'SDSS') then begin
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
           rerun=rerun, guide_design=guide_design, nguidemax=nguidemax, $
           gminmax=gminmax
@@ -58,7 +62,7 @@ if(file_test(guidefile) eq 0 OR $
     endif
     
     ;; find 2MASS guide fibers 
-    if(guidetype eq '2MASS') then begin
+    if(strupcase(guidetype) eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
           gminmax=gminmax
@@ -93,6 +97,9 @@ endif else begin
                             n_elements(in_guide_design))
     struct_assign, in_guide_design, guide_design, /nozero
 endelse
+
+if(n_tags(guide_design) eq 0) then $
+  message, 'No guides found!'
 
 return, guide_design
 

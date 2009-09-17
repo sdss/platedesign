@@ -29,7 +29,7 @@ nMARVELS_sky 0 0
 nMARVELS_standard 0 0
 
 # Guide fibers to use for each pointing
-guideType 2MASS 2mass
+guideType 2MASS 2MASS
 
 gfibertype gfiber2
 
