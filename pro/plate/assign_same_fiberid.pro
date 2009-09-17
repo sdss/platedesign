@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   create new plateInput file with fiberid assigned
 ; CALLING SEQUENCE:
-;   assign_same_fiberid, inputfile, outputfile, plate , /radec
+;   assign_same_fiberid, inputfile, plate, /outputfile, /radec
 ; INPUTS:
 ;   inputfile - name of input file
 ;   outputfile - name of output file
@@ -15,7 +15,7 @@
 ;   20-Nov-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro assign_same_fiberid, inputfile, outputfile, plate, radec=radec
+pro assign_same_fiberid, inputfile, plate, outputfile=outputfile, radec=radec
 
 if(plate lt 3074) then begin
     message, 'fiber assignments not necessarily correct!'
@@ -86,6 +86,18 @@ for i=0L, n_elements(plinputnew)-1L do begin
     endif 
 endfor
 splog, 'Matched '+strtrim(string(nmatch),2)+' objects.'
+
+; Choose a default name for the output file if not specified
+if (~keyword_set(outputfile)) then begin
+	outputfile = strmid(inputfile, 0, strlen(inputfile)-4); strip assumed ".par" extension
+	outputfile = outputfile + '-fiberid-' + strtrim(string(plate), 2) + '.par'
+endif
+
+; Write the command that was used to generate the output at the top of the file.
+source_line = '# assign_same_fiberid, ' + inputfile + ', ' + outputfile + ', ' + strtrim(string(plate), 2)
+if keyword_set(radec) then source_line = source_line + ', /radec'
+
+hdr = ['# Created using:', source_line, '#', hdr]
 
 yanny_write, outputfile, ptr_new(plinputnew), hdr=hdr
 
