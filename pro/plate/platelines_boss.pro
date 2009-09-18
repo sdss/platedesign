@@ -123,7 +123,8 @@ for k=0L, n_elements(versions)-1L do begin
         bluefiber= lonarr(nii)
         iblue=where(full[ii].bluefiber, nblue)
         if(nblue gt nperblue) then $
-          iblue= iblue[shuffle_indx(nblue, num_sub=nperblue)]
+          iblue= iblue[shuffle_indx(nblue, num_sub=nperblue, $
+                                    seed=plateid+i)]
         if(nblue gt 0) then $
           bluefiber[iblue]=1
         
