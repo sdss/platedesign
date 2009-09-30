@@ -241,30 +241,23 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         
         ;; What conditions on fiber placement exist for each instrument?
         minstdinblock=lonarr(ninstruments) ;; how many standards per block?
+        maxstdinblock=lonarr(ninstruments) ;; how many standards per block?
         minskyinblock=lonarr(ninstruments) ;; how many skies per block?
         maxskyinblock=lonarr(ninstruments) ;; how many skies per block?
         for iinst=0L, ninstruments-1L do begin
-            ;; get minimum number of standards per block per pointing, 
-            ;; if desired
-            itagminstd=tag_indx(default, 'minstdinblock'+instruments[iinst])
-            if(itagminstd eq -1) then $
-            minstdinblock[iinst]=0L $
-            else $
-            minstdinblock[iinst]=long(default.(itagminstd))
-    
-            ;; get minimum number of skies per block per pointing, if desired
-            itagminsky=tag_indx(default, 'minskyinblock'+instruments[iinst])
-            if(itagminsky eq -1) then $
-              minskyinblock[iinst]=0L $
-            else $
-              minskyinblock[iinst]=long(default.(itagminsky))
-    
-            ;; get minimum number of skies per block per pointing, if desired
-            itagmaxsky=tag_indx(default, 'maxskyinblock'+instruments[iinst])
-            if(itagmaxsky eq -1) then $
-              maxskyinblock[iinst]=0L $
-            else $
-              maxskyinblock[iinst]=long(default.(itagmaxsky))
+            
+            ;; get values for the sky 
+            minmaxinblock, default, definition, instruments[iinst], $
+              'sky', mininblock=minsky, maxinblock=maxsky
+            minskyinblock[iinst]=minsky
+            maxskyinblock[iinst]=maxsky
+            
+            ;; get values for the standards
+            minmaxinblock, default, definition, instruments[iinst], $
+              'std', mininblock=minstd, maxinblock=maxstd
+            minstdinblock[iinst]=minstd
+            maxstdinblock[iinst]=maxstd
+            
         endfor
         
         ;; For each class of input priorities, run plate_assign 
@@ -495,9 +488,29 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
         ;; Check for extra fibers
         iunused=where(fibercount.nused lt fibercount.ntot, nunused)
         if(nunused gt 0) then begin
-            splog, 'Unused fibers found. Please specify more targets!'
+        nused=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
+            splog, 'Unused fibers found.' 
+            for pointing=1L, npointings do begin
+                for offset=0L, noffsets do begin
+                    for iinst=0L, ninstruments-1L do begin
+                        for itarg=0L, ntargettypes-1L do begin
+                            nu=fibercount.nused[iinst,itarg, pointing-1,offset] 
+                            nt=fibercount.ntot[iinst,itarg, pointing-1,offset] 
+                            if(nu lt nt) then $
+                              splog, '- only '+strtrim(string(nu),2)+'/'+ $
+                              strtrim(string(nt),2)+' assigned for '+ $
+                              instruments[iinst]+' '+targettypes[itarg]+ $
+                              ' targets (pointing='+ $
+                              strtrim(string(pointing),2)+', offset='+ $
+                              strtrim(string(offset),2)+')'
+                        endfor
+                    endfor
+                endfor
+            endfor
+            
             splog, 'Not completing plate design '+strtrim(string(designid),2)
-            plate_log, plateid, 'Unused fibers found. Please specify more targets!'
+            plate_log, plateid, 'Unused fibers found. Please specify more '+ $
+              'targets!'
             plate_log, plateid, 'Not completing plate design '+ $
               strtrim(string(designid),2)
             if(keyword_set(debug) eq false) then return else stop
