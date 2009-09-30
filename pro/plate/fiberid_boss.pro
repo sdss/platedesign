@@ -142,8 +142,13 @@ if(NOT keyword_set(nosky)) then begin
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
-                if(nassigned gt 0) then $
-                  fiberid[isky[iassigned]]=tmp_fiberid[iassigned]
+                if(nassigned gt 0) then begin
+                    if(NOT keyword_set(fiberused)) then $
+                      fiberused=tmp_fiberid[iassigned] $
+                    else $
+                      fiberused=[fiberused, tmp_fiberid[iassigned]] 
+                    fiberid[isky[iassigned]]=tmp_fiberid[iassigned]
+                endif 
             endif else begin
                 if(NOT keyword_set(quiet)) then $
                   splog, 'No skies in pointing '+strtrim(string(ip),2)+ $
@@ -166,10 +171,13 @@ sdss_plugprob, design[icomplete].xf_default, $
                reachfunc='boss_reachcheck', $
                blockfile=blockfile 
 
+all_fiberid=fiberid
+all_fiberid[icomplete]= tmp_fiberid
+
 ;; make sure ALL science targets are assigned
 isci=where(strupcase(design.targettype) eq 'SCIENCE', nsci)
 if(nsci gt 0) then begin
-    ibad= where(tmp_fiberid[isci] le 0, nbad)
+    ibad= where(all_fiberid[isci] le 0, nbad)
     if(nbad gt 0) then begin
         splog, 'Parameters and target locations yield inconsistency in plugging!'
         splog, 'No solution possible for this set of targets.  Look at the '
