@@ -36,65 +36,73 @@ else $
   gfibertype= 'gfiber'
 gfiber= call_function(gfibertype+'_params')
 
+;; pick out which guides we are using
+useg= lonarr(n_elements(gfiber))
+for i=0L, n_elements(guidenums)-1L do begin
+    ig= where(gfiber.guidenum eq guidenums[i], ng)
+    if(ng eq 0) then $
+      message, 'guidenum specified that does not exist!'
+    useg[ig]=1
+endfor
+iuse= where(useg gt 0, nuse)
+if(nuse eq 0) then $
+  message, 'No guide numbers are specified?'
+
+;; find non-conflicting set of guides
+for i=0L, n_elements(guide_design)-1L do begin
+    conflicted=check_conflicts(design, guide_design[i]) gt 0 
+    if(i gt 0) then $
+      conflicted= conflicted gt 0 OR $
+      check_conflicts(guide_design[0:i-1], guide_design[i]) gt 0 
+    if(conflicted gt 0) then $
+      guide_design[i].conflicted=1
+endfor
+
+;; find available guides that don't conflict with 
+;; higher priority ones
+iavailable= where(guide_design.assigned eq 0 AND $
+                  guide_design.conflicted eq 0 AND $
+                  guide_design.pointing eq pointing, navailable)
+
+;; ensure that we aren't outside the plate
+plate_center, definition, default, pointing, 0L, $
+  racen=racen, deccen=deccen
+spherematch, racen, deccen, guide_design[iavailable].target_ra, $
+  guide_design[iavailable].target_dec, tilerad, m1, m2, max=0
+if(m2[0] eq -1) then $
+  message, 'no more available guide stars!'
+iavailable=iavailable[m2]
+
+;; assign the guides
+gnum= distribute_guides(gfiber[iuse], guide_design[iavailable])
+
+;; check there are enough
+iok= where(gnum gt 0, nok)
+if(nok ne n_elements(guidenums)) then $
+  message, 'NOT ALL GUIDE FIBERS PLUGGABLE!'
+
 for i=0l, n_elements(guidenums)-1L do begin
     iguide= guidenums[i]
+    
+    ipick= where(iguide eq gnum, npick)
+    if(npick eq 0) then $
+      message, 'No guide number '+strtrim(string(iguide),2)
+    if(npick gt 1) then $
+      message, 'More than one guide number '+strtrim(string(iguide),2)
+    ipick= iavailable[ipick]
 
-    ncheck=0
+    ;; check conflicts
+    conflicted=check_conflicts(design, guide_design[ipick])
+    if(conflicted) then $
+      message, 'Inconsistency!  Meant to remove conflicts!'
+    
+    ;; now add it:
+    guide_design[ipick].assigned=1L
+    guide_design[ipick].iguide=iguide
     if(n_tags(design) gt 0) then $
-      icheck= where(design.iguide eq iguide, ncheck)
-    if(ncheck gt 1) then $
-      message, 'why are there two assignments for guide #'+ $
-               strtrim(string(iguide),2)
-
-    if(ncheck eq 0) then begin
-        ;; find closest available guide star that isn't conflicted
-        ;; or outside the plate
-        conflicted=1
-        while(conflicted) do begin
-            iavailable= where(guide_design.assigned eq 0 AND $
-                              guide_design.conflicted eq 0 AND $
-                              guide_design.pointing eq pointing, navailable)
-            if(navailable eq 0) then $
-              message, 'no more available guide stars!'
-            
-            ;; ensure that we aren't outside the plate
-            plate_center, definition, default, pointing, 0L, $
-              racen=racen, deccen=deccen
-            spherematch, racen, deccen, guide_design[iavailable].target_ra, $
-              guide_design[iavailable].target_dec, tilerad, m1, m2, max=0
-            if(m2[0] eq -1) then $
-              message, 'no more available guide stars!'
-            iavailable=iavailable[m2]
-            
-            ;; get distance from preferred position 
-            adiff= sqrt((gfiber[iguide-1L].xprefer- $
-                         guide_design[iavailable].xf_default)^2+ $
-                        (gfiber[iguide-1L].yprefer- $
-                         guide_design[iavailable].yf_default)^2)
-
-            ;; then sort according to distance and priority;
-            ;; essentially, set up a set of annuli in which we choose
-            ;; equally according to priority
-            maxprior=float(max(guide_design[iavailable].priority))
-            gsortpar= $
-              guide_design[iavailable].priority+ $
-              maxprior*2.*float(long(adiff/80.))
-
-            minsort = min(gsortpar, imin)
-            imin= iavailable[imin]
-            conflicted=check_conflicts(design, guide_design[imin])
-            if(conflicted) then $
-              guide_design[imin].conflicted=1
-        endwhile
-        
-        ;; now add it:
-        guide_design[imin].assigned=1L
-        guide_design[imin].iguide=iguide
-        if(n_tags(design) gt 0) then $
-          design=[design, guide_design[imin]] $
-        else $
-          design=guide_design[imin]
-    endif
+      design=[design, guide_design[ipick]] $
+    else $
+      design=guide_design[ipick]
 endfor
 
 return

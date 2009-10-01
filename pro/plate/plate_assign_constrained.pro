@@ -54,6 +54,8 @@ while(gotall eq 0) do begin
 
     ;; check if the standards filled up the fibers
     ion=where(fiberids ge 1 AND $
+              test_design[icurr].pointing eq pointing AND $
+              test_design[icurr].offset eq offset AND $
               strlowcase(test_design[icurr].targettype) $
               eq strlowcase(targettype), non)
     istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
