@@ -70,8 +70,18 @@ if(tag_indx(hdrstr, 'pointing_name') ne -1) then $
 
 platelines_start, plateid, filebase, 'guide fibers', note=note
 
-;; finally, draw guides
+;; write magnitudes (in yellow and first so they don't
+;; interfere
 iguide= where(holes.holetype eq 'GUIDE')
+for i=0L, n_elements(gfiber)-1L do begin
+    magstr= strtrim(string(f='(f40.2)', holes[iguide[i]].mag[1]),2)
+    djs_xyouts, holes[iguide[i]].yfocal+5.*buffer, $
+      holes[iguide[i]].xfocal-1.5*buffer, $
+      '(g='+magstr+')', align=0., charsize=0.4, $
+      color='yellow'
+endfor
+
+;; finally, draw guides
 for i=0L, n_elements(gfiber)-1L do begin
     theta= findgen(100)/float(99.)*!DPI*2.
     xcurr= holes[iguide[i]].xfocal+ circle* cos(theta)

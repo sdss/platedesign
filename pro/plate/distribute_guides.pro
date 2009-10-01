@@ -53,9 +53,21 @@ for i=0L, n_elements(gfiber)-1L do begin
                strtrim(string(gfiber[i].guidenum),2)+'!'
     endif else begin
         matches[i]= ptr_new(imatch)
-        cdist2= coff[i]+ $
-          long((gfiber[i].xprefer-design[imatch].xf_default)^2+ $
-               (gfiber[i].yprefer-design[imatch].yf_default)^2)
+        distance=sqrt((gfiber[i].xprefer-design[imatch].xf_default)^2+ $
+                      (gfiber[i].yprefer-design[imatch].yf_default)^2)
+        cdist2= coff[i]+ long(distance^2)
+
+        ;; for anything closer than 6 cm, decide based on priority
+        dlim= 80.
+        iclose= where(distance lt dlim, nclose)
+        if(nclose gt 1) then begin
+            pmax= max(design[imatch[iclose]].priority)
+            pmin= min(design[imatch[iclose]].priority)
+            pscaled= (float(design[imatch[iclose]].priority)-float(pmin))/ $
+              (float(pmax)-float(pmin))* dlim^2
+            cdist2[iclose]= coff[i]+ long(design[imatch[iclose]].priority)
+        endif
+
         costs[i]= ptr_new(cdist2)
         nmtot= nmtot+nmatch
         ismatched[imatch]=1
