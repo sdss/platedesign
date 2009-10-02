@@ -83,9 +83,9 @@ openw, unit, tmpdir+'/tmp_prob.txt', /get_lun
 printf, unit, 'c Max flow problem for guides'
 printf, unit, 'p min '+strtrim(string(nnode),2)+' '+strtrim(string(narc),2)
 printf, unit, 'c source node'
-printf, unit, 'n 0 16'
+printf, unit, 'n 0 '+strtrim(string(nguide),2)
 printf, unit, 'c sink node'
-printf, unit, 'n '+strtrim(string(nnode-1),2)+' -16'
+printf, unit, 'n '+strtrim(string(nnode-1),2)+' -'+strtrim(string(nguide),2)
 printf, unit, 'c source to guide arcs'
 for i=0L, nguide-1L do $
       printf, unit, 'a 0 '+strtrim(string(i+1L),2)+' 0 1 0'
