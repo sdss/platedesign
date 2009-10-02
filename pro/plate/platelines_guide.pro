@@ -72,8 +72,8 @@ platelines_start, plateid, filebase, 'guide fibers', note=note
 
 ;; write magnitudes (in yellow and first so they don't
 ;; interfere
-iguide= where(holes.holetype eq 'GUIDE')
-for i=0L, n_elements(gfiber)-1L do begin
+iguide= where(holes.holetype eq 'GUIDE', ngstar)
+for i=0L, ngstar-1L do begin
     magstr= strtrim(string(f='(f40.2)', holes[iguide[i]].mag[1]),2)
     djs_xyouts, holes[iguide[i]].yfocal+5.*buffer, $
       holes[iguide[i]].xfocal-1.5*buffer, $
@@ -82,7 +82,7 @@ for i=0L, n_elements(gfiber)-1L do begin
 endfor
 
 ;; finally, draw guides
-for i=0L, n_elements(gfiber)-1L do begin
+for i=0L, ngstar-1L do begin
     theta= findgen(100)/float(99.)*!DPI*2.
     xcurr= holes[iguide[i]].xfocal+ circle* cos(theta)
     ycurr= holes[iguide[i]].yfocal+ circle* sin(theta)
