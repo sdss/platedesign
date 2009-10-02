@@ -32,7 +32,8 @@ gfiber = create_struct( $
          'yreach'   , 0.0, $
          'rreach'   , 0.0, $
          'xprefer'  , 0.d, $
-         'yprefer'  , 0.d )
+         'yprefer'  , 0.d, $
+         'guidetype', 'F')
 gfiber = replicate(gfiber, nguide)
 
 guideparam = [[  1,  199.0,  -131.0,  165.0,  199.0,  -131.0 ], $
@@ -52,6 +53,9 @@ gfiber.yreach = transpose(guideparam[2,*])
 gfiber.rreach = transpose(guideparam[3,*])
 gfiber.xprefer = transpose(guideparam[4,*])
 gfiber.yprefer = transpose(guideparam[5,*])
+
+gfiber[8].guidetype='A'
+gfiber[9].guidetype='A'
 
 return, gfiber
 
