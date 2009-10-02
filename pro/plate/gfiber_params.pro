@@ -54,8 +54,8 @@ gfiber.rreach = transpose(guideparam[3,*])
 gfiber.xprefer = transpose(guideparam[4,*])
 gfiber.yprefer = transpose(guideparam[5,*])
 
-gfiber[8].guidetype='A'
 gfiber[9].guidetype='A'
+gfiber[10].guidetype='A'
 
 return, gfiber
 
