@@ -89,6 +89,8 @@ pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_dummy_marvels_blocks.pro -text
 pro/misc/plate_log.pro -text
 pro/misc/platedesign_version.pro -text
+pro/misc/qsooff.pro -text
+pro/misc/splot_vec.pro -text
 pro/misc/struct_combine.pro -text
 pro/misc/test_apo_refrac.pro -text
 pro/misc/test_fiber.pro -text
