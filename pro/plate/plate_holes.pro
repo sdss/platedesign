@@ -11,7 +11,6 @@
 ;   ha - hour angle to use
 ;   temp - temperature
 ; COMMENTS:
-;   NO ALIGNMENT HOLES!!
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
@@ -29,6 +28,14 @@ designfile=designdir+'/plateDesign-'+ $
 designs= yanny_readone(designfile, hdr=hdr, /anon)
 definition= lines2struct(hdr)
 default= definition
+
+;; Warn us if we do not have a condition to set min/max HA 
+if(tag_indx(default, 'max_off_fiber_for_ha') eq -1) then begin
+    default= create_struct(default, 'max_off_fiber_for_ha', '0.5')
+    plate_log, plateid, 'WARNING: max_off_fiber_for_ha not set in default file'
+    plate_log, plateid, 'WARNING: setting max_off_fiber_for_ha='+ $
+               default.max_off_fiber_for_ha+' arcsec'
+endif 
 
 ;; special flag to omit guide fibers
 if(tag_exist(default, 'OMIT_GUIDES')) then $
@@ -97,7 +104,7 @@ for pointing=1L, npointings do begin
 endfor
 
 ;; determine HA limits
-ha_limits, plateid, designs=designs, hamin=hamin, hamax=hamax, $
+ha_limits, plateid, design=designs, hamin=hamin, hamax=hamax, $
            maxoff_arcsec= float(default.max_off_fiber_for_ha)
 
 if(n_tags(align) gt 0) then $
