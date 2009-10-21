@@ -219,14 +219,18 @@ for pointing=1L, npointings do begin
                      strmatch(hdr, 'deccen *', /fold_case) eq 0, nnotradec)
     khdr= hdr[inotradec]
     outhdr = ['completeTileVersion   none', $
-              'haMin ' + string(ha[pointing-1]), $
-              'haMax ' + string(ha[pointing-1]), $
               'mjdDesign ' + string(long(current_mjd())), $
               'pointing ' + pointing_name[pointing-1], $
               'mag_quality bad',  $
               khdr]
     if(keyword_set(yanny_par(outhdr, 'reddeningMed')) eq 0) then $
       outhdr=[outhdr, 'reddeningMed ' + string(reddenvec,format='(5f8.4)')]
+    if(keyword_set(yanny_par(outhdr, 'haMin')) eq 0) then $
+      outhdr=[outhdr, 'haMin ' + strtrim(string(ha[pointing-1], $
+                                                format='(f40.4)'),2)]
+    if(keyword_set(yanny_par(outhdr, 'haMax')) eq 0) then $
+      outhdr=[outhdr, 'haMax ' + strtrim(string(ha[pointing-1], $
+                                                format='(f40.4)'),2)]
     if(keyword_set(yanny_par(outhdr, 'theta')) eq 0) then $
       outhdr=[outhdr, 'theta 0']
     if(keyword_set(yanny_par(outhdr, 'plateId')) eq 0) then $
