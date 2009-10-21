@@ -160,6 +160,14 @@ if(designid ne long(definition.designid)) then begin
     message, 'plateDefinition file has wrong designid'
 endif
 
+;; Warn us if we do not have a condition to set min/max HA 
+if(tag_indx(default, 'max_off_fiber_for_ha') eq -1) then begin
+    default= create_struct(default, 'max_off_fiber_for_ha', '0.5')
+    plate_log, plateid, 'WARNING: max_off_fiber_for_ha not set in default file'
+    plate_log, plateid, 'WARNING: setting max_off_fiber_for_ha='+ $
+               default.max_off_fiber_for_ha+' arcsec'
+endif 
+
 ;; Make design file if it doesn't already exist
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
