@@ -20,11 +20,13 @@ pro plate_holes, designid, plateid, ha, temp, epoch
 true = 1
 false = 0
 
+platescale = 217.7358D           ; mm/degree
+
 ;; import design file and settings in header
 designdir= design_dir(designid)
 designfile=designdir+'/plateDesign-'+ $
   string(designid, f='(i6.6)')+'.par'
-designs= yanny_readone(designfile, hdr=hdr)
+designs= yanny_readone(designfile, hdr=hdr, /anon)
 definition= lines2struct(hdr)
 default= definition
 
@@ -42,7 +44,7 @@ design_pm, designs, toepoch=epoch
 ;; create output structure
 holes0= create_struct(design_blank(), 'XFOCAL', 0.D, 'YFOCAL', 0.D)
 holes= replicate(holes0, n_elements(designs))
-struct_assign, designs, holes
+struct_assign, designs, holes, /nozero
 holes.xfocal= holes.xf_default
 holes.yfocal= holes.yf_default
 
@@ -94,6 +96,10 @@ for pointing=1L, npointings do begin
     
 endfor
 
+;; determine HA limits
+ha_limits, plateid, designs=designs, hamin=hamin, hamax=hamax, $
+           maxoff_arcsec= float(default.max_off_fiber_for_ha)
+
 if(n_tags(align) gt 0) then $
   holes= [holes, align]
 
@@ -112,6 +118,8 @@ endif
 
 outhdr=['plateId '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
+        'ha_observable_min '+strjoin(strtrim(string(hamin, f='(f40.3)'),2)+' '), $
+        'ha_observable_max '+strjoin(strtrim(string(hamax, f='(f40.3)'),2)+' '), $
         'temp '+strtrim(string(temp, f='(f40.3)'),2), $
         guider_hdr(plateid), $
         hdr]
