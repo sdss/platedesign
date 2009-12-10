@@ -93,7 +93,7 @@ for pointing=1L, npointings do begin
     ;; find hamin and hamax for this pointing 
     iin= where(design.pointing eq pointing, nin)
     if(nin gt 0) then begin
-        
+
         ;; now cycle through HA values
         dtry=5.
         max_ha_off=60.
