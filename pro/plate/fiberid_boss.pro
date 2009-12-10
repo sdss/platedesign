@@ -48,6 +48,7 @@ if(keyword_set(minstdinblock)) then $
 
 platescale = 217.7358           ; mm/degree
 nperblock=20L
+minyblocksize=0.3
 
 if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
 if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
@@ -72,6 +73,7 @@ for i=1L, nblocks do begin
     blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
     blockylimits[*,i-1]= minmax(fiberblocks[ib].fiberceny)
 endfor
+
 
 ;; first assign science and standard, and reset block centers to follow science
 ;; fibers; DO NOT SAVE SCIENCE PLUGGING HERE
@@ -108,6 +110,11 @@ if(nsci gt 0) then begin
                 blockcenx[i-1]= mean(design[ib].xf_default)/platescale
                 blockceny[i-1]= mean(design[ib].yf_default)/platescale
                 blockylimits[*,i-1]= minmax(design[ib].yf_default/platescale)
+                if(blockylimits[1,i-1]-blockylimits[0,i-1] lt minyblocksize) then begin
+                    my= 0.5*(blockylimits[1,i-1]+blockylimits[0,i-1])
+                    blockylimits[0,i-1]=my-0.5*minyblocksize
+                    blockylimits[1,i-1]=my+0.5*minyblocksize
+                endif
             endif 
         endfor
     endif
