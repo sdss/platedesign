@@ -25,14 +25,24 @@ platescale = 217.7358D           ; mm/degree
 
 ;; read in plans
 if(n_tags(plans) eq 0) then $
-  plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+	plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
 iplan= where(plans.plateid eq plateid, nplan)
 if(nplan gt 1) then $
-  message, 'Multiple entries in platePlans for plateid='+ $
-           strtrim(string(plateid),2)
-if(nplan eq 0) then $
-  message, 'No entries in platePlans for plateid='+ $
-           strtrim(string(plateid),2)
+	message, 'Multiple entries in platePlans for plateid='+ $
+		strtrim(string(plateid),2)
+
+if(nplan eq 0) then begin
+
+	; "plans" is in a common block - reload the file to see if
+	; it has changed since this was first run.
+	plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+	iplan= where(plans.plateid eq plateid, nplan)
+	
+	; try again
+	if(nplan eq 0) then $
+		message, 'No entries in platePlans for plateid='+ $
+			strtrim(string(plateid),2)
+endif
 
 ;; set design values
 designid= plans[iplan].designid

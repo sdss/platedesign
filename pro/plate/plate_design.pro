@@ -38,7 +38,9 @@ if(n_elements(plateid) gt 1) then begin
     return
 endif
 
+splog, '================================================'
 splog, 'Working on plateid= '+strtrim(string(plateid),2)
+splog, '================================================'
 
 ;; read plan file for settings
 platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
