@@ -79,6 +79,8 @@ printf, unit, '<td>Pointing</td>'
 printf, unit, '<td>RA</td>'
 printf, unit, '<td>Dec</td>'
 printf, unit, '<td>HA (deg E)</td>'
+printf, unit, '<td>HA<sub>min</sub></td>'
+printf, unit, '<td>HA<sub>max</sub></td>'
 printf, unit, '<td>Guides</td>'
 printf, unit, '<td>plugmap link</td>'
 printf, unit, '<td>Instrument</td>'
@@ -101,6 +103,8 @@ for i=0L, n_elements(plateid)-1L do begin
     targets= yanny_par(hdr, 'targettypes')
     locid= yanny_par(hdr, 'locationId')
     ha= yanny_par(hdr, 'ha')
+    hamin= yanny_par(hdr, 'ha_observable_min')
+    hamax= yanny_par(hdr, 'ha_observable_max')
     racen= yanny_par(hdr, 'raCen')
     deccen= yanny_par(hdr, 'decCen')
     nsci= strarr(n_elements(instruments), npointings)
@@ -117,7 +121,8 @@ for i=0L, n_elements(plateid)-1L do begin
     endfor
     guides= ptrarr(npointings)
     for ip=0L, npointings-1L do $
-           guides[ip]= ptr_new(yanny_par(hdr, 'guidenums'+strtrim(string(ip+1L),2)))
+           guides[ip]= ptr_new(yanny_par(hdr, $
+                                         'guidenums'+strtrim(string(ip+1L),2)))
 
     plfile='plateLines-'+string(plateid[i], f='(i6.6)')+'.html'
 
@@ -128,7 +133,8 @@ for i=0L, n_elements(plateid)-1L do begin
             printf, unit, '<tr>'
             if(ip eq 0 AND it eq 0) then begin
                 printf, unit, tdst
-                printf, unit, '<a href="'+plfile+'">'+string(plateid[i], f='(i6.6)')+'</a>'
+                printf, unit, '<a href="'+plfile+'">'+ $
+                        string(plateid[i], f='(i6.6)')+'</a>'
                 printf, unit, '</td>'
                 printf, unit, tdst
                 printf, unit, tileid
@@ -157,6 +163,14 @@ for i=0L, n_elements(plateid)-1L do begin
 
                 printf, unit, tdst
                 printf, unit, ha[ip]
+                printf, unit, '</td>'
+
+                printf, unit, tdst
+                printf, unit, hamin[ip]
+                printf, unit, '</td>'
+
+                printf, unit, tdst
+                printf, unit, hamax[ip]
                 printf, unit, '</td>'
 
                 printf, unit, tdst
