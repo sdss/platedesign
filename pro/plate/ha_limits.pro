@@ -17,7 +17,7 @@
 ;-
 pro ha_limits, plateid, design=design, $
                hamin=hamin, hamax=hamax, maxoff_arcsec=maxoff_arcsec, $
-               plot=plot
+               plot=plot, lambda=lambda
 
 common com_ha_limits, plans
 
@@ -66,6 +66,8 @@ lambda_eff= fltarr(n_elements(design))+5400.
 if(tag_indx(design, 'lambda_eff') ge 0) then begin
     lambda_eff= design.lambda_eff
 endif
+if(keyword_set(lambda)) then $
+  lambda_eff[*]= lambda
 
 ;; get regular pointing of all holes
 npointings= long(default.npointings)
@@ -92,7 +94,6 @@ for pointing=1L, npointings do begin
         endif
     endfor
 endfor
-
 
 npointings= long(default.npointings)
 noffsets= long(default.noffsets)
@@ -125,7 +126,7 @@ for pointing=1L, npointings do begin
                     plate_ad2xy, definition, default, pointing, offset, $
                                  design[icurr].target_ra, $
                                  design[icurr].target_dec, $
-                                 design[icurr].lambda_eff, lst=racen+try_ha[i], $
+                                 lambda_eff[icurr], lst=racen+try_ha[i], $
                                  airtemp=temp, xfocal=xf, yfocal=yf
                     try_xf[ioff]= xf
                     try_yf[ioff]= yf
@@ -133,12 +134,11 @@ for pointing=1L, npointings do begin
             endfor
             
             ;; rescale x's and y's to take out scale
-            rf= sqrt(xfocal[iin]^2+yfocal[iin]^2)
-            try_rf= sqrt(try_xf^2+try_yf^2)
-            scale= median(rf/try_rf)
-            try_xf=try_xf*scale
-            try_yf=try_yf*scale
-            try_rf=try_rf*scale
+            ha_fit, xfocal[iin], yfocal[iin], try_xf, try_yf, $
+                    xnew=xnew, ynew=ynew, rot=rot, scale=scale, $
+                    xshift=xshift, yshift=yshift
+            try_xf= xnew
+            try_yf= ynew
             
             ;; find maximum distance
             dist= sqrt((xfocal[iin]- try_xf)^2+ $

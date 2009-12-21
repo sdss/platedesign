@@ -131,6 +131,8 @@ pro/plate/get_ferrulesize.pro -text
 pro/plate/gfiber2_params.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/guider_hdr.pro -text
+pro/plate/ha_apply.pro -text
+pro/plate/ha_fit.pro -text
 pro/plate/ha_limits.pro -text
 pro/plate/ha_quick.pro -text
 pro/plate/make_gridtest.pro -text
