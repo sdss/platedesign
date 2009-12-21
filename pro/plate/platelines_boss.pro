@@ -121,12 +121,21 @@ for k=0L, n_elements(versions)-1L do begin
         color= colors[i mod n_elements(colors)]
 
         bluefiber= lonarr(nii)
-        iblue=where(full[ii].bluefiber, nblue)
-        if(nblue gt nperblue) then $
-          iblue= iblue[shuffle_indx(nblue, num_sub=nperblue, $
-                                    seed=plateid+i)]
-        if(nblue gt 0) then $
-          bluefiber[iblue]=1
+        iblue=where(full[ii].bluefiber gt 0, nblue)
+        if(nblue gt nperblue) then begin
+            iblue= iblue[shuffle_indx(nblue, num_sub=nperblue, $
+                                      seed=plateid+i)]
+        endif
+        if(nblue lt nperblue) then begin
+            ired= where(full[ii].bluefiber eq 0, nred)
+            ish= shuffle_indx(nred, num_sub=nperblue-nblue, $
+                              seed=plateid+i)
+            iblue= [iblue, ired[ish]]
+        endif
+        if(n_elements(iblue) ne nperblue) then $
+          message, 'Inconsistency in iblue!'
+        nblue=nperblue
+        bluefiber[iblue]=1
         
         ;; connect lines
         doblock=1
