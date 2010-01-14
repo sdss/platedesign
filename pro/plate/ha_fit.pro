@@ -31,7 +31,10 @@ yshift= pst[3]
 ha_apply, ha_ximage, ha_yimage, rot=rot, scale=scale, xshift=xshift, $
           yshift=yshift, xnew=xnew, ynew=ynew
 
-deviates= [xnew-ha_xhole, ynew-ha_yhole]
+deviates= reform([xnew-ha_xhole, ynew-ha_yhole], n_elements(xnew)*2)
+
+sign= -1.+2.*float(deviates gt 0)
+deviates= deviates^4*sign
 
 return, deviates
 
@@ -56,10 +59,11 @@ parinfo.value= pst
 parinfo.step=1.e-6
 parinfo[0:1].limited=1L
 parinfo[0].limits= 4.*!DPI/180.*[-1., 1.]
-parinfo[1].limits= [-0.1, 0.1]
+parinfo[1].limits= [-0.2, 0.2]
 
 ;; run minimization
-pmin= mpfit('ha_deviates', pst, auto=1, parinfo=parinfo, status=status, /quiet)
+pmin= mpfit('ha_deviates', pst, auto=1, parinfo=parinfo, status=status, $
+            /quiet, ftol=1.d-6)
             
 
 ;; parse outputs
