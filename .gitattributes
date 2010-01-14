@@ -96,6 +96,7 @@ pro/misc/qsooff.pro -text
 pro/misc/splot_vec.pro -text
 pro/misc/struct_combine.pro -text
 pro/misc/test_apo_refrac.pro -text
+pro/misc/test_apogee.pro -text
 pro/misc/test_fiber.pro -text
 pro/misc/test_plug.pro -text
 pro/misc/test_segue2_inputs.pro -text
