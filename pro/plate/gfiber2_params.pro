@@ -61,10 +61,14 @@ gfiber[0:2].yreach= rows_mm[0]
 ;; second row
 gfiber[3:6].xreach= innercols_mm
 gfiber[3:6].yreach= rows_mm[1]
+gfiber[3].yreach= rows_mm[1]+70.
+gfiber[6].yreach= rows_mm[1]+70.
 
 ;; third row
 gfiber[7:10].xreach= -innercols_mm
 gfiber[7:10].yreach= rows_mm[2]
+gfiber[7].yreach= rows_mm[2]-70.
+gfiber[10].yreach= rows_mm[2]-70.
 
 ;; top row
 gfiber[11:13].xreach= -outercols_mm
