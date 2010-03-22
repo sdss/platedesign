@@ -91,7 +91,10 @@ printf, unit, '</tr>'
 printf, unit, '</thead>'
 printf, unit, '<tbody>'
 classes=['pink', 'blue']
-for i=0L, n_elements(plateid)-1L do begin
+
+isort= sort(plateid)
+for indx=0L, n_elements(plateid)-1L do begin
+    i= isort[indx]
 
     plateholesfile= plate_dir(plateid[i])+'/plateHolesSorted-'+ $
                     string(f='(i6.6)', plateid[i])+'.par'
