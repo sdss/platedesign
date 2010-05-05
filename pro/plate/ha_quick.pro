@@ -31,7 +31,7 @@ pro ha_quick, racen, deccen, ha, hamin=hamin, hamax=hamax, $
               maxoff_arcsec=maxoff_arcsec, lambda_eff=lambda_eff, $
               plot=plot, haact=haact, noscale=noscale, $
               tilerad=tilerad, ralim=ralim, declim=declim, $
-              rafter=rafter
+              rafter=rafter, _EXTRA=extra_for_plot
               
 
 platescale = 217.7358D           ; mm/degree
@@ -137,13 +137,14 @@ if(n_elements(haact) eq 0) then begin
     hamax= max(int_ha[iok])
     
     if(keyword_set(plot)) then begin
-        splot, int_ha, int_maxdist, xra=[-30., 30.]
-        soplot, try_ha, try_maxdist, psym=4
-        soplot, [min(try_ha), max(try_ha)], [max_off, max_off], color='red'
+        splot, int_ha, int_maxdist, xra=[-30., 30.], _EXTRA=extra_for_plot
+        soplot, try_ha, try_maxdist, psym=4, _EXTRA=extra_for_plot
+        soplot, [min(try_ha), max(try_ha)], [max_off, max_off], color='red', $
+                _EXTRA=extra_for_plot
         soplot, [hamin, hamin], $
-                [0., max_off], color='red'
+                [0., max_off], color='red', _EXTRA=extra_for_plot
         soplot, [hamax, hamax], $
-                [0., max_off], color='red'
+                [0., max_off], color='red', _EXTRA=extra_for_plot
     endif
 endif else begin
     if(keyword_set(plot)) then begin
@@ -151,7 +152,7 @@ endif else begin
         dy= (try_yf-ytest)
         splot_vec, xtest, ytest, dx, dy, scale=1000., $
                    xra=tilerad*platescale*1.05*[-1.,1.], $
-                   yra=tilerad*platescale*1.05*[-1.,1.]
+                   yra=tilerad*platescale*1.05*[-1.,1.], _EXTRA=extra_for_plot
     endif
 endelse
 
