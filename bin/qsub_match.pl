@@ -27,8 +27,7 @@ use IO::File;
 #
 my $test = 0;
 my $verbose = 0;
-my $rerun = 0;
-our $sdss = 0;
+my $platerun = 0;
 my $clobber = 0;
 GetOptions( 'test' => \$test, 'verbose' => \$verbose, 'sdss' => \$sdss,
     'platerun=s' => \$platerun, 'clobber' => \$clobber );
