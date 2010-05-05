@@ -180,6 +180,7 @@ pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
 pro/plate/platerun_boss.pro -text
 pro/plate/platerun_marvels.pro -text
+pro/plate/platerun_match.pro -text
 pro/plate/platerun_sdss.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
