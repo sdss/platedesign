@@ -36,7 +36,7 @@ die "You must specify a plate run!" if (!$platerun);
 # Directory to write job files
 #
 my $jobdir = "$ENV{HOME}/jobs";
-my ($jobname, $matchcommand, $pversion, $phversion);
+my ($jobname, $matchcommand, $pversion, $tversion, $phversion);
 mkdir $jobdir unless -d $jobdir;
 mkdir "$jobdir/done" unless -d "$jobdir/done";
 chdir $jobdir;
@@ -44,6 +44,7 @@ $jobname = "match-$platerun";
 $matchcommand = qq{platerun_match, '$platerun'};
 $matchcommand .= ", /clobber" if $clobber;
 chop ($pversion= `platedesign_version`);
+chop ($tversion= `tree_version`);
 chop ($phversion= `photoop_version`);
 my $filename = "$jobdir/$jobname.csh";
 my $job = IO::File->new(">$filename");
@@ -73,6 +74,7 @@ echo -n "Starting up at "
 #
 setup photoop $phversion
 setup platedesign $pversion
+setup tree $tversion
 setup platelist trunk
 #
 # Run IDL
