@@ -26,7 +26,7 @@ if(strtrim(getenv('BOSS_PHOTOOBJ'),2) eq '') then $
 if(strtrim(getenv('PHOTO_RESOLVE'),2) eq '') then $
   message, 'Must have set environmental variable BOSS_PHOTOOBJ'
 
-plansfile=getenv('PLATELIST_DIR')+'/platePlans.par')
+plansfile=getenv('PLATELIST_DIR')+'/platePlans.par'
 if(file_test(plansfile) eq 0) then $
   message, 'platePlans.par file does not exist at path '+plansfile
 
