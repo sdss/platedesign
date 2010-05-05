@@ -39,8 +39,8 @@ if(nrun eq 0) then $
   message, 'No plates found in run '+platerun
 
 for i=0L, nrun-1L do begin
-    sdss_plate_match, plans[irun[i]].plate, clobber=clobber
-    sdss_plate_photo, plans[irun[i]].plate, clobber=clobber
+    sdss_plate_match, plans[irun[i]].plateid, clobber=clobber
+    sdss_plate_photo, plans[irun[i]].plateid, clobber=clobber
 endfor
 
 end
