@@ -5,7 +5,6 @@ bin/.svnignore -text
 bin/drillrun2zip -text
 bin/get_plugmap_files.py -text
 bin/platedesign_version -text
-bin/qsub_match.pl -text
 data/boss/SDSS3FiberReach.pdf -text
 data/boss/SDSS3FiberReachData.pdf -text
 data/boss/SDSS3SFAnchrBlcks.pdf -text
