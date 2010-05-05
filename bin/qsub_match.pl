@@ -29,7 +29,7 @@ my $test = 0;
 my $verbose = 0;
 my $platerun = 0;
 my $clobber = 0;
-GetOptions( 'test' => \$test, 'verbose' => \$verbose, 'sdss' => \$sdss,
+GetOptions( 'test' => \$test, 'verbose' => \$verbose, 
     'platerun=s' => \$platerun, 'clobber' => \$clobber );
 my $platedir = "$ENV{PLATELIST_DIR}/plates";
 die "You must specify a plate run!" if (!$platerun);
@@ -37,6 +37,7 @@ die "You must specify a plate run!" if (!$platerun);
 # Directory to write job files
 #
 my $jobdir = "$ENV{HOME}/jobs";
+my ($jobname, $matchcommand);
 mkdir $jobdir unless -d $jobdir;
 mkdir "$jobdir/done" unless -d "$jobdir/done";
 chdir $jobdir;
