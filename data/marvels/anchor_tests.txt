@@ -1,0 +1,3 @@
+In standard case, 4/500 fail
+In new 60 fiber test case, 21/500 fail
+In new 120 fiber test case, 23/500 fail
