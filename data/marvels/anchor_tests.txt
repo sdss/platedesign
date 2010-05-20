@@ -1,3 +1,6 @@
-In standard case, 4/500 fail
-In new 60 fiber test case, 21/500 fail
-In new 120 fiber test case, 23/500 fail
+In standard case, 14/500 fail
+In new 60 fiber test case, 39/500 fail
+In new 120 fiber test case, 44/500 fail
+With BOSS reach, in standard case, 79/500 fail
+With BOSS reach, in new 60 fiber test case, 137/500 fail
+With BOSS reach, in new 120 fiber test case, 146/500 fail
