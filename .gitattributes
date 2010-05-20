@@ -213,9 +213,11 @@ pro/test/extinction_check.pro -text
 pro/test/guides_check.pro -text
 pro/test/plot_heights.pro -text
 pro/test/radec2kml.pro -text
+pro/test/run_anchor_tests.pro -text
 pro/test/standards_check.pro -text
 pro/test/test_ad2xy.pro -text
 pro/test/test_guide_stars.pro -text
+pro/test/test_marvels_fiberblocks.pro -text
 pro/test/test_tmass_conversion.pro -text
 pro/test/write_platelines_run.pro -text
 pro/third_party/galloy/dir-overview.html -text
