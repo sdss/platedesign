@@ -59,7 +59,7 @@ print $job <<EOT;
 # Job name
 #PBS -N $jobname
 # Job queue
-#PBS -q data_io
+#PBS -q batch
 # Set a good umask for output files
 #PBS -W umask=0022
 # Job requirements
