@@ -33,7 +33,7 @@ racen= 180.
 deccen = 0.
 
 design0= create_struct(design_blank(), 'ra', 0.D, 'dec', 0.D)
-design0.holetype='BOSS'
+design0.holetype='dummy'
 design0.targettype='SKY'
 design0.sourcetype='NA'
 design0.pointing=1
@@ -54,7 +54,7 @@ design.ra= ra
 design.dec= dec
 
 hdr=['targettype SKY', $
-     'instrument SDSS', $
+     'instrument dummy', $
      'raCen '+strtrim(string(racen,f='(f40.10)'),2), $
      'decCen '+strtrim(string(deccen,f='(f40.10)'),2), $
      'epoch 2009.', $
@@ -62,7 +62,7 @@ hdr=['targettype SKY', $
 
 pdata= ptr_new(design)
 yanny_write, getenv('PLATELIST_DIR')+ $
-  '/inputs/gridtest/plateInput-hexpack-000098.par', pdata, hdr=hdr
+  '/inputs/gridtest/plateInput-hexpack-001353.par', pdata, hdr=hdr
 ptr_free, pdata
 
 end
