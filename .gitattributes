@@ -142,6 +142,7 @@ pro/plate/ha_limits.pro -text
 pro/plate/ha_quick.pro -text
 pro/plate/make_gridtest.pro -text
 pro/plate/make_guideplate.pro -text
+pro/plate/make_hexpack.pro -text
 pro/plate/make_seguetest.pro -text
 pro/plate/marvels_fiberblocks.pro -text
 pro/plate/minmaxinblock.pro -text
