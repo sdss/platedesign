@@ -6,7 +6,7 @@
 ; of this file. Once this information is prepended to the output file, change its name
 ; to 'plPlugMapP-3623.par'.
 ;
-; Once in its proper place: "$PALTELIST_DIR/plates/0036XX/003623/plPlugMapP-3623.par",
+; Once in its proper place: "$PLATELIST_DIR/plates/0036XX/003623/plPlugMapP-3623.par",
 ; the plate is finished by running:
 ;
 ; IDL> platerun_marvels, '2009.08.b.boss', 3623, /nolines
