@@ -15,6 +15,7 @@ pro make_hexpack
 tilerad= 0.5 ; degrees
 platescale = 217.7358D           ; mm/degree
 spacing = (1. / 60.) * platescale   ; mm
+rmin = (100. / 3600.) * platescale    ; mm to avoid central
 
 ; Make a comfortably over-sized baseline and downselect:
 nn = 4L * ceil(platescale * tilerad / spacing) + 1L
@@ -23,7 +24,7 @@ jj = transpose(ii)
 xx = spacing * (ii + 0.5 * jj)
 yy = (sqrt(3.) / 2.) * spacing * jj
 rr = sqrt(xx^2 + yy^2)
-ikeep = where(rr lt (tilerad * platescale), nkeep)
+ikeep = where((rr lt (tilerad * platescale)) and (rr gt rmin), nkeep)
 
 xx = (xx[*])[ikeep]
 yy = (yy[*])[ikeep]
