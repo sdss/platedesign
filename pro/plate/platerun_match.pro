@@ -12,7 +12,7 @@
 ; REVISION HISTORY:
 ;   5-May-2010  MRB, NYU
 ;-
-pro platerun_match, platerun, clobber=clobber
+pro platerun_match, platerun, clobber=clobber, rerun=rerun
 
 if(NOT keyword_set(platerun)) then $
   message, 'Must set PLATERUN!'
@@ -39,7 +39,7 @@ if(nrun eq 0) then $
   message, 'No plates found in run '+platerun
 
 for i=0L, nrun-1L do begin
-    sdss_plate_match, plans[irun[i]].plateid, clobber=clobber
+    sdss_plate_match, plans[irun[i]].plateid, clobber=clobber, rerun=rerun
     sdss_plate_photo, plans[irun[i]].plateid, clobber=clobber
 endfor
 
