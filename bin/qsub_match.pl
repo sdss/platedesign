@@ -6,11 +6,12 @@
 #
 # Usage:
 #   qsub_match.pl [--test] [--verbose] [--platerun=platerun]
-#                 [--clobber]
+#                 [--clobber] [--rerun=rerun]
 #
 # Options:
 #   --platerun    - run on this platerun
 #   --test        - Create PBS files but do not submit them
+#   --rerun       - specify a rerun
 #   --verbose     - Print lots of extra stuff.
 #   --clobber     - Pass the /clobber keyword to the idl routines
 #
@@ -28,10 +29,12 @@ use IO::File;
 my $test = 0;
 my $verbose = 0;
 my $platerun = 0;
+my $rerun = 0;
 my $clobber = 0;
 GetOptions( 'test' => \$test, 'verbose' => \$verbose, 
-    'platerun=s' => \$platerun, 'clobber' => \$clobber );
+    'platerun=s' => \$platerun, 'rerun=s' => \$rerun, 'clobber' => \$clobber );
 die "You must specify a plate run!" if (!$platerun);
+die "You must specify a rerun!" if (!$rerun);
 #
 # Directory to write job files
 #
@@ -41,7 +44,7 @@ mkdir $jobdir unless -d $jobdir;
 mkdir "$jobdir/done" unless -d "$jobdir/done";
 chdir $jobdir;
 $jobname = "match-$platerun";
-$matchcommand = qq{platerun_match, '$platerun'};
+$matchcommand = qq{platerun_match, '$platerun', rerun='$rerun'};
 $matchcommand .= ", /clobber" if $clobber;
 chop ($pversion= `platedesign_version`);
 chop ($tversion= `tree_version`);
