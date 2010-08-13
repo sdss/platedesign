@@ -75,8 +75,8 @@ echo -n "Starting up at "
 #
 # Setup what we need
 #
-setup photoop $phversion
 setup platedesign $pversion
+setup photoop $phversion
 setup tree $tversion
 setup platelist trunk
 #
