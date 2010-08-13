@@ -10,7 +10,7 @@
 ;   11-Aug-2010 ASB, Utah
 ;   following make_gridtest 29-Jul-2008 MRB, NYU 
 ;-
-pro make_hexpack
+pro make_hexpack_1353
 
 tilerad= 0.5 ; degrees
 platescale = 217.7358D           ; mm/degree
