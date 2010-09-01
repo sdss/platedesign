@@ -7,6 +7,7 @@
 ;   stds= plate_standard(definition, default, instrument, pointing, offset)
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
+;   1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 function plate_standard, definition, default, instrument, $
@@ -118,6 +119,7 @@ if(NOT file_test(stdfile)) then begin
         ptr_free, pdata
     endif
 endif else begin
+	check_file_exists, stdfile, plateid=plateid
     in_sphoto_design= yanny_readone(stdfile, /anon)
     sphoto_design= replicate(design_blank(), n_elements(in_sphoto_design))
     struct_assign, in_sphoto_design, sphoto_design, /nozero

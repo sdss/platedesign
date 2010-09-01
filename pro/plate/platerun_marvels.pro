@@ -62,7 +62,6 @@ plobs= replicate(plobs0, n_elements(plateid))
 for i=0L, n_elements(plateid)-1L do begin
 	mapfile = plate_dir(plateid[i])+'/plPlugMapP-'+ $
 			  strtrim(string(plateid[i],f='(i4.4)'),2)+'.par'
-    plug= yanny_readone(mapfile, hdr=hdr)
 
 	; Error checking
 	if (~file_test(mapfile)) then begin
@@ -70,6 +69,8 @@ for i=0L, n_elements(plateid)-1L do begin
 			'was not found (' + mapfile + ').'
 			stop
 	endif
+
+    plug= yanny_readone(mapfile, hdr=hdr)
 	
     hdrstr= lines2struct(hdr, /relaxed)
     plobs[i].plateid= plateid[i]

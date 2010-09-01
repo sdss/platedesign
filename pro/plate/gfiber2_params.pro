@@ -22,6 +22,7 @@
 ;   Guides 15-16 are LARGE
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 function gfiber2_params
 
@@ -100,7 +101,9 @@ gfiber[7].xprefer= gfiber[7].xprefer+70.
 gfiber[10].xprefer= gfiber[10].xprefer-70.
 
 ;; finally, resort them to the final ordering
-newg= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par')
+filename = getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par'
+check_file_exists, filename
+newg = yanny_readone(filename)
 newgfiber = replicate(gfiber0, nguide)
 newgfiber[newg.guidenum-1L]=gfiber[newg.firstmatch-1L]
 gfiber=newgfiber

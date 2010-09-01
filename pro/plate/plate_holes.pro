@@ -13,6 +13,7 @@
 ; COMMENTS:
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro plate_holes, designid, plateid, ha, temp, epoch
 
@@ -25,6 +26,7 @@ platescale = 217.7358D           ; mm/degree
 designdir= design_dir(designid)
 designfile=designdir+'/plateDesign-'+ $
   string(designid, f='(i6.6)')+'.par'
+check_file_exists, designfile, plateid=plateid
 designs= yanny_readone(designfile, hdr=hdr, /anon)
 definition= lines2struct(hdr)
 default= definition
@@ -112,7 +114,9 @@ if(n_tags(align) gt 0) then $
 
 tmpstr= lines2struct(hdr)
 if(tag_exist(tmpstr, 'locationid') eq false) then begin
-    plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+	plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+	check_file_exists, plateplans_file, plateid=plateid
+    plans= yanny_readone(plateplans_file)
     iplate= where(plans.plateid eq plateid, nplate)
     if(nplate eq 0) then $
       message, 'plate '+strtrim(string(plateid),2)+' not in platePlans.par!'

@@ -14,6 +14,7 @@
 ;   /plot - creates a splot window with results
 ; REVISION HISTORY:
 ;   20-Oct-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro ha_limits, plateid, design=design, $
                hamin=hamin, hamax=hamax, maxoff_arcsec=maxoff_arcsec, $
@@ -24,8 +25,11 @@ common com_ha_limits, plans
 platescale = 217.7358D           ; mm/degree
 
 ;; read in plans
-if(n_tags(plans) eq 0) then $
-	plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+if(n_tags(plans) eq 0) then begin
+	platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+	check_file_exists, platePlans_file, plateid=plateid
+	plans= yanny_readone(platePlans_file)
+endif
 iplan= where(plans.plateid eq plateid, nplan)
 if(nplan gt 1) then $
 	message, 'Multiple entries in platePlans for plateid='+ $
@@ -35,7 +39,9 @@ if(nplan eq 0) then begin
 
 	; "plans" is in a common block - reload the file to see if
 	; it has changed since this was first run.
-	plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+	platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+	check_file_exists, platePlans_file, plateid=plateid
+	plans= yanny_readone(platePlans_file)
 	iplan= where(plans.plateid eq plateid, nplan)
 	
 	; try again
@@ -54,6 +60,7 @@ epoch=plans[iplan].epoch
 designdir= design_dir(designid)
 designfile=designdir+'/plateDesign-'+ $
            string(designid, f='(i6.6)')+'.par'
+check_file_exists, designfile, plateid=plateid
 if(n_tags(design) eq 0) then $
   design= yanny_readone(designfile, hdr=hdr, /anon) $ 
 else $

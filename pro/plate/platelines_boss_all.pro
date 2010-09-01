@@ -9,11 +9,14 @@
 ;   platerun - name of run to execute
 ; REVISION HISTORY:
 ;   10-Aug-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro platelines_boss_all, platerun
 
 ;; find plates in this platerun
-plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+check_file_exists, plateplans_file, plateid=plateid
+plans= yanny_readone(plateplans_file)
 iplate= where(plans.platerun eq platerun, nplate)
 if(nplate eq 0) then begin
   splog, 'No plates in platerun '+platerun

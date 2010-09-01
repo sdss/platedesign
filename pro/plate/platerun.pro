@@ -21,7 +21,9 @@ if(keyword_set(platerun) EQ 0) then begin
 endif
 
 ;; find plates in this platerun
-plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+check_file_exists, plateplans_file, -1
+plans= yanny_readone(plateplans_file)
 iplate= where(plans.platerun eq platerun, nplate)
 if(nplate eq 0) then begin
   splog, 'No plates in platerun '+platerun

@@ -21,6 +21,7 @@
 ;   Works off the plPlugMapP file, so may be fragile.
 ; REVISION HISTORY:
 ;   22-Aug-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty
@@ -47,10 +48,13 @@ platedir= plate_dir(plateid)
 if(n_tags(holes) eq 0) then begin
     plplug= platedir+'/plPlugMapP-'+ $
       strtrim(string(f='(i4.4)',plateid),2)+'.par'
+    check_file_exists, plplug, plateid=plateid
     holes= yanny_readone(plplug)
+
     fullfile= platedir+'/plateHolesSorted-'+ $
       strtrim(string(f='(i6.6)',plateid),2)+'.par'
-    full= yanny_readone(fullfile)
+	check_file_exists, fullfile, plateid=plateid
+	full= yanny_readone(fullfile)
 endif
 
 if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin

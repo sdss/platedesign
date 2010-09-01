@@ -12,12 +12,14 @@
 ;   Uses fibermag, but if fibermag is set to zero then uses fiberflux 
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro plugfile_plplugmap_segue2, plateid
 
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
+check_file_exists, platefile, plateid
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
 definition= lines2struct(hdr)

@@ -12,12 +12,14 @@
 ;   CLASSIFIES ALL SOURCES AS STARS!!
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro plugfile_plplugmap, plateid
 
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
+check_file_exists, platefile, plateid
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
 ; Read definition

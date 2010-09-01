@@ -9,6 +9,7 @@
 ;   plateid - plate ID to run on 
 ; REVISION HISTORY:
 ;   22-Aug-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro platelines_guide, plateid, holes, full, hdrstr
@@ -20,11 +21,13 @@ platedir= plate_dir(plateid)
 if(n_tags(holes) eq 0 OR n_tags(hdrstr) eq 0 or n_tags(full) eq 0) then begin
     plplug= platedir+'/plPlugMapP-'+ $
       strtrim(string(f='(i4.4)',plateid),2)+'.par'
-    holes= yanny_readone(plplug, hdr=hdr)
+	check_file_exists, plplug, plateid=plateid
+	holes= yanny_readone(plplug, hdr=hdr)
     hdrstr= lines2struct(hdr, /relaxed)
 
     fullfile= platedir+'/plateHolesSorted-'+ $
       strtrim(string(f='(i6.6)',plateid),2)+'.par'
+    check_file_exists, fullfile, plateid=plateid 
     full= yanny_readone(fullfile)
 endif
 

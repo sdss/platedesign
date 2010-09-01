@@ -14,8 +14,9 @@
 ;   /superclobber - delete any and all output files associated with this
 ;					plate before running.
 ; REVISION HISTORY:
-;   7-May-2008  MRB, NYU
-;  23-Jan-2008, Demitri Muna, NYU - added superclobber option
+;   7-May-2008 MRB, NYU
+;  23-Jan-2008 Demitri Muna, NYU - added superclobber option
+;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro plate_design, plateid, debug=debug, clobber=clobber, $
@@ -44,6 +45,7 @@ splog, '================================================'
 
 ;; read plan file for settings
 platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+check_file_exists, platePlans_file, plateid=plateid
 plans= yanny_readone(platePlans_file)
 
 iplate=where(plans.plateid eq plateid, nplate)
@@ -99,6 +101,7 @@ definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
 definitionfile=definitiondir+'/'+ $
                'plateDefinition-'+ $
                string(f='(i6.6)', designid)+'.par'
+check_file_exists, definitionfile, plateid=plateid
 dum= yanny_readone(definitionfile, hdr=hdr)
 if(~keyword_set(hdr)) then begin
     message, 'Error: plateDefinition file not found: ' + $
@@ -112,6 +115,7 @@ defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
 defaultfile= defaultdir+'/plateDefault-'+ $
              definition.platetype+'-'+ $
              definition.platedesignversion+'.par'
+check_file_exists, defaultfile, plateid=plateid             
 dum= yanny_readone(defaultfile, hdr=hdr)
 if(~keyword_set(hdr)) then begin
     message, 'no plateDefaults file '+defaultfile
@@ -303,6 +307,7 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
                     infile=getenv('PLATELIST_DIR')+ $
                            '/inputs/'+definition.(itag)
                     splog, 'Reading '+infile
+                    check_file_exists, infile, plateid=plateid
                     tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
                     if(n_tags(tmp_targets) eq 0) then $
                       message, 'empty plateInput file '+infile

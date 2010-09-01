@@ -21,6 +21,7 @@
 ;   Works off the plPlugMapP file, so may be fragile.
 ; REVISION HISTORY:
 ;   22-Aug-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro platelines_segue2, plateid, fullsize=fullsize
@@ -30,6 +31,7 @@ platescale = 217.7358D           ; mm/degree
 platedir= plate_dir(plateid)
 plplug= platedir+'/plPlugMapP-'+ $
   strtrim(string(f='(i4.4)',plateid),2)+'.par'
+check_file_exists, plplug, plateid=plateid
 holes= yanny_readone(plplug)
 
 filename= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.ps'

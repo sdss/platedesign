@@ -12,6 +12,7 @@
 ;   This routine is really just a placeholder for the final version
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
+;   1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro linestable, label, plunit, files
@@ -63,7 +64,9 @@ printf, unit, 'and platePlans.par files.</p>'
 printf, unit, '<h4>For UW plate shop: zipped, DOS-version files</h4>'
 printf, unit, '<p><a href="'+runname+'.dos.zip">'+runname+'.dos.zip</a></p>'
 
-plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+check_file_exists, plateplans_file
+plans= yanny_readone(plateplans_file)
 iplate= where(plans.platerun eq runname, nplate)
 plateid= plans[iplate].plateid
 
