@@ -7,6 +7,7 @@
 ;   guide= plate_guide(definition, default, pointing)
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
+;   1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 function plate_guide, definition, default, pointing, rerun=rerun, $
@@ -92,6 +93,7 @@ if(file_test(guidefile) eq 0 OR $
         ptr_free, pdata
     endif
 endif else begin
+	check_file_exists, guidefile, plateid=plateid
     in_guide_design= yanny_readone(guidefile, /anon)
     guide_design= replicate(design_blank(/guide), $
                             n_elements(in_guide_design))

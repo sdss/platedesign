@@ -27,6 +27,7 @@
 ;   Finally, assigns all others, guaranteeing at least one per block
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU 
+;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 function fiberid_sdss, default, fibercount, design, $
                        minstdinblock=minstdinblock, $
@@ -56,9 +57,11 @@ npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 
 ;; default centers of blocks
-if(n_tags(fiberblocks) eq 0) then $
-    fiberblocks= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
-                               '/data/sdss/fiberBlocks.par')
+if(n_tags(fiberblocks) eq 0) then begin
+	blockfile = getenv('PLATEDESIGN_DIR') + '/data/sdss/fiberBlocks.par'
+	check_file_exists, blockfile, plateid=plateid
+	fiberblocks= yanny_readone(blockfile)
+endif
 nblocks=max(fiberblocks.blockid)
 blockcenx= fltarr(nblocks)
 blockceny= fltarr(nblocks)

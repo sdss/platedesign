@@ -85,10 +85,12 @@ obsolete/pro/plate_select_sky.pro -text
 obsolete/pro/qsolist_read.pro -text
 pro/misc/bad_plates.pro -text
 pro/misc/check_fiberreach.pro -text
+pro/misc/check_file_exists.pro -text
 pro/misc/check_new_cover.pro -text
 pro/misc/check_old_cover.pro -text
 pro/misc/checkha.pro -text
 pro/misc/copydef.pro -text
+pro/misc/current_function_name.pro -text
 pro/misc/fiberreach_image.pro -text
 pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text

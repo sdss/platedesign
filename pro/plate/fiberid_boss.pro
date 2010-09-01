@@ -28,6 +28,7 @@
 ;   Uses boss_reachcheck.pro to decide if a fiber reaches a target
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU 
+;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 function fiberid_boss, default, fibercount, design, $
   minstdinblock=minstdinblock, $
@@ -61,8 +62,10 @@ noffsets= long(default.noffsets)
 
 ;; default centers of blocks
 blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
-if(n_tags(fiberblocks) eq 0) then $
+if(n_tags(fiberblocks) eq 0) then begin
+	check_file_exists, blockfile
     fiberblocks= yanny_readone(blockfile)
+endif
 nblocks=max(fiberblocks.blockid)
 blockcenx= fltarr(nblocks)
 blockceny= fltarr(nblocks)

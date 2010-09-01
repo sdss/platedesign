@@ -7,6 +7,7 @@
 ;   sky= plate_sky(definition, default, pointing, offset )
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
+;    1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 function plate_sky, definition, default, instrument, pointing, offset, $
@@ -118,6 +119,7 @@ if(nsky gt 0) then begin
             ptr_free, pdata
         endif
     endif else begin
+    	check_file_exists, skyfile, plateid=plateid
         in_sky_design= yanny_readone(skyfile, /anon)
         sky_design= replicate(design_blank(), n_elements(in_sky_design))
         struct_assign, in_sky_design, sky_design, /nozero

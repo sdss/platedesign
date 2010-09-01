@@ -33,7 +33,8 @@
 ;     fibers used.
 ; REVISION HISTORY:
 ;   4-Jun-2008 MRB, NYU
-;   9-Dec-2008, Demitri Muna, NYU - commented out nosky, nostd, noscience blocks which are not relevent for MARVELS.
+;   9-Dec-2008 Demitri Muna, NYU - commented out nosky, nostd, noscience blocks which are not relevent for MARVELS.
+;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 function fiberid_marvels, default, fibercount, design, $
                           minstdinblock=minstdinblock, $
@@ -74,6 +75,7 @@ endif
 
 ;; default centers of blocks
 blockfile=getenv('PLATEDESIGN_DIR')+'/data/marvels/fiberBlocksMarvels.par'
+check_file_exists, blockfile
 fiberblocks= yanny_readone(blockfile)
 nblocks=max(fiberblocks.blockid)
 blockcenx= fltarr(nblocks, npointings)

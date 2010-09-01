@@ -82,8 +82,11 @@ xcurr= radius* cos(theta)
 ycurr= radius* sin(theta)
 djs_oplot, ycurr, xcurr
 
-if(n_tags(plans) eq 0) then $
-  plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
+if(n_tags(plans) eq 0) then begin
+  plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+  check_file_exists, plateplans_file, plateid=plateid
+  plans= yanny_readone(plateplans_file)
+endif
 iplate=where(plans.plateid eq plateid)
 plan= plans[iplate]
 

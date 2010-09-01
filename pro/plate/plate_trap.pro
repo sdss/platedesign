@@ -70,6 +70,7 @@ if(NOT file_test(trapfile)) then begin
         ptr_free, pdata
     endif
 endif else begin
+	check_file_exists, trapfile
     in_trap_design= yanny_readone(trapfile, /anon)
     trap_design= replicate(design_blank(), n_elements(in_trap_design))
     struct_assign, in_trap_design, trap_design, /nozero

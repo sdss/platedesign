@@ -7,12 +7,15 @@
 ;   pl= plplugmap_blank(enums=)
 ; REVISION HISTORY:
 ;   9-Jun-2008 MRB, NYU (based on DJS's design_append)
+;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 function plplugmap_blank, enums=enums, structs=structs
 
-pl= yanny_readone(getenv('PLATEDESIGN_DIR')+ $
+filename = getenv('PLATEDESIGN_DIR')+ $
                   '/data/sdss/plPlugMapP-blank.par', $
-                  enums=enums, structs=structs)
+                  enums=enums, structs=structs
+check_file_exists, filename
+pl= yanny_readone(filename)
 
 return, pl
 

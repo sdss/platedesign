@@ -14,6 +14,7 @@
 ;     determines rfocal (mm) / theta (deg)
 ; REVISION HISTORY:
 ;   25-Aug-2009  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro designscale, plateid, altscale=altscale, azscale=azscale, pa=pa, $
                  lambda_eff=lambda_eff
@@ -27,6 +28,7 @@ if(n_elements(lambda_eff) eq 0) then $
 
 if(n_tags(plans) eq 0) then begin
     plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
+    check_file_exists, platePlans_file, plateid=plateid
     plans= yanny_readone(platePlans_file)
 endif
 
@@ -39,6 +41,7 @@ definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
 definitionfile=definitiondir+'/'+ $
                'plateDefinition-'+ $
                string(f='(i6.6)', plan.designid)+'.par'
+check_file_exists, definitionfile, plateid=plateid
 dum= yanny_readone(definitionfile, hdr=hdr)
 definition= lines2struct(hdr)
 
@@ -48,6 +51,7 @@ defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
 defaultfile= defaultdir+'/plateDefault-'+ $
              definition.platetype+'-'+ $
              definition.platedesignversion+'.par'
+check_file_exists, defaultfile, plateid=plateid
 dum= yanny_readone(defaultfile, hdr=hdr)
 default= lines2struct(hdr)
 defaultnames=tag_names(default)

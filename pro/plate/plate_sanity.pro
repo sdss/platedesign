@@ -4,6 +4,7 @@ pro plate_sanity, filename, epoch=epoch1
 
    if (keyword_set(epoch1)) then epoch = epoch1 $
     else epoch = 2007.9
+   check_file_exists, filename
    plug = yanny_readone(filename, hdr=hdr)
    if (NOT keyword_set(plug)) then $
     message, 'No file or empty'

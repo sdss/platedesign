@@ -13,6 +13,7 @@
 ;   /radec - matches on /radec
 ; REVISION HISTORY:
 ;   20-Nov-2008  MRB, NYU
+;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
 pro assign_same_fiberid, inputfile, plate, outputfile=outputfile, radec=radec
@@ -24,6 +25,7 @@ endif
 ;; read in fiberid from old plate
 oldfibersfile=plate_dir(plate)+ '/plateHolesSorted-'+ $
   strtrim(string(f='(i6.6)', plate),2)+'.par'
+check_file_exists, oldfibersfile, plateid=plate
 oldfibers= yanny_readone(oldfibersfile, hdr=hdr, /anon)
 
 if (size(oldfibers, /tname) ne 'STRUCT') then begin ; test if the return value is a struct
@@ -32,6 +34,15 @@ if (size(oldfibers, /tname) ne 'STRUCT') then begin ; test if the return value i
 endif
 
 ;; read in current input file
+
+; check that the file exists
+if (~file_test(inputfile)) then begin
+	plate_log, plate, 'assign_same_fiberid attempted to open a file that ' + $
+		'was not found (' + inputfile + ').'
+		stop
+endif
+
+check_file_exists, inputfile, plateid=plate
 plinput= yanny_readone(inputfile, hdr=hdr, /anon)
 if(tag_indx(plinput[0], 'fiberid') eq -1) then $
   plinputnew= replicate(create_struct(plinput[0], 'fiberid', -9999L), $

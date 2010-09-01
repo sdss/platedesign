@@ -11,12 +11,14 @@
 ;      $PLATELIST_DIR/designs/0000XX/000099/plateGuide-000099-p1.par
 ; REVISION HISTORY:
 ;   29-Jul-2008 MRB, NYU 
+;    1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
 pro make_seguetest 
 
 platescale = 217.7358D           ; mm/degree
-
-fibers= yanny_readone(getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par')
+fiberblocks_file = getenv('PLATEDESIGN_DIR')+'/data/sdss/fiberBlocks.par'
+check_file_exists, fiberblocks_file
+fibers= yanny_readone(fiberblocks_file)
 
 racen= 180.
 deccen= 0.
