@@ -90,7 +90,7 @@ pro/misc/check_new_cover.pro -text
 pro/misc/check_old_cover.pro -text
 pro/misc/checkha.pro -text
 pro/misc/copydef.pro -text
-pro/misc/current_function_name.pro -text
+pro/misc/current_function_filename.pro -text
 pro/misc/fiberreach_image.pro -text
 pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
