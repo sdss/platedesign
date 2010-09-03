@@ -22,7 +22,7 @@ endif
 
 ;; find plates in this platerun
 plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
-check_file_exists, plateplans_file, -1
+check_file_exists, plateplans_file
 plans= yanny_readone(plateplans_file)
 iplate= where(plans.platerun eq platerun, nplate)
 if(nplate eq 0) then begin

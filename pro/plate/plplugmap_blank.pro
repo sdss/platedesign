@@ -11,13 +11,11 @@
 ;-
 function plplugmap_blank, enums=enums, structs=structs
 
-filename = getenv('PLATEDESIGN_DIR')+ $
-                  '/data/sdss/plPlugMapP-blank.par', $
-                  enums=enums, structs=structs
-check_file_exists, filename
-pl= yanny_readone(filename)
-
-return, pl
+	filename = getenv('PLATEDESIGN_DIR') + '/data/sdss/plPlugMapP-blank.par'
+	check_file_exists, filename
+	pl= yanny_readone(filename, enums=enums, structs=structs)
+	
+	return, pl
 
 end
 
