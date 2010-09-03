@@ -1,6 +1,6 @@
 ;+
 ; NAME:
-;   current_function_name
+;   current_function_filename
 ; PURPOSE:
 ;   returns the name of the current function
 ; CALLING SEQUENCE:
