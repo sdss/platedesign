@@ -83,13 +83,16 @@ spawn, 'mkdir -p '+platedir
 
 ;; Delete any output files from a previous run
 if (keyword_set(superclobber)) then begin
-	
 	old_files = file_search(designdir + "/*", count=old_files_count)
 	if (old_files_count gt 0) then file_delete, old_files
 
 	old_files = file_search(platedir + "/*", count=old_files_count)
 	if (old_files_count gt 0) then file_delete, old_files
 endif
+
+;; Always delete the log file when rerunning a plate
+old_log = file_search(getenv('PLATELIST_DIR') + '/logs/platelog_' + str(plateid) + '.log', count=old_log_count)
+if (old_log_count eq 1) then file_delete, old_log
 
 ;; Read in the plate definition file
 ;; Should be at (with did = designid)
