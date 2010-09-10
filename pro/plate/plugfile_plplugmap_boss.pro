@@ -19,7 +19,7 @@ makesimple=0
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
   strtrim(string(f='(i6.6)',plateid),2)+'.par'
-check_file_exists, platefile, plateid
+check_file_exists, platefile, plateid=plateid
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
 definition= lines2struct(hdr)
