@@ -91,7 +91,7 @@ if (keyword_set(superclobber)) then begin
 endif
 
 ;; Always delete the log file when rerunning a plate
-old_log = file_search(getenv('PLATELIST_DIR') + '/logs/platelog_' + str(plateid) + '.log', count=old_log_count)
+old_log = file_search(getenv('PLATELIST_DIR') + '/logs/platelog_' + strtrim(string(plateid),2) + '.log', count=old_log_count)
 if (old_log_count eq 1) then file_delete, old_log
 
 ;; Read in the plate definition file
