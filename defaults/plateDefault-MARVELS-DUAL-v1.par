@@ -37,8 +37,8 @@ guideNums2 2  5  6  8  9 11 12 15
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # (Include guide instrument here)
 # BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
-ferruleSizeBOSS 3.72231
-bufferSizeBOSS 0.500
+ferruleSizeMARVELS 3.72231
+bufferSizeMARVELS 0.500
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
