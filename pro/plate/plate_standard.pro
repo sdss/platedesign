@@ -13,7 +13,7 @@
 function plate_standard, definition, default, instrument, $
                          pointing, offset, rerun=rerun
 
-if(NOT keyword_set(tilerad)) then tilerad=1.49D
+tilerad= get_tilerad(definition, default)
 
 if(tag_exist(default, 'PLATEDESIGNSTANDARDS') eq 0) then begin
     return, 0

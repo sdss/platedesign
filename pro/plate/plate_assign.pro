@@ -25,7 +25,7 @@
 pro plate_assign, definition, default, fibercount, design, new_design, $
                   seed=seed, collect=collect, nextra=nextra
 
-tilerad=1.49
+tilerad= get_tilerad(definition, default)
 
 ;; normally limit by number of available fibers; however, in some
 ;; cases we want to collect a large set of non-colliding ones (for

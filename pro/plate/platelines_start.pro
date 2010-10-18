@@ -21,6 +21,7 @@ device,/close
 set_plot,'x'
 
 spawn, 'convert '+filebase+'.ps '+filebase+'.png'
+file_delete, filebase+'.ps'
 
 end
 ;

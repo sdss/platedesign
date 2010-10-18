@@ -63,13 +63,15 @@ for i=0L, n_tags(default)-1L do begin
     endfor
 endfor
 
+;; set tile 
+tilerad=get_tilerad(definition, default)
+
 npointings= long(default.npointings)
 pa= dblarr(npointings)
 altscale= dblarr(npointings)
 azscale= dblarr(npointings)
 offset=0L
 nrandom=10000L
-tilerad=1.49
 doff=0.01
 for pointing= 1L, npointings do begin
 

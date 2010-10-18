@@ -15,6 +15,8 @@ function plate_guide, definition, default, pointing, rerun=rerun, $
 
 designid= long(definition.designid)
 
+tilerad= get_tilerad(definition, default)
+
 if(tag_exist(default, 'GUIDEMAG_MINMAX')) then begin
     gminmax=float(strsplit(default.guidemag_minmax, /extr))
 endif
@@ -52,7 +54,7 @@ if(file_test(guidefile) eq 0 OR $
     if(strupcase(guidetype) eq 'SDSS') then begin
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
           rerun=rerun, guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax
+          gminmax=gminmax, tilerad=tilerad
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
               guide_design.target_ra, guide_design.target_dec, $
@@ -66,7 +68,7 @@ if(file_test(guidefile) eq 0 OR $
     if(strupcase(guidetype) eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax
+          gminmax=gminmax, tilerad=tilerad
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
               guide_design.target_ra, guide_design.target_dec, $

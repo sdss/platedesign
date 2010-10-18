@@ -8,7 +8,7 @@
 ; INPUTS:
 ;   platerun - name of run to execute
 ; COMMENTS:
-;   Only implemented drillstyles are "sdss" and "marvels"
+;   Only implemented drillstyles are "sdss", "marvels", and "boss"
 ;   (drillstyle set in platePlans.par file)
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
