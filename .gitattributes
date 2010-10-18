@@ -11,7 +11,6 @@ data/apogee/fiberBlocksAPOGEE.par -text
 data/apogee/fiberBlocksBrightAPOGEE.par -text
 data/apogee/fiberBlocksFaintAPOGEE.par -text
 data/apogee/fiberBlocksMediumAPOGEE.par -text
-data/apogee/idlsave.dat -text
 data/boss/SDSS3FiberReach.pdf -text
 data/boss/SDSS3FiberReachData.pdf -text
 data/boss/SDSS3SFAnchrBlcks.pdf -text
