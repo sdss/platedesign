@@ -28,7 +28,7 @@
 pro plate_assign_guide, definition, default, design, guide_design, $
   pointing, guidenums=guidenums
 
-tilerad=1.49
+tilerad= get_tilerad(definition, default)
 
 if(tag_indx(default, 'GFIBERTYPE') ge 0) then $
   gfibertype= default.gfibertype $
@@ -56,7 +56,8 @@ for i=0L, n_elements(guide_design)-1L do begin
       check_conflicts(guide_design[0:i-1], guide_design[i]) gt 0 
     if(conflicted gt 0) then $
       guide_design[i].conflicted=1
-endfor
+ endfor
+
 
 ;; find available guides that don't conflict with 
 ;; higher priority ones

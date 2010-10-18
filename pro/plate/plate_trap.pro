@@ -6,7 +6,9 @@
 ; CALLING SEQUENCE:
 ;   trap= plate_trap(definition, default, pointing)
 ; BUGS:
-;   Hard-coded 1.49 deg and tycvlim of 7.5
+;   Hard-coded tycvlim of 7.5
+; COMMENTS:
+;   Traps *always* out to 1.49 deg (maximum plate radius)
 ; REVISION HISTORY:
 ;   7-May-2008  MRB, NYU
 ;-

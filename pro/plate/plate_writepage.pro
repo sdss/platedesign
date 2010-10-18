@@ -196,7 +196,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                            words[n_elements(words)-1L]
                 path='../../plates/'+lastwords
                 printf, unit, tdst+'<a href="'+path+'">'+plugname
-                printf, unit, '</a></td>
+                printf, unit, '</a></td>'
             endif else begin
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
@@ -245,6 +245,10 @@ for indx=0L, n_elements(plateid)-1L do begin
         if(count2 gt 0) then tmp_files= [tmp_files, tmp_files2]
         tmp_files2= file_search(plate_dir(plateid[i])+ $
                                 '/plateLines-??????-???.png', $
+                                count=count2)
+        if(count2 gt 0) then tmp_files= [tmp_files, tmp_files2]
+        tmp_files2= file_search(plate_dir(plateid[i])+ $
+                                '/plateLines-??????-traps.png', $
                                 count=count2)
         if(count2 gt 0) then tmp_files= [tmp_files, tmp_files2]
         linestable, 'Plate overview', plunit, tmp_files

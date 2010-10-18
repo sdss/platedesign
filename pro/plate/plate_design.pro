@@ -91,7 +91,8 @@ if (keyword_set(superclobber)) then begin
 endif
 
 ;; Always delete the log file when rerunning a plate
-old_log = file_search(getenv('PLATELIST_DIR') + '/logs/platelog_' + strtrim(string(plateid),2) + '.log', count=old_log_count)
+old_log = file_search(getenv('PLATELIST_DIR') + '/logs/platelog_' + $
+                      strtrim(string(plateid),2) + '.log', count=old_log_count)
 if (old_log_count eq 1) then file_delete, old_log
 
 ;; Read in the plate definition file
@@ -254,6 +255,14 @@ if (keyword_set(clobber) OR ~file_test(designfile)) then begin
             ntotmarvels= long(total(fibercount.ntot[imarvels,*,*,*]))
             if(ntotmarvels ne 60 and ntotmarvels ne 120) then $
               message, 'Expect a total of 60 or 120 fibers for MARVELS'
+        endif
+        iapogee= where(strupcase(fibercount.instruments) eq 'APOGEE', nm)
+        if(nm gt 0) then begin
+           if(nm gt 1) then $
+              message, 'Only expect one instance of APOGEE in instruments!'
+           ntotapogee= long(total(fibercount.ntot[iapogee,*,*,*]))
+           if(ntotapogee ne 300) then $
+              message, 'Expect a total of 300 fibers for APOGEE'
         endif
         
         ;; What conditions on fiber placement exist for each instrument?

@@ -124,6 +124,7 @@ pro/objects/xml2design_list__define.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/adr.pro -text
 pro/plate/alignment_fiber.pro -text
+pro/plate/apogee_fiberblocks.pro -text
 pro/plate/assign_same_fiberid.pro -text
 pro/plate/boss_fiberblocks.pro -text
 pro/plate/boss_reachcheck.pro -text
@@ -139,12 +140,14 @@ pro/plate/dss_cache_lookup.pro -text
 pro/plate/dss_cache_no_sky_for_input.pro -text
 pro/plate/dss_cache_populate_sky.pro -text
 pro/plate/dss_cache_setup.pro -text
+pro/plate/fiberid_apogee.pro -text
 pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/get_buffersize.pro -text
 pro/plate/get_ferrulesize.pro -text
+pro/plate/get_tilerad.pro -text
 pro/plate/gfiber2_params.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/guider_hdr.pro -text
@@ -164,6 +167,7 @@ pro/plate/plate_assign.pro -text
 pro/plate/plate_assign_constrained.pro -text
 pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
+pro/plate/plate_counterbore.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_dir.pro -text
 pro/plate/plate_guide.pro -text
@@ -188,6 +192,7 @@ pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plate_xy2ad.pro -text
+pro/plate/platelines_apogee.pro -text
 pro/plate/platelines_boss.pro -text
 pro/plate/platelines_boss_all.pro -text
 pro/plate/platelines_guide.pro -text
@@ -195,12 +200,14 @@ pro/plate/platelines_marvels.pro -text
 pro/plate/platelines_segue2.pro -text
 pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
+pro/plate/platerun_apogee.pro -text
 pro/plate/platerun_boss.pro -text
 pro/plate/platerun_marvels.pro -text
 pro/plate/platerun_match.pro -text
 pro/plate/platerun_sdss.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
+pro/plate/plugfile_plplugmap_apogee.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/plugmap_blank.pro -text
