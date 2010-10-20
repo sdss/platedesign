@@ -56,7 +56,11 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                strtrim(string(f='(i6.6)',plateid),2)+'.par'
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
+
   endif
+
+  isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
+  if(nsci eq 0) then return
 
   if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
      msg='Could not find plPlugMapP or plateHolesSorted file for '+ $
@@ -68,11 +72,11 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
   endif
   
 ;; basic versions
-  versions=['', 'sky', 'std', 'traps']
+  versions=['apogee', 'apogee.sky', 'apogee.std', 'traps']
 
 ;; make various block colors
   colors= ['red', 'green', 'blue', 'magenta', 'cyan']
-  versions= [versions, 'block-'+colors]
+  versions= [versions, 'apogee.block-'+colors]
 
   for k=0L, n_elements(versions)-1L do begin
      
@@ -88,13 +92,13 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
      connect_thick=3
      circle_thick=2
      
-     if(keyword_set(version) gt 0 AND $
-        (strmatch(version, 'block-*') eq 0 OR $
+     if(version ne 'apogee' AND $
+        (strmatch(version, 'apogee.block-*') eq 0 OR $
          strmatch(version, 'traps') ne 0)) then $
            connect_thick=1
 
      label='APOGEE fibers'
-     if(keyword_set(version)) then $
+     if(version ne 'apogee') then $
         label=label+' ('+version+')'
      note=''
      platelines_start, plateid, filebase, label, note=note
@@ -108,17 +112,18 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
      nblocks=50L
      nper=6L
      for i=0L, nblocks-1L do begin
-        ii= where(-holes.fiberid ge i*nper+1L and $
-                  -holes.fiberid le (i+1L)*nper, nii)
+        ii= where(-holes[isci].fiberid ge i*nper+1L and $
+                  -holes[isci].fiberid le (i+1L)*nper, nii)
         if(nii gt 0) then begin
-           isort= lindgen(nii)
            if(keyword_set(sorty)) then $
-              isort= sort(holes[ii].yfocal)
+              isort= sort(holes[isci[ii]].yfocal) $
+           else $
+              isort= sort(-holes[isci[ii]].fiberid) 
            color= colors[i mod n_elements(colors)]
 
            ;; connect lines
            doblock=1
-           if (strmatch(version,'block-*') gt 0) then begin
+           if (strmatch(version,'apogee.block-*') gt 0) then begin
               colorval= (strsplit(version, '-', /extr))[1]
               if(colorval ne color) then $
                  doblock=0
@@ -128,10 +133,10 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
            endif
            if(doblock gt 0) then begin
               for j=0L, (nper-2L) do begin
-                 xhole1= holes[ii[isort[j]]].xfocal
-                 xhole2= holes[ii[isort[j+1]]].xfocal
-                 yhole1= holes[ii[isort[j]]].yfocal
-                 yhole2= holes[ii[isort[j+1]]].yfocal
+                 xhole1= holes[isci[ii[isort[j]]]].xfocal
+                 xhole2= holes[isci[ii[isort[j+1]]]].xfocal
+                 yhole1= holes[isci[ii[isort[j]]]].yfocal
+                 yhole2= holes[isci[ii[isort[j+1]]]].yfocal
                  length= sqrt((xhole2-xhole1)^2+(yhole2-yhole1)^2)
                  sbuffer=buffer 
                  ebuffer=(length-buffer) 
@@ -151,13 +156,13 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
            ;; draw holes; 
            for j=0L, (nper-1L) do begin
               theta= findgen(100)/float(99.)*!DPI*2.
-              xcurr= holes[ii[j]].xfocal+ circle* cos(theta)
-              ycurr= holes[ii[j]].yfocal+ circle* sin(theta)
+              xcurr= holes[isci[ii[j]]].xfocal+ circle* cos(theta)
+              ycurr= holes[isci[ii[j]]].yfocal+ circle* sin(theta)
               ncirc=1L
-              if(version eq 'sky') then begin
+              if(version eq 'apogee.sky') then begin
                  ;; SKY as thick RED, 
                  ;; any other as thin black
-                 case strupcase(holes[ii[j]].objtype) of
+                 case strupcase(holes[isci[ii[j]]].objtype) of
                     'SKY': begin
                        currcolor='blue'
                        currthick=4
@@ -167,10 +172,10 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                        currthick=1
                     end
                  endcase
-              endif else if (version eq 'std') then begin
+              endif else if (version eq 'apogee.std') then begin
                  ;; standard as thick blue
                  ;; any other as thin black
-                 case strupcase(holes[ii[j]].objtype) of
+                 case strupcase(holes[isci[ii[j]]].objtype) of
                     'SPECTROPHOTO_STD': begin
                        currcolor='red'
                        currthick=4
@@ -187,7 +192,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                  ;; normally should color according to fiber type
                  currthick=circle_thick
                  currthick=circle_thick
-                 ib= where(blocks.fiberid eq abs(holes[ii[j]].fiberid), nb)
+                 ib= where(blocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
                  if(nb eq 0) then $
                     message, 'Unknown fiber!'
                  if(nb gt 1) then $
@@ -199,7 +204,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                  if(blocks[ib[0]].ftype eq 'F') then $
                     currcolor='blue'
                  
-                 if (strmatch(version,'block-*') gt 0) then begin
+                 if (strmatch(version,'apogee.block-*') gt 0) then begin
                     colorval= (strsplit(version, '-', /extr))[1]
                     if(colorval ne color) then begin
                        currcolor='black'
@@ -210,8 +215,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
               djs_oplot, ycurr, xcurr, color=currcolor, th=currthick
               for l=1L, ncirc-1L do begin
                  scale=l*0.3+1.
-                 xcurr= holes[ii[j]].xfocal+ scale*circle* cos(theta)
-                 ycurr= holes[ii[j]].yfocal+ scale*circle* sin(theta)
+                 xcurr= holes[isci[ii[j]]].xfocal+ scale*circle* cos(theta)
+                 ycurr= holes[isci[ii[j]]].yfocal+ scale*circle* sin(theta)
                  djs_oplot, ycurr, xcurr, color=currcolor, th=1
               endfor
            endfor
@@ -233,8 +238,6 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
      
      platelines_end
   endfor
-
-  platelines_guide, plateid, holes, full, hdrstr
 
   return
 end
