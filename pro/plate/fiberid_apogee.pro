@@ -102,8 +102,9 @@ maxiter=7L
 for iter=0L, maxiter-1L do begin
    
    ;; brights 
-   ibright= where(strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
-                  strupcase(design.targettype) eq 'SCIENCE_BRIGHT', nbright)
+   ibright= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                  (strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
+                   strupcase(design.targettype) eq 'SCIENCE_BRIGHT'), nbright)
    sdss_plugprob, design[ibright].xf_default, $
                   design[ibright].yf_default, tmp_fiberid, $
                   reachfunc='boss_reachcheck', maxinblock=2L, $
@@ -131,8 +132,9 @@ for iter=0L, maxiter-1L do begin
    endif
    
    ;; mediums
-   imedium= where(strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
-                  strupcase(design.targettype) eq 'SCIENCE_MEDIUM', nmedium)
+   imedium= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                  (strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
+                   strupcase(design.targettype) eq 'SCIENCE_MEDIUM'), nmedium)
    sdss_plugprob, design[imedium].xf_default, $
                   design[imedium].yf_default, tmp_fiberid, $
                   reachfunc='boss_reachcheck', maxinblock=2L, $
@@ -160,9 +162,10 @@ for iter=0L, maxiter-1L do begin
    endif
    
    ;; faints
-   ifaint= where(strupcase(design.targettype) eq 'STANDARD_FAINT' OR $
-                 strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
-                 strupcase(design.targettype) eq 'SKY', nfaint)
+   ifaint= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                 (strupcase(design.targettype) eq 'STANDARD_FAINT' OR $
+                  strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
+                  strupcase(design.targettype) eq 'SKY'), nfaint)
    sdss_plugprob, design[ifaint].xf_default, $
                   design[ifaint].yf_default, tmp_fiberid, $
                   reachfunc='boss_reachcheck', maxinblock=2L, $
