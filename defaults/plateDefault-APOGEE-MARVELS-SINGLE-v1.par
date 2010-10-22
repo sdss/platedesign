@@ -9,7 +9,7 @@ instruments MARVELS APOGEE
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
 # are not case sensitive. 
-targettypes science science_bright science_medium science_faint standard_bright standard_medium sky 
+targettypes science science_bright science_medium science_faint standard_bright standard_medium standard_faint sky 
 
 # Number of pointings, and number of offsets per pointing
 # A pointing involves closing the shutter and reacquisition.
