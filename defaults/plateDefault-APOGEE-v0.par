@@ -34,7 +34,7 @@ nAPOGEE_sky 25
 gfiberType gfiber2
 guideType 2MASS
 guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-guidemag_minmax 13. 16.5
+guidemag_minmax 12. 17.0
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # Schlegel measured a minimum separation of 3.72231 mm. 
