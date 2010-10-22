@@ -68,9 +68,9 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
     return
 endif
 
-filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)
+filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+'.marvels'
 
-platelines_start, plateid, filebase, 'MARVELS science fibers'
+platelines_start, plateid, filebase, 'MARVELS science fibers' 
 
 nblocks=10L
 nper=6L
