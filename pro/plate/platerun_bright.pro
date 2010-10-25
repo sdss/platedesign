@@ -116,7 +116,7 @@ for i=0L, n_elements(plateid)-1L do begin
 
 ;; make counterbores
 openw, cunit, getenv('PLATELIST_DIR')+'/runs/'+platerun+'/'+ $
-       'plCounterBoreList.txt', /get_lun
+       'plCounterBoreList-'+platerun+'.txt', /get_lun
 printf, cunit, '# List of plates in this run to be counterbored'
 for i=0L, n_elements(plateid)-1L do $
    plate_counterbore, platerun, plateid[i], cunit=cunit
