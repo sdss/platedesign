@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   write the plateLines-????.ps file for a BOSS plate
 ; CALLING SEQUENCE:
-;   platelines_boss, plateid [, /sky, /std ]
+;   platelines_boss, plateid [, /diesoft, /sorty, /rearrange ]
 ; INPUTS:
 ;   plateid - plate ID to run on
 ; COMMENTS:
@@ -24,7 +24,7 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty
+pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty, rearrange=rearrange
 
 common com_plb, plateid, full, holes
 
@@ -64,6 +64,58 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
       message, msg
     splog, msg
     return
+ endif
+
+;; if desired, rearrange BOSS fibers
+if(keyword_set(rearrange) ne 0) then begin
+   iboss= where(full.instrument eq 'BOSS', nboss)
+   if(nboss ne 1000) then $
+      message, 'Not 1000 BOSS fibers?'
+   blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
+   fiberblocks= yanny_readone(blockfile)
+   nblocks=max(fiberblocks.blockid)
+   blockcenx= fltarr(nblocks)
+   blockceny= fltarr(nblocks)
+   blockylimits= fltarr(2, nblocks)
+   for i=1L, nblocks do begin
+      ib= where(fiberblocks.blockid eq i, nb)
+      blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
+      blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
+      blockylimits[*,i-1]= minmax(fiberblocks[ib].fiberceny)
+   endfor
+   sdss_plugprob, full[iboss].xfocal, $
+                  full[iboss].yfocal, $
+                  tmp_fiberid, $
+                  reachfunc='boss_reachcheck', $
+                  blockfile=blockfile 
+   maxiter=3L
+   for iter=0L, maxiter-1L do begin
+      block= (tmp_fiberid-1L)/nperblock+1L
+      ;; now find the center location for each block, and limits in
+      ;; y-direction of targets
+      for i=1L, nblocks do begin
+         ib= where(block eq i, nb)
+         if(nb gt 0) then begin
+            blockcenx[i-1]= mean(full[ib].xfocal)/platescale
+            blockceny[i-1]= mean(full[ib].yfocal)/platescale
+            blockylimits[*,i-1]= minmax(full[ib].yfocal/platescale)
+            if(blockylimits[1,i-1]-blockylimits[0,i-1] lt minyblocksize) then begin
+               my= 0.5*(blockylimits[1,i-1]+blockylimits[0,i-1])
+               blockylimits[0,i-1]=my-0.5*minyblocksize
+               blockylimits[1,i-1]=my+0.5*minyblocksize
+            endif
+         endif 
+      endfor
+      tmp_fiberid=0
+      sdss_plugprob, full[iboss].xfocal, $
+                     full[iboss].yfocal, $
+                     tmp_fiberid, $
+                     reachfunc='boss_reachcheck', $
+                     blockfile=blockfile, $
+                     blockcenx=blockcenx, blockceny=blockceny, /quiet, $
+                     ylimits=blockylimits, $
+                     /noycost
+   endfor
 endif
       
 ;; basic versions
@@ -76,7 +128,7 @@ if(nnot gt 0) then $
   versions=[versions, 'zoffset-'+zoffstr[inot]]
 
 ;; make various block colors
-colors= ['red', 'green', 'blue', 'magenta', 'cyan']
+colors= ['red', 'green', 'blue', 'magenta', 'brown']
 versions= [versions, 'block-'+colors]
 
 for k=0L, n_elements(versions)-1L do begin
