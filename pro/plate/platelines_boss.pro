@@ -24,6 +24,75 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
+pro platelines_rearrange, full, holes
+
+  platescale = 217.7358D        ; mm/degree
+  maxiter=3L
+  nperblock=20L
+  minyblocksize=0.3
+
+  iboss= where(strupcase(full.holetype) eq 'BOSS', nboss)
+  if(nboss ne 1000) then $
+     message, 'Not 1000 BOSS fibers?'
+  blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
+  fiberblocks= yanny_readone(blockfile)
+  nblocks=max(fiberblocks.blockid)
+  blockcenx= fltarr(nblocks)
+  blockceny= fltarr(nblocks)
+  for i=1L, nblocks do begin
+     ib= where(fiberblocks.blockid eq i, nb)
+     blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
+     blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
+  endfor
+  sdss_plugprob, full[iboss].xf_default, $
+                 full[iboss].yf_default, $
+                 tmp_fiberid, $
+                 reachfunc='boss_reachcheck', $
+                 blockfile=blockfile, minavail=0
+
+  ;; section for optimizing centers; commented out since it doesn't 
+  ;; do much better than just the regular fit.
+  if(0) then begin
+     for iter=0L, maxiter-1L do begin
+        splog, 'iter='+string(iter)
+        block= (tmp_fiberid-1L)/nperblock+1L
+        ;; now find the center location for each block, and limits in
+        ;; y-direction of targets
+        for i=1L, nblocks do begin
+           ib= where(block eq i, nb)
+           if(nb gt 0) then begin
+              blockcenx[i-1]= mean(full[iboss[ib]].xf_default)/platescale
+              blockceny[i-1]= mean(full[iboss[ib]].yf_default)/platescale
+           endif 
+        endfor
+        tmp_fiberid=0
+        sdss_plugprob, full[iboss].xf_default, $
+                       full[iboss].yf_default, $
+                       tmp_fiberid, $
+                       reachfunc='boss_reachcheck', $
+                       blockfile=blockfile, $
+                       blockcenx=blockcenx, blockceny=blockceny, /quiet
+     endfor
+     if(min(tmp_fiberid) lt 1) then $
+        message, 'Some fibers unassigned'
+     
+     block= (tmp_fiberid-1L)/nperblock+1L
+     tmp_fiberid=0
+     sdss_plugprob, full[iboss].xf_default, $
+                    full[iboss].yf_default, $
+                    tmp_fiberid, $
+                    reachfunc='boss_reachcheck', $
+                    blockfile=blockfile, toblock=block
+  endif
+
+  if(min(tmp_fiberid) lt 1) then $
+     message, 'Some fibers unassigned'
+
+  full[iboss].fiberid= tmp_fiberid
+  holes[iboss].fiberid= -tmp_fiberid
+
+end
+;
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty, rearrange=rearrange
 
 common com_plb, plateid, full, holes
@@ -67,56 +136,8 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
  endif
 
 ;; if desired, rearrange BOSS fibers
-if(keyword_set(rearrange) ne 0) then begin
-   iboss= where(full.instrument eq 'BOSS', nboss)
-   if(nboss ne 1000) then $
-      message, 'Not 1000 BOSS fibers?'
-   blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
-   fiberblocks= yanny_readone(blockfile)
-   nblocks=max(fiberblocks.blockid)
-   blockcenx= fltarr(nblocks)
-   blockceny= fltarr(nblocks)
-   blockylimits= fltarr(2, nblocks)
-   for i=1L, nblocks do begin
-      ib= where(fiberblocks.blockid eq i, nb)
-      blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
-      blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
-      blockylimits[*,i-1]= minmax(fiberblocks[ib].fiberceny)
-   endfor
-   sdss_plugprob, full[iboss].xfocal, $
-                  full[iboss].yfocal, $
-                  tmp_fiberid, $
-                  reachfunc='boss_reachcheck', $
-                  blockfile=blockfile 
-   maxiter=3L
-   for iter=0L, maxiter-1L do begin
-      block= (tmp_fiberid-1L)/nperblock+1L
-      ;; now find the center location for each block, and limits in
-      ;; y-direction of targets
-      for i=1L, nblocks do begin
-         ib= where(block eq i, nb)
-         if(nb gt 0) then begin
-            blockcenx[i-1]= mean(full[ib].xfocal)/platescale
-            blockceny[i-1]= mean(full[ib].yfocal)/platescale
-            blockylimits[*,i-1]= minmax(full[ib].yfocal/platescale)
-            if(blockylimits[1,i-1]-blockylimits[0,i-1] lt minyblocksize) then begin
-               my= 0.5*(blockylimits[1,i-1]+blockylimits[0,i-1])
-               blockylimits[0,i-1]=my-0.5*minyblocksize
-               blockylimits[1,i-1]=my+0.5*minyblocksize
-            endif
-         endif 
-      endfor
-      tmp_fiberid=0
-      sdss_plugprob, full[iboss].xfocal, $
-                     full[iboss].yfocal, $
-                     tmp_fiberid, $
-                     reachfunc='boss_reachcheck', $
-                     blockfile=blockfile, $
-                     blockcenx=blockcenx, blockceny=blockceny, /quiet, $
-                     ylimits=blockylimits, $
-                     /noycost
-   endfor
-endif
+if(keyword_set(rearrange) ne 0) then $
+   platelines_rearrange, full, holes
       
 ;; basic versions
 versions=['', 'sky', 'std']
