@@ -52,7 +52,7 @@ chop ($phversion= `photoop_version`);
 my $filename = "$jobdir/$jobname.csh";
 my $job = IO::File->new(">$filename");
 print $job <<EOT;
-#!/bin/tcsh
+#!/bin/bash
 # Turn off mail
 #PBS -m n
 # Merge standard error with standard output
