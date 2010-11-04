@@ -137,7 +137,10 @@ endelse
 
 tmpdir=getenv('PLATELIST_DIR')+'/tmp'
 
-probfile=tmpdir+'/tmp_prob.txt'
+spawn, /nosh, ['uuidgen'], uid
+uid=uid[0]
+
+probfile=tmpdir+'/tmp_prob_'+uid+'.txt'
 soname = filepath('libfiber.'+idlutils_so_ext(), $
                   root_dir=getenv('PLATEDESIGN_DIR'), subdirectory='lib')
 retval = call_external(soname, 'idl_write_plugprob', $
@@ -151,11 +154,11 @@ retval = call_external(soname, 'idl_write_plugprob', $
                        long(blockconstrain), string(probfile), long(noycost), $
                        double(ylimits))
 
-spawn, 'cat '+tmpdir+'/tmp_prob.txt | '+ $
+spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
-  ' > '+tmpdir+'/tmp_ans.txt'
+  ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
-ansfile=tmpdir+'/tmp_ans.txt'
+ansfile=tmpdir+'/tmp_ans_'+uid+'.txt'
 targetfiber=lonarr(ntargets)
 fiberblock=lonarr(ntargets)
 
