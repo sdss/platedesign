@@ -78,7 +78,11 @@ narc= narc+nmtot
 narc=narc+1L
 
 tmpdir=getenv('PLATELIST_DIR')+'/tmp'
-openw, unit, tmpdir+'/tmp_prob.txt', /get_lun
+
+spawn, /nosh, ['uuidgen'], uid
+uid=uid[0]
+
+openw, unit, tmpdir+'/tmp_prob_'+uid+'.txt', /get_lun
 
 printf, unit, 'c Max flow problem for guides'
 printf, unit, 'p min '+strtrim(string(nnode),2)+' '+strtrim(string(narc),2)
@@ -110,12 +114,12 @@ printf, unit, 'a 0 '+strtrim(string(nnode-1L),2)+' 0 '+ $
 printf, unit, 'c end of flow problem'
 free_lun, unit
 
-spawn, 'cat '+tmpdir+'/tmp_prob.txt | '+ $
+spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
-  ' > '+tmpdir+'/tmp_ans.txt'
+  ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
-nlines= numlines(tmpdir+'/tmp_ans.txt')
-openr, unit, tmpdir+'/tmp_ans.txt', /get_lun
+nlines= numlines(tmpdir+'/tmp_ans_'+uid+'.txt')
+openr, unit, tmpdir+'/tmp_ans_'+uid+'.txt', /get_lun
 line=' '
 gnum= lonarr(ntarget)-1L
 for i=0L, nlines-1L do begin
