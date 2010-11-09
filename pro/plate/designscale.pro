@@ -50,7 +50,7 @@ definition= lines2struct(hdr)
 defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
 defaultfile= defaultdir+'/plateDefault-'+ $
              definition.platetype+'-'+ $
-             definition.platedesignversion+'.par'
+             plan.plateDesignVersion+'.par'
 check_file_exists, defaultfile, plateid=plateid
 dum= yanny_readone(defaultfile, hdr=hdr)
 default= lines2struct(hdr)
