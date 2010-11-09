@@ -118,7 +118,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   defaultdir= getenv('PLATEDESIGN_DIR')+'/defaults'
   defaultfile= defaultdir+'/plateDefault-'+ $
                definition.platetype+'-'+ $
-               definition.platedesignversion+'.par'
+			   plan.plateDesignVersion+'.par'
   check_file_exists, defaultfile, plateid=plateid             
   dum= yanny_readone(defaultfile, hdr=hdr)
   if(~keyword_set(hdr)) then begin
