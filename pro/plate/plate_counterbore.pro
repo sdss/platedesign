@@ -73,11 +73,11 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   printf, unit, 'G00 G90 G40 G17'
 
   for i=0L, ncounter-1L do begin
-     spherematch, full[icounter[i]].target_ra, full[icounter[i]].target_dec, $
-                  dpos.ra, dpos.dec, 1./3600, m1, m2, max=0
-     if(m1[0] eq -1) then $
+     m2= where(abs(full[icounter[i]].xfocal-dpos.xfocal) lt 0.1 AND $
+               abs(full[icounter[i]].yfocal-dpos.yfocal) lt 0.1, nm2)
+     if(nm2 eq 0) then $
         message, 'Lost hole?'
-     if(n_elements(m1) gt 1) then $
+     if(nm2 gt 1) then $
         message, 'Ambiguous hole?'
      m2=m2[0]
      

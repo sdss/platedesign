@@ -204,6 +204,8 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
+                printf, unit, '<td></td>'
+                printf, unit, '<td></td>'
             endelse
                 
             printf, unit, tdst
