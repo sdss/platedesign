@@ -83,10 +83,14 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
 
 ;; Delete any output files from a previous run
   if (keyword_set(superclobber)) then begin
-     old_files = file_search(designdir + "/*", count=old_files_count)
+     old_files = file_search(designdir + '/*', count=old_files_count)
      if (old_files_count gt 0) then file_delete, old_files
 
-     old_files = file_search(platedir + "/*", count=old_files_count)
+     old_files = file_search(platedir + '/*', count=old_files_count)
+     if (old_files_count gt 0) then file_delete, old_files
+     
+     old_files = file_search(getenv('PLATELIST_DIR') + '/runs/' $
+          + plan.platerun + '/*' + strtrim(plateid,2) + '*', count=old_files_count)
      if (old_files_count gt 0) then file_delete, old_files
   endif
 
