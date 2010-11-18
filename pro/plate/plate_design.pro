@@ -69,6 +69,21 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   temp=plan.temp
   epoch=plan.epoch
 
+  ;; sanity check for other plates with this designid
+  iother= where(plans.designid eq designid AND $
+                plans.plateid ne plateid, nother)
+  if(nother gt 0) then begin
+      ibad= where(plans[iother].racen ne plan.racen OR $
+                  plans[iother].deccen ne plan.deccen OR $
+                  plans[iother].platedesignversion ne plan.platedesignversion OR $
+                  plans[iother].survey ne plan.survey OR $
+                  plans[iother].programname ne plan.programname OR $
+                  plans[iother].drillstyle ne plan.drillstyle, $
+                  nbad)
+      if(nbad gt 0) then $
+        message, 'Inconsistency in plan file between this plate and previous from same designid!'
+  endif
+
 ;; set random seed 
   origseed=-designid
   seed=origseed
@@ -116,6 +131,11 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               definitionfile + ' (plate id: (' + string(plateid) + ')'
   endif
   definition= lines2struct(hdr)
+
+  if(tag_indx(definition, 'platedesignversion') ge 0) then begin
+      if(definition.platedesignversion ne plan.platedesignversion) then $
+        message, 'Plan file plateDesignVersion inconsistent with (obsolete) definition file value'
+  endif
 
 ;; Read in the plate defaults file
 ;; (reset any tags that are overwritten by plateDefinition)
