@@ -96,3 +96,6 @@ plugmapstyle plplugmap_apogee_marvels
 
 # Default pointing_name
 pointing_name A B C D E F
+
+# Default to not relaxed classes
+relaxed_fiber_classes 0

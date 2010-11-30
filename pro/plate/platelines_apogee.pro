@@ -24,7 +24,7 @@
 ;------------------------------------------------------------------------------
 pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
 
-  common com_plb, plateid, full, holes
+  common com_pla, plateid, full, holes, hdr
 
   platescale = 217.7358D        ; mm/degree
 
@@ -50,7 +50,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
      plplug= platedir+'/plPlugMapP-'+ $
              strtrim(string(f='(i4.4)',plateid),2)+'.par'
      check_file_exists, plplug, plateid=plateid
-     holes= yanny_readone(plplug)
+     holes= yanny_readone(plplug, hdr=hdr)
+     hdrstr= lines2struct(hdr)
 
      fullfile= platedir+'/plateHolesSorted-'+ $
                strtrim(string(f='(i6.6)',plateid),2)+'.par'
@@ -189,7 +190,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                  currcolor='black'
                  currthick=1
               endif else begin
-                 ;; normally should color according to fiber type
+                 ;; should color according to fiber type
                  currthick=circle_thick
                  currthick=circle_thick
                  ib= where(blocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
@@ -197,11 +198,12 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
                     message, 'Unknown fiber!'
                  if(nb gt 1) then $
                     message, 'Duplicate fiber in blocks!'
-                 if(blocks[ib[0]].ftype eq 'B') then $
+                 curr_ftype= blocks[ib[0]].ftype 
+                 if(curr_ftype eq 'B') then $
                     currcolor='red'
-                 if(blocks[ib[0]].ftype eq 'M') then $
+                 if(curr_ftype eq 'M') then $
                     currcolor='green'
-                 if(blocks[ib[0]].ftype eq 'F') then $
+                 if(curr_ftype eq 'F') then $
                     currcolor='blue'
                  
                  if (strmatch(version,'apogee.block-*') gt 0) then begin

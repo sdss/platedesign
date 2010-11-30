@@ -261,7 +261,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                                '/plateLines-??????-zoffset-*.png', count=count)
         if(count gt 0) then linestable, 'Backstop labels', plunit, tmp_files
      endif
-    ptypes=['apogee', 'marvels']
+    ptypes=['marvels', 'apogee']
     for iptype=0L, n_elements(ptypes)-1L do begin
        ptype=ptypes[iptype]
        tmp_files= file_search(plate_dir(plateid[i])+'/plateLines-??????-'+ptype+'.png', $
@@ -284,6 +284,11 @@ for indx=0L, n_elements(plateid)-1L do begin
           if(count gt 0) then linestable, 'Blocks by color', plunit, tmp_files
        endif
     endfor
+    tmp_files= file_search(plate_dir(plateid[i])+'/apogeeMagVsFiber-??????.png', $
+                           count=count)
+    if(count gt 0) then $
+       linestable, 'APOGEE fiber class QA', plunit, tmp_files
+    
     printf, plunit, '</tbody>'
     printf, plunit, '</table>'
     printf, plunit, '</body>'

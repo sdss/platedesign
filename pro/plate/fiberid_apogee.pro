@@ -98,103 +98,177 @@ bblocks= yanny_readone(bright_blockfile)
 mblocks= yanny_readone(medium_blockfile)
 fblocks= yanny_readone(faint_blockfile)
 
+relaxed_fiber_classes=0
+if(tag_indx(default, 'relaxed_fiber_classes') ge 0) then begin
+   if(long(default.relaxed_fiber_classes) gt 0) then begin
+      relaxed_fiber_classes=1
+   endif
+endif
+
+
 maxiter=7L
 for iter=0L, maxiter-1L do begin
    
-   ;; brights 
-   ibright= where(strupcase(design.holetype) eq 'APOGEE' AND $
-                  (strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
-                   strupcase(design.targettype) eq 'SCIENCE_BRIGHT'), nbright)
-   sdss_plugprob, design[ibright].xf_default, $
-                  design[ibright].yf_default, tmp_fiberid, $
-                  reachfunc='boss_reachcheck', maxinblock=2L, $
-                  minavail=0L, blockfile=bright_blockfile, $
-                  blockcenx=blockcenx, blockceny=blockceny
-   ibad= where(tmp_fiberid le 0, nbad)
-   if(nbad gt 0) then begin
-      message, 'Failed to assign all bright targets!'
-   endif
-   fiberid[ibright]=bblocks[tmp_fiberid-1L].fiberid
-   idone= where(fiberid gt 0, ndone)
-   set_blockcen_apogee, design[idone], blocks, fiberid[idone], blockcenx, blockceny
-   if(keyword_set(debug)) then begin
-      splot, design.xf_default, design.yf_default, psym=4
-      bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-      for i=0L, n_elements(bnums)-1L do begin
-         ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-         isort= sort(design[idone[ib]].yf_default)
-         soplot, design[idone[ib[isort]]].xf_default, $
-                 design[idone[ib[isort]]].yf_default
-         soplot, blockcenx[bnums[i]-1]*platescale, $
-                 blockceny[bnums[i]-1]*platescale, psym=4, $
-                 color='red'
-      endfor
-   endif
+   if(relaxed_fiber_classes eq 0) then begin
+      ;; brights 
+      ibright= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                     (strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
+                      strupcase(design.targettype) eq 'SCIENCE_BRIGHT'), nbright)
+      sdss_plugprob, design[ibright].xf_default, $
+                     design[ibright].yf_default, tmp_fiberid, $
+                     reachfunc='boss_reachcheck', maxinblock=2L, $
+                     minavail=0L, blockfile=bright_blockfile, $
+                     blockcenx=blockcenx, blockceny=blockceny
+      ibad= where(tmp_fiberid le 0, nbad)
+      if(nbad gt 0) then begin
+         message, 'Failed to assign all bright targets!'
+      endif
+      fiberid[ibright]=bblocks[tmp_fiberid-1L].fiberid
+      idone= where(fiberid gt 0, ndone)
+      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
+                           blockcenx, blockceny
+      if(keyword_set(debug)) then begin
+         splot, design.xf_default, design.yf_default, psym=4
+         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
+         for i=0L, n_elements(bnums)-1L do begin
+            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
+            isort= sort(design[idone[ib]].yf_default)
+            soplot, design[idone[ib[isort]]].xf_default, $
+                    design[idone[ib[isort]]].yf_default
+            soplot, blockcenx[bnums[i]-1]*platescale, $
+                    blockceny[bnums[i]-1]*platescale, psym=4, $
+                    color='red'
+         endfor
+      endif
+      
+      ;; mediums
+      imedium= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                     (strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
+                      strupcase(design.targettype) eq 'SCIENCE_MEDIUM'), nmedium)
+      sdss_plugprob, design[imedium].xf_default, $
+                     design[imedium].yf_default, tmp_fiberid, $
+                     reachfunc='boss_reachcheck', maxinblock=2L, $
+                     minavail=0L, blockfile=medium_blockfile, $
+                     blockcenx=blockcenx, blockceny=blockceny
+      ibad= where(tmp_fiberid le 0, nbad)
+      if(nbad gt 0) then begin
+         message, 'Failed to assign all medium targets!'
+      endif
+      fiberid[imedium]=tmp_fiberid
+      fiberid[imedium]=mblocks[tmp_fiberid-1L].fiberid
+      idone= where(fiberid gt 0, ndone)
+      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
+                           blockcenx, blockceny
+      if(keyword_set(debug)) then begin
+         splot, design.xf_default, design.yf_default, psym=4
+         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
+         for i=0L, n_elements(bnums)-1L do begin
+            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
+            isort= sort(design[idone[ib]].yf_default)
+            soplot, design[idone[ib[isort]]].xf_default, $
+                    design[idone[ib[isort]]].yf_default
+            soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
+                    color='red'
+         endfor
+      endif
+      
+      ;; faints
+      ifaint= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                    (strupcase(design.targettype) eq 'STANDARD_FAINT' OR $
+                     strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
+                     strupcase(design.targettype) eq 'SKY'), nfaint)
+      sdss_plugprob, design[ifaint].xf_default, $
+                     design[ifaint].yf_default, tmp_fiberid, $
+                     reachfunc='boss_reachcheck', maxinblock=2L, $
+                     minavail=0L, blockfile=faint_blockfile, $
+                     blockcenx=blockcenx, blockceny=blockceny 
+      ibad= where(tmp_fiberid le 0, nbad)
+      if(nbad gt 0) then begin
+         message, 'Failed to assign all faint targets!'
+      endif
+      fiberid[ifaint]=fblocks[tmp_fiberid-1L].fiberid
+      idone= where(fiberid gt 0, ndone)
+      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
+                           blockcenx, blockceny
+      if(keyword_set(debug)) then begin
+         splot, design.xf_default, design.yf_default, psym=4
+         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
+         for i=0L, n_elements(bnums)-1L do begin
+            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
+            isort= sort(design[idone[ib]].yf_default)
+            soplot, design[idone[ib[isort]]].xf_default, $
+                    design[idone[ib[isort]]].yf_default
+            soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
+                    color='red'
+         endfor
+      endif
+   endif else begin
+      ;; all in one go
+      iapogee= where(strupcase(design.holetype) eq 'APOGEE' AND $
+                     (strupcase(design.targettype) eq 'STANDARD' OR $
+                      strupcase(design.targettype) eq 'SCIENCE' OR $
+                      strupcase(design.targettype) eq 'SKY'), napogee)
+      sdss_plugprob, design[iapogee].xf_default, $
+                     design[iapogee].yf_default, tmp_fiberid, $
+                     reachfunc='boss_reachcheck', maxinblock=6L, $
+                     minavail=0L, blockfile=full_blockfile, $
+                     blockcenx=blockcenx, blockceny=blockceny 
+      ibad= where(tmp_fiberid le 0, nbad)
+      if(nbad gt 0) then begin
+         message, 'Failed to assign all targets!'
+      endif
+      fiberid[iapogee]=blocks[tmp_fiberid-1L].fiberid
+      idone= where(fiberid gt 0, ndone)
+      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
+                           blockcenx, blockceny
+      if(keyword_set(debug)) then begin
+         splot, design.xf_default, design.yf_default, psym=4
+         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
+         for i=0L, n_elements(bnums)-1L do begin
+            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
+            isort= sort(design[idone[ib]].yf_default)
+            soplot, design[idone[ib[isort]]].xf_default, $
+                    design[idone[ib[isort]]].yf_default
+            soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
+                    color='red'
+         endfor
+      endif
+   endelse
    
-   ;; mediums
-   imedium= where(strupcase(design.holetype) eq 'APOGEE' AND $
-                  (strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
-                   strupcase(design.targettype) eq 'SCIENCE_MEDIUM'), nmedium)
-   sdss_plugprob, design[imedium].xf_default, $
-                  design[imedium].yf_default, tmp_fiberid, $
-                  reachfunc='boss_reachcheck', maxinblock=2L, $
-                  minavail=0L, blockfile=medium_blockfile, $
-                  blockcenx=blockcenx, blockceny=blockceny
-   ibad= where(tmp_fiberid le 0, nbad)
-   if(nbad gt 0) then begin
-      message, 'Failed to assign all medium targets!'
-   endif
-   fiberid[imedium]=tmp_fiberid
-   fiberid[imedium]=mblocks[tmp_fiberid-1L].fiberid
-   idone= where(fiberid gt 0, ndone)
-   set_blockcen_apogee, design[idone], blocks, fiberid[idone], blockcenx, blockceny
-   if(keyword_set(debug)) then begin
-      splot, design.xf_default, design.yf_default, psym=4
-      bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-      for i=0L, n_elements(bnums)-1L do begin
-         ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-         isort= sort(design[idone[ib]].yf_default)
-         soplot, design[idone[ib[isort]]].xf_default, $
-                 design[idone[ib[isort]]].yf_default
-         soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
-                 color='red'
-      endfor
-   endif
-   
-   ;; faints
-   ifaint= where(strupcase(design.holetype) eq 'APOGEE' AND $
-                 (strupcase(design.targettype) eq 'STANDARD_FAINT' OR $
-                  strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
-                  strupcase(design.targettype) eq 'SKY'), nfaint)
-   sdss_plugprob, design[ifaint].xf_default, $
-                  design[ifaint].yf_default, tmp_fiberid, $
-                  reachfunc='boss_reachcheck', maxinblock=2L, $
-                  minavail=0L, blockfile=faint_blockfile, $
-                  blockcenx=blockcenx, blockceny=blockceny 
-   ibad= where(tmp_fiberid le 0, nbad)
-   if(nbad gt 0) then begin
-      message, 'Failed to assign all faint targets!'
-   endif
-   fiberid[ifaint]=fblocks[tmp_fiberid-1L].fiberid
-   idone= where(fiberid gt 0, ndone)
-   set_blockcen_apogee, design[idone], blocks, fiberid[idone], blockcenx, blockceny
-   if(keyword_set(debug)) then begin
-      splot, design.xf_default, design.yf_default, psym=4
-      bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-      for i=0L, n_elements(bnums)-1L do begin
-         ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-         isort= sort(design[idone[ib]].yf_default)
-         soplot, design[idone[ib[isort]]].xf_default, $
-              design[idone[ib[isort]]].yf_default
-         soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
-                 color='red'
-      endfor
-   endif
-
 endfor
 
 nperblock=6L
 block=blocks[fiberid-1L].blockid
+
+;; if fiber classes are relaxed, set exact number according
+;; to the H-band magnitude
+if(relaxed_fiber_classes gt 0) then begin
+   nblocks= 50L
+   for i=0L, nblocks-1L do begin
+      idesign= where(block eq i+1, nii)
+      if(nii ne nperblock) then $
+         message, 'Not enough targets in block!'
+      ifiber= where(blocks.blockid eq i+1, nii)
+      if(nii ne nperblock) then $
+         message, 'Not enough fibers in block!'
+      hmag= design[iapogee[idesign]].tmass_h
+      ibad= where(hmag eq -9999, nbad)
+      if(nbad gt 0) then $
+         hmag[ibad]=9999.
+      ihmagsort= sort(hmag)
+      relaxed_ftypes=strarr(nperblock)
+      relaxed_ftypes[ihmagsort]=['B', 'B', 'M', 'M', 'F', 'F']
+      usedit= bytarr(nperblock)
+      for j=0L, nperblock-1L do begin
+         ipick= where(relaxed_ftypes[j] eq blocks[ifiber].ftype AND $
+                      usedit eq 0, npick)
+         if(npick eq 0) then $
+            message, 'Ran out of this type!'
+         usedit[ipick[0]]=1
+         fiberid[iapogee[idesign[j]]]= blocks[ifiber[ipick[0]]].fiberid
+      endfor
+   endfor
+endif
 
 return, fiberid
 

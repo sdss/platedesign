@@ -23,6 +23,10 @@ pro apogee_fibervhmag, in_plateid
 
   platescale = 217.7358D        ; mm/degree
 
+  full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksAPOGEE.par'
+  blocks= yanny_readone(full_blockfile)
+  blocks=blocks[sort(blocks.fiberid)]
+
   if(NOT keyword_set(in_plateid)) then $
      message, 'Plate ID must be given!'
 
@@ -101,6 +105,8 @@ pro apogee_fibervhmag, in_plateid
             xtitle='Fiber ID', ytitle='H magnitude'
   
   hogg_usersym, 10, /fill
+  types=['F', 'M', 'B']
+  colors=['blue', 'green', 'red']
   for i=0L, 49L do begin
      ii= where(full.holetype eq 'APOGEE' and $
                full.fiberid ge (i*6L)+1L and $
@@ -112,7 +118,11 @@ pro apogee_fibervhmag, in_plateid
         hmag[ibad]=14.
      djs_oplot, ((float(i)+1.)*6.+0.5)*[1.,1.], [0., 20.], th=4, color='grey'
      djs_oplot, full[ii[isort]].fiberid, hmag
-     djs_oplot, full[ii[isort]].fiberid, hmag, psym=8, symsize=0.4
+     for j=0L, n_elements(types)-1L do begin
+        itype= where(types[j] eq blocks[full[ii[isort]].fiberid-1].ftype)
+        djs_oplot, full[ii[isort[itype]]].fiberid, hmag[itype], psym=8, symsize=0.4, $
+                   color=colors[j]
+     endfor
   endfor
   
   device,/close
