@@ -288,7 +288,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
            if(ntotapogee ne 300) then $
               message, 'Expect a total of 300 fibers for APOGEE'
         endif
-        
+
         ;; What conditions on fiber placement exist for each instrument?
         minstdinblock=lonarr(ninstruments) ;; how many standards per block?
         maxstdinblock=lonarr(ninstruments) ;; how many standards per block?
