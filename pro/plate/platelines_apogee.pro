@@ -163,7 +163,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
               if(version eq 'apogee.sky') then begin
                  ;; SKY as thick RED, 
                  ;; any other as thin black
-                 case strupcase(holes[isci[ii[j]]].objtype) of
+                 case strupcase(full[isci[ii[j]]].targettype) of
                     'SKY': begin
                        currcolor='blue'
                        currthick=4
@@ -176,8 +176,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
               endif else if (version eq 'apogee.std') then begin
                  ;; standard as thick blue
                  ;; any other as thin black
-                 case strupcase(holes[isci[ii[j]]].objtype) of
-                    'SPECTROPHOTO_STD': begin
+                 case strmid(strupcase(full[isci[ii[j]]].targettype),0,8) of
+                    'STANDARD': begin
                        currcolor='red'
                        currthick=4
                     end
