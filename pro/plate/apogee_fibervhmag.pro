@@ -56,7 +56,7 @@ pro apogee_fibervhmag, in_plateid
   filebase= platedir+'/apogeeMagVsFiber-'+strtrim(string(f='(i6.6)',plateid),2)
      
   xsize=12.559
-  ysize=6.559
+  ysize=9.559
   encap=1
   scale=2.21706
   
@@ -99,7 +99,7 @@ pro apogee_fibervhmag, in_plateid
   ncolor= n_elements(colorname)
   loadct,0
 
-  !P.POSITION=[0.1, 0.2, 0.98, 0.98]
+  !P.POSITION=[0.1, 0.08, 0.98, 0.60]
   
   djs_plot, [0], [0], /nodata, xra=[-9., 309.], yra=[5., 15.], $
             xtitle='Fiber ID', ytitle='H magnitude'
@@ -124,6 +124,30 @@ pro apogee_fibervhmag, in_plateid
                    color=colors[j]
      endfor
   endfor
+
+  !P.POSITION=[0.1, 0.70, 0.48, 0.98]
+  
+  mindiff=0.
+  maxdiff=4.
+  nbins=25L
+  hmag= full.tmass_h
+  ibad=where(hmag eq -9999, nbad)
+  if(nbad gt 0) then $
+     hmag[ibad]=14.
+  iapo= where(full.holetype eq 'APOGEE', napo)
+  isort= iapo[sort(full[iapo].fiberid)]
+  diff= abs(hmag[isort[1:n_elements(isort)-1]]-hmag[0:n_elements(isort)-2])
+  idiff= long((((diff>mindiff)<maxdiff)-mindiff)/(maxdiff-mindiff+0.001)*float(nbins))
+  dhist= fltarr(nbins)
+  dval= fltarr(nbins)
+  for i=0L, nbins-1L do begin
+     ii=where(idiff eq i, nii)
+     dhist[i]=float(nii)
+     dval[i]= mindiff+(float(i)+0.5)*(maxdiff-mindiff)/float(nbins)
+  endfor
+  djs_plot, dval, dhist,xra=[mindiff-0.1, maxdiff+0.1], $
+            yra=[-0.1, 1.2]*max(dhist), $ 
+            xtitle='\Delta H', ytitle='N', th=4, /noerase, psym=10
   
   device,/close
   !P=pold
