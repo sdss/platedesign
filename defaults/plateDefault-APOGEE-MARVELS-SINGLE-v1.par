@@ -28,6 +28,14 @@ nMARVELS_science 60
 nMARVELS_sky 0
 nMARVELS_standard 0
 
+# Dummy entries since these classes don't exist in MARVELS
+nMARVELS_science_bright 0
+nMARVELS_science_medium  0
+nMARVELS_science_faint 0
+nMARVELS_standard_bright 0
+nMARVELS_standard_medium  0
+nMARVELS_standard_faint 0
+
 # For each instrument, you must specify how many 
 # targets of each type are wanted. This is an array 
 # for multi-pointing or offset plates, of the form
@@ -38,13 +46,17 @@ nAPOGEE_science_medium 100
 nAPOGEE_science_faint 75
 nAPOGEE_standard_bright 15 
 nAPOGEE_standard_medium 0 
+nAPOGEE_standard_faint 0
 nAPOGEE_sky 25 
+
+# Dummy entries since these classes don't exist in MARVELS
+nAPOGEE_standard 0
+nAPOGEE_science 0
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
 guideType 2MASS
 guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-guidemag_minmax 13. 16.5
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
 ferruleSizeMARVELS 3.72231
@@ -67,9 +79,7 @@ bufferSizeGUIDE 0.3
 guidemag_minmax 13. 16.5
 nguidemax 600
 
-pointing_name A B C D E F
-
-# Maximum object offset (in arcsec) allowed for HA range
+# Set conditions for maximum offset (arcsec) of fiber in HA range
 max_off_fiber_for_ha 0.3
 
 # Settings if platedesign is meant to find standards
@@ -83,10 +93,10 @@ plateDesignSkies NONE
 skyType NONE
 
 # Use bright plugmap style
-plugmapstyle plplugmap_apogee
+plugmapstyle plplugmap_apogee_marvels
 
 # Default pointing_name
 pointing_name A B C D E F
 
-# Set conditions for maximum offset (arcsec) of fiber in HA range
-max_off_fiber_for_ha 0.3
+relaxed_fiber_classes 1
+

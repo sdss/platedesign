@@ -139,6 +139,7 @@ pro/plate/check_conflicts.pro -text
 pro/plate/default_epoch.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
+pro/plate/design_plates.pro -text
 pro/plate/design_pm.pro -text
 pro/plate/designscale.pro -text
 pro/plate/distribute_guides.pro -text
