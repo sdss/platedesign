@@ -183,6 +183,13 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
      omit_traps= long(default.omit_traps)
   endif
 
+;; Get number of offsets, instruments, target types
+  noffsets= long(default.noffsets) 
+  instruments= strsplit(default.instruments, /extr)
+  ninstruments= n_elements(instruments)
+  targettypes= strsplit(default.targettypes, /extr)
+  ntargettypes= n_elements(targettypes)
+
 ;; Now do some sanity checks
   racen= double((strsplit(definition.racen,/extr))[0])
   deccen= double((strsplit(definition.deccen,/extr))[0])
@@ -206,7 +213,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   designfile=designdir+'/plateDesign-'+ $
              string(designid, f='(i6.6)')+'.par'
   npointings= long(default.npointings)
-  nextrafibers=lonarr(npointings)
+  nextrafibers=lonarr(ninstruments, npointings)
 
 ;; Design the plate if "clobber" is not set or if the output file doesn't exist.
   if (keyword_set(clobber) OR ~file_test(designfile)) then begin
@@ -226,11 +233,6 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
         
         ;; What instruments are being used, and how many science,
         ;; standard and sky fibers do we assign to each?
-        noffsets= long(default.noffsets)
-        instruments= strsplit(default.instruments, /extr)
-        ninstruments= n_elements(instruments)
-        targettypes= strsplit(default.targettypes, /extr)
-        ntargettypes= n_elements(targettypes)
         ntot=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
         nused=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
         for i=0L, ninstruments-1L do begin
@@ -632,7 +634,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                           plate_log, plateid, msg
                           return
                        endif else begin
-                          nextrafibers[ip-1]=nextrafibers[ip-1]+1L
+                          nextrafibers[iinst,ip-1]=nextrafibers[iinst,ip-1]+1L
                           needmorefibers=1
                        endelse
                     endif else begin

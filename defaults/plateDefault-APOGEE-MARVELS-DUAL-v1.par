@@ -34,6 +34,7 @@ nMARVELS_science_medium 0 0
 nMARVELS_science_faint 0 0
 nMARVELS_standard_bright 0 0
 nMARVELS_standard_medium 0 0
+nMARVELS_standard_faint 0 0
 
 # For each instrument, you must specify how many 
 # targets of each type are wanted. This is an array 
@@ -45,6 +46,7 @@ nAPOGEE_science_medium 100 0
 nAPOGEE_science_faint 75 0
 nAPOGEE_standard_bright 15  0
 nAPOGEE_standard_medium 0  0
+nAPOGEE_standard_faint 0 0
 nAPOGEE_sky 25  0
 
 # Dummy entries since these classes don't exist in MARVELS

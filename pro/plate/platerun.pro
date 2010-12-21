@@ -13,11 +13,16 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro platerun, platerun, nolines=nolines, _EXTRA=extra_for_plate_design
+pro platerun, platerun, nolines=nolines, skip_design=skip_design, _EXTRA=extra_for_plate_design
+
+compile_opt idl2
+compile_opt logical_predicate
+TRUE = 1
+FALSE = 0
 
 if(keyword_set(platerun) EQ 0) then begin
-    print, 'Usage: platerun, runname [, drillstyle ]'
-    return
+	print, 'Usage: platerun, runname [, drillstyle ]'
+	return
 endif
 
 ;; find plates in this platerun
@@ -29,11 +34,13 @@ if(nplate eq 0) then begin
   splog, 'No plates in platerun '+platerun
   return
 endif
-  
-;; run plate_design for each one
-plate_design, plans[iplate].plateid, succeeded=succeeded, _EXTRA=extra_for_plate_design
 
-if (~succeeded) then return
+if (keyword_set(skip_design) eq FALSE) then begin
+	;; run plate_design for each one
+	plate_design, plans[iplate].plateid, succeeded=succeeded, _EXTRA=extra_for_plate_design
+	
+	if (~succeeded) then return
+endif
 
 ;; now run the low level plate routines
 drillstyle= strtrim(plans[iplate].drillstyle,2)

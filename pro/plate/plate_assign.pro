@@ -27,6 +27,10 @@ pro plate_assign, definition, default, fibercount, design, new_design, $
 
 tilerad= get_tilerad(definition, default)
 
+instruments= strsplit(default.instruments, /extr)
+ninstruments= n_elements(instruments)
+npointings= long(default.npointings)
+
 ;; normally limit by number of available fibers; however, in some
 ;; cases we want to collect a large set of non-colliding ones (for
 ;; skies and standards) before choosing a few out; we set /collect for
@@ -35,8 +39,10 @@ nlimit=fibercount.ntot
 if(keyword_set(collect)) then $
   nlimit=fibercount.ncollect
 if(keyword_set(nextra)) then begin
-    for i=0L, n_elements(nextra)-1L do begin
-        nlimit[*,*,i,*]=nlimit[*,*,i,*]+nextra[i]
+    for i=0L, npointings-1L do begin
+        for j=0L, ninstruments-1L do begin
+            nlimit[j,*,i,*]=nlimit[j,*,i,*]+nextra[j,i]
+        endfor
     endfor
 endif
 
