@@ -55,7 +55,8 @@ function fiberid_apogee, default, fibercount, design, $
 common com_fiberid_apogee, fiberblocks
 
 if(keyword_set(respect_fiberid)) then $
-  message, 'APOGEE spectrograph designs cannot respect fiberid'
+;  message, 'APOGEE spectrograph designs cannot respect fiberid'
+  splog, color_string('Warning: ''respect_fiberid'' set on APOGEE plate - this may be ok for shared MARVELS/APOGEE plates.', 'cyan', 'bold')
 
 if(keyword_set(minstdinblock)) then $
   message, 'Cannot set block constraints for standards in APOGEE'

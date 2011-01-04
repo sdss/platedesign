@@ -15,8 +15,9 @@
 ;         plate before running.
 ; REVISION HISTORY:
 ;   7-May-2008 MRB, NYU
-;  23-Jan-2008 Demitri Muna, NYU - added superclobber option
+;  23-Jan-2008 Demitri Muna, NYU, added superclobber option
 ;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
+;   3-Jan-2011 Demitri Muna, NYU, Adding color_string output so errors stand out.
 ;-
 ;------------------------------------------------------------------------------
 pro plate_design, plateid, debug=debug, clobber=clobber, $
@@ -40,7 +41,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   endif
 
   splog, '================================================'
-  splog, 'Working on plateid= '+strtrim(string(plateid),2)
+  splog, 'Working on plateid: '+strtrim(string(plateid),2)
   splog, '================================================'
 
 ;; read plan file for settings
@@ -561,7 +562,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               endfor
            endfor
            
-           splog, 'Not completing plate design '+strtrim(string(designid),2)
+           splog, color_string('Not completing plate design '+strtrim(string(designid),2), 'red', 'bold')
            plate_log, plateid, 'Unused fibers found. Please specify more '+ $
                       'targets!'
            plate_log, plateid, 'Not completing plate design '+ $
@@ -630,7 +631,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                strtrim(string(designid),2) + $
                                '. Rerun with keyword "replace_fibers" '+ $
                                'to attempt to assign unallocated fibers.'
-                          splog, msg
+                          splog, color_string(msg, 'red', 'bold')
                           plate_log, plateid, msg
                           return
                        endif else begin
