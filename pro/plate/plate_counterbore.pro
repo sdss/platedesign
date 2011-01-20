@@ -60,7 +60,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   openw, unit, platerun_dir+'/plCounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
   
   printf, unit, '%'
-  printf, unit, string(f='(i5.5)', plateid)+' (SDSS PLUG-PLATE '+ $
+  printf, unit, 'O'+string(f='(i4.4)', plateid)+' (SDSS PLUG-PLATE '+ $
         string(f='(i4.4)', plateid)+')'
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#10.  5/64" END MILL)'
@@ -92,7 +92,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
 
      if(i eq 0) then begin
         printf, unit, 'G54 X'+xstr+' Y'+ystr  
-        printf, unit, 'G43 H10 Z0.2'
+        printf, unit, 'G43 H10 Z1.0'
         printf, unit, 'M08'
         printf, unit, 'G00 Z'+zstr
         printf, unit, 'M98 P7890'
@@ -114,28 +114,6 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   printf, unit, 'G69'
   printf, unit, 'G00 G90 G53 X41.000 Y0.0'
   printf, unit, 'M30'
-  printf, unit, ''
-  printf, unit, 'N800 G69 G20'
-  printf, unit, 'N801 G00 G28 G91 Z0.0 T08 M06 (ENGRAVING TOOL)'
-  printf, unit, 'N802 G54 G40 G90 X-16. Y.25 S3500 M03'
-  printf, unit, 'N803 G43 Z1.000 H08'
-  printf, unit, 'N804 G17 M08'
-  printf, unit, 'N805 G01 Z0.100 F100.0'
-  printf, unit, 'N806 G52 X-16. Y.25'
-  printf, unit, 'N807 M98 P7804 ('+d1+')'
-  printf, unit, 'N808 G52 X-16. Y.125'
-  printf, unit, 'N809 M98 P7803 ('+d2+')'
-  printf, unit, 'N810 G52 X-16. Y0.'
-  printf, unit, 'N811 M98 P7802 ('+d3+')'
-  printf, unit, 'N812 G52 X-16. Y-.125'
-  printf, unit, 'N813 M98 P7807 ('+d4+')'
-  printf, unit, 'N808 G52 X-16. Y-.25'
-  printf, unit, 'N809 M98 P7899 (BLANKSPACE)'
-  printf, unit, 'N816 G52 X0.0 Y0.0'
-  printf, unit, 'N817 G00 Z3.000 M09'
-  printf, unit, 'N818 G00 G80 G28 G91 Z0.0 T01 M06'
-  printf, unit, 'N819 G00 G90 G53 X41.000 Y0.0'
-  printf, unit, 'N820 M30'
   printf, unit, '%'
   
   free_lun, unit
