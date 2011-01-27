@@ -63,8 +63,8 @@ for i=0L, n_elements(plateid)-1L do begin
     
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
-        message, 'plPlugMapP file does not exist as expected: ' + $
-                 plugmap_filename
+        message, color_string('plPlugMapP file does not exist as expected: ' + $
+                 plugmap_filename, 'red')
     endif
     plug= yanny_readone(plugmap_filename, hdr=hdr)
     hdrstr= lines2struct(hdr, /relaxed)
@@ -110,7 +110,7 @@ for i=0L, n_elements(plateid)-1L do begin
     fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanuc-'+ $
       string(plateid[i],f='(i4.4)')+'.par'
     if(file_test(fanucfile) eq 0) then $
-      message, fanucfile+' not successfully made!'
+      message, color_string(fanucfile+' not successfully made!', 'red')
     if(file_test(fanucfile+'.BAD') ne 0) then $
       plate_log, plateid[i], fanucfile+'.BAD exists --- why?'
  endfor
