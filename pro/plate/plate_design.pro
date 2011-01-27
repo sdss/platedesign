@@ -543,7 +543,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
         iunused=where(fibercount.nused lt fibercount.ntot, nunused)
         if(nunused gt 0) then begin
            nused=lonarr(ninstruments, ntargettypes, npointings, noffsets+1L)
-           splog, 'Unused fibers found.' 
+           splog, color_string('Unused fibers found.', 'yellow', 'bold')
            for pointing=1L, npointings do begin
               for offset=0L, noffsets do begin
                  for iinst=0L, ninstruments-1L do begin
@@ -551,12 +551,13 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                        nu=fibercount.nused[iinst,itarg, pointing-1,offset] 
                        nt=fibercount.ntot[iinst,itarg, pointing-1,offset] 
                        if(nu lt nt) then $
-                          splog, '- only '+strtrim(string(nu),2)+'/'+ $
+                          msg = '- only '+strtrim(string(nu),2)+'/'+ $
                                  strtrim(string(nt),2)+' assigned for '+ $
                                  instruments[iinst]+' '+targettypes[itarg]+ $
                                  ' targets (pointing='+ $
                                  strtrim(string(pointing),2)+', offset='+ $
                                  strtrim(string(offset),2)+')'
+                           splog, color_string(msg, 'yellow', 'bold')
                     endfor
                  endfor
               endfor
@@ -622,7 +623,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                  if(nassigned ne $
                     long(total(fibercount.ntot[iinst,*,ip-1,*]))) $
                  then begin
-                    splog, 'Some fibers not assigned to targets! ' 
+                    splog, color_string('Some fibers not assigned to targets! ', 'yellow', 'bold')
                     plate_log, plateid, $
                                'Some fibers not assigned to targets! ' 
                     if(keyword_set(debug) eq false) then begin

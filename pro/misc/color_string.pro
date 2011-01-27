@@ -31,6 +31,8 @@
 ;	To see a test of all colors on your screen, set the color parameter to 'test':
 ;		print, color_string('any string, 'test')
 ;
+;	Future enhancement: implement foreground/background colors.
+;
 ; REVISION HISTORY:
 ;   2011.01.03 Demitri Muna
 ;-
