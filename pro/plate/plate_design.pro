@@ -82,7 +82,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                   plans[iother].drillstyle ne plan.drillstyle, $
                   nbad)
       if(nbad gt 0) then $
-        message, 'Inconsistency in plan file between this plate and previous from same designid!'
+        message, color_string('Inconsistency in plan file between this plate and previous from same designid!', 'red', 'bold')
   endif
 
 ;; set random seed 
@@ -135,7 +135,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
 
   if(tag_indx(definition, 'platedesignversion') ge 0) then begin
       if(definition.platedesignversion ne plan.platedesignversion) then $
-        message, 'Plan file plateDesignVersion inconsistent with (obsolete) definition file value'
+        message, color_string('Plan file plateDesignVersion inconsistent with (obsolete) definition file value', 'red', 'bold')
   endif
 
 ;; Read in the plate defaults file
@@ -147,7 +147,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   check_file_exists, defaultfile, plateid=plateid             
   dum= yanny_readone(defaultfile, hdr=hdr)
   if(~keyword_set(hdr)) then begin
-     message, 'no plateDefaults file '+defaultfile
+     message, color_string('no plateDefaults file '+defaultfile, 'red', 'bold')
   endif
   default= lines2struct(hdr)
   defaultnames=tag_names(default)
@@ -196,10 +196,10 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   deccen= double((strsplit(definition.deccen,/extr))[0])
   if(abs(racen-plan.racen) gt 1./3600. OR $
      abs(deccen-plan.deccen) gt 1./3600.) then begin
-     message, 'platePlans.par file disagrees with plateDefinition file on plate center'
+     message, color_string('platePlans.par file disagrees with plateDefinition file on plate center', 'red', 'bold')
   endif
   if(designid ne long(definition.designid)) then begin
-     message, 'plateDefinition file has wrong designid'
+     message, color_string('plateDefinition file has wrong designid', 'red', 'bold')
   endif
 
 ;; Warn us if we do not have a condition to set min/max HA 
@@ -550,7 +550,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                     for itarg=0L, ntargettypes-1L do begin
                        nu=fibercount.nused[iinst,itarg, pointing-1,offset] 
                        nt=fibercount.ntot[iinst,itarg, pointing-1,offset] 
-                       if(nu lt nt) then $
+                       if(nu lt nt) then begin
                           msg = '- only '+strtrim(string(nu),2)+'/'+ $
                                  strtrim(string(nt),2)+' assigned for '+ $
                                  instruments[iinst]+' '+targettypes[itarg]+ $
@@ -558,6 +558,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                  strtrim(string(pointing),2)+', offset='+ $
                                  strtrim(string(offset),2)+')'
                            splog, color_string(msg, 'yellow', 'bold')
+                       endif
                     endfor
                  endfor
               endfor
