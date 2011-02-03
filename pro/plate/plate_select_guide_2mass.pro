@@ -33,6 +33,9 @@ if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.45
 
+;; make sure we're not TOO close to the edge
+tilerad= tilerad < 1.45
+
 if(NOT keyword_set(gminmax)) then $
   gminmax=[13., 14.5]
 
