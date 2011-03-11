@@ -49,12 +49,14 @@ $matchcommand .= ", /clobber" if $clobber;
 chop ($pversion= `platedesign_version`);
 chop ($tversion= `tree_version`);
 chop ($phversion= `photoop_version`);
-my $filename = "$jobdir/$jobname.csh";
+my $filename = "$jobdir/$jobname.sh";
 my $job = IO::File->new(">$filename");
 print $job <<EOT;
 #!/bin/bash
 # Turn off mail
-#PBS -m n
+#PBS -m abe
+#!PBS -m n
+#PBS -M muna,stephenbailey
 # Merge standard error with standard output
 #PBS -j oe
 # Project/repo for accounting
@@ -62,7 +64,8 @@ print $job <<EOT;
 # Job name
 #PBS -N $jobname
 # Job queue
-#PBS -q batch
+#!PBS -q batch
+#PBS -q fast
 # Set a good umask for output files
 #PBS -W umask=0022
 # Job requirements
@@ -75,11 +78,12 @@ echo -n "Starting up at "
 #
 # Setup what we need
 #
+/home/products/eups/bin/setups.sh
+
 setup platedesign $pversion
 setup photoop $phversion
 setup tree $tversion
 setup platelist trunk
-#
 # Run IDL
 #
 idl -e "$matchcommand"
@@ -91,7 +95,7 @@ endif
 #
 # Finish up
 #
-/bin/mv --verbose $jobdir/$jobname.csh $jobdir/done
+/bin/mv --verbose $jobdir/$jobname.sh $jobdir/done
 echo -n "Finishing up at "
 /bin/date
 exit 0
@@ -109,4 +113,3 @@ sub qsub
     chomp $jobid;
     return $jobid;
 }
-
