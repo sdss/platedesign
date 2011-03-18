@@ -105,6 +105,11 @@ pro/misc/check_file_exists.pro -text
 pro/misc/check_new_cover.pro -text
 pro/misc/check_old_cover.pro -text
 pro/misc/checkha.pro -text
+pro/misc/cmm_fit.pro -text
+pro/misc/cmm_fit_all.pro -text
+pro/misc/cmm_fit_plot.pro -text
+pro/misc/cmm_fit_squash.pro -text
+pro/misc/cmm_fit_tilt.pro -text
 pro/misc/color_string.pro -text
 pro/misc/copydef.pro -text
 pro/misc/current_function_filename.pro -text
