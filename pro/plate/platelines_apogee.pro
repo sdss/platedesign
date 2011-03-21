@@ -4,9 +4,11 @@
 ; PURPOSE:
 ;   write the plateLines-????.ps file for a APOGEE plate
 ; CALLING SEQUENCE:
-;   platelines_apogee, plateid [, /sky, /std ]
+;   platelines_apogee, plateid [, /sky, /std, /relaxed ]
 ; INPUTS:
 ;   plateid - plate ID to run on
+; OPTIONAL KEYWORDS:
+;   /relaxed - reassign fiberid #s using relaxed constraints
 ; COMMENTS:
 ;   Appropriate for APOGEE data
 ;   Makes a PostScript file 26.7717 by 26.7717 inches; mapping
@@ -22,7 +24,7 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
+pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
 
   common com_pla, plateid, full, holes, hdr
 
@@ -62,6 +64,23 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty
 
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
   if(nsci eq 0) then return
+
+  if(keyword_set(relaxed)) then begin
+      plug= yanny_readone(plplug, hdr=hdr)
+      default= lines2struct(hdr, /relaxed)
+      if(tag_indx(default, 'relaxed_fiber_classes') eq -1) then $
+        default=create_struct(default, 'relaxed_fiber_classes', 1L)
+      default.relaxed_fiber_classes=1L
+      ifix= where(strmatch(strupcase(full[isci].targettype), 'SCIENCE*'), nfix)
+      if(nfix gt 0) then $
+        full[isci[ifix]].targettype='SCIENCE'
+      ifix= where(strmatch(strupcase(full[isci].targettype), 'STANDARD*'), nfix)
+      if(nfix gt 0) then $
+        full[isci[ifix]].targettype='STANDARD'
+      fiberid= fiberid_apogee(default, fibercount, full[isci])
+      full[isci].fiberid= fiberid
+      holes[isci].fiberid= -fiberid
+  endif
 
   if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
      msg='Could not find plPlugMapP or plateHolesSorted file for '+ $
