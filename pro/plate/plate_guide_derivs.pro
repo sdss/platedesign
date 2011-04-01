@@ -136,14 +136,15 @@ p_print, filename='corrections.ps', xsize= 10., ysize=10.
 
 !P.MULTI= [4,1,4]
 !Y.MARGIN=0
+!X.OMARGIN=[4, 1]
 
-djs_plot, hatest, rot, th=4, /yaxis, $
+djs_plot, hatest, rot, th=4, /leftaxis, $
           ytitle='!8\theta!6'
-djs_plot, hatest, scale, th=4, /yaxis, $
+djs_plot, hatest, scale, th=4, /leftaxis, $
           ytitle='!6scale'
-djs_plot, hatest, xshift, th=4, /yaxis, $
+djs_plot, hatest, xshift, th=4, /leftaxis, $
           ytitle='!8\Deltax!6'
-djs_plot, hatest, yshift, th=4, /yaxis, $
+djs_plot, hatest, yshift, th=4, $
           ytitle='!8\Deltay!6'
 
 p_end_print
