@@ -118,6 +118,8 @@ pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_dummy_marvels_blocks.pro -text
+pro/misc/p_end_print.pro -text
+pro/misc/p_print.pro -text
 pro/misc/plate_log.pro -text
 pro/misc/platedesign_version.pro -text
 pro/misc/qsooff.pro -text
@@ -185,6 +187,7 @@ pro/plate/plate_counterbore.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_dir.pro -text
 pro/plate/plate_guide.pro -text
+pro/plate/plate_guide_derivs.pro -text
 pro/plate/plate_holes.pro -text
 pro/plate/plate_mag.pro -text
 pro/plate/plate_pmotion_correct.pro -text
