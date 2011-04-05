@@ -112,12 +112,14 @@ pdata=ptr_new(adjust)
 post=string(f='(i6.6)', plateid)+ $
      '-p'+strtrim(string(pointing),2)+ $
      '-l'+strtrim(string(guideon, f='(i5.5)'),2)
+hdr= [hdr, 'lambda '+strtrim(string(guideon, f='(f40.3)'),2), $
+      'pointing '+strtrim(string(pointing),2)]
 yanny_write, platedir+'/plateGuideAdjust-'+post+'.par', $
              pdata, hdr=hdr
 ptr_free, pdata
 
 offsets0= {HAOFFSETS, xfocal:0., yfocal:0., target_ra:0., target_dec:0., lambda_eff:0., $
-           holetype:' ', delha:fltarr(nha), $
+           fiberid:0L, holetype:' ', delha:fltarr(nha), $
            xfoff:fltarr(nha), yfoff:fltarr(nha)}
 offsets= replicate(offsets0, n_elements(full))
 struct_assign, full, offsets
