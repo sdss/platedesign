@@ -21,7 +21,7 @@
 ;-
 pro plate_guide_derivs, in_plateid, pointing, guideon=guideon
 
-common com_plate_guide_derivs, plateid, full, definition, default
+common com_plate_guide_derivs, plateid, full, definition, default, phdr
 
 if(NOT keyword_set(guideon)) then guideon=5400.
 if(NOT keyword_set(pointing)) then pointing=1L
@@ -43,8 +43,8 @@ fullfile= platedir+'/plateHolesSorted-'+ $
 check_file_exists, fullfile, plateid=plateid
 
 if(n_tags(full) eq 0) then begin
-   full= yanny_readone(fullfile, hdr=hdr, /anon)
-   definition= lines2struct(hdr)
+   full= yanny_readone(fullfile, hdr=phdr, /anon)
+   definition= lines2struct(phdr)
    default= definition
 endif
 
@@ -112,7 +112,7 @@ pdata=ptr_new(adjust)
 post=string(f='(i6.6)', plateid)+ $
      '-p'+strtrim(string(pointing),2)+ $
      '-l'+strtrim(string(guideon, f='(i5.5)'),2)
-hdr= [hdr, 'lambda '+strtrim(string(guideon, f='(f40.3)'),2), $
+hdr= [phdr, 'lambda '+strtrim(string(guideon, f='(f40.3)'),2), $
       'pointing '+strtrim(string(pointing),2)]
 yanny_write, platedir+'/plateGuideAdjust-'+post+'.par', $
              pdata, hdr=hdr
