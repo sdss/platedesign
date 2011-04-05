@@ -103,6 +103,15 @@ djs_xyouts, [-330], [290], 'Survey: '+strtrim(string(plan.survey),2), $
             charsize=0.7
 djs_xyouts, [-330], [280], 'Program: '+strtrim(string(plan.programname),2), $
             charsize=0.7
+djs_xyouts, [-330], [270], 'RA (p1): '+ $
+            strtrim(string(plan.racen,f='(f30.3)'),2), $
+            charsize=0.7
+djs_xyouts, [-330], [260], 'Dec (p1): '+ $
+            strtrim(string(plan.deccen,f='(f30.3)'),2), $
+            charsize=0.7
+djs_xyouts, [-330], [250], 'HA (p1): '+ $
+            strtrim(string(plan.ha[0],f='(f30.1)'),2), $
+            charsize=0.7
 
 djs_xyouts, [80], [325], label
 if(keyword_set(note)) then $
