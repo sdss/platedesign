@@ -25,7 +25,8 @@
 ;------------------------------------------------------------------------------
 pro plate_select_guide_2mass, racen, deccen, epoch=epoch, $
                               tilerad=tilerad1, guide_design=guide_design, $
-                              gminmax=gminmax, nguidemax=nguidemax
+                              gminmax=gminmax, nguidemax=nguidemax, $
+                              jkminmax=jkminmax
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
@@ -38,6 +39,9 @@ tilerad= tilerad < 1.45
 
 if(NOT keyword_set(gminmax)) then $
   gminmax=[13., 14.5]
+
+if(NOT keyword_set(jkminmax)) then $
+  jkminmax=[0.4, 0.6]
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
@@ -54,9 +58,16 @@ endif
 
 ;; Trim to stars in the desired magnitude + color boxes
 if (keyword_set(objt)) then begin
-    jkcolor = objt.tmass_j - objt.tmass_k
+    glactc, objt.tmass_ra, objt.tmass_dec, 2000., gl, gb, 1, /deg
+    ebv= dust_getval(gl, gb, /noloop)
+    jmag= (objt.tmass_j - ebv*0.902) 
+    hmag= (objt.tmass_h - ebv*0.576)
+    kmag= (objt.tmass_k - ebv*0.367)
 
-    mag= plate_tmass_to_sdss(objt.tmass_j, objt.tmass_h, objt.tmass_k)
+    jkcolor= jmag-kmag
+    mag= plate_tmass_to_sdss(jmag, hmag, kmag)
+    red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+    mag= mag+ red_fac#ebv
 
     indx = where(objt.tmass_bl_flg EQ 111 $
                  AND mag[1,*] gt gminmax[0] $
@@ -64,11 +75,12 @@ if (keyword_set(objt)) then begin
                  AND objt.tmass_cc_flg EQ '000' $
                  AND objt.tmass_gal_contam EQ 0 $
                  AND objt.tmass_mp_flg EQ 0 $
-                 AND jkcolor GT 0.4 AND jkcolor LT 0.6, ct)
+                 AND jkcolor GT jkminmax[0] AND jkcolor LT jkminmax[1], ct)
 
     if (ct GT 0) then begin
         objt = objt[indx]
         jkcolor = jkcolor[indx]
+        mag= mag[*,indx]
     endif else begin
         objt = 0
     endelse
@@ -80,9 +92,11 @@ if (keyword_set(objt)) then begin
     ;; Trim back number to maximum; only allow brightest
     if(keyword_set(nguidemax)) then begin
         if(nguidemax lt n_elements(objt)) then begin
-            isort= sort(objt.tmass_j)
+            isort= sort(mag[1,*])
             indx= isort[0:nguidemax-1]
             objt=objt[indx]
+            jkcolor = jkcolor[indx]
+            mag= mag[*,indx]
         endif
     endif
 
@@ -107,7 +121,7 @@ if (keyword_set(objt)) then begin
 
     ;; Finally, set priority; note that for guide stars priority is
     ;; used differently than elsewhere (see plate_assign_guide.pro)
-    isort= sort(guide_design.tmass_j)
+    isort= sort(mag[1,*])
     guide_design[isort].priority= 1L+lindgen(n_elements(isort))
 endif
 
