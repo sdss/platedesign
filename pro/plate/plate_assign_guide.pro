@@ -41,12 +41,12 @@ useg= lonarr(n_elements(gfiber))
 for i=0L, n_elements(guidenums)-1L do begin
     ig= where(gfiber.guidenum eq guidenums[i], ng)
     if(ng eq 0) then $
-      message, 'guidenum specified that does not exist!'
+      message, color_string('guidenum specified that does not exist!', 'red', 'bold')
     useg[ig]=1
 endfor
 iuse= where(useg gt 0, nuse)
 if(nuse eq 0) then $
-  message, 'No guide numbers are specified?'
+  message, color_string('No guide numbers are specified?', 'red', 'bold')
 
 ;; find non-conflicting set of guides
 for i=0L, n_elements(guide_design)-1L do begin
@@ -71,7 +71,7 @@ plate_center, definition, default, pointing, 0L, $
 spherematch, racen, deccen, guide_design[iavailable].target_ra, $
   guide_design[iavailable].target_dec, tilerad, m1, m2, max=0
 if(m2[0] eq -1) then $
-  message, 'no more available guide stars!'
+  message, color_string('no more available guide stars!', 'red', 'bold')
 iavailable=iavailable[m2]
 
 ;; assign the guides
@@ -80,22 +80,22 @@ gnum= distribute_guides(gfiber[iuse], guide_design[iavailable])
 ;; check there are enough
 iok= where(gnum gt 0, nok)
 if(nok ne n_elements(guidenums)) then $
-  message, 'NOT ALL GUIDE FIBERS PLUGGABLE!'
+  message, color_string('NOT ALL GUIDE FIBERS PLUGGABLE!', 'red', 'bold')
 
 for i=0l, n_elements(guidenums)-1L do begin
     iguide= guidenums[i]
     
     ipick= where(iguide eq gnum, npick)
     if(npick eq 0) then $
-      message, 'No guide number '+strtrim(string(iguide),2)
+      message, color_string('No guide number '+strtrim(string(iguide),2), 'red', 'bold')
     if(npick gt 1) then $
-      message, 'More than one guide number '+strtrim(string(iguide),2)
+      message, color_string('More than one guide number '+strtrim(string(iguide),2), 'red', 'bold')
     ipick= iavailable[ipick]
 
     ;; check conflicts
     conflicted=check_conflicts(design, guide_design[ipick])
     if(conflicted) then $
-      message, 'Inconsistency!  Meant to remove conflicts!'
+      message, color_string('Inconsistency!  Meant to remove conflicts!', 'red', 'bold')
     
     ;; now add it:
     guide_design[ipick].assigned=1L
