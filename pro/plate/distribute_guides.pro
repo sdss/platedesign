@@ -40,7 +40,7 @@ platescale = 217.7358D          ; mm/degree
 coff=lonarr(n_elements(gfiber))+90000L
 ibig= where(gfiber.guidetype eq 'A', nbig)
 if(nbig eq 0) then $
-  message, 'No acquisition fibers! Senseless.'
+  message, color_string('No acquisition fibers! Senseless.', 'red', 'bold')
 coff[ibig]=0L
 for i=0L, n_elements(gfiber)-1L do begin
     inrange= boss_reachcheck(gfiber[i].xreach/platescale, $
@@ -49,8 +49,8 @@ for i=0L, n_elements(gfiber)-1L do begin
                              design.yf_default/platescale)
     imatch=where(inrange gt 0, nmatch)
     if(nmatch eq 0) then begin
-        splog, 'No guide star available at ALL for #'+ $
-               strtrim(string(gfiber[i].guidenum),2)+'!'
+        splog, color_string('No guide star available at ALL for #'+ $
+               strtrim(string(gfiber[i].guidenum),2)+'!', 'yellow', 'bold')
     endif else begin
         matches[i]= ptr_new(imatch)
         distance=sqrt((gfiber[i].xprefer-design[imatch].xf_default)^2+ $
