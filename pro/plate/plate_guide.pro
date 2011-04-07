@@ -44,7 +44,7 @@ if(file_test(guidefile) eq 0 OR $
 
     if(strupcase(guidetype) ne 'SDSS' AND $
        strupcase(guidetype) ne '2MASS') then $
-      message, 'No such guide type '+guidetype+'!'
+      message, color_string('No such guide type '+guidetype+'!', 'red', 'bold')
 
     ;; what is center for this pointing?
     plate_center, definition, default, pointing, 0L, $
@@ -103,7 +103,7 @@ endif else begin
 endelse
 
 if(n_tags(guide_design) eq 0) then $
-  message, 'No guides found!'
+  message, color_string('No guides found!', 'red', 'bold')
 
 return, guide_design
 
