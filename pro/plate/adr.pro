@@ -4,9 +4,11 @@
 ; PURPOSE:
 ;   Calculate observed altitude in presence of ADR, given true altitude
 ; CALLING SEQUENCE:
-;   adr= adr( trualt [, pressure=, temperature=, lambda=] )
+;   adr= adr( trualt [, pressure=, temperature=, lambda=, /pr72] )
 ; INPUTS:
 ;   trualt - [N] true altitude(s), in deg
+; OPTIONAL KEYWORDS:
+;   /pr72 - Use Peck & Reeder (1972) for refractive index
 ; OPTIONAL INPUTS:
 ;   pressure - air pressure, millibars (default 1013.25)
 ;   temperature - temperature, C (default 5)
@@ -20,7 +22,8 @@
 ;-
 ;------------------------------------------------------------------------------
 function adr, trualt, pressure=pressure, $
-              temperature=temperature, lambda=lambda
+              temperature=temperature, lambda=lambda, $
+              pr72=pr72
 
 reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
@@ -36,10 +39,20 @@ mreflambda=reflambda/10000.
 ;; 1 millibar = 0.7501 mmHg
 mmhg= pressure*0.7501
 
-;; Eq. 1 of Filippenko (1982), (n-1) 10^6 = ...
-irefract6= 64.328+ 29498.1/(146-(1./mlambda)^2)+ 255.4/(41.-(1./mlambda)^2)
-irefract6_ref= 64.328+ 29498.1/(146-(1./mreflambda)^2)+ $
-               255.4/(41.-(1./mreflambda)^2)
+if(NOT keyword_set(pr72)) then begin
+   ;; Eq. 1 of Filippenko (1982), (n-1) 10^6 = ...
+   irefract6= 64.328+ 29498.1/(146-(1./mlambda)^2)+ 255.4/(41.-(1./mlambda)^2)
+   irefract6_ref= 64.328+ 29498.1/(146-(1./mreflambda)^2)+ $
+                  255.4/(41.-(1./mreflambda)^2)
+endif else begin
+   ;; Eq. 3 of Peck & Reeder (1972), (n-1) 10^8 = 
+   irefract8= 8060.51+(2480990./(132.274-(1./mlambda)^2))+ $
+              (17455.7/(39.32957-(1./mlambda)^2))
+   irefract8_ref= 8060.51+(2480990./(132.274-(1./mreflambda)^2))+ $
+                  (17455.7/(39.32957-(1./mreflambda)^2))
+   irefract6= irefract8*0.01
+   irefract6_ref= irefract8_ref*0.01
+endelse
 
 ;; Eq. 2 of Filippenko (1982), (n-1)_TP = (n-1) x ...
 tpfact=(mmhg*(1.+(1.049-0.0157*temperature)*1.e-6*mmhg))/ $
