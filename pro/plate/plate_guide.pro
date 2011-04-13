@@ -18,7 +18,17 @@ designid= long(definition.designid)
 tilerad= get_tilerad(definition, default)
 
 if(tag_exist(default, 'GUIDEMAG_MINMAX')) then begin
-    gminmax=float(strsplit(default.guidemag_minmax, /extr))
+   gminmax=float(strsplit(default.guidemag_minmax, /extr))
+endif
+if(tag_exist(definition, 'GUIDEMAG_MINMAX')) then begin
+   gminmax=float(strsplit(definition.guidemag_minmax, /extr))
+endif
+
+if(tag_exist(default, 'GUIDE_JKMINMAX')) then begin
+    jkminmax=float(strsplit(default.guide_jkminmax, /extr))
+endif
+if(tag_exist(definition, 'GUIDE_JKMINMAX')) then begin
+    jkminmax=float(strsplit(definition.guide_jkminmax, /extr))
 endif
 
 if(tag_exist(default, 'NGUIDEMAX')) then begin
@@ -43,6 +53,7 @@ if(file_test(guidefile) eq 0 OR $
     guidetype= (strsplit(default.guidetype, /extr))[pointing-1]
 
     if(strupcase(guidetype) ne 'SDSS' AND $
+       strupcase(guidetype) ne 'USNOB' AND $
        strupcase(guidetype) ne '2MASS') then $
       message, color_string('No such guide type '+guidetype+'!', 'red', 'bold')
 
@@ -68,7 +79,21 @@ if(file_test(guidefile) eq 0 OR $
     if(strupcase(guidetype) eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax, tilerad=tilerad
+          gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax
+        if(n_tags(guide_design) gt 0) then begin
+            plate_ad2xy, definition, default, pointing, 0L, $
+              guide_design.target_ra, guide_design.target_dec, $
+              guide_design.lambda_eff, xf=xf, yf=yf
+            guide_design.xf_default=xf
+            guide_design.yf_default=yf
+        endif
+    endif
+
+    ;; find USNOB guide fibers 
+    if(strupcase(guidetype) eq 'USNOB') then begin
+        plate_select_guide_usnob, racen, deccen, epoch=epoch, $
+          guide_design=guide_design, nguidemax=nguidemax, $
+          gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax
         if(n_tags(guide_design) gt 0) then begin
             plate_ad2xy, definition, default, pointing, 0L, $
               guide_design.target_ra, guide_design.target_dec, $
