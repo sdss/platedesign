@@ -179,10 +179,6 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, hamax[ip]
                 printf, unit, '</td>'
 
-                printf, unit, tdst
-                printf, unit, *guides[ip]
-                printf, unit, '</td>'
-
                 plugname='plPlugMapP-'+ $
                           string(f='(i4.4)', plateid[i])
                 if(pointing_name[ip] ne 'A') then $
@@ -195,6 +191,21 @@ for indx=0L, n_elements(plateid)-1L do begin
                            words[n_elements(words)-2L]+'/'+ $
                            words[n_elements(words)-1L]
                 path='../../plates/'+lastwords
+                
+                lastwords= words[n_elements(words)-3L]+'/'+ $
+                           words[n_elements(words)-2L]
+                gpath= '../../plates/'+lastwords
+                ghtml= 'guideDSS-'+ string(f='(i6.6)', plateid[i])+ $
+                  '-p'+strtrim(string(ip+1L),2)+'.html'
+                
+                printf, unit, tdst
+                if(file_test(plate_dir(plateid[i])+'/'+ghtml) gt 0) then $
+                  printf, unit, '<a href="'+gpath+'/'+ghtml+'">'
+                printf, unit, *guides[ip]
+                if(file_test(plate_dir(plateid[i])+'/'+ghtml) gt 0) then $
+                  printf, unit, '</a>'
+                printf, unit, '</td>'
+
                 printf, unit, tdst+'<a href="'+path+'">'+plugname
                 printf, unit, '</a></td>'
             endif else begin
