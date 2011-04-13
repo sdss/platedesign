@@ -56,6 +56,7 @@ design0={DESIGN_TARGET, $
          tyc_bmag:-9999., $
          tyc_vmag:-9999., $
          mfd_mag:fltarr(6), $
+         usnob_mag:fltarr(5), $
          sp_param_source:'NA', $
          sp_params:fltarr(4), $
          sp_param_err:fltarr(4), $
