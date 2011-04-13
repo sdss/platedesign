@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   distribute guides among available locations
 ; CALLING SEQUENCE:
-;   gnum= distribute_guides(gfiber, design)
+;   gnum= distribute_guides(gfiber, design [, dlim=])
 ; INPUTS:
 ;   gfiber - [Nguide] structure containing:
 ;                .GUIDENUM
@@ -18,13 +18,18 @@
 ;            at least:
 ;                .XF_DEFAULT
 ;                .YF_DEFAULT
+; OPTIONAL INPUTS:
+;   dlim - radius out to which to base on priority, mm (default 80)
 ; OUTPUTS:
 ;   gnum - [Ntarget] guide numbers for each target (-1 if not
 ;          assigned)
 ; REVISION HISTORY:
 ;   4-Sep-2008 MRB, NYU 
 ;-
-function distribute_guides, gfiber, design, plot=plot
+function distribute_guides, gfiber, design, plot=plot, dlim=dlim
+
+if(NOT keyword_set(dlim)) then $
+   dlim=80.
 
 nguide= n_elements(gfiber)
 ntarget= n_elements(design)
@@ -57,8 +62,7 @@ for i=0L, n_elements(gfiber)-1L do begin
                       (gfiber[i].yprefer-design[imatch].yf_default)^2)
         cdist2= coff[i]+ long(distance^2)
 
-        ;; for anything closer than 6 cm, decide based on priority
-        dlim= 80.
+        ;; for anything closer than DLIM, decide based on priority
         iclose= where(distance lt dlim, nclose)
         if(nclose gt 1) then begin
             pmax= max(design[imatch[iclose]].priority)
