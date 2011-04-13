@@ -1,0 +1,73 @@
+# Default settings for BOSS
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE
+instruments APOGEE
+
+# Small tile radius in BULGE regions
+tilerad 0.49
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes standard science sky
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 1
+nOffsets 0
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
+# (for M pointings and N offsets).
+nAPOGEE_standard 50
+nAPOGEE_science 200
+nAPOGEE_sky 50
+nAPOGEE_science_bright 0
+nAPOGEE_science_medium 0
+nAPOGEE_science_faint 0
+nAPOGEE_standard_bright 0 
+nAPOGEE_standard_medium 0 
+
+# Guide fibers to use for each pointing
+gfiberType gfiber2
+guideType USNOB
+guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+guides_first 1
+guidemag_minmax 12. 15.0
+guide_dlim 300.
+nguidemax 200
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# Schlegel measured a minimum separation of 3.72231 mm. 
+# This is 61.5 arcsec at the average plate scale. no BOSS targets 
+# should appear closer than 62 arcsec
+#ferruleSizeBOSS 3.738 <- this is design #!!
+ferruleSizeAPOGEE 3.72231
+bufferSizeAPOGEE 0.300
+
+# Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
+plateDesignStandards NONE
+standardType NONE
+
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
+plateDesignSkies NONE
+skyType NONE
+
+# Use BOSS plugmap style
+plugmapstyle plplugmap_apogee
+
+# Default pointing_name
+pointing_name A B C D E F
+
+# Set conditions for maximum offset (arcsec) of fiber in HA range
+max_off_fiber_for_ha 0.3
+relaxed_fiber_classes 1
