@@ -159,6 +159,14 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
      endfor
   endfor
 
+;; see if we should select guides at highest priority
+  if(tag_exist(default, 'GUIDES_FIRST')) then begin
+     guides_first= long(default.guides_first)
+  endif
+  if(tag_exist(definition, 'GUIDES_FIRST')) then begin
+     guides_first= long(definition.guides_first)
+  endif
+
 ;; see if we should respect the fiberid
   if(tag_exist(definition, 'RESPECT_FIBERID')) then begin
      respect_fiberid= long(definition.respect_fiberid)
@@ -313,6 +321,36 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
            
         endfor
         
+        ;; Find guide fibers and assign them (if we're supposed to)
+        ;; Make sure to assign proper guides to each pointing
+        if(keyword_set(omit_guides) eq 0 and $
+           keyword_set(guides_first) gt 0) then begin
+           for pointing=1L, npointings do begin
+              iguidenums= $
+                 tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
+              if(iguidenums eq -1) then $
+                 message, 'Must specify guide fiber numbers for pointing '+ $
+                          strtrim(string(pointing),2)
+              guidenums=long(strsplit(default.(iguidenums),/extr))
+              splog, 'Finding guides for pointing #'+ $
+                     strtrim(string(pointing),2)
+              guide_design= plate_guide(definition, default, pointing, $
+                                        epoch=epoch)
+              if(n_tags(guide_design) gt 0) then begin
+                 splog, 'Applying proper motions for pointing #'+ $
+                        strtrim(string(pointing),2)
+                 design_pm, guide_design, toepoch=epoch
+                 splog, 'Assigning guides to fibers for pointing #'+ $
+                        strtrim(string(pointing),2)
+                 plate_assign_guide, definition, default, design, $
+                                     guide_design, pointing, guidenums=guidenums 
+              endif else begin
+                 message, 'there are no guide fibers! aborting!'
+              endelse
+           endfor
+        endif
+        
+        
         ;; For each class of input priorities, run plate_assign 
         ;; Note input files root path is $PLATELIST_DIR/inputs
         
@@ -424,10 +462,12 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               istart=iend+1L
            endfor
         endif
-        
+
+
         ;; Find guide fibers and assign them (if we're supposed to)
         ;; Make sure to assign proper guides to each pointing
-        if(~keyword_set(omit_guides)) then begin
+        if(keyword_set(omit_guides) eq 0 and $
+           keyword_set(guides_first) eq 0) then begin
            for pointing=1L, npointings do begin
               iguidenums= $
                  tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
@@ -500,6 +540,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               endfor
            endfor 
         endfor
+
         
         ;; Find sky fibers and assign them
         for pointing=1L, npointings do begin
@@ -538,7 +579,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               endfor 
            endfor 
         endfor
-        
+
         ;; Check for extra fibers
         iunused=where(fibercount.nused lt fibercount.ntot, nunused)
         if(nunused gt 0) then begin
