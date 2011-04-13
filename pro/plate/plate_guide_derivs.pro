@@ -119,7 +119,7 @@ yanny_write, platedir+'/plateGuideAdjust-'+post+'.par', $
 ptr_free, pdata
 
 offsets0= {HAOFFSETS, xfocal:0., yfocal:0., target_ra:0., target_dec:0., lambda_eff:0., $
-           fiberid:0L, holetype:' ', delha:fltarr(nha), $
+           iguide:0L, fiberid:0L, holetype:' ', delha:fltarr(nha), $
            xfoff:fltarr(nha), yfoff:fltarr(nha)}
 offsets= replicate(offsets0, n_elements(full))
 struct_assign, full, offsets
