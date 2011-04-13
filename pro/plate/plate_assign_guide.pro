@@ -36,6 +36,12 @@ else $
   gfibertype= 'gfiber'
 gfiber= call_function(gfibertype+'_params')
 
+dlim=80.
+if(tag_indx(default, 'GUIDE_DLIM') ge 0) then $
+   dlim= default.guide_dlim 
+if(tag_indx(definition, 'GUIDE_DLIM') ge 0) then $
+   dlim= definition.guide_dlim 
+
 ;; pick out which guides we are using
 useg= lonarr(n_elements(gfiber))
 for i=0L, n_elements(guidenums)-1L do begin
@@ -74,8 +80,12 @@ if(m2[0] eq -1) then $
   message, color_string('no more available guide stars!', 'red', 'bold')
 iavailable=iavailable[m2]
 
-;; assign the guides
-gnum= distribute_guides(gfiber[iuse], guide_design[iavailable])
+;; assign the guides (first assign with priorities in mind, then 
+;; reassign according to distance purely)
+gnum= distribute_guides(gfiber[iuse], guide_design[iavailable], dlim=dlim)
+igood= where(gnum gt 0, ngood)
+regnum= distribute_guides(gfiber[iuse], guide_design[iavailable[igood]], dlim=1.e-6)
+gnum[igood]= regnum
 
 ;; check there are enough
 iok= where(gnum gt 0, nok)
