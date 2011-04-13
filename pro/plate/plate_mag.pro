@@ -50,6 +50,26 @@ if(ntmass gt 0) then begin
                                      holes[itmass].tmass_h, $
                                      holes[itmass].tmass_k)
     type[itmass]='2MASS'
+ endif
+
+;; second, if USNOB and 2MASS values are set, offset from g
+iusnob= where(holes.usnob_mag[2] gt 0 and $
+              holes.usnob_mag[2] lt 25. and $
+              holes.tmass_j gt 0., nusnob)
+if(nusnob gt 0) then begin
+   glactc, holes[iusnob].target_ra, holes[iusnob].target_dec, 2000., gl, gb, 1, /deg
+   ebv= dust_getval(gl, gb, /noloop)
+   jmag= (holes[iusnob].tmass_j - ebv*0.902) 
+   hmag= (holes[iusnob].tmass_h - ebv*0.576)
+   kmag= (holes[iusnob].tmass_k - ebv*0.367)
+   jkcolor= jmag-kmag
+   tmp_mag= plate_tmass_to_sdss(jmag, hmag, kmag)
+   red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+   tmp_mag= tmp_mag+ red_fac#ebv
+   offset= holes[iusnob].usnob_mag[2]-tmp_mag[1,*]
+   for i=0L, 4L do $
+      mag[i,iusnob]= tmp_mag[i,*]+offset
+   type[iusnob]='USNOB'
 endif
 
 ;; second, if the B,V values from Tycho and GSC are there, use those 
