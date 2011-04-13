@@ -262,6 +262,10 @@ pro/test/plot_heights.pro -text
 pro/test/radec2kml.pro -text
 pro/test/run_anchor_tests.pro -text
 pro/test/standards_check.pro -text
+pro/test/test_2mass_gsc.pro -text
+pro/test/test_2mass_gsc_all.pro -text
+pro/test/test_2mass_guide.pro -text
+pro/test/test_2mass_usnob.pro -text
 pro/test/test_ad2xy.pro -text
 pro/test/test_adr_pr.pro -text
 pro/test/test_guide_stars.pro -text

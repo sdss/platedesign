@@ -44,9 +44,17 @@ for i=0L, nplates-1L do begin
         if(n_elements(dangle) gt 0) then begin
             dangle=[dangle,tmp_dangle]
             dfocal=[dfocal,tmp_dfocal]
+            dlambda=[dlambda, lambda[ii]]
+            dha=[dha, replicate(lst[i]-racen[i], nii)]
+            sdec=[sdec, replicate(deccen[i], nii)]
+            stemp=[stemp, replicate(airtemp[i], nii)]
         endif else begin
             dangle=tmp_dangle
             dfocal=tmp_dfocal
+            dlambda= lambda[ii]
+            dha=replicate(lst[i]-racen[i], nii)
+            sdec=replicate(deccen[i], nii)
+            stemp=replicate(airtemp[i], nii)
         endelse
     endif
 endfor
