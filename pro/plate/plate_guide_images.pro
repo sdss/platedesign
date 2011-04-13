@@ -18,9 +18,11 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro plate_guide_images, in_plateid, fits=fits
+pro plate_guide_images, in_plateid, pointing=pointing, fits=fits
 
 common com_plate_guide_images, plateid, full
+
+if(NOT keyword_set(pointing)) then pointing=1L
 
 if(keyword_set(plateid)) then begin
    if(in_plateid ne plateid) then begin
@@ -38,11 +40,11 @@ check_file_exists, fullfile, plateid=plateid
 if(n_tags(full) eq 0) then $
    full= yanny_readone(fullfile, hdr=phdr, /anon)
 
-iguide= where(full.holetype eq 'GUIDE', nguide)
+iguide= where(full.holetype eq 'GUIDE' and full.pointing eq pointing, nguide)
 isort= sort(full[iguide].iguide)
 
-openw, unit, platedir+'/guideDSS-'+string(f='(i6.6)', plateid[0])+'.html', $
-       /get_lun
+openw, unit, platedir+'/guideDSS-'+string(f='(i6.6)', plateid[0])+'-p'+ $
+  strtrim(string(pointing),2)+'.html', /get_lun
 
 printf, unit, '<html>'
 printf, unit, '<head>'
@@ -54,6 +56,10 @@ printf, unit, '<body style="background-color:#ccc">'
 printf, unit, '<h1>DSS r2 images of guide fibers for plate '+ $
         strtrim(string(plateid[0]),2)+'</h1>'
 
+printf, unit, '<p>Scaling of images are not constant stretch; please NB the'
+printf, unit, 'guide fiber magnitudes (which are approximate).  The images are'
+printf, unit, '3 arcmin by 3 arcmin in size.</p>'
+
 printf, unit, '<table border="1" cellspacing="3">'
 printf, unit, '<tbody>'
 
@@ -63,7 +69,8 @@ for i=0L, nguide-1L do begin
       printf, unit, '<tr>'
    icurr= iguide[isort[i]]
    post=string(f='(i6.6)', plateid[0])+ $
-        '-'+string(f='(i2.2)', full[icurr].iguide)
+     '-p'+strtrim(string(pointing),2)+ $
+     '-'+string(f='(i2.2)', full[icurr].iguide)
    filebase= platedir+'/guideDSS-r2-'+post
    querydss, [full[icurr].target_ra, full[icurr].target_dec], $
              image, hdr, survey='2r', imsize=3.
