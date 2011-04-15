@@ -63,9 +63,9 @@ plate_ad2xy, definition, default, pointing, offset, ra, dec, $
              lambda, xf=xfocal, yf=yfocal, lst=racen+ha[pointing-1L], $
              airtemp=temp
 
-if(ha[pointing-1L] lt -80. OR $
-   ha[pointing-1L] gt  80.) then begin
-   message, 'HA desired is more than 80 deg! I refuse.'
+if(ha[pointing-1L] lt -120. OR $
+   ha[pointing-1L] gt  120.) then begin
+   message, 'HA desired is more than 120 deg! I refuse.'
 endif
 
 nha=11L
