@@ -239,6 +239,7 @@ pro/plate/plugfile_plplugmap_apogee_marvels.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/plugmap_blank.pro -text
+pro/plate/ra_in_range.pro -text
 pro/plate/reddenmed.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sdss_rdistort.pro -text
@@ -248,8 +249,10 @@ pro/plate/xyfocal2ad.pro -text
 pro/retro/copy_retro_jul08_to_plates.pro -text
 pro/retro/dec_segue2_platelines.pro -text
 pro/retro/fix_bad_boss_2010_9.pro -text
+pro/retro/fix_plug_ra_range.pro -text
 pro/retro/jan_segue2_platelines.pro -text
 pro/retro/old_segue2_platelines.pro -text
+pro/retro/retrofit_bad_ra.pro -text
 pro/retro/retrofit_boss_200905.pro -text
 pro/retro/retrofit_boss_200908.pro -text
 pro/retro/retrofit_marvels_200909.pro -text
@@ -261,6 +264,7 @@ pro/retro/set_fiberid_brians.pro -text
 pro/test/check_adr.pro -text
 pro/test/check_collisions.pro -text
 pro/test/check_reachcheck.pro -text
+pro/test/create_apogee_derivs.pro -text
 pro/test/extinction_check.pro -text
 pro/test/guides_check.pro -text
 pro/test/plot_heights.pro -text
