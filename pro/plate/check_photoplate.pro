@@ -11,15 +11,23 @@
 ;------------------------------------------------------------------------------
 function check_photoplate_file, filename
 
-spawn, /nosh, ['fitsverify', filename], output
-if(n_elements(output) lt 2) then $
+if(NOT file_test(filename)) then begin
+  splog, 'File not found: '+filename
+  return,0 
+endif
+
+spawn, /nosh, ['fitsverify', '-q', filename], output
+words= strsplit(output, /extr)
+if(words[1] ne 'OK:') then begin
+	splog, 'Not good FITS: '+filename
    return, 0
-if(output[2] ne 'OK:') then $
-   return, 0
+endif
 
 hdr= headfits(filename, ext=1)
-if(long(sxpar(hdr, 'NAXIS2')) ne 1000) then $
+if(long(sxpar(hdr, 'NAXIS2')) ne 1000) then begin
+	 splog, 'Wrong number of rows'
    return, 0
+endif
 
 return, 1
 
@@ -29,8 +37,7 @@ function check_photoplate, plate
 
   pstr=strtrim(string(f='(i4.4)',plate),2)
   
-  resolve= file_basename(getenv('PHOTO_RESOLVE'))
-  pdir= getenv('PHOTOPLATE_DIR')+'/'+resolve+'/'+pstr
+  pdir= getenv('PHOTOPLATE_DIR')+'/'+pstr
   
   ok=check_photoplate_file(pdir+'/photoPlate-'+pstr+'.fits')
   if(NOT ok) then begin
