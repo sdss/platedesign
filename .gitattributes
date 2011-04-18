@@ -151,6 +151,7 @@ pro/plate/boss_reachvalues.pro -text
 pro/plate/bright_fiberblocks.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/check_photoplate.pro -text
+pro/plate/check_photoplate_all.pro -text
 pro/plate/default_epoch.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
