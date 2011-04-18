@@ -32,15 +32,22 @@ if(file_test(plansfile) eq 0) then $
 
 plans= yanny_readone(plansfile)
 if(n_tags(plans) eq 0) then $
-  message, 'platePlans.par empty!)
+   message, 'platePlans.par empty!'
 
 irun= where(plans.platerun eq platerun, nrun)
 if(nrun eq 0) then $
-  message, 'No plates found in run '+platerun
+   message, 'No plates found in run '+platerun
 
 for i=0L, nrun-1L do begin
-    sdss_plate_match, plans[irun[i]].plateid, clobber=clobber, rerun=rerun
-    sdss_plate_photo, plans[irun[i]].plateid, clobber=clobber
+   sdss_plate_match, plans[irun[i]].plateid, clobber=clobber, rerun=rerun
+   sdss_plate_photo, plans[irun[i]].plateid, clobber=clobber
+endfor
+
+for i=0L, nrun-1L do begin
+   ok = check_photoplate(plans[irun[i]].plateid)
+   if(NOT ok) then begin
+      splog, 'Failed plate '+strtrim(string(plans[irun[i]].plateid),2)
+   endif
 endfor
 
 end
