@@ -42,7 +42,8 @@ hogg_usersym, 10, /fill
 djs_oplot, off.yfocal, off.xfocal, psym=8, symsize=0.15
 
 for i=0L, n_elements(off)-1L do begin 
-   if(off[i].target_ra ne 0. OR off[i].target_dec ne 0.) then begin
+   if(off[i].target_ra ne 0. OR off[i].target_dec ne 0. and $
+      off[i].pointing eq pointing) then begin
       xoff= (off[i].xfoff)*1000.
       yoff= (off[i].yfoff)*1000.
       if(off[i].lambda_eff eq guideon) then $
