@@ -38,6 +38,12 @@ plateid= in_plateid
 
 platedir= plate_dir(plateid)
 
+post=string(f='(i6.6)', plateid)+ $
+     '-p'+strtrim(string(pointing),2)+ $
+     '-l'+strtrim(string(guideon, f='(i5.5)'),2)
+adjustfile= platedir+'/plateGuideAdjust-'+post+'.par'
+offsetfile=platedir+'/plateGuideOffsets-'+post+'.par'
+
 fullfile= platedir+'/plateHolesSorted-'+ $
           strtrim(string(f='(i6.6)',plateid),2)+'.par'
 check_file_exists, fullfile, plateid=plateid
@@ -53,7 +59,8 @@ temp=float(definition.temp)
 
 plate_center, definition, default, pointing, offset, $
               racen=racen, deccen=deccen
-igood=where(full.target_ra ne 0. or full.target_dec ne 0., ngood)
+igood=where(full.target_ra ne 0. or full.target_dec ne 0. and $
+            full.pointing eq pointing, ngood)
 ra= full[igood].target_ra
 dec= full[igood].target_dec
 lambda= full[igood].lambda_eff
@@ -62,6 +69,14 @@ yforig= full[igood].yfocal
 plate_ad2xy, definition, default, pointing, offset, ra, dec, $
              lambda, xf=xfocal, yf=yfocal, lst=racen+ha[pointing-1L], $
              airtemp=temp
+
+ifit= where(full[igood].lambda_eff eq guideon, nfit)
+if(nfit eq 0) then begin
+   file_delete, adjustfile, /allow
+   file_delete, offsetfile, /allow
+   splog, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
+   return
+endif
 
 if(ha[pointing-1L] lt -120. OR $
    ha[pointing-1L] gt  120.) then begin
@@ -83,9 +98,6 @@ for i=0L, nha-1L do begin
    plate_ad2xy, definition, default, pointing, offset, ra, dec, $
                 lambda, xf=xtmp, yf=ytmp, lst=racen+hatest[i], $
                 airtemp=temp
-   ifit= where(full[igood].lambda_eff eq guideon, nfit)
-   if(nfit eq 0) then $
-     message, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
    ha_fit, xfocal[ifit], yfocal[ifit], xtmp[ifit], ytmp[ifit], $
            xnew=xtmp2, ynew=ytmp2, rot=rottmp, scale=scaletmp, $
            xshift=xshifttmp, yshift=yshifttmp
@@ -109,18 +121,14 @@ adjust.xshift= xshift
 adjust.yshift= yshift
 
 pdata=ptr_new(adjust)
-post=string(f='(i6.6)', plateid)+ $
-     '-p'+strtrim(string(pointing),2)+ $
-     '-l'+strtrim(string(guideon, f='(i5.5)'),2)
 hdr= [phdr, 'lambda '+strtrim(string(guideon, f='(f40.3)'),2), $
       'pointing '+strtrim(string(pointing),2)]
-yanny_write, platedir+'/plateGuideAdjust-'+post+'.par', $
-             pdata, hdr=hdr
+yanny_write, adjustfile, pdata, hdr=hdr
 ptr_free, pdata
 
-offsets0= {HAOFFSETS, xfocal:0., yfocal:0., target_ra:0., target_dec:0., lambda_eff:0., $
-           iguide:0L, fiberid:0L, holetype:' ', delha:fltarr(nha), $
-           xfoff:fltarr(nha), yfoff:fltarr(nha)}
+offsets0= {HAOFFSETS, xfocal:0., yfocal:0., target_ra:0., target_dec:0., $
+           pointing:0L, lambda_eff:0., iguide:0L, fiberid:0L, holetype:' ', $
+           delha:fltarr(nha), xfoff:fltarr(nha), yfoff:fltarr(nha)}
 offsets= replicate(offsets0, n_elements(full))
 struct_assign, full, offsets
 for i=0L, ngood-1L do begin
@@ -130,8 +138,7 @@ for i=0L, ngood-1L do begin
 endfor
 
 pdata=ptr_new(offsets)
-yanny_write, platedir+'/plateGuideOffsets-'+post+'.par', $
-             pdata, hdr=hdr
+yanny_write, offsetfile, pdata, hdr=hdr
 ptr_free, pdata
 
 plate_guide_derivs_plot, plateid, pointing, guideon=guideon
