@@ -17,6 +17,7 @@
 ;     $PLATELIST_DIR/plates/PLATEID6XX/PLATEID6/guideDSS-PLATEID6.html
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
+;   11-May-2011  Demitri Muna, NYU - Have QUERYDSS check POSS-1 if an image wasn't found in POSS-2.
 ;-
 pro plate_guide_images, in_plateid, pointing=pointing, fits=fits
 
@@ -74,6 +75,18 @@ for i=0L, nguide-1L do begin
    filebase= platedir+'/guideDSS-r2-'+post
    querydss, [full[icurr].target_ra, full[icurr].target_dec], $
              image, hdr, survey='2r', imsize=3.
+   
+   ; If the image was not found, try again with a different survey.
+   ; "image" will either be an array or "0" (which both test to 'integer')
+   if (n_elements(image) eq 1) then begin
+      querydss, [full[icurr].target_ra, full[icurr].target_dec], $
+             image, hdr, survey='1', imsize=3.
+      if (n_elements(image) eq 1) then $
+      	message, color_string('QUERYDSS failed to retrieving an image!', 'red', 'bold') $
+      else $
+      	splog, color_string('QUERYDSS failed to retrieve an image on the first try, but found one now. Ignore above error.', 'green', 'normal')
+   endif
+   
    sig= djsig(image)
    image=image-median(image)
    nw_rgb_make, image, image, image, name=filebase+'.png', $
