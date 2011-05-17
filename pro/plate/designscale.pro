@@ -84,6 +84,7 @@ for pointing= 1L, npointings do begin
     random_ra= racen+2.*tilerad*(randomu(seed, nrandom)-0.5)/ $
                cos(!DPI/180.*deccen)
     random_dec= deccen+2.*tilerad*(randomu(seed, nrandom)-0.5)
+    ra_in_range, random_ra
     spherematch, racen, deccen, random_ra, random_dec, tilerad, $
                  m1, m2, max=0
     if(m2[0] eq -1) then $
