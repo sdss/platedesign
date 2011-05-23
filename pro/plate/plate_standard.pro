@@ -108,7 +108,7 @@ if(NOT file_test(stdfile)) then begin
     
     if(n_tags(sphoto_design) gt 0) then begin
         pdata= ptr_new(sphoto_design)
-        hdrstr=struct_combine(default, definition)
+        hdrstr=plate_struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)
         outhdr=[outhdr, $
                 'pointing '+strtrim(string(pointing),2), $
