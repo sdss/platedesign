@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   struct_combine
+;   plate_struct_combine
 ; PURPOSE:
 ;   Combine two (one-element) structures with overlapping tag names
 ; CALLING SEQUENCE:
-;   str3= struct_combine(str1, str2)
+;   str3= plate_struct_combine(str1, str2)
 ; INPUTS:
 ;   str1, str2 - input structures
 ; OUTPUTS:
@@ -13,9 +13,10 @@
 ;   For overlapping tag names, str2 values and types are used
 ; REVISION HISTORY:
 ;   May 7, 2008, MRB, NYU
+;   May 23, 2011, changed name, conflict with sdssidl MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function struct_combine, str1, str2
+function plate_struct_combine, str1, str2
 
 names1=tag_names(str1)
 names2=tag_names(str2)
