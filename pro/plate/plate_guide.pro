@@ -108,7 +108,7 @@ if(file_test(guidefile) eq 0 OR $
         guide_design.offset=0
         
         pdata= ptr_new(guide_design)
-        hdrstr=struct_combine(default, definition)
+        hdrstr=plate_struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)
         outhdr=[outhdr, $
                 'pointing '+strtrim(string(pointing),2), $
