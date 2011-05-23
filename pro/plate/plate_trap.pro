@@ -60,7 +60,7 @@ if(NOT file_test(trapfile)) then begin
         trap_design.yf_default=yf
         
         pdata= ptr_new(trap_design)
-        hdrstr=struct_combine(default, definition)
+        hdrstr=plate_struct_combine(default, definition)
         outhdr=struct2lines(hdrstr)
         outhdr=[outhdr, $
                 'pointing '+strtrim(string(pointing),2), $
