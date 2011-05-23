@@ -714,7 +714,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
 
            pdata= ptr_new(design)
            spawn, 'mkdir -p '+designdir
-           hdrstr=struct_combine(default, definition)
+           hdrstr=plate_struct_combine(default, definition)
            outhdr=struct2lines(hdrstr)
            outhdr=[outhdr, $
                    'reddeningMed '+string(extinct,format='(5f8.4)'), $
