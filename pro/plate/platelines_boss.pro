@@ -146,7 +146,9 @@ versions=['', 'sky', 'std']
 zoffstr=strtrim(string((uniqtag(full, 'zoffset')).zoffset, f='(i)'),2)
 inot=where(zoffstr ne '0', nnot)
 if(nnot gt 0) then $
-  versions=[versions, 'zoffset-'+zoffstr[inot]]
+  versions=[versions, 'zoffset-'+zoffstr[inot]] $
+else $
+  versions=[versions, 'zoffset-none']
 
 ;; make various block colors
 colors= ['red', 'green', 'blue', 'magenta', 'brown']
@@ -184,6 +186,12 @@ for k=0L, n_elements(versions)-1L do begin
     ;; (48 and 45 arcsec respectively
     buffer= 48./3600. * platescale
     circle= 45./3600. * platescale
+
+    if(version eq 'zoffset-none') then begin
+        djs_xyouts, -200., 0., 'No washers for this plate!', charsize=2.
+        platelines_end
+        continue
+    endif
     
     ;; set colors of each brightness fiber
     nblocks=50L
@@ -276,8 +284,9 @@ for k=0L, n_elements(versions)-1L do begin
                         currthick=1
                     end
                 endcase
-            endif else if (strmatch(version,'zoffset-*') gt 0) then begin
-
+            endif else if (strmatch(version,'zoffset-*') gt 0 and $
+                           version ne 'zoffset-none') then begin
+                
                 zoffval= float((strsplit(version, '-', /extr))[1])
                 
                 ;; standard as thick blue
