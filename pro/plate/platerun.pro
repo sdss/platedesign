@@ -52,9 +52,6 @@ drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
   nolines=nolines
 
-;; trim unnecessary plPlugMapPs
-plate_plug_trim, platerun
-
 splog, 'Completed.'
 
 end
