@@ -114,7 +114,7 @@ endfor
 
 adjust0= {HAADJUST, delha:0.D, rot:0.D, scale:1.D, xshift:0.D, yshift:0.D}
 adjust= replicate(adjust0, nha)
-adjust.delha= hatest
+adjust.delha= hatest-ha[pointing-1]
 adjust.rot= rot
 adjust.scale= scale
 adjust.xshift= xshift
@@ -132,7 +132,7 @@ offsets0= {HAOFFSETS, xfocal:0., yfocal:0., target_ra:0., target_dec:0., $
 offsets= replicate(offsets0, n_elements(full))
 struct_assign, full, offsets
 for i=0L, ngood-1L do begin
-   offsets[igood[i]].delha= hatest
+   offsets[igood[i]].delha= hatest-ha[pointing-1]
    offsets[igood[i]].xfoff= xfall[i,*]-xfocal[i]
    offsets[igood[i]].yfoff= yfall[i,*]-yfocal[i]
 endfor
