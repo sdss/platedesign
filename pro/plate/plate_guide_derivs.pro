@@ -83,9 +83,9 @@ if(ha[pointing-1L] lt -120. OR $
    message, 'HA desired is more than 120 deg! I refuse.'
 endif
 
-nha=11L
-minha= (ha[pointing-1L]-30.)>(-80.)
-maxha= (ha[pointing-1L]+30.)<(80.)
+nha=17L
+minha= (ha[pointing-1L]-45.)>(-80.)
+maxha= (ha[pointing-1L]+45.)<(80.)
 hatest= minha+(maxha-minha)*(findgen(nha)/float(nha-1L))
 xfall= fltarr(ngood, nha)
 yfall= fltarr(ngood, nha)
