@@ -2,7 +2,7 @@ pro create_apogee_derivs
 
 plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
 
-ii=where(strmatch(plans.platerun, '*apogee*') ne 0 and plans.plateid gt 4923, nii)
+ii=where(strmatch(plans.platerun, '*apogee*') ne 0, nii)
 
 nn=0L
 for i=0L, nii-1L do begin
