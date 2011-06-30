@@ -125,6 +125,7 @@ pro/misc/make_dummy_marvels_blocks.pro -text
 pro/misc/p_end_print.pro -text
 pro/misc/p_print.pro -text
 pro/misc/pangle.pro -text
+pro/misc/plate_add_washers.pro -text
 pro/misc/plate_log.pro -text
 pro/misc/plate_struct_combine.pro -text
 pro/misc/platedesign_version.pro -text
