@@ -40,7 +40,10 @@ if(NOT keyword_set(gminmax)) then $
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
-usnob = usno_read(racen, deccen, tilerad)
+usnob = usno_read(racen, deccen, tilerad*3.)
+
+spherematch, racen, deccen, usnob.ra, usnob.dec, tilerad, m1, m2, max=0
+usnob= usnob[m2]
 
 ;; Trim 2MASS to good observations 
 if (keyword_set(objt)) then begin
@@ -56,37 +59,37 @@ if (keyword_set(objt)) then begin
 endif
 
 ;; Trim USNO-B to observations of isolated stars (no neighbors within
-;; 6 arcsec and 2 mag)
-if (keyword_set(objt)) then begin
-   mdist = 6./3600
-   ingroup = spheregroup(usnob.ra, usnob.dec, mdist, $
-                         multgroup=multgroup, firstgroup=firstgroup, $
-                         nextgroup=nextgroup, chunksize=0.05)
-   keep= bytarr(n_elements(usnob))
-   
-   ;; keep anything isolated
-   indx = where(multgroup[ingroup] EQ 1, ct)
-   if (ct GT 0) then $
-      keep[indx] = 1
-   
-   ;; now go through groups
-   indx = where(multgroup GT 1, ct)
-   for i=0L, ct-1L do begin
-      j= firstgroup[indx[i]]
-      jindx= j
-      j= nextgroup[j]
-      while(j ne -1) do begin
-         jindx= [jindx, j]
-         j= nextgroup[j]
-      endwhile
-      isort= sort(usnob[jindx].mag[2])
-      if(usnob[jindx[isort[0]]].mag[2] lt usnob[jindx[isort[1]]].mag[2]-1.5) then $
-         keep[jindx[isort[0]]]=1
-   endfor
+;; 6 arcsec and 1.5 mag)
+if (keyword_set(usnob)) then begin
+    spherematch, usnob.ra, usnob.dec, usnob.ra, usnob.dec, 6./3600., $
+      m1, m2, max=0L
+
+    idiff=where(m1 ne m2, ndiff)
+    if(ndiff gt 0) then begin
+        m1=m1[idiff]
+        m2=m2[idiff]
+
+        keep= bytarr(n_elements(usnob))+1L
+        
+        isort= sort(m1)
+        iuniq= uniq(m1[isort])
+        ist=0L
+        for i=0L, n_elements(iuniq)-1L do begin
+            ind= iuniq[i]
+            icurr= isort[ist:ind]
+            mag1= usnob[m1[icurr[0]]].mag[2]
+            mag2= usnob[m2[icurr]].mag[2]
+            iclose= where(mag2 lt mag1+1.5, nclose)
+            if(nclose gt 0) then $
+              keep[m1[icurr[0]]]=0
+            ist= ind+1L
+        endfor
+
+        ikeep= where(keep, ct)
+        if(ct eq 0) then return
+        usnob= usnob[ikeep]
+    endif
 endif
-ikeep= where(keep, ct)
-if(ct eq 0) then return
-usnob= usnob[ikeep]
 
 spherematch, objt.tmass_ra, objt.tmass_dec, usnob.ra, usnob.dec, 1./3600., m1, m2
 if(m1[0] eq -1) then return
