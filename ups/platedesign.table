@@ -1,6 +1,6 @@
 setupOptional(platelist trunk [>= trunk])
 setupOptional(twomass allsky [>= allsky])
-setupOptional(plate v3_9 [>= v3_9])
+setupOptional(plate v3_10_4 [>= v3_10_4])
 setupOptional(tycho2 v0_0 [>= v0_0])
 setupOptional(photoop trunk [>= trunk])
 setupOptional(idlutils trunk [>= trunk])
