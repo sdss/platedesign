@@ -103,7 +103,7 @@ spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
        planfile+'" | plate -noTk'
 
 for i=0L, n_elements(plateid)-1L do begin
-    fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanuc-'+ $
+    fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanucUnadjusted-'+ $
       string(plateid[i],f='(i4.4)')+'.par'
     if(file_test(fanucfile) eq 0) then $
       message, fanucfile+' not successfully made!'

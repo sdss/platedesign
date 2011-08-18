@@ -12,6 +12,7 @@
 ;	plateid - if a plateid is specified, an error is written to plate_log
 ; REVISION HISTORY:
 ;   1-Sep-2010  Demitri Muna, NYU
+;	15-Jul-2011 Demitri Muna, NYU, Colorized the string output.
 ;-
 ;------------------------------------------------------------------------------
 PRO check_file_exists, filename, plateid=plateid
@@ -20,7 +21,7 @@ PRO check_file_exists, filename, plateid=plateid
 	IF (~FILE_TEST(filename)) THEN BEGIN
 		logstring = 'Error! ' + current_function_filename(/calling) + ' attempted to open a file that ' + $
 			'was not found (''' + filename + ''')... exiting.'
-		splog, logstring
+		splog, color_string(logstring, 'red', 'bold')
 		
 		IF KEYWORD_SET(plateid) THEN plate_log, plateid, logstring
 
