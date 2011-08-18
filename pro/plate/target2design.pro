@@ -25,6 +25,7 @@
 ;     returned by default_epoch())
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
+;	12-July-2011  Colorized error messages, Demitri Muna, NYU
 ;-
 pro target2design, definition, default, targets, design, info=info
 
@@ -33,14 +34,15 @@ pointing= 1L
 if(tag_exist(info, 'pointing')) then $
   pointing=long(info.pointing)
 if(pointing gt long(default.npointings)) then $
-  message, 'pointing '+strtrim(string(pointing),2)+' does not exist'
+  message, color_string('Requesting pointing '+strtrim(string(pointing),2)+ $
+  			' when the design specifies ' + strtrim(string(default.npointings),2) + ' pointing(s)!', 'red', 'bold')
 
 ;; which offset are we adding these targets to?
 offset= 0L
 if(tag_exist(info, 'offset')) then $
   offset=long(info.offset)
 if(offset gt long(default.noffsets)) then $
-  message, 'pointing '+strtrim(string(pointing),2)+' does not exist'
+  message, color_string('pointing '+strtrim(string(pointing),2)+' does not exist', 'yellow', 'normal')
 
 if(tag_exist(info, 'racen') gt 0 OR $
    tag_exist(info, 'deccen') gt 0) then begin
@@ -50,19 +52,19 @@ if(tag_exist(info, 'racen') gt 0 OR $
         deccen= double((strsplit(definition.deccen,/extr)))
         if(abs(racen[pointing-1]-double(info.racen)) gt 1./3600. OR $
            abs(deccen[pointing-1]-double(info.deccen)) gt 1./3600.) then begin
-            message, 'plateInput file has raCen, decCen inconsistent with its pointing; aborting!'
+            message, color_string('plateInput file has raCen, decCen inconsistent with its pointing; aborting!', 'red', 'bold')
         endif
     endif else begin
-        message, 'suspicious: racen OR deccen is set in plateInput file, but not BOTH; aborting!'
+        message, color_string('Suspicious: racen OR deccen is set in plateInput file, but not BOTH; aborting!', 'red', 'bold')
     endelse
 endif
 
 ;; Use PMRA, PMDEC, EPOCH if they exist
 if(tag_exist(targets, 'PMRA') ne tag_exist(targets, 'PMDEC')) then $
-  message, 'Must have both PMRA and PMDEC or neither in input target list!'
+  message, color_string('Must have both PMRA and PMDEC or neither in input target list!', 'yellow', 'normal')
 if(tag_exist(targets, 'PMRA') gt 0 AND $
    tag_exist(targets, 'EPOCH') eq 0) then $
-  message, 'If PMRA and PMDEC are set, EPOCH must be set as well!'
+  message, color_string('If PMRA and PMDEC are set, EPOCH must be set as well!', 'yellow', 'normal')
 if(tag_exist(targets, 'PMRA')) then begin
     pmra= targets.pmra
     pmdec= targets.pmdec
@@ -90,13 +92,13 @@ plate_ad2xy, definition, default, pointing, offset, targets.ra, $
 instruments=strsplit(default.instruments, /extr)
 iinst=where(info.instrument eq instruments, ninst)
 if(ninst eq 0) then $
-  message, 'no instrument '+info.instrument+' in this plate!'
+  message, color_string('no instrument '+info.instrument+' in this plate!', 'yellow', 'normal')
 design.holetype= info.instrument
 
 targettypes=strsplit(default.targettypes, /extr)
 itt=where(strlowcase(info.targettype) eq strlowcase(targettypes), ntt)
 if(ntt eq 0) then $
-  message, 'no targettype '+info.targettype+' in this plate!'
+  message, color_string('no targettype '+info.targettype+' in this plate!', 'yellow', 'normal')
 design.targettype= strlowcase(info.targettype)
 
 design.pointing=pointing
