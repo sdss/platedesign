@@ -52,6 +52,10 @@ drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
   nolines=nolines
 
+for i=0, nplate-1 do begin
+	create_derivs, plan[iplate[i]].plateid
+endfor
+
 splog, 'Completed.'
 
 end

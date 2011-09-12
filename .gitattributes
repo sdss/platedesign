@@ -102,6 +102,9 @@ obsolete/pro/plate_qsos.pro -text
 obsolete/pro/plate_qsos_feb08.pro -text
 obsolete/pro/plate_select_guide.pro -text
 obsolete/pro/plate_select_sky.pro -text
+obsolete/pro/platerun_apogee.pro -text
+obsolete/pro/platerun_marvels.pro -text
+obsolete/pro/platerun_sdss.pro -text
 obsolete/pro/qsolist_read.pro -text
 pro/misc/bad_plates.pro -text
 pro/misc/check_fiberreach.pro -text
@@ -153,6 +156,7 @@ pro/plate/bright_fiberblocks.pro -text
 pro/plate/check_conflicts.pro -text
 pro/plate/check_photoplate.pro -text
 pro/plate/check_photoplate_all.pro -text
+pro/plate/create_derivs.pro -text
 pro/plate/default_epoch.pro -text
 pro/plate/design_blank.pro -text
 pro/plate/design_dir.pro -text
@@ -230,12 +234,9 @@ pro/plate/platelines_marvels_bright.pro -text
 pro/plate/platelines_segue2.pro -text
 pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
-pro/plate/platerun_apogee.pro -text
 pro/plate/platerun_boss.pro -text
 pro/plate/platerun_bright.pro -text
-pro/plate/platerun_marvels.pro -text
 pro/plate/platerun_match.pro -text
-pro/plate/platerun_sdss.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_apogee.pro -text
