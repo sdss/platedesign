@@ -31,7 +31,7 @@ pro ha_quick, racen, deccen, ha, hamin=hamin, hamax=hamax, $
               maxoff_arcsec=maxoff_arcsec, lambda_eff=lambda_eff, $
               plot=plot, haact=haact, noscale=noscale, $
               tilerad=tilerad, ralim=ralim, declim=declim, $
-              rafter=rafter, _EXTRA=extra_for_plot
+              rafter=rafter, lambda_cen=lambda_cen, _EXTRA=extra_for_plot
               
 
 platescale = 217.7358D           ; mm/degree
@@ -45,6 +45,7 @@ if(NOT keyword_set(rafter)) then $
   rafter=0.
 
 if(NOT keyword_set(lambda_eff)) then lambda_eff=5400.
+if(NOT keyword_set(lambda_cen)) then lambda_cen=lambda_eff
 if(NOT keyword_set(maxoff_arcsec)) then maxoff_arcsec=0.3
 airtemp=5.
 
@@ -62,6 +63,7 @@ for i=0L, n_elements(rads)-1L do begin
       rads[i]*tilerad*sin(th)*platescale
 endfor
 ltest= replicate(lambda_eff, ntest)
+lcen= replicate(lambda_cen, ntest)
 
 oxtest= xtest
 oytest= ytest
@@ -77,7 +79,7 @@ lst= racen+ ha
 xyfocal2ad, xtest, ytest, ratest, dectest, racen=racen, deccen=deccen, $
             airtemp=airtemp, lst=lst, lambda=ltest
 xyfocal2ad, oxtest, oytest, oratest, odectest, racen=racen, deccen=deccen, $
-            airtemp=airtemp, lst=lst, lambda=ltest
+            airtemp=airtemp, lst=lst, lambda=lcen
 
 ;; cycle through HA values
 if(n_elements(haact) eq 0) then begin
@@ -97,7 +99,7 @@ for i=0L, ntry-1L do begin
                 airtemp=airtemp, lst=try_lst, lambda=ltest
     ad2xyfocal, oratest, odectest, otry_xf, otry_yf, $
                 racen=racen, deccen=deccen, $
-                airtemp=airtemp, lst=try_lst, lambda=ltest
+                airtemp=airtemp, lst=try_lst, lambda=lcen
     
     ;; rescale x's and y's to take out scale
     if(NOT keyword_set(noscale)) then begin

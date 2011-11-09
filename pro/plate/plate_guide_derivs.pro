@@ -21,7 +21,6 @@
 ;-
 pro plate_guide_derivs, in_plateid, pointing, guideon=guideon
 
-; ??
 common com_plate_guide_derivs, plateid, full, definition, default, phdr
 
 ; By default, optimize guiding for 5400 Angstroms light
@@ -30,8 +29,10 @@ if(NOT keyword_set(guideon)) then guideon=5400.
 if(NOT keyword_set(pointing)) then pointing=1L
 offset=0L
 
-; I assume this has something do with that common statement earlier
-; This seems strange, some combination of checking input variables and initializing variables
+; If this plateid is the same as the last one, we won't read
+; in the plate information again; but if it is a different one,
+; we reset these variables (and will therefore read in new files 
+; below)
 if(keyword_set(plateid)) then begin
    if(in_plateid ne plateid) then begin
       full=0L
@@ -67,37 +68,42 @@ if(n_tags(full) eq 0) then begin
 endif
 
 ; Read design hour angle, temperature
-; Temperature is always 5 C?
+; Temperature is set per plate in the platePlans.par file
 ha=float(strsplit(definition.ha, /extr))
 temp=float(definition.temp)
 
-; This syntax really bugs me, calculate ra and dec for center of the plate
-; The values are accessible through 'racen' and 'deccen' after this?
+; Calculate ra and dec for center of the plate
+; The values are accessible through 'racen' and 'deccen' after this
+; This is necessary for handling multiple pointing plates (and 
+; we keep it general for multi-offset plates).
 plate_center, definition, default, pointing, offset, $
               racen=racen, deccen=deccen
 
 ; Select "good" targets/fibers, this is a list of array indices
-; I suppose since this is a list of indicies that is what the "i" prefix denotes
-; since we are going to use more list of indicies in a little bit 
-; I would suggest something like goodfibers/goodtargets but its not a big deal
 igood=where(full.target_ra ne 0. or full.target_dec ne 0. and $
             full.pointing eq pointing, ngood)
 ; Collect ra/dec/lambda/x/y info for each target
 ra= full[igood].target_ra
 dec= full[igood].target_dec
-lambda= full[igood].lambda_eff; typically, 5400 for most targets, 4000 for QSOs
+lambda= full[igood].lambda_eff ;; e.g., 5400 for LRGs, 4000 for QSOs, 16600 for APOGEE targets
 xforig= full[igood].xfocal
 yforig= full[igood].yfocal
 
-; Calculate xfocal and yfocal ?? did we just read these in?
+; Calculate xfocal and yfocal for this pointing (should be similar 
+; to xforig/yforig up to round-off)
 plate_ad2xy, definition, default, pointing, offset, ra, dec, $
              lambda, xf=xfocal, yf=yfocal, lst=racen+ha[pointing-1L], $
              airtemp=temp
 
 ; I'm pretty sure this would grab all fibers with with lambda_eff at 5400, so basically
-; everything except the QSOs
+;  everything except the QSOs
 ; I propose something like:
-; guidefibers = where(full[goodfibers].holetype eq 'GUIDE', nguide)
+;  guidefibers = where(full[goodfibers].holetype eq 'GUIDE', nguide)
+; MRB: I would check how stable this is first; it may be that my code
+;  is actually worse behaved for low N than the guider is, and that is 
+;  worth checking before using these for corrections; this is a
+;  critical issue for APOGEE and can't be changed without
+;  thorough testing.
 ifit= where(full[igood].lambda_eff eq guideon, nfit)
 if(nfit eq 0) then begin
    file_delete, adjustfile, /allow
@@ -128,23 +134,23 @@ yshift=fltarr(nha)
 
 ; Iterate over HA array
 for i=0L, nha-1L do begin
-   	; Calculate xtmp, ytmp (all igood targets) at this hour angle
+   ;; Calculate xtmp, ytmp (all igood targets) at this hour angle
    plate_ad2xy, definition, default, pointing, offset, ra, dec, $
                 lambda, xf=xtmp, yf=ytmp, lst=racen+hatest[i], $
                 airtemp=temp
-    ; Fit rotation, scale, shift parameters in guide targets
+   ;; Fit rotation, scale, shift parameters in guide targets
    ha_fit, xfocal[ifit], yfocal[ifit], xtmp[ifit], ytmp[ifit], $
            xnew=xtmp2, ynew=ytmp2, rot=rottmp, scale=scaletmp, $
            xshift=xshifttmp, yshift=yshifttmp
-    ; Save rotation, scale, shift parameters at this hour angle
+   ;; Save rotation, scale, shift parameters at this hour angle
    rot[i]=rottmp
    scale[i]=scaletmp
    xshift[i]=xshifttmp
    yshift[i]=yshifttmp
-    ; Apply rotation, scale, shift adjustments (all igood targets)
+   ;; Apply rotation, scale, shift adjustments (all igood targets)
    ha_apply, xtmp, ytmp, xnew=xnew, ynew=ynew, rot=rot[i], scale=scale[i], $
              xshift=xshift[i], yshift=yshift[i]
-    ; Save x,y position (all igood targets) at this hour angle
+   ;; Save x,y position (all igood targets) at this hour angle
    xfall[*,i]= xnew
    yfall[*,i]= ynew
 endfor
