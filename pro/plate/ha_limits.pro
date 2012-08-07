@@ -32,8 +32,8 @@ if(n_tags(plans) eq 0) then begin
 endif
 iplan= where(plans.plateid eq plateid, nplan)
 if(nplan gt 1) then $
-	message, 'Multiple entries in platePlans for plateid='+ $
-		strtrim(string(plateid),2)
+	message, color_string('Multiple entries in platePlans for plateid='+ $
+		strtrim(string(plateid),2), 'red', 'bold')
 
 if(nplan eq 0) then begin
 
@@ -46,8 +46,8 @@ if(nplan eq 0) then begin
 	
 	; try again
 	if(nplan eq 0) then $
-		message, 'No entries in platePlans for plateid='+ $
-			strtrim(string(plateid),2)
+		message, color_string('No entries in platePlans for plateid='+ $
+			strtrim(string(plateid),2), 'red', 'bold')
 endif
 
 ;; set design values
@@ -166,7 +166,7 @@ for pointing=1L, npointings do begin
         ok_ha= int_maxdist lt max_off 
         iok= where(ok_ha, nok)
         if(nok eq 0) then $
-          message, 'No valid HA choices close enough to design HA??'
+          message, color_string('No valid HA choices close enough to design HA??','red', 'bold')
         hamin[pointing-1]= min(int_ha[iok])
         hamax[pointing-1]= max(int_ha[iok])
 
