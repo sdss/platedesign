@@ -41,7 +41,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   endif
 
   splog, '================================================'
-  splog, 'Working on plateid: '+strtrim(string(plateid),2)
+  splog, 'Working on plateid: '+ color_string(strtrim(string(plateid),2), 'green', 'bold')
   splog, '================================================'
 
 ;; read plan file for settings

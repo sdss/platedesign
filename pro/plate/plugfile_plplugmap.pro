@@ -252,7 +252,6 @@ for pointing=1L, npointings do begin
     ;; output file name
     if(plateid ge 10000) then begin
         splog, 'plateid exceeds 10000, which breaks data model'
-        stop
         platestr= strtrim(string(plateid),2)
     endif else begin
         platestr= strtrim(string(f='(i4.4)', plateid),2)

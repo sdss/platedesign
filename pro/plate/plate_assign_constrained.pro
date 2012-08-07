@@ -27,8 +27,10 @@ icurr= where(strupcase(test_design.holetype) eq strupcase(instrument) AND $
              ncurr)
 istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
 nneed= fibercount.ntot[iinst,istd, pointing-1, offset]
-if(ncurr lt nneed) then $
-  message, 'Not enough targets of type '+strupcase(targettype)+'!'
+if(ncurr lt nneed) then begin
+  message, color_string('Not enough targets of type '+strupcase(targettype)+'!', 'red', 'bold')
+endif
+
 test_design=0
 
 ;; do not alter new_design ...
@@ -75,7 +77,7 @@ while(gotall eq 0) do begin
         if(fibercount.ncollect[iinst, istd, $
                                pointing-1L, offset] gt $
            n_elements(new_design)) then begin
-            splog, 'Not enough targets for plate_assign_constrained!'
+            splog, color_string('Not enough targets for plate_assign_constrained!', 'red', 'bold')
             if(keyword_set(debug)) then stop
             return
         endif

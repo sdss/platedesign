@@ -127,7 +127,7 @@ for i=0L, n_elements(plateid)-1L do $
    plate_counterbore, platerun, plateid[i], cunit=cunit
 free_lun, cunit
 
-splog, '"plate_writepage, ''' + platerun + '''" can now be run.'
+splog, message, color_string('"plate_writepage, ''' + platerun + '''" can now be run.', 'green', 'bold')
 
 end
 ;------------------------------------------------------------------------------

@@ -131,6 +131,7 @@ plug.throughput= 0
 iapogee= where(strupcase(holes.holetype) eq 'APOGEE', napogee)
 if(napogee gt 0) then begin
    plug[iapogee].primtarget= holes[iapogee].apogee_target1
+   stop
    plug[iapogee].sectarget= plug[iapogee].sectarget OR holes[iapogee].apogee_target2
 endif
 imarvels= where(strupcase(holes.holetype) eq 'MARVELS', nmarvels)

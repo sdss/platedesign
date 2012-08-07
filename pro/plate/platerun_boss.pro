@@ -109,7 +109,7 @@ for i=0L, n_elements(plateid)-1L do begin
       plate_log, plateid[i], fanucfile+'.BAD exists --- why?'
 endfor
 
-splog, '"plate_writepage, ''' + platerun + '''" can now be run.'
+splog, color_string('"plate_writepage, ''' + platerun + '''" can now be run.', 'green', 'bold')
 
 end
 ;------------------------------------------------------------------------------
