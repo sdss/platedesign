@@ -101,8 +101,25 @@ for pointing=1L, npointings do begin
           align=align0 $
         else $
           align=[align, align0]
+     endfor
+
+    ;; check for MaNGA bundles, and add alignment holes for those
+    imanga= where(holes.holetype eq 'MaNGA' and $
+                  strupcase(holes.targettype) eq 'SCIENCE', nmanga)
+    for i=0L, nmanga-1L do begin
+       align_manga0= holes0
+       align_manga0.holetype= 'MaNGA_ALIGNMENT'
+       align_manga0.pointing= pointing
+       align_manga0.fiberid= holes[imanga[i]].fiberid
+       align_manga0.diameter= 0.1
+       align_manga0.xfocal= holes[imanga[i]].xfocal+float(default.dxalignmentmanga)
+       align_manga0.yfocal= holes[imanga[i]].yfocal+float(default.dyalignmentmanga)
+       if(n_tags(align_manga) eq 0) then $
+          align_manga=align_manga0 $
+       else $
+          align_manga=[align_manga, align_manga0]
     endfor
-    
+
 endfor
 
 ;; determine HA limits
@@ -111,6 +128,8 @@ ha_limits, plateid, design=designs, hamin=hamin, hamax=hamax, $
 
 if(n_tags(align) gt 0) then $
   holes= [holes, align]
+if(n_tags(align_manga) gt 0) then $
+  holes= [holes, align_manga]
 
 tmpstr= lines2struct(hdr)
 if(tag_exist(tmpstr, 'locationid') eq false) then begin
