@@ -26,9 +26,10 @@ for i=0L, n_elements(platedesignskies)-1L do begin
     if(strupcase(platedesignskies[i]) ne 'NONE' AND $
        strupcase(platedesignskies[i]) ne 'BOSS' AND $
        strupcase(platedesignskies[i]) ne 'SDSS' AND $
+       strupcase(platedesignskies[i]) ne 'MANGA' AND $
        strupcase(platedesignskies[i]) ne 'MARVELS' AND $
        strupcase(platedesignskies[i]) ne 'APOGEE') then begin
-        message, 'No such instrument '+standardtype[i]+'; '+ $
+        message, 'No such instrument '+platedesignskies[i]+'; '+ $
           'plateDesignSkies must specify NONE, BOSS, SDSS, MARVELS, '+ $
           'or APOGEE'
     endif
