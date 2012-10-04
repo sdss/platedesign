@@ -2,8 +2,8 @@
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
-#   SDSS BOSS MARVELS APOGEE
-instruments BOSS
+#   SDSS BOSS MARVELS APOGEE MaNGA
+instruments MaNGA
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
@@ -23,15 +23,9 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nMANGA_science 18
-nMANGA_sky 80 
-nMANGA_standard 20 
-
-# What are conditions on number of skies and standards per block?
-# (per pointing)
-minstdinblockBOSS 0
-minskyinblockBOSS 1
-maxskyinblockBOSS 2
+nMaNGA_science 15
+nMaNGA_sky 80 
+nMaNGA_standard 20 
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
@@ -42,9 +36,14 @@ guidemag_minmax 13. 16.5
 # Ferrule sizes to assume for each instrument's fiber (mm)
 # The Ferrule diameter is 6.99mm
 # So I will assume 7mm here
-# In target selection I have resolved at 116" which is slightly larger than this
-ferruleSizeMANGA 7.0
-bufferSizeMANGA 0.000
+# In target selection I have resolved at 116" which is 
+# slightly larger than this
+ferruleSizeMaNGA 7.0
+bufferSizeMaNGA 0.000
+
+# alignment offset for MaNGA
+dxAlignmentMaNGA 2.75
+dyAlignmentMaNGA 0.00
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
@@ -57,15 +56,15 @@ standardType NONE
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
-plateDesignSkies BOSS
+plateDesignSkies MaNGA
 skyType BOSS
 
 # Do not strain to collect skies, we should be OK
 collectfactor 10
 
-# Use BOSS plugmap style
-plugmapstyle plplugmap_boss
-bossmagtype fiber2mag
+# Use MaNGA plugmap style
+plugmapstyle plplugmap_manga
+mangamagtype fiber2mag
 
 # Default pointing_name
 pointing_name A B C D E F
