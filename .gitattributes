@@ -172,6 +172,7 @@ pro/plate/dss_cache_setup.pro -text
 pro/plate/fiberid_apogee.pro -text
 pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
+pro/plate/fiberid_manga.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/get_buffersize.pro -text
@@ -243,6 +244,7 @@ pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_apogee.pro -text
 pro/plate/plugfile_plplugmap_apogee_marvels.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
+pro/plate/plugfile_plplugmap_manga.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/plugmap_blank.pro -text
 pro/plate/ra_in_range.pro -text
