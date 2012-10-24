@@ -203,6 +203,7 @@ pro/plate/plate_assign_constrained.pro -text
 pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
 pro/plate/plate_counterbore.pro -text
+pro/plate/plate_counterbore_manga.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_dir.pro -text
 pro/plate/plate_guide.pro -text
@@ -243,6 +244,7 @@ pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
 pro/plate/platerun_boss.pro -text
 pro/plate/platerun_bright.pro -text
+pro/plate/platerun_manga.pro -text
 pro/plate/platerun_match.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
