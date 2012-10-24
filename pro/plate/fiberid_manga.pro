@@ -83,13 +83,13 @@ istd= where(strupcase(design.targettype) eq 'STANDARD', nstd)
 if(nstd lt nstd_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 istd= istd[shuffle_indx(nstd, num_sub=nstd_tot)]
-fiberid[istd]= 1L+nsci_tot+lindgen(nstd_tot)
+fiberid[istd]= 1L+lindgen(nstd_tot)
 
 isky= where(strupcase(design.targettype) eq 'SKY', nsky)
 if(nsky lt nsky_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 isky= isky[shuffle_indx(nsky, num_sub=nsky_tot)]
-fiberid[isky]= 1L+nsci_tot+nstd_tot+lindgen(nsky_tot)
+fiberid[isky]= 1L+nstd_tot+lindgen(nsky_tot)
 
 ;; no block determinations yet
 block= lonarr(n_elements(fiberid))-1L
