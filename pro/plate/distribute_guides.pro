@@ -122,7 +122,7 @@ spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
   ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
-nlines= numlines(tmpdir+'/tmp_ans_'+uid+'.txt')
+nlines= file_lines(tmpdir+'/tmp_ans_'+uid+'.txt')
 openr, unit, tmpdir+'/tmp_ans_'+uid+'.txt', /get_lun
 line=' '
 gnum= lonarr(ntarget)-1L
