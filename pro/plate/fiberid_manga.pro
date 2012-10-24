@@ -66,7 +66,7 @@ if(npointings ne 1 or noffsets ne 0) then $
 ip=1L
 io=0L
 
-iinst=where(strupcase(fibercount.instruments) eq 'MaNGA', ninst)
+iinst=where(strupcase(fibercount.instruments) eq 'MANGA', ninst)
 itype=where(strupcase(fibercount.targettypes) eq 'SCIENCE', ntype)
 nsci_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
 itype=where(strupcase(fibercount.targettypes) eq 'STANDARD', ntype)
