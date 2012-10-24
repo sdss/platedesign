@@ -56,10 +56,16 @@ if(nhole gt 0) then plug[ihole].sectarget= 64
 ihole= where(strupcase(holes.holetype) eq 'ALIGNMENT', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'ALIGNMENT'
 
-;; holetype MaNGA_ALIGNMENT in holes -> 
-;; holetype MaNGA_ALIGNMENT in plPlugMap
-ihole= where(strupcase(holes.holetype) eq 'MaNGA_ALIGNMENT', nhole)
-if(nhole gt 0) then plug[ihole].holetype= 'MaNGA_ALIGNMENT'
+;; holetype MANGA and targettype science in holes -> 
+;; holetype MANGA in plPlugMap
+ihole= where(holes.holetype eq 'MANGA' and $
+             strupcase(holes.targettype) eq 'SCIENCE', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'MANGA'
+
+;; holetype MANGA_ALIGNMENT in holes -> 
+;; holetype MANGA_ALIGNMENT in plPlugMap
+ihole= where(holes.holetype eq 'MANGA_ALIGNMENT', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'MANGA_ALIGNMENT'
 
 ;; holetype CENTER in holes -> 
 ;; holetype QUALITY in plPlugMap
@@ -94,7 +100,6 @@ plug.devaucl=0.
 ;; set objtype
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE', nhole)
 if(nhole gt 0) then begin
-   plug[ihole].holetype= 'OBJECT'
    plug[ihole].objtype= 'GALAXY'
 endif
 
@@ -170,13 +175,20 @@ if(nhole gt 0) then begin
     endelse
 endif
 
-ihole= where(plug.holetype eq 'MaNGA_ALIGNMENT', nhole)
+ihole= where(plug.holetype eq 'MANGA_ALIGNMENT', nhole)
 if(nhole gt 0) then begin
     sortstr= string(plug[ihole].fiberid, f='(i2.2)')+ $
       plug[ihole].holetype
     isort=sort(sortstr)
-    newplug= plug[ihole[isort]]
-    newholes= holes[ihole[isort]]
+    newplug= [newplug, plug[ihole[isort]]] 
+    newholes= [newholes, holes[ihole[isort]]] 
+ endif
+
+ihole= where(plug.holetype eq 'MANGA', nhole)
+if(nhole gt 0) then begin
+    isort= sort(abs(plug[ihole].fiberid))
+    newplug=[newplug, plug[ihole[isort]]]
+    newholes=[newholes, holes[ihole[isort]]]
 endif
 
 ihole= where(plug.holetype eq 'OBJECT', nhole)
@@ -289,7 +301,7 @@ for pointing=1L, npointings do begin
     if(keyword_set(makesimple)) then begin
         plugsimplefile= plate_dir(plateid)+'/plugMap-'+platestr+ $
                         pointing_post[pointing-1]+'.par' 
-        plugsimple0= plugmap_blank(enums=plugenum, struct=plugstruct)
+        plugsimple0= plugmap_blank(enums=plugenum, struct=plugstruct, /manga)
         plugsimple= replicate(plugsimple0, n_elements(thisplug))
         struct_assign, thisplug, plugsimple
         plugsimple.sourcetype= holes.sourcetype
