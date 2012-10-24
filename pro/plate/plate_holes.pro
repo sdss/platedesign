@@ -104,11 +104,11 @@ for pointing=1L, npointings do begin
      endfor
 
     ;; check for MaNGA bundles, and add alignment holes for those
-    imanga= where(holes.holetype eq 'MaNGA' and $
+    imanga= where(holes.holetype eq 'MANGA' and $
                   strupcase(holes.targettype) eq 'SCIENCE', nmanga)
     for i=0L, nmanga-1L do begin
        align_manga0= holes0
-       align_manga0.holetype= 'MaNGA_ALIGNMENT'
+       align_manga0.holetype= 'MANGA_ALIGNMENT'
        align_manga0.pointing= pointing
        align_manga0.fiberid= holes[imanga[i]].fiberid
        align_manga0.diameter= 0.1
