@@ -4,14 +4,17 @@
 ; PURPOSE:
 ;   Initialize a plPlugMapP structure
 ; CALLING SEQUENCE:
-;   pl= plplugmap_blank(enums=)
+;   pl= plplugmap_blank(enums=, structs= [, /manga])
 ; REVISION HISTORY:
 ;   9-Jun-2008 MRB, NYU (based on DJS's design_append)
 ;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;-
-function plplugmap_blank, enums=enums, structs=structs
+function plplugmap_blank, enums=enums, structs=structs, manga=manga
 
-	filename = getenv('PLATEDESIGN_DIR') + '/data/sdss/plPlugMapP-blank.par'
+  if(keyword_set(manga)) then $
+     filename = getenv('PLATEDESIGN_DIR') + '/data/sdss/plPlugMapP-blank.par' $
+  else $
+     filename = getenv('PLATEDESIGN_DIR') + '/data/manga/plPlugMapP-blank.par' 
 	check_file_exists, filename
 	pl= yanny_readone(filename, enums=enums, structs=structs)
 	
