@@ -131,7 +131,7 @@ for i=0L, n_elements(oldid)-1L do begin
         if(n_elements(reset) gt 0) then $
           used= bytarr(n_elements(reset))
         
-        nlines= numlines(oldfile)
+        nlines= file_lines(oldfile)
         openr, inunit, oldfile, /get_lun
         openw, outunit, newfile, /get_lun
         printf, outunit, comment1
