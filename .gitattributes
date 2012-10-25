@@ -95,6 +95,7 @@ defaults/plateDefault-SEGUEtest-v0_7.par -text
 defaults/plateDefault-example-v0_0.par -text
 defaults/plateDefault-gridtest-v0_7.par -text
 defaults/plateDefault-guideplate-v0.par -text
+defaults/plateDefault-guidertest-v0.par -text
 docs/SDSS3GdFbrAnchrPtandRch955.pdf -text
 docs/validation.txt -text
 lib/.svnignore -text
