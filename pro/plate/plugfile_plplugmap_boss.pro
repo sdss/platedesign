@@ -32,6 +32,15 @@ temp= float(definition.temp)
 ha= float(strsplit(definition.ha, /extr))
 npointings= long(definition.npointings)
 
+racen=dblarr(npointings)
+deccen=dblarr(npointings)
+for pointing=1L, npointings do begin
+    plate_center, definition, default, pointing, 0L, $
+                  racen=tmp_racen, deccen=tmp_deccen
+    racen[pointing-1L]=tmp_racen
+    deccen[pointing-1L]=tmp_deccen
+endfor
+
 if(tag_indx(default,'BOSSMAGTYPE') eq -1) then $
   message, 'Must define BOSSMAGTYPE in default or definition file for BOSS plates.'
 
@@ -152,9 +161,15 @@ plug[ihole].fiberid= holes[ihole].iguide
 ;; (just for first pointing)
 indx = where(strtrim(plug.holetype,2) EQ 'OBJECT' AND $
              holes.pointing eq 1, nobj)
-euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
-reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
-  * median(dust_getval(ll, bb, /interp))
+if(nobj gt 0) then begin
+   euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
+   reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+               * median(dust_getval(ll, bb, /interp))
+endif else begin
+   euler, racen[0], deccen[0], ll, bb, 1
+   reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+               * (dust_getval(ll, bb, /interp))
+endelse
 
 ;; resort fibers
 ihole= where(plug.holetype eq 'LIGHT_TRAP', nhole)
@@ -202,15 +217,6 @@ sortedplatefile= platedir+'/plateHolesSorted-'+ $
 pdata= ptr_new(holes)
 yanny_write, sortedplatefile, pdata, hdr=hdr
 ptr_free, pdata
-
-racen=dblarr(npointings)
-deccen=dblarr(npointings)
-for pointing=1L, npointings do begin
-    plate_center, definition, default, pointing, 0L, $
-                  racen=tmp_racen, deccen=tmp_deccen
-    racen[pointing-1L]=tmp_racen
-    deccen[pointing-1L]=tmp_deccen
-endfor
 
 pointing_post=['', 'B', 'C', 'D', 'E', 'F']
 pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
