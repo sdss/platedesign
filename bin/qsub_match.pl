@@ -54,9 +54,9 @@ my $job = IO::File->new(">$filename");
 print $job <<EOT;
 #!/bin/bash
 # Turn off mail
-#PBS -m abe
+!#PBS -m abe
 #!PBS -m n
-#PBS -M muna,stephenbailey
+#PBS -M demitri.muna\@nyu.edu,stephenbailey\@lbl.gov
 # Merge standard error with standard output
 #PBS -j oe
 # Project/repo for accounting
@@ -88,10 +88,10 @@ setup platelist trunk
 #
 idl -e "$matchcommand"
 set status1 = \${status}
-if (\${status1} != 0) then
+if ["\$status1" != 0] then
     echo "This job has died!"
     exit \${status1}
-endif
+fi
 #
 # Finish up
 #
