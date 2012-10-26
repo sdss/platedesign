@@ -58,7 +58,7 @@ data/test/guide_sdss.kml -text
 data/test/icon.png -text
 defaults/obsolete/plateDefault-APOGEE-MARVELS-DUAL-v1.par -text
 defaults/obsolete/plateDefault-APOGEE-MARVELS-SINGLE-v1.par -text
-defaults/obsolete/plateDefault-APOGEE-v2.par -text
+defaults/obsolete/plateDefault-APOGEE-v1.par -text
 defaults/obsolete/plateDefault-BOSS-v0.par -text
 defaults/obsolete/plateDefault-BOSS-v1.par -text
 defaults/obsolete/plateDefault-BOSS-v2.par -text
@@ -81,7 +81,7 @@ defaults/plateDefault-APOGEE-BULGE-v1.par -text
 defaults/plateDefault-APOGEE-MARVELS-DUAL-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-SINGLE-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-v0.par -text
-defaults/plateDefault-APOGEE-v1.par -text
+defaults/plateDefault-APOGEE-v2.par -text
 defaults/plateDefault-BOSS-v4.par -text
 defaults/plateDefault-MANGA-v1.par -text
 defaults/plateDefault-MARVELS-DUAL-v1.par -text
