@@ -1,6 +1,6 @@
 setupRequired(photoop)
-setupOptional(platelist trunk [>= trunk])
-setupOptional(plate v3_10_4 [>= v3_10_4])
+setupOptional(platelist)
+setupOptional(plate)
 setupOptional(fitsverify)
 setupenv()
 envPrepend(PATH, ${UPS_PROD_DIR}/bin)
