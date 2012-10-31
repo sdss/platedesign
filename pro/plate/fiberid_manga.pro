@@ -73,13 +73,13 @@ itype=where(strupcase(fibercount.targettypes) eq 'STANDARD', ntype)
 nstd_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
 itype=where(strupcase(fibercount.targettypes) eq 'SKY', ntype)
 nsky_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'STANDARD_3', ntype)
+itype=where(strupcase(fibercount.targettypes) eq 'STANDARD3', ntype)
 nstd3_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'SKY_3', ntype)
+itype=where(strupcase(fibercount.targettypes) eq 'SKY3', ntype)
 nsky3_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'STANDARD_5', ntype)
+itype=where(strupcase(fibercount.targettypes) eq 'STANDARD5', ntype)
 nstd5_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'SKY_5', ntype)
+itype=where(strupcase(fibercount.targettypes) eq 'SKY5', ntype)
 nsky5_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
 
 isci= where(strupcase(design.targettype) eq 'SCIENCE', nsci)
@@ -106,7 +106,7 @@ if(nsky_tot gt 0) then begin
    ncurr+= nsky_tot
 endif 
 
-istd3= where(strupcase(design.targettype) eq 'STANDARD_3', nstd3)
+istd3= where(strupcase(design.targettype) eq 'STANDARD3', nstd3)
 if(nstd3 lt nstd3_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 if(nstd3_tot gt 0) then begin
@@ -115,7 +115,7 @@ if(nstd3_tot gt 0) then begin
    ncurr+= nstd3_tot
 endif
 
-isky3= where(strupcase(design.targettype) eq 'SKY_3', nsky3)
+isky3= where(strupcase(design.targettype) eq 'SKY3', nsky3)
 if(nsky3 lt nsky3_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 if(nsky3_tot gt 0) then begin
@@ -124,7 +124,7 @@ if(nsky3_tot gt 0) then begin
    ncurr+= nsky3_tot
 endif 
 
-istd5= where(strupcase(design.targettype) eq 'STANDARD_5', nstd5)
+istd5= where(strupcase(design.targettype) eq 'STANDARD5', nstd5)
 if(nstd5 lt nstd5_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 if(nstd5_tot gt 0) then begin
@@ -133,7 +133,7 @@ if(nstd5_tot gt 0) then begin
    ncurr+= nstd5_tot
 endif
 
-isky5= where(strupcase(design.targettype) eq 'SKY_5', nsky5)
+isky5= where(strupcase(design.targettype) eq 'SKY5', nsky5)
 if(nsky5 lt nsky5_tot) then $
    message, 'Not enough standard targets for MaNGA!'
 if(nsky5_tot gt 0) then begin
