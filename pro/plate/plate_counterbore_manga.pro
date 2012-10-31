@@ -55,7 +55,7 @@ pro plate_counterbore_manga, platerun, in_plateid, cunit=cunit
   if(keyword_set(cunit)) then $
      printf, cunit, string(plateid, f='(i4.4)')
   
-  openw, unit, platerun_dir+'/plCounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
+  openw, unit, platerun_dir+'/plMANGACounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
   
   printf, unit, '%'
   printf, unit, 'O'+string(f='(i4.4)', plateid)+' (SDSS PLUG-PLATE '+ $
