@@ -30,6 +30,12 @@ pro plate_assign_guide, definition, default, design, guide_design, $
 
 tilerad= get_tilerad(definition, default)
 
+stretch=0
+if(tag_indx(default, 'STRETCH_FOR_GUIDES') ge 0) then begin
+    if(keyword_set(long(default.stretch_for_guides))) then $
+      stretch=1
+endif
+
 if(tag_indx(default, 'GFIBERTYPE') ge 0) then $
   gfibertype= default.gfibertype $
 else $
@@ -82,9 +88,11 @@ iavailable=iavailable[m2]
 
 ;; assign the guides (first assign with priorities in mind, then 
 ;; reassign according to distance purely)
-gnum= distribute_guides(gfiber[iuse], guide_design[iavailable], dlim=dlim)
+gnum= distribute_guides(gfiber[iuse], guide_design[iavailable], dlim=dlim, $
+                        stretch=stretch)
 igood= where(gnum gt 0, ngood)
-regnum= distribute_guides(gfiber[iuse], guide_design[iavailable[igood]], dlim=1.e-6)
+regnum= distribute_guides(gfiber[iuse], guide_design[iavailable[igood]], $
+                          dlim=1.e-6, stretch=stretch)
 gnum[igood]= regnum
 
 ;; check there are enough
