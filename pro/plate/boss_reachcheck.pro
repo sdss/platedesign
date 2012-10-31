@@ -4,10 +4,12 @@
 ; PURPOSE:
 ;   Checks whether a point is within reach of a fiber
 ; CALLING SEQUENCE:
-;   inreach= boss_reachcheck(xfiber, yfiber, xhole, yhole)
+;   inreach= boss_reachcheck(xfiber, yfiber, xhole, yhole [, /stretch])
 ; INPUTS:
 ;   xfiber, yfiber - fiber position relative to plate center (deg)
 ;   xhole, yhole - [N] position relative to plate center (deg)
+; OPTIONAL KEYWORDS:
+;   /stretch - add some reach (e.g. for certain guide star plates)
 ; OUTPUTS:
 ;   inreach - [N] 1 if within reach, 0 otherwise
 ; COMMENTS:
@@ -18,9 +20,11 @@
 ;   7-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function boss_reachcheck, xfiber, yfiber, xhole, yhole
+function boss_reachcheck, xfiber, yfiber, xhole, yhole, stretch=stretch
 
 common com_reachcheck, rval, thval
+
+platescale = 217.7358D           ; mm/degree
 
 if(n_elements(rval) eq 0) then begin
     boss_reachvalues, xval=xval, yval=yval
@@ -43,6 +47,9 @@ roff= sqrt(xoff^2+yoff^2)
 thoff= (atan(yoff, xoff)+!DPI*2.) mod (!DPI*2.)
 
 rreach= interpol(rval, thval, thoff, /spline)
+
+if(keyword_set(stretch)) then $
+  rreach = rreach + 25.4/platescale
 
 return, rreach gt roff
 
