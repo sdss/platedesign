@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   distribute guides among available locations
 ; CALLING SEQUENCE:
-;   gnum= distribute_guides(gfiber, design [, dlim=])
+;   gnum= distribute_guides(gfiber, design [, dlim=, /stretch])
 ; INPUTS:
 ;   gfiber - [Nguide] structure containing:
 ;                .GUIDENUM
@@ -20,13 +20,16 @@
 ;                .YF_DEFAULT
 ; OPTIONAL INPUTS:
 ;   dlim - radius out to which to base on priority, mm (default 80)
+; OPTIONAL KEYWORDS:
+;   /stretch - add some reach (e.g. for certain guide star plates)
 ; OUTPUTS:
 ;   gnum - [Ntarget] guide numbers for each target (-1 if not
 ;          assigned)
 ; REVISION HISTORY:
 ;   4-Sep-2008 MRB, NYU 
 ;-
-function distribute_guides, gfiber, design, plot=plot, dlim=dlim
+function distribute_guides, gfiber, design, plot=plot, dlim=dlim, $
+                            stretch=stretch
 
 if(NOT keyword_set(dlim)) then $
    dlim=80.
@@ -51,7 +54,8 @@ for i=0L, n_elements(gfiber)-1L do begin
     inrange= boss_reachcheck(gfiber[i].xreach/platescale, $
                              gfiber[i].yreach/platescale, $
                              design.xf_default/platescale, $
-                             design.yf_default/platescale)
+                             design.yf_default/platescale, $
+                             stretch=stretch)
     imatch=where(inrange gt 0, nmatch)
     if(nmatch eq 0) then begin
         splog, color_string('No guide star available at ALL for #'+ $
