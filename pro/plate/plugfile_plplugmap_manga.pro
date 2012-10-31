@@ -80,14 +80,24 @@ if(nhole gt 0) then plug[ihole].holetype= 'LIGHT_TRAP'
 plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
+;; guess optical mags from 2MASS
+itmass= where(holes.tmass_j gt 0, ntmass)
+if(ntmass gt 0) then $
+   plug[itmass].mag=plate_tmass_to_sdss(holes[itmass].tmass_j, $
+                                        holes[itmass].tmass_h, $
+                                        holes[itmass].tmass_k)
+
 magtype= 'FIBER2MAG'
 itag= tag_indx(holes[0], magtype)
 if(itag eq -1) then $
   message, 'No tag '+magtype+' in holes structure.'
+isdss= where(holes.run ne 0, nsdss)
 if(strmatch(strupcase(magtype), '*FLUX')) then begin
-    plug.mag= 22.5-2.5*alog10(holes.(itag) > 0.1)
+   if(nsdss gt 0) then $
+      plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].(itag) > 0.1)
 endif else if (strmatch(strupcase(magtype), '*MAG')) then begin
-    plug.mag= holes.(itag) 
+   if(nsdss gt 0) then $
+      plug[isdss].mag= holes[isdss].(itag) 
 endif else begin
     message, 'MAGTYPE must match either *MAG or *FLUX'
 endelse
@@ -98,20 +108,31 @@ plug.expl=0.
 plug.devaucl=0.
 
 ;; set objtype
-ihole= where(strupcase(holes.targettype) eq 'SCIENCE', nhole)
+ihole= where(strupcase(holes.instrument) eq 'MANGA' and $
+             strupcase(holes.targettype) eq 'SCIENCE', nhole)
 if(nhole gt 0) then begin
    plug[ihole].objtype= 'GALAXY'
 endif
 
-ihole= where(strupcase(holes.targettype) eq 'SKY', nhole)
-if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
-if(nhole gt 0) then plug[ihole].objtype= 'SKY'
-if(nhole gt 0) then plug[ihole].sectarget= 16
+ihole= where(strupcase(holes.instrument) eq 'APOGEE' and $
+             strmatch(strupcase(holes.targettype), 'SCIENCE*'), nhole)
+if(nhole gt 0) then begin
+   plug[ihole].objtype= 'STAR_BHB'
+endif
 
-ihole= where(strupcase(holes.targettype) eq 'STANDARD', nhole)
-if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
-if(nhole gt 0) then plug[ihole].objtype= 'SPECTROPHOTO_STD'
-if(nhole gt 0) then plug[ihole].sectarget= 32
+ihole= where(strmatch(strupcase(holes.targettype), 'SKY*'), nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'OBJECT'
+   plug[ihole].objtype= 'SKY'
+   plug[ihole].sectarget= 16
+endif
+
+ihole= where(strmatch(strupcase(holes.targettype), 'STANDARD*'), nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'OBJECT'
+   plug[ihole].objtype= 'SPECTROPHOTO_STD'
+   plug[ihole].sectarget= 32
+endif
 
 ;; xfocal and yfocal
 plug.xfocal=holes.xfocal
@@ -120,16 +141,34 @@ plug.yfocal=holes.yfocal
 ;; spectrographid, throughput not set
 plug.spectrographid= 0
 plug.throughput= 0
-plug.objid[0]= holes.run
 
-rerun_values = strtrim(holes.rerun, 2) ; 2 = trim both ends
-inotblank = where(rerun_values ne '', nnotblank)
-if(nnotblank gt 0) then $
- plug[inotblank].objid[1]= long(holes[inotblank].rerun)
+isdss= where(holes.run ne 0, nsdss)
+if(nsdss gt 0) then begin
+   plug[isdss].objid[0]= holes[isdss].run
+   plug[isdss].objid[2]= holes[isdss].camcol
+   plug[isdss].objid[3]= holes[isdss].field
+   plug[isdss].objid[4]= holes[isdss].id
+   rerun_values = strtrim(holes[isdss].rerun, 2) ; 2 = trim both ends
+   inotblank = where(rerun_values ne '', nnotblank)
+   if(nnotblank gt 0) then $
+      plug[isdss[inotblank]].objid[1]= long(holes[isdss[inotblank]].rerun)
+endif
 
-plug.objid[2]= holes.camcol
-plug.objid[3]= holes.field
-plug.objid[4]= holes.id
+;; spectrographid, throughput, primtarget not set
+iapogee=where(strupcase(holes.instrument) eq 'APOGEE', napogee)
+if(napogee gt 0) then begin
+   plug[iapogee].primtarget= holes[iapogee].apogee_target1
+   plug[iapogee].sectarget= plug[iapogee].sectarget OR $
+                            holes[iapogee].apogee_target2
+endif
+imanga=where(strupcase(holes.instrument) eq 'MANGA', napogee)
+if(nmanga gt 0) then begin
+   plug[imanga].primtarget= holes[imanga].manga_target1
+   plug[imanga].sectarget= plug[iapogee].sectarget OR $
+                            holes[iapogee].manga_target2
+endif
+
+
 
 ;; fiber ID gets set to NEGATIVE of intended value
 ;; (unless it is -9999)
