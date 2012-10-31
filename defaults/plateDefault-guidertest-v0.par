@@ -60,4 +60,5 @@ bufferSizeGUIDE 0.3
 tilerad 1.49
 
 omit_traps 1 
+stretch_for_guides 1
 
