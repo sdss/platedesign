@@ -13,7 +13,7 @@
 ;   26-Oct-2008  Written by MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-pro check_fiberreach, plateid 
+pro check_fiberreach, plateid , guide=guide
 
 platescale = 217.7358       ;; mm/degree
 limitmm=8.*25.4   ;;; limit of reach in mm    
