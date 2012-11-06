@@ -8,7 +8,7 @@ instruments MANGA
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
 # are not case sensitive. 
-targettypes science sky standard
+targettypes science sky standard_D1 standard_D2 standard_D3 standard3_D1 standard3_D2 standard3_D3 standard5_D1 standard5_D2 standard5_D3 sky3 sky5
 
 # Number of pointings, and number of offsets per pointing
 # A pointing involves closing the shutter and reacquisition.
@@ -23,9 +23,19 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nMANGA_science 15
-nMANGA_sky 80 
-nMANGA_standard 20 
+nMANGA_science 8
+nMANGA_sky 9
+nMANGA_standard_D1 17
+nMANGA_standard_D2 17
+nMANGA_standard_D3 17
+nMANGA_sky3 9
+nMANGA_standard3_D1 17
+nMANGA_standard3_D2 17
+nMANGA_standard3_D3 17
+nMANGA_sky5 6
+nMANGA_standard5_D1 8
+nMANGA_standard5_D2 8
+nMANGA_standard5_D3 8
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2 
