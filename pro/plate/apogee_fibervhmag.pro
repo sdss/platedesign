@@ -136,7 +136,7 @@ pro apogee_fibervhmag, in_plateid
      hmag[ibad]=14.
   iapo= where(full.holetype eq 'APOGEE', napo)
   isort= iapo[sort(full[iapo].fiberid)]
-  diff= abs(hmag[isort[1:n_elements(isort)-1]]-hmag[0:n_elements(isort)-2])
+  diff= abs(hmag[isort[1:n_elements(isort)-1]]-hmag[isort[0:n_elements(isort)-2]])
   idiff= long((((diff>mindiff)<maxdiff)-mindiff)/(maxdiff-mindiff+0.001)*float(nbins))
   dhist= fltarr(nbins)
   dval= fltarr(nbins)
