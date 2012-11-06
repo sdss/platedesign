@@ -108,13 +108,13 @@ plug.expl=0.
 plug.devaucl=0.
 
 ;; set objtype
-ihole= where(strupcase(holes.instrument) eq 'MANGA' and $
+ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
              strupcase(holes.targettype) eq 'SCIENCE', nhole)
 if(nhole gt 0) then begin
    plug[ihole].objtype= 'GALAXY'
 endif
 
-ihole= where(strupcase(holes.instrument) eq 'APOGEE' and $
+ihole= where(strupcase(holes.holetype) eq 'APOGEE' and $
              strmatch(strupcase(holes.targettype), 'SCIENCE*'), nhole)
 if(nhole gt 0) then begin
    plug[ihole].objtype= 'STAR_BHB'
@@ -155,17 +155,17 @@ if(nsdss gt 0) then begin
 endif
 
 ;; spectrographid, throughput, primtarget not set
-iapogee=where(strupcase(holes.instrument) eq 'APOGEE', napogee)
+iapogee=where(strupcase(holes.holetype) eq 'APOGEE', napogee)
 if(napogee gt 0) then begin
    plug[iapogee].primtarget= holes[iapogee].apogee_target1
    plug[iapogee].sectarget= plug[iapogee].sectarget OR $
                             holes[iapogee].apogee_target2
 endif
-imanga=where(strupcase(holes.instrument) eq 'MANGA', napogee)
+imanga=where(strupcase(holes.holetype) eq 'MANGA', nmanga)
 if(nmanga gt 0) then begin
    plug[imanga].primtarget= holes[imanga].manga_target1
-   plug[imanga].sectarget= plug[iapogee].sectarget OR $
-                            holes[iapogee].manga_target2
+   plug[imanga].sectarget= plug[imanga].sectarget OR $
+                            holes[imanga].manga_target2
 endif
 
 
