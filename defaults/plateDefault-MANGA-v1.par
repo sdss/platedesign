@@ -52,7 +52,7 @@ ferruleSizeMANGA 7.0
 bufferSizeMANGA 0.000
 
 # alignment offset for MANGA
-dxAlignmentMANGA 2.75
+dxAlignmentMANGA -2.75
 dyAlignmentMANGA 0.00
 
 # Buffer size made up for GUIDEs
