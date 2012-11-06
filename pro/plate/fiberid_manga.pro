@@ -69,78 +69,54 @@ io=0L
 iinst=where(strupcase(fibercount.instruments) eq 'MANGA', ninst)
 itype=where(strupcase(fibercount.targettypes) eq 'SCIENCE', ntype)
 nsci_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'STANDARD', ntype)
-nstd_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'SKY', ntype)
-nsky_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'STANDARD3', ntype)
-nstd3_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'SKY3', ntype)
-nsky3_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'STANDARD5', ntype)
-nstd5_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-itype=where(strupcase(fibercount.targettypes) eq 'SKY5', ntype)
-nsky5_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
 
 isci= where(strupcase(design.targettype) eq 'SCIENCE', nsci)
 if(nsci ne nsci_tot) then $
    message, 'Wrong number of science targets for MaNGA!'
 fiberid[isci]= 1L+lindgen(nsci_tot)
+
+;; reset fiber numbers for single fibers
+sizes= ['', '3', '5']
+dithers=['', '_D1', '_D2', '_D3']
+types= strarr(n_elements(sizes), n_elements(dithers))
+for i=0L, n_elements(sizes)-1L do begin
+    for j=0L, n_elements(dithers)-1L do begin
+        types[i,j]=sizes[i]+dithers[j]
+    endfor
+endfor
+types= reform(types, n_elements(types))
+
 ncurr=0L
+for i=0L, n_elements(types)-1L do begin
+    itype=where(strupcase(fibercount.targettypes) eq 'SKY'+types[i], ntype)
+    if(ntype gt 0) then $
+      nsky_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io])) $
+    else $
+      nsky_tot=0
+    itype=where(strupcase(fibercount.targettypes) eq 'STANDARD'+types[i], ntype)
+    if(ntype gt 0) then $
+      nstd_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io])) $
+    else $
+      nstd_tot=0
 
-istd= where(strupcase(design.targettype) eq 'STANDARD', nstd)
-if(nstd lt nstd_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nstd_tot gt 0) then begin
-   istd= istd[shuffle_indx(nstd, num_sub=nstd_tot)]
-   fiberid[istd]= 1L+ncurr+lindgen(nstd_tot)
-   ncurr+= nstd_tot
-endif
+    istd= where(strupcase(design.targettype) eq 'STANDARD'+types[i], nstd)
+    if(nstd lt nstd_tot) then $
+      message, 'Not enough standard'+types[i]+' targets for MaNGA!'
+    if(nstd_tot gt 0) then begin
+        istd= istd[shuffle_indx(nstd, num_sub=nstd_tot)]
+        fiberid[istd]= 1L+ncurr+lindgen(nstd_tot)
+        ncurr+= nstd_tot
+    endif
 
-isky= where(strupcase(design.targettype) eq 'SKY', nsky)
-if(nsky lt nsky_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nsky_tot gt 0) then begin
-   isky= isky[shuffle_indx(nsky, num_sub=nsky_tot)]
-   fiberid[isky]= 1L+ncurr+lindgen(nsky_tot)
-   ncurr+= nsky_tot
-endif 
-
-istd3= where(strupcase(design.targettype) eq 'STANDARD3', nstd3)
-if(nstd3 lt nstd3_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nstd3_tot gt 0) then begin
-   istd3= istd3[shuffle_indx(nstd3, num_sub=nstd3_tot)]
-   fiberid[istd3]= 1L+ncurr+lindgen(nstd3_tot)
-   ncurr+= nstd3_tot
-endif
-
-isky3= where(strupcase(design.targettype) eq 'SKY3', nsky3)
-if(nsky3 lt nsky3_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nsky3_tot gt 0) then begin
-   isky3= isky3[shuffle_indx(nsky3, num_sub=nsky3_tot)]
-   fiberid[isky3]= 1L+ncurr+lindgen(nsky3_tot)
-   ncurr+= nsky3_tot
-endif 
-
-istd5= where(strupcase(design.targettype) eq 'STANDARD5', nstd5)
-if(nstd5 lt nstd5_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nstd5_tot gt 0) then begin
-   istd5= istd5[shuffle_indx(nstd5, num_sub=nstd5_tot)]
-   fiberid[istd5]= 1L+ncurr+lindgen(nstd5_tot)
-   ncurr+= nstd5_tot
-endif
-
-isky5= where(strupcase(design.targettype) eq 'SKY5', nsky5)
-if(nsky5 lt nsky5_tot) then $
-   message, 'Not enough standard targets for MaNGA!'
-if(nsky5_tot gt 0) then begin
-   isky5= isky5[shuffle_indx(nsky5, num_sub=nsky5_tot)]
-   fiberid[isky5]= 1L+ncurr+lindgen(nsky5_tot)
-   ncurr+= nsky5_tot
-endif 
+    isky= where(strupcase(design.targettype) eq 'SKY'+types[i], nsky)
+    if(nsky lt nsky_tot) then $
+      message, 'Not enough sky'+types[i]+'  targets for MaNGA!'
+    if(nsky_tot gt 0) then begin
+        isky= isky[shuffle_indx(nsky, num_sub=nsky_tot)]
+        fiberid[isky]= 1L+ncurr+lindgen(nsky_tot)
+        ncurr+= nsky_tot
+    endif 
+endfor
 
 ;; no block determinations yet
 block= lonarr(n_elements(fiberid))-1L
