@@ -8,7 +8,7 @@ instruments APOGEE MANGA
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
 # are not case sensitive. 
-targettypes science_bright science_medium science_faint standard_bright standard_medium sky standard science sky_3 standard_3 sky_5 standard_5
+targettypes science_bright science_medium science_faint standard_bright standard_medium sky standard science sky3 standard3 sky5 standard5
 
 # Number of pointings, and number of offsets per pointing
 # A pointing involves closing the shutter and reacquisition.
@@ -29,20 +29,20 @@ nAPOGEE_science_faint 75
 nAPOGEE_standard_bright 15 
 nAPOGEE_standard_medium 0 
 nAPOGEE_sky 25 
-nAPOGEE_standard_3 0 
-nAPOGEE_sky_3 0 
-nAPOGEE_standard_5 0 
-nAPOGEE_sky_5 0 
+nAPOGEE_standard3 0 
+nAPOGEE_sky3 0 
+nAPOGEE_standard5 0 
+nAPOGEE_sky5 0 
 
 nMANGA_science 18
 nMANGA_sky 80 
 nMANGA_standard 20 
-nMANGA_science_3 0
-nMANGA_sky_3 0 
-nMANGA_standard_3 0 
-nMANGA_science_5 0
-nMANGA_sky_5 0 
-nMANGA_standard_5 0 
+nMANGA_science3 0
+nMANGA_sky3 0 
+nMANGA_standard3 0 
+nMANGA_science5 0
+nMANGA_sky5 0 
+nMANGA_standard5 0 
 nMANGA_science_bright 0
 nMANGA_sky_bright 0 
 nMANGA_standard_bright 0 
@@ -89,7 +89,7 @@ plateDesignSkies NONE
 skyType NONE
 
 # Use BOSS plugmap style
-plugmapstyle plplugmap_apogee
+plugmapstyle plplugmap_manga
 
 # Default pointing_name
 pointing_name A B C D E F
