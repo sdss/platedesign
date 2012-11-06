@@ -118,12 +118,24 @@ for indx=0L, n_elements(plateid)-1L do begin
     nsky= strarr(n_elements(instruments), npointings)
     for it=0L, n_elements(instruments)-1L do begin
         nsci[it,*]= yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_science')
-        itar= where(strupcase(targets) eq 'STANDARD', ntar)
+        itar= where(strmatch(strupcase(targets), 'STANDARD*'), ntar)
         if(ntar gt 0) then $
-          nstd[it,*]= yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard')
-        itar= where(strupcase(targets) eq 'SKY', ntar)
+          nstd[it,*]= $
+          strtrim(string(long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard_bright'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard_medium'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard_faint'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard3'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_standard5'))),2)
+        itar= where(strmatch(strupcase(targets), 'SKY*'), ntar)
         if(ntar gt 0) then $
-          nsky[it,*]= yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky')
+          nsky[it,*]= $
+          strtrim(string(long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky_bright'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky_medium'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky_faint'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky3'))+ $
+                         long(yanny_par(hdr, 'n'+strlowcase(instruments[it])+'_sky5'))),2)
     endfor
     guides= ptrarr(npointings)
     for ip=0L, npointings-1L do $
