@@ -58,8 +58,7 @@ if(nhole gt 0) then plug[ihole].holetype= 'ALIGNMENT'
 
 ;; holetype MANGA and targettype science in holes -> 
 ;; holetype MANGA in plPlugMap
-ihole= where(holes.holetype eq 'MANGA' and $
-             strupcase(holes.targettype) eq 'SCIENCE', nhole)
+ihole= where(holes.holetype eq 'MANGA', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'MANGA'
 
 ;; holetype MANGA_ALIGNMENT in holes -> 
@@ -107,16 +106,10 @@ plug.starl=0.
 plug.expl=0.
 plug.devaucl=0.
 
-;; set objtype
-ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
-             strupcase(holes.targettype) eq 'SCIENCE', nhole)
+;; set defaults
+ihole= where(strmatch(strupcase(holes.targettype), 'SCIENCE*'), nhole)
 if(nhole gt 0) then begin
-   plug[ihole].objtype= 'GALAXY'
-endif
-
-ihole= where(strupcase(holes.holetype) eq 'APOGEE' and $
-             strmatch(strupcase(holes.targettype), 'SCIENCE*'), nhole)
-if(nhole gt 0) then begin
+   plug[ihole].holetype= 'OBJECT'
    plug[ihole].objtype= 'STAR_BHB'
 endif
 
@@ -130,6 +123,30 @@ endif
 ihole= where(strmatch(strupcase(holes.targettype), 'STANDARD*'), nhole)
 if(nhole gt 0) then begin
    plug[ihole].holetype= 'OBJECT'
+   plug[ihole].objtype= 'SPECTROPHOTO_STD'
+   plug[ihole].sectarget= 32
+endif
+
+;; set objtype
+ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
+             strupcase(holes.targettype) eq 'SCIENCE', nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'MANGA'
+   plug[ihole].objtype= 'GALAXY'
+endif
+
+ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
+             strmatch(strupcase(holes.targettype), 'SKY*') ne 0, nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'MANGA'
+   plug[ihole].objtype= 'SKY'
+   plug[ihole].sectarget= 16
+endif
+
+ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
+             strmatch(strupcase(holes.targettype), 'STANDARD*') ne 0, nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'MANGA'
    plug[ihole].objtype= 'SPECTROPHOTO_STD'
    plug[ihole].sectarget= 32
 endif
