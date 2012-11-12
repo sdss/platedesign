@@ -297,7 +297,7 @@ proc makeFanucManga { args } {
 	}
 	set fanucFile [open $fanucFilePath a]
 
-# Make MaNGA bundle holes
+# Make MaNGA holes
 	copyGCodeFile $mangaCodesFileName $fanucFile
 	close $fanucFile
   if {[chainSize $mangaHolesChn]} {
