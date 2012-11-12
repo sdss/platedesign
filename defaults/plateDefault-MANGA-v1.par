@@ -66,8 +66,8 @@ standardType NONE
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
-plateDesignSkies MANGA
-skyType BOSS
+plateDesignSkies NONE
+skyType NONE
 
 # Do not strain to collect skies, we should be OK
 collectfactor 10
