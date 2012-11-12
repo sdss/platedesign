@@ -83,7 +83,9 @@ tempShop         20         # temperature of plate during drilling (deg C)
 ZOffset          -3.9624    # drilling offset (mm)
 ZOffsetR          0.762     # drilling offset (mm)
 thermalExpand    21.24e-6   # percentage expansion per deg C
-maxRadius       326.644     # max hole position radius (mm)
+# Increase maxRadius to accommodate alignments
+#maxRadius       326.644     # max hole position radius (mm)
+maxRadius       329.444     # max hole position radius (mm)
 mangaCodesFile g_codes_manga_bundle_object.txt
 mangaAlignCodesFile g_codes_manga_align_object.txt
 objectCodesFile g_codes_manga_object.txt
