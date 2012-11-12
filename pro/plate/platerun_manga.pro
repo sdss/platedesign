@@ -101,14 +101,13 @@ endif
 print, 'In the "plate" product run the following commands:"'
 print, '   makeFanucManga'
 print, '   makeDrillPos'
-print, '   use_cs3'
 print, '   makePlots -skipBrightCheck'
 print
 setupplate = 'setup plate'
 spawn, setupplate +'; echo "source '+getenv('PLATEDESIGN_DIR')+'/tcl/makeFanucManga.tcl ;makeFanucManga -plan='+planfile+' " | plate -noTk'
 spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
-spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
-       planname+'" | plate -noTk'
+;; spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
+;; planname+'" | plate -noTk'
 spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
        planfile+'" | plate -noTk'
 
