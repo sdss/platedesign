@@ -304,10 +304,10 @@ proc makeFanucManga { args } {
 			if {$verbose > 1} {
 					set numPathFixed4 [ plMakeFanucCodes $mangaHolesChn $plateInfo \
 																	$bendDistort $surfaceShape $fanucFilePath \ 
-															10 -verbose 1 ]
+															11 -verbose 1 ]
 			} else {
 					set numPathFixed4 [ plMakeFanucCodes $mangaHolesChn $plateInfo\
-																	$bendDistort $surfaceShape $fanucFilePath 10 ]
+																	$bendDistort $surfaceShape $fanucFilePath 11 ]
 			}
 	} else {
 			set numPathFixed4 0
@@ -321,10 +321,10 @@ proc makeFanucManga { args } {
 			if {$verbose > 1} {
 					set numPathFixed5 [ plMakeFanucCodes $mangaAlignHolesChn $plateInfo \
 																	$bendDistort $surfaceShape $fanucFilePath \ 
-															11 -verbose 1 ]
+															12 -verbose 1 ]
 			} else {
 					set numPathFixed5 [ plMakeFanucCodes $mangaAlignHolesChn $plateInfo\
-																	$bendDistort $surfaceShape $fanucFilePath 11 ]
+																	$bendDistort $surfaceShape $fanucFilePath 12 ]
 			}
 	} else {
 			set numPathFixed5 0
