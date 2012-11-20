@@ -61,11 +61,11 @@ pro plate_counterbore_manga, platerun, in_plateid, cunit=cunit
   printf, unit, 'O'+string(f='(i4.4)', plateid)+' (SDSS PLUG-PLATE '+ $
         string(f='(i4.4)', plateid)+')'
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
-  printf, unit, '(#12.  7/64" END MILL)'
+  printf, unit, '(#13.  7/64" END MILL)'
   printf, unit, ''
   printf, unit, 'M00'
-  printf, unit, 'N12 G20 G80 G69'
-  printf, unit, 'G00 G28 G91 Z0.0 T12 M06 (7/64" END MILL)'
+  printf, unit, 'N13 G20 G80 G69'
+  printf, unit, 'G00 G28 G91 Z0.0 T13 M06 (7/64" END MILL)'
   printf, unit, 'G68 X0.0 Y0.0 R-90.0'
   printf, unit, 'M03 S3500'
   printf, unit, 'G00 G90 G40 G17'
@@ -91,7 +91,7 @@ pro plate_counterbore_manga, platerun, in_plateid, cunit=cunit
 
      if(i eq 0) then begin
         printf, unit, 'G54 X'+xstr+' Y'+ystr  
-        printf, unit, 'G43 H12 Z1.0'
+        printf, unit, 'G43 H13 Z1.0'
         printf, unit, 'M08'
         printf, unit, 'G00 Z'+zstr
         printf, unit, 'M98 P7891'
