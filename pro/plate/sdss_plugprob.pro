@@ -49,7 +49,8 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    nmax=nmax, quiet=in_quiet, limitdegree=limitdegree, $
                    toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
                    maxinblock=maxinblock, blockfile=in_blockfile, $
-                   noycost=noycost, ylimits=ylimits, reachfunc=reachfunc
+                   noycost=noycost, ylimits=ylimits, reachfunc=reachfunc, $
+                   stretch=stretch
 
 common com_plugprob, fiberblocks, blockfile
 
@@ -126,7 +127,7 @@ if(keyword_set(reachfunc)) then begin
     for i=0L, nfibers-1L do $
           fibertargetspossible[i,*]= $
             call_function(reachfunc, xfiber[i], yfiber[i], $
-                          xtarget, ytarget)
+                          xtarget, ytarget, stretch=stretch)
     inputpossible=1L
     limitdegree=0.
 endif else begin
