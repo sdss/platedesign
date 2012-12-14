@@ -49,7 +49,7 @@ thoff= (atan(yoff, xoff)+!DPI*2.) mod (!DPI*2.)
 rreach= interpol(rval, thval, thoff, /spline)
 
 if(keyword_set(stretch)) then $
-  rreach = rreach + 25.4/platescale
+  rreach = rreach + 25.4/platescale*float(stretch)
 
 return, rreach gt roff
 
