@@ -21,6 +21,9 @@ data/boss/fiberBlocksBOSSOld.par -text
 data/manga/README -text
 data/manga/fiber-centers-manga-prototype.xlsx -text
 data/manga/fiberBlocksMaNGAProto.par -text
+data/manga/fiberBlocksMaNGAProto2.par -text
+data/manga/fiberBlocksMaNGAProto3.par -text
+data/manga/fiberBlocksMaNGAProto5.par -text
 data/manga/g_codes_manga_align_object.txt -text
 data/manga/g_codes_manga_bundle_object.txt -text
 data/manga/g_codes_manga_object.txt -text
