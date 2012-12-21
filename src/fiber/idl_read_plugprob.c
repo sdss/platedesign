@@ -9,7 +9,7 @@
 IDL_LONG idl_read_plugprob (int      argc,
 														void *   argv[])
 {
-	int *targetFiber, *targetBlock, nTargets, nFibersBlock, nFibers, quiet;
+	int *targetFiber, *targetBlock, nTargets, *fiberblockid, nFibers, quiet;
 	double *xtarget, *ytarget;
 	IDL_STRING idl_ansfile;
 	char ansfile[1000];
@@ -24,7 +24,7 @@ IDL_LONG idl_read_plugprob (int      argc,
 	targetFiber=((int *)argv[i]); i++;
 	targetBlock=((int *)argv[i]); i++;
 	nTargets=*((int *)argv[i]); i++;
-	nFibersBlock=*((int *)argv[i]); i++;
+	fiberblockid=((int *)argv[i]); i++;
 	nFibers=*((int *)argv[i]); i++;
 	quiet=*((int *)argv[i]); i++;
 	idl_ansfile=*((IDL_STRING *) argv[i]); i++;
@@ -32,7 +32,7 @@ IDL_LONG idl_read_plugprob (int      argc,
 	
 	/* 1. run the fitting routine */
 	retval=(IDL_LONG) read_plugprob(xtarget, ytarget, targetFiber, 
-																	targetBlock, nTargets, nFibersBlock,
+																	targetBlock, nTargets, fiberblockid,
 																	nFibers, quiet, ansfile);
 	
 	/* 2. free memory and leave */

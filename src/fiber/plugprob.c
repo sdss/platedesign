@@ -29,11 +29,11 @@ int write_plugprob(double xtarget[],
 									 int nTargets,
 									 double xfiber[],
 									 double yfiber[],
+									 int fiberblockid[],
 									 int fiberused[],
 									 int toblock[],
 									 int nFibers,
 									 int nMax,
-									 int nFibersBlock,
 									 double limitDegree, 
 									 int fiberTargetsPossible[],
 									 int inputPossible,
@@ -43,6 +43,7 @@ int write_plugprob(double xtarget[],
 									 double blockcenx[],
 									 double blockceny[],
 									 int blockconstrain,
+									 int nBlocks,
 									 char probfile[],
 									 int noycost, 
 									 double blockylimits[])
@@ -52,7 +53,6 @@ int write_plugprob(double xtarget[],
 	long cost;
 	FILE *fp;
 
-	nBlocks=nFibers/nFibersBlock;
 	nTargetBlocks=(int *) malloc(nBlocks*sizeof(int));
 	
 	/* 
@@ -72,7 +72,7 @@ int write_plugprob(double xtarget[],
 			for(j=0;j<nBlocks;j++) 
 				nTargetBlocks[j]=0;
 			for(j=0;j<nFibers;j++) {
-				block=(int) floor(j/nFibersBlock);
+				block=fiberblockid[j];
 				sep2=(xtarget[i]-xfiber[j])*(xtarget[i]-xfiber[j])+
 					(ytarget[i]-yfiber[j])*(ytarget[i]-yfiber[j]);
 				if(sep2<limit2)
@@ -92,7 +92,7 @@ int write_plugprob(double xtarget[],
 		for(j=0;j<nBlocks;j++) 
 			nTargetBlocks[j]=0;
 		for(j=0;j<nFibers;j++) {
-			block=(int) floor(j/nFibersBlock);
+			block=fiberblockid[j];
 			if(fiberTargetsPossible[i*nFibers+j]>0 &&
 				 ytarget[i]>blockylimits[block*2+0] &&
 				 ytarget[i]<blockylimits[block*2+1]) 
@@ -107,7 +107,7 @@ int write_plugprob(double xtarget[],
 		 * we have to account for zero-indexing of blocks here) */
 		nFiberTargets[i]=0;
 		for(j=0;j<nFibers;j++) {
-			block=(int) floor(j/nFibersBlock);
+			block=fiberblockid[j];
 			if(nTargetBlocks[block]>=minAvailInBlock && 
 				 (toblock[i]==0 || block==toblock[i]-1)) {
 				if(fiberTargetsPossible[i*nFibers+j]>0) {
@@ -167,7 +167,7 @@ int write_plugprob(double xtarget[],
 			sep2=xsep2+ysep2;
 
 			/* get distance from block center (a lesser consideration */
-			block=(int) floor(jFiber/nFibersBlock);
+			block=fiberblockid[jFiber];
 			xbsep2=(xtarget[i]-blockcenx[block])*(xtarget[i]-blockcenx[block]);
 			ybsep2=(ytarget[i]-blockceny[block])*(ytarget[i]-blockceny[block]);
 			bsep2=xbsep2+ybsep2;
@@ -190,7 +190,7 @@ int write_plugprob(double xtarget[],
   fprintf(fp, "c fiber to block arcs\n");
   for(i=0;i<nFibers;i++) 
 		fprintf(fp,"a %d %d %d %d %d\n",nTargets+i+1,
-						nTargets+nFibers+i/nFibersBlock+1,0,1-fiberused[i],0);
+						nTargets+nFibers+fiberblockid[i]+1,0,1-fiberused[i],0);
 		
 	/* one arc for each block */
   fprintf(fp, "c block to sink arcs\n");
@@ -224,7 +224,7 @@ int read_plugprob(double xtarget[],
 									int targetFiber[],
 									int targetBlock[],
 									int nTargets,
-									int nFibersBlock,
+									int fiberblockid[],
 									int nFibers,
 									int quiet,
 									char ansfile[])
@@ -261,7 +261,7 @@ int read_plugprob(double xtarget[],
 				iFiber=head-nTargets-1;
 				if(flow==1) {
 					targetFiber[iTarget]=iFiber;
-					targetBlock[iTarget]=iFiber/nFibersBlock;
+					targetBlock[iTarget]=fiberblockid[iFiber];
 				} else if (flow!=0) {
 					fprintf(stderr,"Malformed arc in maxFlowPlugListRead!\n");
 					return(0);
