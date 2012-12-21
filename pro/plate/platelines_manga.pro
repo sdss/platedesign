@@ -28,7 +28,7 @@
 pro platelines_manga_rearrange, full, holes
 
   platescale = 217.7358D        ; mm/degree
-  stretch=1
+  stretch=30
 
   sizes= [2., 3., 5.]
   maxinblock= [6, 6, 5]
@@ -61,6 +61,35 @@ pro platelines_manga_rearrange, full, holes
 
 end
 ;
+pro platelines_manga_rearrange_mix, full, holes
+
+platescale = 217.7358D          ; mm/degree
+stretch=0
+
+blockfile=getenv('PLATEDESIGN_DIR')+ $
+  '/data/manga/fiberBlocksMaNGAProto.par'
+fiberblocks= yanny_readone(blockfile)
+
+isingle= where(strupcase(full.holetype) eq 'MANGA' and $
+               strupcase(full.targettype) ne 'SCIENCE', nsingle)
+               
+if(nsingle ne n_elements(fiberblocks)) then $
+  message, 'Not the right number of single fibers?'
+
+sdss_plugprob, full[isingle].xf_default, full[isingle].yf_default, $
+  tmp_fiberid, reachfunc='boss_reachcheck', blockfile=blockfile, $
+  minavail=1, maxinblock=6L, stretch=stretch
+
+if(min(tmp_fiberid) lt 1) then $
+  message, 'Some fibers unassigned'
+
+;; NOTE THIS SCRAMBLES FIBERID VALUES RELATIVE TO
+;; MANGA_ALIGNMENT
+full[isingle].fiberid= tmp_fiberid
+holes[isingle].fiberid= -tmp_fiberid
+
+end
+;
 pro platelines_manga, in_plateid, diesoft=diesoft, $
                       sorty=sorty, relaxed=relaxed, $
                       rearrange=rearrange
@@ -69,6 +98,10 @@ common com_pla, plateid, full, holes, hdr
 
 platescale = 217.7358D          ; mm/degree
 rearrange=1
+
+blockfile=getenv('PLATEDESIGN_DIR')+ $
+  '/data/manga/fiberBlocksMaNGAProto.par'
+fiberblocks= yanny_readone(blockfile)
 
 if(NOT keyword_set(in_plateid)) then $
   message, 'Plate ID must be given!'
@@ -99,8 +132,12 @@ if(n_tags(holes) eq 0) then begin
     
 endif
 
-if(keyword_set(rearrange)) then $
-  platelines_manga_rearrange, full, holes
+full_mix= full
+holes_mix= holes
+if(keyword_set(rearrange)) then begin
+    platelines_manga_rearrange, full, holes
+    platelines_manga_rearrange_mix, full_mix, holes_mix
+endif
 
 if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
     msg='Could not find plPlugMapP or plateHolesSorted file for '+ $
@@ -112,7 +149,7 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
 endif
 
 ;; basic versions
-versions=['manga', 'manga.fiber2', 'manga.fiber3', 'manga.fiber5']
+versions=['manga', 'manga.fiber2', 'manga.fiber3', 'manga.fiber5', 'manga.mix']
 
 ;; make various block colors
 ;;colors= ['red', 'green', 'blue', 'magenta', 'cyan']
@@ -168,6 +205,12 @@ for k=0L, n_elements(versions)-1L do begin
         dy= holes[ialign].yfocal- holes[ibundle[i]].yfocal
         djs_oplot, holes[ibundle[i]].yfocal+[0., dy]*3., $
           holes[ibundle[i]].xfocal+[0., dx]*3., th=2
+
+        if(strmatch(version, 'manga')) then begin
+            djs_xyouts, holes[ibundle[i]].yfocal+5, holes[ibundle[i]].xfocal+5, $
+              strtrim(string(full[ibundle[i]].bundle_id),2)+' ('+ $
+              strtrim(full[ibundle[i]].sourcetype,2)+')', charsize=0.9
+        endif
     endfor
 
     isingle= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA' and $
@@ -233,6 +276,11 @@ for k=0L, n_elements(versions)-1L do begin
                 standard_color='dark blue'
                 sky_color='light blue'
             end
+            'MIX': begin
+                fiber_size= full_mix.fiber_size
+                standard_color='dark blue'
+                sky_color='light blue'
+            end
         endcase
 
         isingle= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA' and $
@@ -250,18 +298,32 @@ for k=0L, n_elements(versions)-1L do begin
             djs_oplot, ycurr, xcurr, color=color, th=4
         endfor
         
-        isingle= where(strupcase(full.holetype) eq 'MANGA' and $
-                       strupcase(strtrim(full.targettype,2)) ne 'SCIENCE' and $
-                       full.fiber_size eq fiber_size, nsingle) 
-        block= (full[isingle].fiberid-1L)/long(maxinblock)+1L
-        for iblock=1L, max(block) do begin
-            iin= where(block eq iblock, nin)
-            if(nin ne maxinblock) then $
-              message, 'Uh oh! Not right number in block.'
-            isort= sort(full[isingle[iin]].yfocal)
-            djs_oplot, full[isingle[iin[isort]]].yfocal, $
-              full[isingle[iin[isort]]].xfocal, color=color, th=3
-        endfor
+        if(type eq 'MIX') then begin
+            colors=['black', 'red', 'blue', 'green', 'cyan', 'magenta']
+            isingle= where(strupcase(full_mix.holetype) eq 'MANGA' and $
+                           strupcase(strtrim(full_mix.targettype,2)) ne 'SCIENCE')
+            block= fiberblocks[full_mix[isingle].fiberid-1L].blockid
+            for iblock=1L, max(block) do begin
+                iin= where(block eq iblock, nin)
+                isort= sort(full_mix[isingle[iin]].yfocal)
+                color= colors[iblock mod n_elements(colors)]
+                djs_oplot, full_mix[isingle[iin[isort]]].yfocal, $
+                  full_mix[isingle[iin[isort]]].xfocal, color=color, th=3
+            endfor
+        endif else begin
+            isingle= where(strupcase(full.holetype) eq 'MANGA' and $
+                           strupcase(strtrim(full.targettype,2)) ne 'SCIENCE' and $
+                           full.fiber_size eq fiber_size, nsingle) 
+            block= (full[isingle].fiberid-1L)/long(maxinblock)+1L
+            for iblock=1L, max(block) do begin
+                iin= where(block eq iblock, nin)
+                if(nin ne maxinblock) then $
+                  message, 'Uh oh! Not right number in block.'
+                isort= sort(full[isingle[iin]].yfocal)
+                djs_oplot, full[isingle[iin[isort]]].yfocal, $
+                  full[isingle[iin[isort]]].xfocal, color=color, th=3
+            endfor
+        endelse
     endif
     
     platelines_end
