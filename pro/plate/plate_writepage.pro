@@ -284,7 +284,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                                '/plateLines-??????-zoffset-*.png', count=count)
         if(count gt 0) then linestable, 'Backstop labels', plunit, tmp_files
      endif
-    ptypes=['marvels', 'apogee']
+    ptypes=['marvels', 'apogee', 'manga']
     for iptype=0L, n_elements(ptypes)-1L do begin
        ptype=ptypes[iptype]
        tmp_files= file_search(plate_dir(plateid[i])+'/plateLines-??????-'+ptype+'.png', $
@@ -302,9 +302,13 @@ for indx=0L, n_elements(plateid)-1L do begin
                                   count=count2)
           if(count2 gt 0) then tmp_files= [tmp_files, tmp_files2]
           linestable, 'Plate overview', plunit, tmp_files
-          tmp_files= file_search(plate_dir(plateid[i])+ $
-                                 '/plateLines-??????-'+ptype+'.block-*.png', count=count)
-          if(count gt 0) then linestable, 'Blocks by color', plunit, tmp_files
+          tmp_files2= file_search(plate_dir(plateid[i])+ $
+                                 '/plateLines-??????-'+ptype+'.block-*.png', count=count2)
+          if(count2 gt 0) then linestable, 'Blocks by color', plunit, tmp_files2
+          tmp_files2= file_search(plate_dir(plateid[i])+ $
+                                 '/plateLines-??????-'+ptype+'.*.png', count=count2)
+          if(count2 gt 0) then $
+            linestable, 'Blocks by fiber size', plunit, tmp_files2
        endif
     endfor
     tmp_files= file_search(plate_dir(plateid[i])+'/apogeeMagVsFiber-??????.png', $

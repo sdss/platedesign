@@ -81,6 +81,7 @@ if(keyword_set(reload)) then begin
     blockfile= in_blockfile
     fiberblocks= yanny_readone(blockfile)
 endif
+fiberblockid= fiberblocks.blockid
 
 ;; default centers of blocks
 blockconstrain=1L
@@ -146,13 +147,13 @@ soname = filepath('libfiber.'+idlutils_so_ext(), $
                   root_dir=getenv('PLATEDESIGN_DIR'), subdirectory='lib')
 retval = call_external(soname, 'idl_write_plugprob', $
                        double(xtarget), double(ytarget), long(ntargets), $
-                       double(xfiber), double(yfiber), long(used), $
-                       long(toblock), long(nfibers), long(nmax), $
-                       long(nfibersblock), double(limitdegree), $
-                       long(fibertargetspossible), long(inputpossible), $
-                       long(minavail), long(mininblock), long(maxinblock), $
-                       double(blockcenx), double(blockceny), $
-                       long(blockconstrain), string(probfile), long(noycost), $
+                       double(xfiber), double(yfiber), long(fiberblockid), $
+                       long(used), long(toblock), long(nfibers), long(nmax), $
+                       double(limitdegree), long(fibertargetspossible), $
+                       long(inputpossible), long(minavail), long(mininblock), $
+                       long(maxinblock), double(blockcenx), double(blockceny), $
+                       long(blockconstrain), long(nblocks), $
+                       string(probfile), long(noycost), $
                        double(ylimits))
 
 spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
@@ -161,12 +162,12 @@ spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
 
 ansfile=tmpdir+'/tmp_ans_'+uid+'.txt'
 targetfiber=lonarr(ntargets)
-fiberblock=lonarr(ntargets)
+targetblock=lonarr(ntargets)
 
 retval = call_external(soname, 'idl_read_plugprob', $
                        double(xtarget), double(ytarget), long(targetfiber), $
-                       long(fiberblock), long(ntargets), $
-                       long(nfibersblock), long(nfibers), $
+                       long(targetblock), long(ntargets), $
+                       long(fiberblockid), long(nfibers), $
                        long(quiet), string(ansfile))
 fiberid=targetfiber+1L
 
