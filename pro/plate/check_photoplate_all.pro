@@ -13,7 +13,8 @@
 pro check_photoplate_all
 
 plans= yanny_readone(getenv('PLATELIST_DIR')+'/platePlans.par')
-iboss= where(plans.survey eq 'boss', nboss)
+iboss= where(plans.survey eq 'boss' and $
+	~strmatch(plans.programname, '*_test'), nboss)
 
 for i=0L, nboss-1L do begin
 		ok= check_photoplate(plans[iboss[i]].plateid)
