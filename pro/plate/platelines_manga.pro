@@ -92,7 +92,7 @@ end
 ;
 pro platelines_manga, in_plateid, diesoft=diesoft, $
                       sorty=sorty, relaxed=relaxed, $
-                      rearrange=rearrange
+                      rearrange=rearrange, swap=swap
 
 common com_pla, plateid, full, holes, hdr
 
@@ -118,6 +118,24 @@ endelse
 
 platedir= plate_dir(plateid)
 
+bundlelabels=replicate({bundle_id:0L, label:' '}, 10)
+bundlelabels[0].bundle_id=191
+bundlelabels[0].label='A'
+bundlelabels[1].bundle_id=611
+bundlelabels[1].label='2'
+bundlelabels[2].bundle_id=1271
+bundlelabels[2].label='3'
+bundlelabels[3].bundle_id=192
+bundlelabels[3].label='A'
+bundlelabels[4].bundle_id=193
+bundlelabels[4].label='A'
+bundlelabels[5].bundle_id=194
+bundlelabels[5].label='A'
+bundlelabels[6].bundle_id=195
+bundlelabels[6].label='A'
+bundlelabels[7].bundle_id=1272
+bundlelabels[7].label='8'
+
 if(n_tags(holes) eq 0) then begin
     plplug= platedir+'/plPlugMapP-'+ $
       strtrim(string(f='(i4.4)',plateid),2)+'.par'
@@ -127,6 +145,9 @@ if(n_tags(holes) eq 0) then begin
     
     fullfile= platedir+'/plateHolesSorted-'+ $
       strtrim(string(f='(i6.6)',plateid),2)+'.par'
+    if(keyword_set(swap)) then $
+      fullfile= platedir+'/plateHolesSorted-'+ $
+      strtrim(string(f='(i6.6)',plateid),2)+'-swap.par'
     check_file_exists, fullfile, plateid=plateid
     full= yanny_readone(fullfile)
     
@@ -176,6 +197,14 @@ for k=0L, n_elements(versions)-1L do begin
 
     if(version eq 'manga') then $
       label='MANGA bundle'
+    if(version eq 'manga.fiber2') then $
+      label='MANGA 2 arcsec fibers'
+    if(version eq 'manga.fiber3') then $
+      label='MANGA 3 arcsec fibers'
+    if(version eq 'manga.fiber5') then $
+      label='MANGA 5 arcsec fibers'
+    if(version eq 'manga.mix') then $
+      label='MANGA all single fibers'
     note=''
     platelines_start, plateid, filebase, label, note=note
     
@@ -207,9 +236,14 @@ for k=0L, n_elements(versions)-1L do begin
           holes[ibundle[i]].xfocal+[0., dx]*3., th=2
 
         if(strmatch(version, 'manga')) then begin
+            kk=where(bundlelabels.bundle_id eq full[ibundle[i]].bundle_id,nkk)
+            if(nkk eq 0) then $
+              message, 'No bundle_id found: '+ $
+              strtrim(string(full[ibundle[i]].bundle_id),2)
             djs_xyouts, holes[ibundle[i]].yfocal+5, holes[ibundle[i]].xfocal+5, $
-              strtrim(string(full[ibundle[i]].bundle_id),2)+' ('+ $
-              strtrim(full[ibundle[i]].sourcetype,2)+')', charsize=0.9
+              bundlelabels[kk].label+ $
+              ' ('+strtrim(string(full[ibundle[i]].bundle_id),2)+', '+ $
+              strtrim(full[ibundle[i]].sourcetype,2)+')', charsize=0.8
         endif
     endfor
 
@@ -261,20 +295,20 @@ for k=0L, n_elements(versions)-1L do begin
             'FIBER2': begin
                 maxinblock=6
                 fiber_size= 2.
-                standard_color='dark red'
-                sky_color='light red'
+                standard_color='dark blue'
+                sky_color='light blue'
             end
             'FIBER3': begin
                 maxinblock=6
                 fiber_size= 3.
-                standard_color='dark green'
-                sky_color='light green'
+                standard_color='dark red'
+                sky_color='light red'
             end
             'FIBER5': begin
                 maxinblock=5
                 fiber_size= 5.
-                standard_color='dark blue'
-                sky_color='light blue'
+                standard_color='dark green'
+                sky_color='green'
             end
             'MIX': begin
                 fiber_size= full_mix.fiber_size
@@ -308,7 +342,10 @@ for k=0L, n_elements(versions)-1L do begin
                 isort= sort(full_mix[isingle[iin]].yfocal)
                 color= colors[iblock mod n_elements(colors)]
                 djs_oplot, full_mix[isingle[iin[isort]]].yfocal, $
-                  full_mix[isingle[iin[isort]]].xfocal, color=color, th=3
+                  full_mix[isingle[iin[isort]]].xfocal, color=color, th=6
+                djs_oplot, full_mix[isingle[iin[isort]]].yfocal, $
+                  full_mix[isingle[iin[isort]]].xfocal, color='black', th=1, $
+                  linestyle=0
             endfor
         endif else begin
             isingle= where(strupcase(full.holetype) eq 'MANGA' and $
@@ -321,7 +358,10 @@ for k=0L, n_elements(versions)-1L do begin
                   message, 'Uh oh! Not right number in block.'
                 isort= sort(full[isingle[iin]].yfocal)
                 djs_oplot, full[isingle[iin[isort]]].yfocal, $
-                  full[isingle[iin[isort]]].xfocal, color=color, th=3
+                  full[isingle[iin[isort]]].xfocal, color=standard_color, th=6
+                djs_oplot, full[isingle[iin[isort]]].yfocal, $
+                  full[isingle[iin[isort]]].xfocal, color='black', th=1, $
+                  linestyle=0
             endfor
         endelse
     endif
