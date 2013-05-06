@@ -101,8 +101,8 @@ djs_xyouts, [-330], [300], 'Plate run: '+strtrim(string(plan.platerun),2), $
             charsize=0.7
 djs_xyouts, [-330], [290], 'Survey: '+strtrim(string(plan.survey),2), $
             charsize=0.7
-djs_xyouts, [-330], [280], 'Program: '+strtrim(string(plan.programname),2), $
-            charsize=0.7
+xyouts, [-330], [280], 'Program: '+strtrim(string(plan.programname),2), $
+  charsize=0.7
 djs_xyouts, [-330], [270], 'RA (p1): '+ $
             strtrim(string(plan.racen,f='(f30.3)'),2), $
             charsize=0.7
