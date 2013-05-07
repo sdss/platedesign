@@ -94,9 +94,9 @@ int write_plugprob(double xtarget[],
 		for(j=0;j<nFibers;j++) {
 			block=fiberblockid[j];
 			if(fiberTargetsPossible[i*nFibers+j]>0 &&
-				 ytarget[i]>blockylimits[block*2+0] &&
-				 ytarget[i]<blockylimits[block*2+1]) 
-				nTargetBlocks[block]++;
+				 ytarget[i]>blockylimits[(block-1)*2+0] &&
+				 ytarget[i]<blockylimits[(block-1)*2+1]) 
+				nTargetBlocks[(block-1)]++;
 		} /* end for j */
 
 		/* now figure out which fibers can reach the target,
@@ -108,7 +108,7 @@ int write_plugprob(double xtarget[],
 		nFiberTargets[i]=0;
 		for(j=0;j<nFibers;j++) {
 			block=fiberblockid[j];
-			if(nTargetBlocks[block]>=minAvailInBlock && 
+			if(nTargetBlocks[(block-1)]>=minAvailInBlock && 
 				 (toblock[i]==0 || block==toblock[i]-1)) {
 				if(fiberTargetsPossible[i*nFibers+j]>0) {
 					fiberTargets[i*nFibers+nFiberTargets[i]]=j;
@@ -168,8 +168,8 @@ int write_plugprob(double xtarget[],
 
 			/* get distance from block center (a lesser consideration */
 			block=fiberblockid[jFiber];
-			xbsep2=(xtarget[i]-blockcenx[block])*(xtarget[i]-blockcenx[block]);
-			ybsep2=(ytarget[i]-blockceny[block])*(ytarget[i]-blockceny[block]);
+			xbsep2=(xtarget[i]-blockcenx[(block-1)])*(xtarget[i]-blockcenx[(block-1)]);
+			ybsep2=(ytarget[i]-blockceny[(block-1)])*(ytarget[i]-blockceny[(block-1)]);
 			bsep2=xbsep2+ybsep2;
 			if(blockconstrain>0) {
 				sep2=bsep2;
