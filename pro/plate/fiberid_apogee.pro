@@ -216,7 +216,7 @@ for iter=0L, maxiter-1L do begin
                      blockcenx=blockcenx, blockceny=blockceny 
       ibad= where(tmp_fiberid le 0, nbad)
       if(nbad gt 0) then begin
-         message, 'Failed to assign all targets!'
+         message, color_string('Failed to assign all targets!','red','bold')
       endif
       fiberid[iapogee]=blocks[tmp_fiberid-1L].fiberid
       idone= where(fiberid gt 0, ndone)
@@ -248,10 +248,10 @@ if(relaxed_fiber_classes gt 0) then begin
    for i=0L, nblocks-1L do begin
       idesign= where(block eq i+1, nii)
       if(nii ne nperblock) then $
-         message, 'Not enough targets in block!'
+         message, color_string('Not enough targets in block!','red','bold')
       ifiber= where(blocks.blockid eq i+1, nii)
       if(nii ne nperblock) then $
-         message, 'Not enough fibers in block!'
+         message, color_string('Not enough fibers in block!','red','bold')
       hmag= design[iapogee[idesign]].tmass_h
       ibad= where(hmag eq -9999, nbad)
       if(nbad gt 0) then $
