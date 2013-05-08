@@ -60,8 +60,8 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   openw, unit, platerun_dir+'/plCounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
   
   printf, unit, '%'
-  printf, unit, 'O'+string(f='(i4.4)', plateid)+' (SDSS PLUG-PLATE '+ $
-        string(f='(i4.4)', plateid)+')'
+  printf, unit, 'O'+string(f='(i4.4)', plateid MOD 7000)+' (SDSS PLUG-PLATE '+ $
+        string(plateid)+')'
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#10.  5/64" END MILL)'
   printf, unit, ''

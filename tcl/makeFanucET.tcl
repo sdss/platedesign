@@ -194,7 +194,7 @@ proc makeFanucET { args } {
 	set obsTemp [exprGet $plObs.temp]
 	handleDel $plObs
 
-	set plugMapFileName [format plPlugMapP-%04d.par $plateId]
+	set plugMapFileName [format plPlugMapP-%d.par $plateId]
 	set plugMapFilePath [format %s/%s $outFileDir $plugMapFileName]
    echo $plugMapFilePath
 	set plugMapData [ param2Chain $plugMapFilePath plugMapHdr ]
@@ -219,15 +219,15 @@ proc makeFanucET { args } {
 	set trapHolesChn [keylget return lighttraps]
 	set alignHolesChn [keylget return alignment]
 
-	set fanucFileName [format plFanuc-%04d.par $plateId]
+	set fanucFileName [format plFanuc-%d.par $plateId]
 	set fanucFilePath [format %s/%s $outFileDir $fanucFileName]
 	set fanucFile [open $fanucFilePath w]
 
 	puts $fanucFile "%"
 #	puts $fanucFile [format "O%04d(SDSS PLUG-PLATE %04d)"\
 #		$plateId $plateId]
-	puts $fanucFile [format "O%04d(SDSS/ET PLUG-PLATE %04d)"\
-		$plateId $plateId]
+	puts $fanucFile [format "O%04d(SDSS/ET PLUG-PLATE %d)"\
+		[expr $plateId % 7000] $plateId]
 	puts $fanucFile [format "(Drilling temperature %5.1f degrees F)"\
 		[expr 32 + $tempShop * 1.8] ]
 	puts $fanucFile "(INPUT FILE NAME: $plugMapFileName)"
