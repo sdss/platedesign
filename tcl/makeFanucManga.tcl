@@ -232,7 +232,7 @@ proc makeFanucManga { args } {
 
 	puts $fanucFile "%"
 	puts $fanucFile [format "O%04d(SDSS/MaNGA PLUG-PLATE %d)"\
-		($plateId%7000) $plateId]
+		[expr $plateId % 7000] $plateId]
 	puts $fanucFile [format "(Drilling temperature %5.1f degrees F)"\
 		[expr 32 + $tempShop * 1.8] ]
 	puts $fanucFile "(INPUT FILE NAME: $plugMapFileName)"
