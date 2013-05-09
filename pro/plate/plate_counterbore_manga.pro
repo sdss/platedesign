@@ -41,7 +41,7 @@ pro plate_counterbore_manga, platerun, in_plateid, cunit=cunit
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
      dposfile= platerun_dir+'/plDrillPos-'+ $
-               strtrim(string(f='(i4.4)',plateid),2)+'.par'
+               strtrim(string(plateid),2)+'.par'
      check_file_exists, dposfile, plateid=plateid
      dpos= yanny_readone(dposfile)
   endif
@@ -58,8 +58,8 @@ pro plate_counterbore_manga, platerun, in_plateid, cunit=cunit
   openw, unit, platerun_dir+'/plMANGACounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
   
   printf, unit, '%'
-  printf, unit, 'O'+string(f='(i4.4)', plateid)+' (SDSS PLUG-PLATE '+ $
-        string(f='(i4.4)', plateid)+')'
+  printf, unit, 'O'+string(f='(i4.4)', plateid MOD 7000)+' (SDSS PLUG-PLATE '+ $
+        string(plateid)+')'
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#13.  7/64" END MILL)'
   printf, unit, ''

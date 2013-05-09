@@ -226,8 +226,8 @@ proc makeFanucET { args } {
 	puts $fanucFile "%"
 #	puts $fanucFile [format "O%04d(SDSS PLUG-PLATE %04d)"\
 #		$plateId $plateId]
-	puts $fanucFile [format "O%04d(SDSS/ET PLUG-PLATE %04d)"\
-		$plateId $plateId]
+	puts $fanucFile [format "O%04d(SDSS/ET PLUG-PLATE %d)"\
+		[expr $plateId % 7000] $plateId]
 	puts $fanucFile [format "(Drilling temperature %5.1f degrees F)"\
 		[expr 32 + $tempShop * 1.8] ]
 	puts $fanucFile "(INPUT FILE NAME: $plugMapFileName)"

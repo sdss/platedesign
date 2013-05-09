@@ -231,8 +231,8 @@ proc makeFanucManga { args } {
 	set fanucFile [open $fanucFilePath w]
 
 	puts $fanucFile "%"
-	puts $fanucFile [format "O%04d(SDSS/MaNGA PLUG-PLATE %04d)"\
-		$plateId $plateId]
+	puts $fanucFile [format "O%04d(SDSS/MaNGA PLUG-PLATE %d)"\
+		[expr $plateId % 7000] $plateId]
 	puts $fanucFile [format "(Drilling temperature %5.1f degrees F)"\
 		[expr 32 + $tempShop * 1.8] ]
 	puts $fanucFile "(INPUT FILE NAME: $plugMapFileName)"
