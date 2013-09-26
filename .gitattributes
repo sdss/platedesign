@@ -139,6 +139,7 @@ pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_dummy_marvels_blocks.pro -text
+pro/misc/make_trap_file.pro -text
 pro/misc/p_end_print.pro -text
 pro/misc/p_print.pro -text
 pro/misc/pangle.pro -text
