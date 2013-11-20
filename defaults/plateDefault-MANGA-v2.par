@@ -1,0 +1,74 @@
+# Default settings for MANGA
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE MANGA
+instruments MANGA
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes science sky standard
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 1
+nOffsets 0
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
+# (for M pointings and N offsets).
+nMANGA_science 17
+nMANGA_sky 92
+nMANGA_standard 12
+
+
+# Guide fibers to use for each pointing
+gfiberType gfiber2 
+guideType SDSS
+guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+guidemag_minmax 13. 16.5
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# The Ferrule diameter is 6.99mm
+# So I will assume 7mm here
+# In target selection I have resolved at 116" which is 
+# slightly larger than this
+ferruleSizeMANGA 7.0
+bufferSizeMANGA 0.000
+
+# alignment offset for MANGA
+dxAlignmentMANGA -2.75
+dyAlignmentMANGA 0.00
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+# Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
+plateDesignStandards NONE
+standardType NONE
+
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
+plateDesignSkies NONE
+skyType NONE
+
+# Do not strain to collect skies, we should be OK
+collectfactor 10
+
+# Use MANGA plugmap style
+plugmapstyle plplugmap_manga
+mangamagtype fiber2mag
+
+# Default pointing_name
+pointing_name A B C D E F
+
+# Set conditions for maximum offset (arcsec) of fiber in HA range
+max_off_fiber_for_ha 0.3

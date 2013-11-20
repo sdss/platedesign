@@ -69,6 +69,7 @@ defaults/obsolete/plateDefault-BOSS-v0.par -text
 defaults/obsolete/plateDefault-BOSS-v1.par -text
 defaults/obsolete/plateDefault-BOSS-v2.par -text
 defaults/obsolete/plateDefault-BOSS-v3.par -text
+defaults/obsolete/plateDefault-MANGA-v1.par -text
 defaults/obsolete/plateDefault-MARVELS-v0_0.par -text
 defaults/obsolete/plateDefault-MARVELS-v0_5.par -text
 defaults/obsolete/plateDefault-MARVELS-v0_6.par -text
@@ -90,7 +91,7 @@ defaults/plateDefault-APOGEE-MARVELS-SINGLE-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-v0.par -text
 defaults/plateDefault-APOGEE-v2.par -text
 defaults/plateDefault-BOSS-v4.par -text
-defaults/plateDefault-MANGA-v1.par -text
+defaults/plateDefault-MANGA-v2.par -text
 defaults/plateDefault-MARVELS-DUAL-v1.par -text
 defaults/plateDefault-MARVELS-SINGLE-v1.par -text
 defaults/plateDefault-MARVELS_PRE-v0_5.par -text
