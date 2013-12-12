@@ -82,12 +82,12 @@ if(keyword_set(reload)) then begin
     fiberblocks= yanny_readone(blockfile)
 endif
 fiberblockid= fiberblocks.blockid
+nblocks= max(fiberblocks.blockid)
 
 ;; default centers of blocks
 blockconstrain=1L
 if(keyword_set(blockcenx) eq 0 OR $
    keyword_set(blockceny) eq 0) then begin
-    nblocks=max(fiberblocks.blockid)
     blockcenx= fltarr(nblocks)
     blockceny= fltarr(nblocks)
     for i=1L, nblocks do begin
@@ -99,7 +99,6 @@ if(keyword_set(blockcenx) eq 0 OR $
 endif
 
 if(keyword_set(ylimits) eq 0) then begin
-    nblocks=max(fiberblocks.blockid)
     ylimits=dblarr(2, nblocks)
     ylimits[0,*]=-10.
     ylimits[1,*]=+10.
