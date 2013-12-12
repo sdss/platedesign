@@ -109,7 +109,7 @@ int write_plugprob(double xtarget[],
 		for(j=0;j<nFibers;j++) {
 			block=fiberblockid[j];
 			if(nTargetBlocks[(block-1)]>=minAvailInBlock && 
-				 (toblock[i]==0 || block==toblock[i]-1)) {
+				 (toblock[i]<=0 || block==toblock[i]-1)) {
 				if(fiberTargetsPossible[i*nFibers+j]>0) {
 					fiberTargets[i*nFibers+nFiberTargets[i]]=j;
 					nFiberTargets[i]++;
@@ -190,7 +190,7 @@ int write_plugprob(double xtarget[],
   fprintf(fp, "c fiber to block arcs\n");
   for(i=0;i<nFibers;i++) 
 		fprintf(fp,"a %d %d %d %d %d\n",nTargets+i+1,
-						nTargets+nFibers+fiberblockid[i]+1,0,1-fiberused[i],0);
+						nTargets+nFibers+fiberblockid[i]-1+1,0,1-fiberused[i],0);
 		
 	/* one arc for each block */
   fprintf(fp, "c block to sink arcs\n");
