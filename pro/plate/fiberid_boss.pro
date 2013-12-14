@@ -173,7 +173,7 @@ icomplete= where(fiberid gt 0, ncomplete)
 ;;  message, 'Inconsistency in fiberid_boss!'
 
 toblock= lonarr(n_elements(design))-1L
-toblock[icomplete]=(fiberid[icomplete]-1L)/nperblock+1L
+toblock[icomplete]= fiberblocks[fiberid[icomplete]-1].blockid
 
 sdss_plugprob, design[icomplete].xf_default, $
                design[icomplete].yf_default, $
