@@ -96,7 +96,14 @@ setupplate = 'setup plate'
 spawn, setupplate +'; echo "makeFanuc -plan='+planfile+' " | plate -noTk'
 spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
 spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
-       planname+'" | plate -noTk'
+       planname+'" | plate -noTk', outcs3
+for i=0L, n_elements(outcs3)-1L do begin
+    bad= strmatch(outcs3[i], 'collision*')
+    if(bad) then begin
+        print, outcs3
+        message, 'Final plate collision check failed!'
+    endif
+endfor
 spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
        planfile+'" | plate -noTk'
 
