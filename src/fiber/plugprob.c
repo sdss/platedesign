@@ -109,7 +109,7 @@ int write_plugprob(double xtarget[],
 		for(j=0;j<nFibers;j++) {
 			block=fiberblockid[j];
 			if(nTargetBlocks[(block-1)]>=minAvailInBlock && 
-				 (toblock[i]<=0 || block==toblock[i]-1)) {
+				 (toblock[i]<=0 || block==toblock[i])) {
 				if(fiberTargetsPossible[i*nFibers+j]>0) {
 					fiberTargets[i*nFibers+nFiberTargets[i]]=j;
 					nFiberTargets[i]++;
