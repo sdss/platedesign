@@ -170,5 +170,9 @@ retval = call_external(soname, 'idl_read_plugprob', $
                        long(quiet), string(ansfile))
 fiberid=targetfiber+1L
 
+;; clean up temporary files
+file_delete, probfile, /verbose
+file_delete, ansfile, /verbose
+
 end
 

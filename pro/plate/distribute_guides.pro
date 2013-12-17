@@ -90,7 +90,8 @@ tmpdir=getenv('PLATELIST_DIR')+'/tmp'
 spawn, /nosh, ['uuidgen'], uid
 uid=uid[0]
 
-openw, unit, tmpdir+'/tmp_prob_'+uid+'.txt', /get_lun
+tmp_prob_filename = tmpdir+'/tmp_prob_'+uid+'.txt'
+openw, unit, tmp_prob_filename, /get_lun
 
 printf, unit, 'c Max flow problem for guides'
 printf, unit, 'p min '+strtrim(string(nnode),2)+' '+strtrim(string(narc),2)
@@ -126,8 +127,9 @@ spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
   getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
   ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
-nlines= file_lines(tmpdir+'/tmp_ans_'+uid+'.txt')
-openr, unit, tmpdir+'/tmp_ans_'+uid+'.txt', /get_lun
+tmp_ans_filename = tmpdir+'/tmp_ans_'+uid+'.txt'
+nlines= file_lines(tmp_ans_filename)
+openr, unit, tmp_ans_filename, /get_lun
 line=' '
 gnum= lonarr(ntarget)-1L
 for i=0L, nlines-1L do begin
@@ -156,6 +158,10 @@ if(keyword_set(plot)) then begin
                   [design[ii].yf_default, gfiber[i].yreach]
     endfor
 endif
+
+;; clean up temporary files
+file_delete, tmp_prob_filename, /verbose
+file_delete, tmp_ans_filename, /verbose
 
 return, gnum
 
