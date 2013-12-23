@@ -28,7 +28,6 @@ data/manga/g_codes_manga_align_object.txt -text
 data/manga/g_codes_manga_bundle_object.txt -text
 data/manga/g_codes_manga_object.txt -text
 data/manga/plParam.par -text
-data/manga/plPlugMapP-blank.par -text
 data/marvels/anchor-block-map-2008-09-10.pdf -text
 data/marvels/anchor_tests.txt -text
 data/marvels/anchordiagram.jpg -text
