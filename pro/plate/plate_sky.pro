@@ -27,6 +27,7 @@ for i=0L, n_elements(platedesignskies)-1L do begin
        strupcase(platedesignskies[i]) ne 'BOSS' AND $
        strupcase(platedesignskies[i]) ne 'SDSS' AND $
        strupcase(platedesignskies[i]) ne 'MANGA' AND $
+       strupcase(platedesignskies[i]) ne 'MANGA_SINGLE' AND $
        strupcase(platedesignskies[i]) ne 'MARVELS' AND $
        strupcase(platedesignskies[i]) ne 'APOGEE') then begin
         message, 'No such instrument '+platedesignskies[i]+'; '+ $
