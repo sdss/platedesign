@@ -49,10 +49,10 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
   platedir= plate_dir(plateid)
 
   if(n_tags(holes) eq 0) then begin
-     plplug= platedir+'/plPlugMapP-'+ $
+     plplug= platedir+'/plPlugMapH-'+ $
              strtrim(string(f='(i4.4)',plateid),2)+'.par'
      if(NOT file_test(plplug)) then $
-       plplug= platedir+'/plPlugMapH-'+ $
+       plplug= platedir+'/plPlugMapP-'+ $
        strtrim(string(f='(i4.4)',plateid),2)+'.par'
      check_file_exists, plplug, plateid=plateid
      holes= yanny_readone(plplug, hdr=hdr)
