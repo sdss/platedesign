@@ -37,7 +37,7 @@ function fiberid_boss, default, fibercount, design, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid, $
-  debug=debug
+  debug=debug, all_design=all_design
 
 common com_fiberid_boss, fiberblocks
 
@@ -169,8 +169,6 @@ if(NOT keyword_set(nosky)) then begin
 endif
 
 icomplete= where(fiberid gt 0, ncomplete)
-;;if(ncomplete ne n_elements(fiberblocks)) then $
-;;  message, 'Inconsistency in fiberid_boss!'
 
 toblock= lonarr(n_elements(design))-1L
 toblock[icomplete]= fiberblocks[fiberid[icomplete]-1].blockid
