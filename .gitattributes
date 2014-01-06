@@ -187,6 +187,7 @@ pro/plate/fiberid_apogee.pro -text
 pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_manga.pro -text
+pro/plate/fiberid_manga_single.pro -text
 pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/get_buffersize.pro -text
