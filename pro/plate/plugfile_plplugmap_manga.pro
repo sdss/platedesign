@@ -2,7 +2,7 @@
 ; NAME:
 ;   plugfile_plplugmap_manga
 ; PURPOSE:
-;   Create a plug file in the style of plPlugMapP files from MaNGA
+;   Create a plug file in the style of plPlugMapH files from MaNGA
 ; CALLING SEQUENCE:
 ;   plugfile_plplugmap_manga, hdr, holes
 ; INPUTS:
@@ -14,8 +14,6 @@
 ;   04-Oct-2012  MRB, NYU, alterations for MaNGA
 ;-
 pro plugfile_plplugmap_manga, plateid, keepoldcoords=keepoldcoords
-
-makesimple=0
 
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
@@ -49,10 +47,28 @@ plug= replicate(plug0, n_elements(holes))
 
 plug.sectarget= 0
 
-;; anything which is based on a target is called
-;; an OBJECT in plPlugMap
+;; catch science holes for co-observed objects
 ihole= where(strupcase(holes.targettype) ne 'NA', nhole)
-if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
+if(nhole gt 0) then begin
+    plug[ihole].holetype= 'OBJECT'
+    plug[ihole].objtype= 'STAR_BHB'
+endif
+
+;; catch skies for co-observed objects
+ihole= where(strmatch(strupcase(holes.targettype), 'SKY*'), nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'OBJECT'
+   plug[ihole].objtype= 'SKY'
+   plug[ihole].sectarget= 16
+endif
+
+;; catch standards for co-observed objects
+ihole= where(strmatch(strupcase(holes.targettype), 'STANDARD*'), nhole)
+if(nhole gt 0) then begin
+   plug[ihole].holetype= 'OBJECT'
+   plug[ihole].objtype= 'SPECTROPHOTO_STD'
+   plug[ihole].sectarget= 32
+endif
 
 ;; holetype GUIDE in holes -> 
 ;; holetype GUIDE in plPlugMap
@@ -65,10 +81,28 @@ if(nhole gt 0) then plug[ihole].sectarget= 64
 ihole= where(strupcase(holes.holetype) eq 'ALIGNMENT', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'ALIGNMENT'
 
-;; holetype MANGA and targettype science in holes -> 
-;; holetype MANGA in plPlugMap
 ihole= where(holes.holetype eq 'MANGA', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'MANGA'
+
+ihole= where(holes.holetype eq 'MANGA_SINGLE', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'MANGA_SINGLE'
+
+ihole= where((holes.holetype eq 'MANGA' or $
+              holes.holetype eq 'MANGA_SINGLE') and $
+             strupcase(holes.targettype) eq 'SCIENCE', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'GALAXY'
+
+ihole= where((holes.holetype eq 'MANGA' or $
+              holes.holetype eq 'MANGA_SINGLE') and $
+             strupcase(holes.targettype) eq 'STANDARD', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'SPECTROPHOTO_STD'
+if(nhole gt 0) then plug[ihole].sectarget= 32
+
+ihole= where((holes.holetype eq 'MANGA' or $
+              holes.holetype eq 'MANGA_SINGLE') and $
+             strupcase(holes.targettype) eq 'SKY', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'SKY'
+if(nhole gt 0) then plug[ihole].sectarget= 16
 
 ;; holetype MANGA_ALIGNMENT in holes -> 
 ;; holetype MANGA_ALIGNMENT in plPlugMap
@@ -95,7 +129,7 @@ if(ntmass gt 0) then $
                                         holes[itmass].tmass_h, $
                                         holes[itmass].tmass_k)
 
-magtype= 'FIBER2MAG'
+magtype= 'PSFMAG'
 itag= tag_indx(holes[0], magtype)
 if(itag eq -1) then $
   message, 'No tag '+magtype+' in holes structure.'
@@ -114,51 +148,6 @@ endelse
 plug.starl=0.
 plug.expl=0.
 plug.devaucl=0.
-
-;; set defaults
-ihole= where(strmatch(strupcase(holes.targettype), 'SCIENCE*'), nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'OBJECT'
-   plug[ihole].objtype= 'STAR_BHB'
-endif
-
-ihole= where(strmatch(strupcase(holes.targettype), 'SKY*'), nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'OBJECT'
-   plug[ihole].objtype= 'SKY'
-   plug[ihole].sectarget= 16
-endif
-
-ihole= where(strmatch(strupcase(holes.targettype), 'STANDARD*'), nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'OBJECT'
-   plug[ihole].objtype= 'SPECTROPHOTO_STD'
-   plug[ihole].sectarget= 32
-endif
-
-;; set objtype
-ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
-             strupcase(holes.targettype) eq 'SCIENCE', nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'MANGA'
-   plug[ihole].objtype= 'GALAXY'
-endif
-
-ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
-             strmatch(strupcase(holes.targettype), 'SKY*') ne 0, nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'MANGA'
-   plug[ihole].objtype= 'SKY'
-   plug[ihole].sectarget= 16
-endif
-
-ihole= where(strupcase(holes.holetype) eq 'MANGA' and $
-             strmatch(strupcase(holes.targettype), 'STANDARD*') ne 0, nhole)
-if(nhole gt 0) then begin
-   plug[ihole].holetype= 'MANGA'
-   plug[ihole].objtype= 'SPECTROPHOTO_STD'
-   plug[ihole].sectarget= 32
-endif
 
 ;; xfocal and yfocal
 plug.xfocal=holes.xfocal
@@ -187,14 +176,14 @@ if(napogee gt 0) then begin
    plug[iapogee].sectarget= plug[iapogee].sectarget OR $
                             holes[iapogee].apogee_target2
 endif
-imanga=where(strupcase(holes.holetype) eq 'MANGA', nmanga)
+
+imanga=where(strupcase(holes.holetype) eq 'MANGA' or $
+             strupcase(holes.holetype) eq 'MANGA_SINGLE', nmanga)
 if(nmanga gt 0) then begin
    plug[imanga].primtarget= holes[imanga].manga_target1
    plug[imanga].sectarget= plug[imanga].sectarget OR $
                             holes[imanga].manga_target2
 endif
-
-
 
 ;; fiber ID gets set to NEGATIVE of intended value
 ;; (unless it is -9999)
@@ -253,9 +242,16 @@ if(nhole gt 0) then begin
     isort=sort(sortstr)
     newplug= [newplug, plug[ihole[isort]]] 
     newholes= [newholes, holes[ihole[isort]]] 
- endif
+endif
 
 ihole= where(plug.holetype eq 'MANGA', nhole)
+if(nhole gt 0) then begin
+    isort= sort(abs(plug[ihole].fiberid))
+    newplug=[newplug, plug[ihole[isort]]]
+    newholes=[newholes, holes[ihole[isort]]]
+endif
+
+ihole= where(plug.holetype eq 'MANGA_SINGLE', nhole)
 if(nhole gt 0) then begin
     isort= sort(abs(plug[ihole].fiberid))
     newplug=[newplug, plug[ihole[isort]]]
@@ -286,7 +282,6 @@ sortedplatefile= platedir+'/plateHolesSorted-'+ $
 pdata= ptr_new(holes)
 yanny_write, sortedplatefile, pdata, hdr=hdr
 ptr_free, pdata
-
 
 pointing_post=['', 'B', 'C', 'D', 'E', 'F']
 pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
@@ -330,7 +325,7 @@ for pointing=1L, npointings do begin
     endif else begin
         platestr= strtrim(string(f='(i4.4)', plateid),2)
     endelse
-    plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
+    plugmapfile= plate_dir(plateid)+'/plPlugMapH-'+platestr+ $
       pointing_post[pointing-1]+'.par' 
     
     ;; for holes that aren't in this pointing, replace values with sky
@@ -354,27 +349,12 @@ for pointing=1L, npointings do begin
         thisplug.dec= dec
     endif
     
-    ;; write out the plPlugMapP file for plate
+    ;; write out the plPlugMapH file for plate
     pdata=ptr_new(thisplug)
     yanny_write, plugmapfile, pdata, hdr=outhdr, $
       enums=plugenum, structs=plugstruct
     ptr_free, pdata
 
-    ;; now make simple plugging file
-    if(keyword_set(makesimple)) then begin
-        plugsimplefile= plate_dir(plateid)+'/plugMap-'+platestr+ $
-                        pointing_post[pointing-1]+'.par' 
-        plugsimple0= plugmap_blank(enums=plugenum, struct=plugstruct, /manga)
-        plugsimple= replicate(plugsimple0, n_elements(thisplug))
-        struct_assign, thisplug, plugsimple
-        plugsimple.sourcetype= holes.sourcetype
-        plugsimple[inotthis].sourcetype= 'SKY'
-        pdata=ptr_new(plugsimple)
-        yanny_write, plugsimplefile, pdata, hdr=outhdr, $
-                     enums=plugenum, structs=plugstruct
-        ptr_free, pdata
-    endif
-        
 endfor
 
 end
