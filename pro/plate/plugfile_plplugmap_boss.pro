@@ -283,6 +283,10 @@ for pointing=1L, npointings do begin
         thisplug.ra= ra
         thisplug.dec= dec
     endif
+
+    ibadmag= where(finite(thisplug.mag) ne 0, nbadmag)
+    if(nbadmag gt 0) then $
+      message, 'Infinite or NaN magnitude values in plugmap.'
     
     ;; write out the plPlugMapP file for plate
     pdata=ptr_new(thisplug)
