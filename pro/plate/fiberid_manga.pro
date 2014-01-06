@@ -13,7 +13,8 @@
 ;          - nominally, min/max number of standards or skies to assign
 ;            to each block, in fact ignored [default 0]
 ; OPTIONAL OUTPUTS:
-;   block - [N] block for each fiber
+;   block - [N] IFUDESIGN associated with each fiber (set for skies
+;           too)
 ; OPTIONAL KEYWORDS:
 ;   /nosky - do not attempt to assign any of the sky fibers
 ;   /nostd - do not attempt to assign any of the standard fibers
@@ -37,7 +38,7 @@ function fiberid_manga, default, fibercount, design, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid, $
-  debug=debug
+  debug=debug, all_design=all_design
 
 common com_fiberid_manga, fiberblocks
 
@@ -48,12 +49,9 @@ if(keyword_set(minstdinblock)) then $
   message, 'Cannot set block constraints for standards in BOSS'
 
 platescale = 217.7358           ; mm/degree
-nperblock=20L
-;;minyblocksize=0.3
-
-if(NOT keyword_set(minstdinblock)) then minstdinblock=0L
-if(NOT keyword_set(minskyinblock)) then minskyinblock=0L
-if(NOT keyword_set(maxskyinblock)) then maxskyinblock=nperblock
+nsky_tot= 92L
+nsci_tot= 29L
+skyradius= 14./60.
 
 fiberused=0L
 fiberid=lonarr(n_elements(design))
@@ -66,60 +64,12 @@ if(npointings ne 1 or noffsets ne 0) then $
 ip=1L
 io=0L
 
-iinst=where(strupcase(fibercount.instruments) eq 'MANGA', ninst)
-itype=where(strupcase(fibercount.targettypes) eq 'SCIENCE', ntype)
-nsci_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
-
-isci= where(strupcase(design.targettype) eq 'SCIENCE', nsci)
-if(nsci ne nsci_tot) then $
-   message, 'Wrong number of science targets for MaNGA!'
-fiberid[isci]= 1L+lindgen(nsci_tot)
-
-;; reset fiber numbers for single fibers
-sizes= ['', '3', '5']
-dithers=['', '_D1', '_D2', '_D3']
-types= strarr(n_elements(sizes), n_elements(dithers))
-for i=0L, n_elements(sizes)-1L do begin
-    for j=0L, n_elements(dithers)-1L do begin
-        types[i,j]=sizes[i]+dithers[j]
-    endfor
-endfor
-types= reform(types, n_elements(types))
-
-ncurr=0L
-for i=0L, n_elements(types)-1L do begin
-    itype=where(strupcase(fibercount.targettypes) eq 'SKY'+types[i], ntype)
-    if(ntype gt 0) then $
-      nsky_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io])) $
-    else $
-      nsky_tot=0
-    itype=where(strupcase(fibercount.targettypes) eq 'STANDARD'+types[i], ntype)
-    if(ntype gt 0) then $
-      nstd_tot=long(total(fibercount.ntot[iinst, itype, ip-1L, io])) $
-    else $
-      nstd_tot=0
-
-    istd= where(strupcase(design.targettype) eq 'STANDARD'+types[i], nstd)
-    if(nstd lt nstd_tot) then $
-      message, 'Not enough standard'+types[i]+' targets for MaNGA!'
-    if(nstd_tot gt 0) then begin
-        istd= istd[shuffle_indx(nstd, num_sub=nstd_tot)]
-        fiberid[istd]= 1L+ncurr+lindgen(nstd_tot)
-        ncurr+= nstd_tot
-    endif
-
-    isky= where(strupcase(design.targettype) eq 'SKY'+types[i], nsky)
-    if(nsky lt nsky_tot) then $
-      message, 'Not enough sky'+types[i]+'  targets for MaNGA!'
-    if(nsky_tot gt 0) then begin
-        isky= isky[shuffle_indx(nsky, num_sub=nsky_tot)]
-        fiberid[isky]= 1L+ncurr+lindgen(nsky_tot)
-        ncurr+= nsky_tot
-    endif 
-endfor
-
-;; no block determinations yet
+;; assign science
 block= lonarr(n_elements(fiberid))-1L
+isci= where(design.pointing eq ip and $
+            design.offset eq io, nsci)
+fiberid[isci]= 1L+lindgen(nsci)
+block[isci]= design[isci].ifudesign
 
 return, fiberid
 
