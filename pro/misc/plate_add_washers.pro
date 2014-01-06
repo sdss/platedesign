@@ -36,7 +36,14 @@ sholes= yanny_readone(platedir+'/plateHolesSorted-'+ $
                       string(plateid, f='(i6.6)')+'.par', $
                       enum=senum, struct=sstruct, hdr=shdr)
 
+
 isci= where(sholes.holetype eq 'BOSS', nsci)
+iscih= where(holes.holetype eq 'BOSS', nsci)
+
+sholes[isci].zoffset=0.
+sholes[isci].bluefiber=0.
+holes[iscih].zoffset=0.
+holes[iscih].bluefiber=0.
 
 iodd=lindgen(10)*2L+1
 for block=1L, 50L do begin
@@ -54,7 +61,6 @@ for block=1L, 50L do begin
     endif
 endfor
 
-iscih= where(holes.holetype eq 'BOSS', nsci)
 spherematch, sholes[isci].target_ra, sholes[isci].target_dec, $
   holes[iscih].target_ra, holes[iscih].target_dec, 1./3600., m1, m2
 if(n_elements(m1) ne 1000) then $
