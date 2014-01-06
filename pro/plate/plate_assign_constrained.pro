@@ -52,8 +52,9 @@ while(gotall eq 0) do begin
     fiberids= call_function('fiberid_'+instrument, $
                             default, test_fibercount, $
                             test_design[icurr], $
-                            /quiet, _EXTRA=extra_for_fiberid)
-
+                            /quiet, all_design=test_design, $
+                            _EXTRA=extra_for_fiberid)
+    
     ;; check if the standards filled up the fibers
     ion=where(fiberids ge 1 AND $
               test_design[icurr].pointing eq pointing AND $
@@ -61,7 +62,7 @@ while(gotall eq 0) do begin
               strlowcase(test_design[icurr].targettype) $
               eq strlowcase(targettype), non)
     istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
-
+        
     if(non ge test_fibercount.ntot[iinst, istd, pointing-1L, offset]) $
       then begin
         
