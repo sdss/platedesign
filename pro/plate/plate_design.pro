@@ -654,7 +654,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                       minskyinblock=minskyinblock[iinst], $
                                       maxskyinblock=maxskyinblock[iinst], $
                                       block=block, $
-                                      respect_fiberid=respect_fiberid)
+                                      respect_fiberid=respect_fiberid, $
+                                      all_design=design)
               design[icurr].fiberid= fiberids
               design[icurr].block= block
               for ip=1L, npointings do begin 
@@ -734,7 +735,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                     words[0]=fixcaps[k] 
               endfor 
               outhdr[j]=strjoin(words, ' ') 
-           endfor
+          endfor
 
            yanny_write, designfile, pdata, hdr=outhdr
            ptr_free, pdata
