@@ -25,83 +25,16 @@
 ;   31-Oct-2012  MRB, adjusted for MaNGA
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_manga_rearrange, full, holes
-
-  platescale = 217.7358D        ; mm/degree
-  stretch=30
-
-  sizes= [2., 3., 5.]
-  maxinblock= [6, 6, 5]
-
-  for i=0L, n_elements(sizes)-1L do begin
-
-      blockfile=getenv('PLATEDESIGN_DIR')+ $
-        '/data/manga/fiberBlocksMaNGAProto'+ $
-        strtrim(string(f='(i)', long(sizes[i])),2)+'.par'
-      fiberblocks= yanny_readone(blockfile)
-
-      isingle= where(strupcase(full.holetype) eq 'MANGA' and $
-                     strupcase(full.targettype) ne 'SCIENCE' and $
-                     full.fiber_size eq sizes[i], nsingle)
-      if(nsingle ne n_elements(fiberblocks)) then $
-        message, 'Not the right number of single fibers?'
-      
-      sdss_plugprob, full[isingle].xf_default, full[isingle].yf_default, $
-        tmp_fiberid, reachfunc='boss_reachcheck', blockfile=blockfile, $
-        minavail=0, maxinblock=maxinblock[i], stretch=stretch
-
-      if(min(tmp_fiberid) lt 1) then $
-        message, 'Some fibers unassigned'
-      
-      ;; NOTE THIS SCRAMBLES FIBERID VALUES RELATIVE TO
-      ;; MANGA_ALIGNMENT
-      full[isingle].fiberid= tmp_fiberid
-      holes[isingle].fiberid= -tmp_fiberid
-  endfor
-
-end
-;
-pro platelines_manga_rearrange_mix, full, holes
-
-platescale = 217.7358D          ; mm/degree
-stretch=0
-
-blockfile=getenv('PLATEDESIGN_DIR')+ $
-  '/data/manga/fiberBlocksMaNGAProto.par'
-fiberblocks= yanny_readone(blockfile)
-
-isingle= where(strupcase(full.holetype) eq 'MANGA' and $
-               strupcase(full.targettype) ne 'SCIENCE', nsingle)
-               
-if(nsingle ne n_elements(fiberblocks)) then $
-  message, 'Not the right number of single fibers?'
-
-sdss_plugprob, full[isingle].xf_default, full[isingle].yf_default, $
-  tmp_fiberid, reachfunc='boss_reachcheck', blockfile=blockfile, $
-  minavail=1, maxinblock=6L, stretch=stretch
-
-if(min(tmp_fiberid) lt 1) then $
-  message, 'Some fibers unassigned'
-
-;; NOTE THIS SCRAMBLES FIBERID VALUES RELATIVE TO
-;; MANGA_ALIGNMENT
-full[isingle].fiberid= tmp_fiberid
-holes[isingle].fiberid= -tmp_fiberid
-
-end
-;
 pro platelines_manga, in_plateid, diesoft=diesoft, $
                       sorty=sorty, relaxed=relaxed, $
                       rearrange=rearrange, swap=swap
 
-common com_pla, plateid, full, holes, hdr
+common com_pla, plateid, full, hdr
+
+fnames= yanny_readone(getenv('MANGACORE_DIR')+'/cartmaps/manga_ferrule_names.par')
 
 platescale = 217.7358D          ; mm/degree
 rearrange=1
-
-blockfile=getenv('PLATEDESIGN_DIR')+ $
-  '/data/manga/fiberBlocksMaNGAProto.par'
-fiberblocks= yanny_readone(blockfile)
 
 if(NOT keyword_set(in_plateid)) then $
   message, 'Plate ID must be given!'
@@ -110,7 +43,6 @@ if(keyword_set(plateid) gt 0) then begin
     if(plateid ne in_plateid) then begin
         plateid= in_plateid
         full=0
-        holes=0
     endif
 endif else begin
     plateid=in_plateid
@@ -118,31 +50,7 @@ endelse
 
 platedir= plate_dir(plateid)
 
-bundlelabels=replicate({bundle_id:0L, label:' '}, 10)
-bundlelabels[0].bundle_id=191
-bundlelabels[0].label='A'
-bundlelabels[1].bundle_id=611
-bundlelabels[1].label='2'
-bundlelabels[2].bundle_id=1271
-bundlelabels[2].label='3'
-bundlelabels[3].bundle_id=192
-bundlelabels[3].label='A'
-bundlelabels[4].bundle_id=193
-bundlelabels[4].label='A'
-bundlelabels[5].bundle_id=194
-bundlelabels[5].label='A'
-bundlelabels[6].bundle_id=195
-bundlelabels[6].label='A'
-bundlelabels[7].bundle_id=1272
-bundlelabels[7].label='8'
-
-if(n_tags(holes) eq 0) then begin
-    plplug= platedir+'/plPlugMapP-'+ $
-      strtrim(string(f='(i4.4)',plateid),2)+'.par'
-    check_file_exists, plplug, plateid=plateid
-    holes= yanny_readone(plplug, hdr=hdr)
-    hdrstr= lines2struct(hdr)
-    
+if(n_tags(full) eq 0) then begin
     fullfile= platedir+'/plateHolesSorted-'+ $
       strtrim(string(f='(i6.6)',plateid),2)+'.par'
     if(keyword_set(swap)) then $
@@ -150,18 +58,10 @@ if(n_tags(holes) eq 0) then begin
       strtrim(string(f='(i6.6)',plateid),2)+'-swap.par'
     check_file_exists, fullfile, plateid=plateid
     full= yanny_readone(fullfile)
-    
 endif
 
-full_mix= full
-holes_mix= holes
-if(keyword_set(rearrange)) then begin
-    platelines_manga_rearrange, full, holes
-    platelines_manga_rearrange_mix, full_mix, holes_mix
-endif
-
-if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
-    msg='Could not find plPlugMapP or plateHolesSorted file for '+ $
+if(n_tags(full) eq 0) then begin
+    msg='Could not find plateHolesSorted file for '+ $
       strtrim(string(plateid),2)
     if(keyword_set(diesoft) eq 0) then $
       message, msg
@@ -169,205 +69,76 @@ if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
     return
 endif
 
-;; basic versions
-versions=['manga', 'manga.fiber2', 'manga.fiber3', 'manga.fiber5', 'manga.mix']
-
-;; make various block colors
-;;colors= ['red', 'green', 'blue', 'magenta', 'cyan']
-;;versions= [versions, 'manga.block-'+colors]
-
-for k=0L, n_elements(versions)-1L do begin
+label='MaNGA IFUs'
+version='manga'
     
-    version=versions[k]
-    
-    postfix=''
-    if(keyword_set(version)) then $
-      postfix='-'+version
+postfix=''
+if(keyword_set(version)) then $
+  postfix='-'+version
 
-    filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
-      postfix
-    
-    connect_thick=3
-    circle_thick=2
-    
-    if(version ne 'manga' AND $
-       (strmatch(version, 'manga.block-*') eq 0 OR $
-        strmatch(version, 'traps') ne 0)) then $
-      connect_thick=1
+filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
+  postfix
 
-    if(version eq 'manga') then $
-      label='MANGA bundle'
-    if(version eq 'manga.fiber2') then $
-      label='MANGA 2 arcsec fibers'
-    if(version eq 'manga.fiber3') then $
-      label='MANGA 3 arcsec fibers'
-    if(version eq 'manga.fiber5') then $
-      label='MANGA 5 arcsec fibers'
-    if(version eq 'manga.mix') then $
-      label='MANGA all single fibers'
-    note=''
-    platelines_start, plateid, filebase, label, note=note
-    
-    ;; set buffer for lines, and circle size
-    ;; (48 and 45 arcsec respectively
-    buffer= 48./3600. * platescale
-    circle= 45./3600. * platescale
-    
-    ibundle= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA' and $
-                   strupcase(strtrim(full.targettype,2)) eq 'SCIENCE', $
-                   nbundle)
-    for i=0L, nbundle-1L do begin
-        theta= findgen(100)/float(99.)*!DPI*2.
-        xcurr= holes[ibundle[i]].xfocal+ circle* cos(theta)
-        ycurr= holes[ibundle[i]].yfocal+ circle* sin(theta)
-        djs_oplot, ycurr, xcurr, color='black', th=circle_thick
+connect_thick=3
+circle_thick=2
 
-        ialign= where(holes.holetype eq 'MANGA_ALIGNMENT' AND $
-                      holes.fiberid eq holes[ibundle[i]].fiberid, nalign)
-        if(nalign eq 0) then $
-          message, 'No alignment hole!'
-        if(nalign gt 1) then begin
-            splog, 'More than one alignment hole!'
-            ialign= ialign[0]
-        endif
-        dx= holes[ialign].xfocal- holes[ibundle[i]].xfocal
-        dy= holes[ialign].yfocal- holes[ibundle[i]].yfocal
-        djs_oplot, holes[ibundle[i]].yfocal+[0., dy]*3., $
-          holes[ibundle[i]].xfocal+[0., dx]*3., th=2
+platelines_start, plateid, filebase, label, note=note
 
-        if(strmatch(version, 'manga')) then begin
-            kk=where(bundlelabels.bundle_id eq full[ibundle[i]].bundle_id,nkk)
-            if(nkk eq 0) then $
-              message, 'No bundle_id found: '+ $
-              strtrim(string(full[ibundle[i]].bundle_id),2)
-            djs_xyouts, holes[ibundle[i]].yfocal+5, holes[ibundle[i]].xfocal+5, $
-              bundlelabels[kk].label+ $
-              ' ('+strtrim(string(full[ibundle[i]].bundle_id),2)+', '+ $
-              strtrim(full[ibundle[i]].sourcetype,2)+')', charsize=0.8
-        endif
-    endfor
+;; set buffer for lines, and circle size
+;; (48 and 45 arcsec respectively
+buffer= 48./3600. * platescale
+circle= 45./3600. * platescale
 
-    isingle= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA' and $
-                   strupcase(strtrim(full.targettype,2)) ne 'SCIENCE', $
-                   nsingle)
-    for i=0L, nsingle-1L do begin
-        if(strmatch(strupcase(full[isingle[i]].targettype), $
-                    'STANDARD*')) then $
-          color='dark grey' $
-        else $
-          color='light grey'
-          
-        theta= findgen(100)/float(99.)*!DPI*2.
-        xcurr= holes[isingle[i]].xfocal+ circle* cos(theta)
-        ycurr= holes[isingle[i]].yfocal+ circle* sin(theta)
-        djs_oplot, ycurr, xcurr, color=color, th=1
+iifu= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA', nifu)
+colors=['black', 'blue', 'red', 'green', 'magenta']
+for i=0L, nifu-1L do begin
+    curr_color= colors[i mod n_elements(colors)]
 
-        ialign= where(holes.holetype eq 'MANGA_ALIGNMENT', nalign)
-        spherematch, holes[isingle[i]].ra, holes[isingle[i]].dec, $
-          holes[ialign].ra, holes[ialign].dec, 0.1, m1, m2
-        dx= holes[ialign[m2]].xfocal- holes[isingle[i]].xfocal
-        dy= holes[ialign[m2]].yfocal- holes[isingle[i]].yfocal
-        djs_oplot, holes[isingle[i]].yfocal+[0., dy]*3., $
-          holes[isingle[i]].xfocal+[0., dx]*3., th=1, $
-          color=color
-    endfor
-
-    sizes= [2., 3., 5.]
-    maxinblock=[6,6,5]
-    for i=0L, n_elements(sizes)-1L do begin
-        isingle= where(strupcase(full.holetype) eq 'MANGA' and $
-                       strupcase(full.targettype) ne 'SCIENCE' and $
-                       full.fiber_size eq sizes[i], nsingle)
-        block= (full[isingle].fiberid-1L)/long(maxinblock[i])+1L
-        for iblock=1L, max(block) do begin
-            iin= where(block eq iblock, nin)
-            if(nin ne maxinblock[i]) then $
-              message, 'Uh oh! Not right number in block.'
-            isort= sort(full[isingle[iin]].yfocal)
-            djs_oplot, full[isingle[iin[isort]]].yfocal, $
-              full[isingle[iin[isort]]].xfocal, color='light grey', th=1
-        endfor
-    endfor
-
-    if(strmatch(version, 'manga.*')) then begin 
-        type= strupcase((stregex(version, 'manga\.(.*)', /sub, /extr))[1])
-        case type of
-            'FIBER2': begin
-                maxinblock=6
-                fiber_size= 2.
-                standard_color='dark blue'
-                sky_color='light blue'
-            end
-            'FIBER3': begin
-                maxinblock=6
-                fiber_size= 3.
-                standard_color='dark red'
-                sky_color='light red'
-            end
-            'FIBER5': begin
-                maxinblock=5
-                fiber_size= 5.
-                standard_color='dark green'
-                sky_color='green'
-            end
-            'MIX': begin
-                fiber_size= full_mix.fiber_size
-                standard_color='dark blue'
-                sky_color='light blue'
-            end
-        endcase
-
-        isingle= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA' and $
-                       strupcase(strtrim(full.targettype,2)) ne 'SCIENCE' and $
-                       full.fiber_size eq fiber_size, nsingle) 
-        for i=0L, nsingle-1L do begin
-            if(strmatch(strupcase(full[isingle[i]].targettype), $
-                        'STANDARD*')) then $
-              color=standard_color $
-            else $
-              color=sky_color
-            theta= findgen(100)/float(99.)*!DPI*2.
-            xcurr= holes[isingle[i]].xfocal+ circle* cos(theta)
-            ycurr= holes[isingle[i]].yfocal+ circle* sin(theta)
-            djs_oplot, ycurr, xcurr, color=color, th=4
-        endfor
-        
-        if(type eq 'MIX') then begin
-            colors=['black', 'red', 'blue', 'green', 'cyan', 'magenta']
-            isingle= where(strupcase(full_mix.holetype) eq 'MANGA' and $
-                           strupcase(strtrim(full_mix.targettype,2)) ne 'SCIENCE')
-            block= fiberblocks[full_mix[isingle].fiberid-1L].blockid
-            for iblock=1L, max(block) do begin
-                iin= where(block eq iblock, nin)
-                isort= sort(full_mix[isingle[iin]].yfocal)
-                color= colors[iblock mod n_elements(colors)]
-                djs_oplot, full_mix[isingle[iin[isort]]].yfocal, $
-                  full_mix[isingle[iin[isort]]].xfocal, color=color, th=6
-                djs_oplot, full_mix[isingle[iin[isort]]].yfocal, $
-                  full_mix[isingle[iin[isort]]].xfocal, color='black', th=1, $
-                  linestyle=0
-            endfor
-        endif else begin
-            isingle= where(strupcase(full.holetype) eq 'MANGA' and $
-                           strupcase(strtrim(full.targettype,2)) ne 'SCIENCE' and $
-                           full.fiber_size eq fiber_size, nsingle) 
-            block= (full[isingle].fiberid-1L)/long(maxinblock)+1L
-            for iblock=1L, max(block) do begin
-                iin= where(block eq iblock, nin)
-                if(nin ne maxinblock) then $
-                  message, 'Uh oh! Not right number in block.'
-                isort= sort(full[isingle[iin]].yfocal)
-                djs_oplot, full[isingle[iin[isort]]].yfocal, $
-                  full[isingle[iin[isort]]].xfocal, color=standard_color, th=6
-                djs_oplot, full[isingle[iin[isort]]].yfocal, $
-                  full[isingle[iin[isort]]].xfocal, color='black', th=1, $
-                  linestyle=0
-            endfor
-        endelse
+    theta= findgen(100)/float(99.)*!DPI*2.
+    xcurr= full[iifu[i]].xfocal+ circle* cos(theta) 
+    ycurr= full[iifu[i]].yfocal+ circle* sin(theta)
+    djs_oplot, ycurr, xcurr, color=curr_color, th=circle_thick
+     
+    ialign= where(full.holetype eq 'MANGA_ALIGNMENT' AND $
+                  full.fiberid eq full[iifu[i]].fiberid, nalign)
+    if(nalign eq 0) then $
+      message, 'No alignment hole!'
+    if(nalign gt 1) then begin
+        splog, 'More than one alignment hole!'
+        ialign= ialign[0]
     endif
+    dx= full[ialign].xfocal- full[iifu[i]].xfocal
+    dy= full[ialign].yfocal- full[iifu[i]].yfocal
+    djs_oplot, full[iifu[i]].yfocal+[0., dy]*3., $
+      full[iifu[i]].xfocal+[0., dx]*3., th=2
+
+    if(strmatch(version, 'manga')) then begin
+        kk=where(fnames.ifudesign eq full[iifu[i]].ifudesign,nkk)
+        if(nkk eq 0) then $
+          message, 'No IFUDESIGN found: '+ $
+          strtrim(string(full[iifu[i]].ifudesign),2)
+        djs_xyouts, full[iifu[i]].yfocal+5, full[iifu[i]].xfocal+5, $
+          strtrim(string(fnames[kk].frlplug),2)
+    endif
+
+    isky= where(strupcase(strtrim(full.holetype,2)) eq 'MANGA_SINGLE' and $
+                full.block eq full[iifu[i]].block, nsky)
+    if(nsky eq 0) then $
+      message, 'No skies for IFUDESIGN: '+strtrim(string(full[iifu[i]].ifudesign),2)
+
+    for j=0L, nsky-1L do begin
+        theta= findgen(100)/float(99.)*!DPI*2.
+        xcurr= full[isky[j]].xfocal+ circle* cos(theta)
+        ycurr= full[isky[j]].yfocal+ circle* sin(theta)
+        djs_oplot, ycurr, xcurr, color='grey', th=circle_thick
+        xvec= [full[iifu[i]].xfocal, full[isky[j]].xfocal]
+        yvec= [full[iifu[i]].yfocal, full[isky[j]].yfocal]
+        djs_oplot, yvec, xvec, th=2, color=curr_color
+    endfor
     
-    platelines_end
 endfor
+
+platelines_end
 
 return
 end
