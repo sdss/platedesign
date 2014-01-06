@@ -222,6 +222,7 @@ proc makeFanucManga { args } {
   set mangaHolesChn [chainSearch $allHolesChn "{holeType == MANGA}"]
   set mangaAlignHolesChn [chainSearch $allHolesChn "{holeType == MANGA_ALIGNMENT}"]
   set singleHolesChn [chainSearch $allHolesChn "{holeType == OBJECT}"]
+  chainJoin $singleHolesChn [chainSearch $allHolesChn "{holeType == MANGA_SINGLE}"]
   chainJoin $singleHolesChn [chainSearch $allHolesChn "{holeType == GUIDE}"]
 	set trapHolesChn [keylget return lighttraps]
 	set alignHolesChn [keylget return alignment]
