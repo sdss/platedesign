@@ -4,7 +4,10 @@ typedef enum {
  GUIDE,
  LIGHT_TRAP,
  ALIGNMENT,
- QUALITY
+ QUALITY,
+ MANGA, 
+ MANGA_SINGLE,
+ MANGA_ALIGNMENT
 } HOLETYPE;
 
 typedef enum {
