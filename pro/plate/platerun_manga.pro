@@ -59,13 +59,15 @@ plobs0 = create_struct(name='PLOBS', $
                        'HAMAX'    , 0., $
                        'MJDDESIGN', current_mjd())
 plobs= replicate(plobs0, n_elements(plateid))
+
+;; Assumes only one pointing per plate!
 for i=0L, n_elements(plateid)-1L do begin
-    plugmap_filename = plate_dir(plateid[i])+'/plPlugMapP-'+ $
+    plugmap_filename = plate_dir(plateid[i])+'/plPlugMapH-'+ $
                        strtrim(string(plateid[i],f='(i4.4)'),2)+'.par'
     
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
-        message, color_string('plPlugMapP file does not exist as expected: ' + $
+        message, color_string('plPlugMapH file does not exist as expected: ' + $
                  plugmap_filename, 'red')
     endif
     plug= yanny_readone(plugmap_filename, hdr=hdr)
@@ -75,9 +77,9 @@ for i=0L, n_elements(plateid)-1L do begin
     plobs[i].temp= float(hdrstr.temp)
     plobs[i].hamin= float(hdrstr.hamin)
     plobs[i].hamax= float(hdrstr.hamax)
-    spawn, 'cp -f '+plate_dir(plateid[i])+'/plPlugMapP-'+ $
-           strtrim(string(plateid[i], f='(i4.4)'),2)+'*.par '+ $
-           platerun_dir
+    spawn, 'cp -f '+plugmap_filename+' '+ $
+      platerun_dir+ $
+      '/plPlugMapP-'+strtrim(string(plateid[i], f='(i4.4)'),2)+'.par'
 endfor
 pdata=ptr_new(plobs)
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
@@ -89,7 +91,7 @@ if(keyword_set(nolines) eq 0) then begin
    for i=0L, n_elements(plateid)-1L do begin
        platelines_apogee, plateid[i], /sorty
        apogee_fibervhmag, plateid[i]
-       platelines_marvels_bright, plateid[i]
+       platelines_manga, plateid[i]
        platelines_guide, plateid[i]
    endfor
 
@@ -119,14 +121,6 @@ for i=0L, n_elements(plateid)-1L do begin
     if(file_test(fanucfile+'.BAD') ne 0) then $
       plate_log, plateid[i], fanucfile+'.BAD exists --- why?'
  endfor
-
-;; make counterbores
-openw, cunit, getenv('PLATELIST_DIR')+'/runs/'+platerun+'/'+ $
-       'plMANGACounterBoreList-'+platerun+'.txt', /get_lun
-printf, cunit, '# List of plates in this run to be counterbored'
-for i=0L, n_elements(plateid)-1L do $
-   plate_counterbore_manga, platerun, plateid[i], cunit=cunit
-free_lun, cunit
 
 ;; make counterbores
 openw, cunit, getenv('PLATELIST_DIR')+'/runs/'+platerun+'/'+ $
