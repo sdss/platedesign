@@ -32,7 +32,8 @@
 pro plate_select_guide_sdss, racen, deccen, epoch=epoch, $
                              rerun=rerun, tilerad=tilerad1, $
                              guide_design=guide_design, $
-                             gminmax=gminmax, nguidemax=nguidemax
+                             gminmax=gminmax, nguidemax=nguidemax, $
+                             seed=seed
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
@@ -84,7 +85,7 @@ if (keyword_set(objs)) then begin
     ;; Trim back number to maximum
     if(keyword_set(nguidemax)) then begin
         if(nguidemax lt n_elements(objs)) then begin
-            indx= shuffle_indx(n_elements(objs), num_sub=nguidemax)
+            indx= shuffle_indx(n_elements(objs), num_sub=nguidemax, seed=seed)
             objs=objs[indx]
         endif
     endif

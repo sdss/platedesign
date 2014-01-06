@@ -24,7 +24,7 @@
 pro plate_select_guide_usnob, racen, deccen, epoch=epoch, $
                               tilerad=tilerad1, guide_design=guide_design, $
                               gminmax=gminmax, nguidemax=nguidemax, $
-                              jkminmax=jkminmax
+                              jkminmax=jkminmax, seed=seed
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
