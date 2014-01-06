@@ -26,7 +26,7 @@ function fiberid_dummy, default, fibercount, design, $
   maxskyinblock=maxskyinblock, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
-  respect_fiberid=respect_fiberid
+  respect_fiberid=respect_fiberid, all_design=all_design
 
 if(keyword_set(respect_fiberid)) then $
   message, 'dummy designs cannot respect fiberid'
