@@ -1,6 +1,6 @@
 pro test_apo_refrac
 
-files= file_search('/global/data/sdss/tiling/opdb/drillRuns/dr*.[0-9]/plPlugMapP-*.par')
+files= file_search(getenv('SDSS_TILING')+'/opdb/drillRuns/dr*.[0-9]/plPlugMapP-*.par')
 
 nums=strarr(n_elements(files))
 for i=0L, n_elements(files)-1L do begin
