@@ -49,7 +49,9 @@ design0={DESIGN_TARGET, $
          conflicted:0L, $
          ranout:0L, $
          outside:0L, $
-         bundle_id:-1L, $
+         mangaid:' ', $
+         ifudesign:0L, $
+         ifudesignsize:0L, $
          bundle_size:1L, $
          fiber_size:2., $
          tmass_j:-9999., $
