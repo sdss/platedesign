@@ -66,7 +66,7 @@ while(n_elements(rasky) lt nsky) do begin
     splog, 'found '+strtrim(string(n_elements(rasky)),2)+' so far'
 endwhile
 
-indx=shuffle_indx(n_elements(rasky), num_sub=nsky)
+indx=shuffle_indx(n_elements(rasky), num_sub=nsky, seed=seed)
 rasky=rasky[indx]
 decsky=decsky[indx]
 

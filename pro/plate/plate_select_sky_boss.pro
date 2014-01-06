@@ -27,7 +27,7 @@ objs= sdss_sweep_circle(racen, deccen, tilerad, type='sky', /all, /silent)
 if(n_tags(objs) eq 0) then $
    message, 'No sky objects!'
 
-indx= shuffle_indx(n_elements(objs), num_sub=nsky<n_elements(objs))
+indx= shuffle_indx(n_elements(objs), num_sub=nsky<n_elements(objs), seed=seed)
 objs=objs[indx]
 
 sky_design= replicate(design_blank(), n_elements(objs))
