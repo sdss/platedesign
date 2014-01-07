@@ -79,6 +79,7 @@ design0={DESIGN_TARGET, $
          apogee_target2:0L, $
          manga_target1:0L, $
          manga_target2:0L, $
+         eboss_target0:long64(0), $
          run:0L, $
          rerun:' ', $
          camcol:0L, $
