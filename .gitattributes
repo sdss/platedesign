@@ -26,6 +26,7 @@ data/manga/fiberBlocksMaNGAProto3.par -text
 data/manga/fiberBlocksMaNGAProto5.par -text
 data/manga/g_codes_manga_align_object.txt -text
 data/manga/g_codes_manga_bundle_object.txt -text
+data/manga/g_codes_manga_completion.txt -text
 data/manga/g_codes_manga_object.txt -text
 data/manga/plParam.par -text
 data/marvels/anchor-block-map-2008-09-10.pdf -text

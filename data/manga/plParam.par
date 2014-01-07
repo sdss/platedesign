@@ -90,7 +90,7 @@ mangaCodesFile g_codes_manga_bundle_object.txt
 mangaAlignCodesFile g_codes_manga_align_object.txt
 objectCodesFile g_codes_manga_object.txt
 trapCodesFile   g_codes_lighttrap.txt
-endCodesFile    g_codes_completion.txt
+endCodesFile    g_codes_manga_completion.txt
 alignCodesFile  g_codes_alignment.txt
 
 
