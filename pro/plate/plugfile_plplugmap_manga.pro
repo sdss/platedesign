@@ -60,6 +60,7 @@ if(nhole gt 0) then begin
    plug[ihole].holetype= 'OBJECT'
    plug[ihole].objtype= 'SKY'
    plug[ihole].sectarget= 16
+   plug[ihole].mag= 25.
 endif
 
 ;; catch standards for co-observed objects
@@ -103,6 +104,7 @@ ihole= where((holes.holetype eq 'MANGA' or $
              strupcase(holes.targettype) eq 'SKY', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'SKY'
 if(nhole gt 0) then plug[ihole].sectarget= 16
+if(nhole gt 0) then plug[ihole].mag= 25.
 
 ;; holetype MANGA_ALIGNMENT in holes -> 
 ;; holetype MANGA_ALIGNMENT in plPlugMap
@@ -133,7 +135,8 @@ magtype= 'PSFMAG'
 itag= tag_indx(holes[0], magtype)
 if(itag eq -1) then $
   message, 'No tag '+magtype+' in holes structure.'
-isdss= where(holes.run ne 0, nsdss)
+isdss= where(holes.run ne 0 or holes.holetype eq 'MANGA' or $
+             holes.holetype eq 'MANGA_SINGLE', nsdss)
 if(strmatch(strupcase(magtype), '*FLUX')) then begin
    if(nsdss gt 0) then $
       plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].(itag) > 0.1)
@@ -283,6 +286,7 @@ pdata= ptr_new(holes)
 yanny_write, sortedplatefile, pdata, hdr=hdr
 ptr_free, pdata
 
+;; Make plPlugMapH and plPlugMapP files
 pointing_post=['', 'B', 'C', 'D', 'E', 'F']
 pointing_name=['A', 'B', 'C', 'D', 'E', 'F']
 for pointing=1L, npointings do begin
@@ -325,7 +329,9 @@ for pointing=1L, npointings do begin
     endif else begin
         platestr= strtrim(string(f='(i4.4)', plateid),2)
     endelse
-    plugmapfile= plate_dir(plateid)+'/plPlugMapH-'+platestr+ $
+    plugmapfile_h= plate_dir(plateid)+'/plPlugMapH-'+platestr+ $
+      pointing_post[pointing-1]+'.par' 
+    plugmapfile_p= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
       pointing_post[pointing-1]+'.par' 
     
     ;; for holes that aren't in this pointing, replace values with sky
@@ -351,11 +357,35 @@ for pointing=1L, npointings do begin
     
     ;; write out the plPlugMapH file for plate
     pdata=ptr_new(thisplug)
-    yanny_write, plugmapfile, pdata, hdr=outhdr, $
+    yanny_write, plugmapfile_h, pdata, hdr=outhdr, $
       enums=plugenum, structs=plugstruct
     ptr_free, pdata
 
+    ;; now create per-fiber plPlugMapP file
+    nperfiber= long(total(long(holes.ifudesignsize eq 0)+ $
+                          holes.ifudesignsize))
+    allplug= replicate(thisplug[0], nperfiber)
+    icurr=0L
+    fibercurr=1L
+    for i=0L, n_elements(thisplug)-1L do begin
+        ncurr= long(holes[i].ifudesignsize eq 0)+holes[i].ifudesignsize
+        allplug[icurr:icurr+ncurr-1L]= thisplug[i]
+        if(thisplug[i].holetype eq 'MANGA' or $
+           thisplug[i].holetype eq 'MANGA_SINGLE') then begin
+            allplug[icurr:icurr+ncurr-1L].fiberid= -(fibercurr+lindgen(ncurr))
+            fibercurr=fibercurr+ncurr
+        endif
+        icurr= icurr+ncurr
+    endfor
+
+    ;; write it to file
+    pdata=ptr_new(allplug)
+    yanny_write, plugmapfile_p, pdata, hdr=outhdr, $
+      enums=plugenum, structs=plugstruct
+    ptr_free, pdata
+    
 endfor
+
 
 end
 ;------------------------------------------------------------------------------
