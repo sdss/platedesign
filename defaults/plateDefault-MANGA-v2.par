@@ -23,9 +23,9 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nMANGA_science 29
+nMANGA_science 17
 nMANGA_sky 0
-nMANGA_standard 0
+nMANGA_standard 12
 nMANGA_SINGLE_science 0
 nMANGA_SINGLE_sky 92
 nMANGA_SINGLE_standard 0
@@ -65,7 +65,7 @@ plateDesignSkies MANGA_SINGLE
 skyType BOSS
 
 # Do not strain to collect skies, we should be OK
-collectfactor 40
+collectfactor 100
 
 # Use MANGA plugmap style
 plugmapstyle plplugmap_manga
