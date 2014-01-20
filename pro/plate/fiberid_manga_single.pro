@@ -67,7 +67,8 @@ io=0L
 ;; assign science
 block= lonarr(n_elements(fiberid))-1L
 isci= where(strupcase(all_design.holetype) eq 'MANGA' and $
-            strupcase(all_design.targettype) eq 'SCIENCE' and $
+            (strupcase(all_design.targettype) eq 'SCIENCE' or $
+             strupcase(all_design.targettype) eq 'STANDARD') and $
             (all_design.fiberid gt 0 OR keyword_set(noscience) ne 0) and $
             all_design.pointing eq ip and $
             all_design.offset eq io, nsci)
@@ -122,6 +123,7 @@ for i=0L, nsci-1L do begin
     endfor
     
     curr_fiberid= curr_fiberid+ nsky_curr
+
 endfor
 
 return, fiberid
