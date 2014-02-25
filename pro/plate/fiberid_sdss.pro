@@ -35,6 +35,7 @@ function fiberid_sdss, default, fibercount, design, $
                        maxskyinblock=maxskyinblock, $
                        nosky=nosky, nostd=nostd, noscience=noscience, $
                        quiet=quiet, block=block, $
+					   plate_obj=plate_obj, $
   respect_fiberid=respect_fiberid, all_design=all_design
 
 common com_fiberid_sdss, fiberblocks

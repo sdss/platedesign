@@ -37,6 +37,7 @@ function fiberid_boss, default, fibercount, design, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid, $
+  plate_obj=plate_obj, $
   debug=debug, all_design=all_design
 
 common com_fiberid_boss, fiberblocks
@@ -187,11 +188,11 @@ isci=where(strupcase(design.targettype) eq 'SCIENCE', nsci)
 if(nsci gt 0) then begin
     ibad= where(all_fiberid[isci] le 0, nbad)
     if(nbad gt 0) then begin
-        splog, 'Parameters and target locations yield inconsistency in plugging!'
-        splog, 'No solution possible for this set of targets.  Look at the '
-        splog, 'distribution, and also verify that you are not being too'
-        splog, 'restrictive on the block assignments (minskytinblock, maxskyinblock)'
-        message, 'Bombing out for your own good!'
+        splog, color_string('Parameters and target locations yield inconsistency in plugging!', 'red', 'bold')
+        splog, color_string('No solution possible for this set of targets.  Look at the ', 'red', 'bold')
+        splog, color_string('distribution, and also verify that you are not being too', 'red', 'bold')
+        splog, color_string('restrictive on the block assignments (minskytinblock, maxskyinblock)', 'red', 'bold')
+        message, color_string('Bombing out for your own good!', 'red', 'bold')
     endif
 endif
 

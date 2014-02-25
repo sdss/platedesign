@@ -14,6 +14,7 @@
 pro plate_assign_constrained, definition, default, instrument, $
                               targettype, fibercount, pointing, offset, $
                               design, in_new_design, seed=seed, $
+							  plate_obj=plate_obj, $
                               _EXTRA=extra_for_fiberid
 
 ;; params from default
@@ -53,6 +54,7 @@ while(gotall eq 0) do begin
                             default, test_fibercount, $
                             test_design[icurr], $
                             /quiet, all_design=test_design, $
+							plate_obj=plate_obj, $
                             _EXTRA=extra_for_fiberid)
     
     ;; check if the standards filled up the fibers

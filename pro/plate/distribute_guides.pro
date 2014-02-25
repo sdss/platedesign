@@ -160,8 +160,8 @@ if(keyword_set(plot)) then begin
 endif
 
 ;; clean up temporary files
-file_delete, tmp_prob_filename, /verbose
-file_delete, tmp_ans_filename, /verbose
+file_delete, tmp_prob_filename
+file_delete, tmp_ans_filename
 
 return, gnum
 
