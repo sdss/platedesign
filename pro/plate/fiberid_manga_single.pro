@@ -38,9 +38,12 @@ function fiberid_manga_single, default, fibercount, design, $
   nosky=nosky, nostd=nostd, noscience=noscience, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid, $
+  plate_obj=plate_obj, $
   debug=debug, all_design=all_design
 
 common com_fiberid_manga, fiberblocks
+
+skies_per_ifu = (plate_obj->get('definition')).skiesPerIFU
 
 if(keyword_set(respect_fiberid)) then $
   message, 'BOSS spectrograph designs cannot respect fiberid'

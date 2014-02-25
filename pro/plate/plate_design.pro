@@ -40,6 +40,9 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
      return
   endif
 
+  plate_obj = obj_new('hashtable')
+  plate_obj->add, 'id', plateid
+
   splog, '================================================'
   splog, 'Working on plateid: '+ color_string(strtrim(string(plateid),2), 'green', 'bold')
   splog, '================================================'
@@ -61,6 +64,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   if (nplate eq 0) then begin
      message, 'Error: The plate id given (' + string(plateid) + $
               ') was not found in ' + platePlans_file + '.'
+	 obj_destroy, plate_obj
      return
   endif
 
@@ -69,6 +73,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   ha=plan.ha
   temp=plan.temp
   epoch=plan.epoch
+
+  plate_obj->add, 'plan', plan
 
   ;; sanity check for other plates with this designid
   iother= where(plans.designid eq designid AND $
@@ -96,6 +102,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
             string((plateid/100L), f='(i4.4)')+'XX/'+ $
             string(plateid, f='(i6.6)')
   spawn, 'mkdir -p '+platedir
+
+  plate_obj->add, 'platedir', platedir
 
 ;; Delete any output files from a previous run
   if (keyword_set(superclobber)) then begin
@@ -133,6 +141,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   endif
   definition= lines2struct(hdr)
 
+  plate_obj->add, 'definition', definition
+
   if(tag_indx(definition, 'platedesignversion') ge 0) then begin
       if(definition.platedesignversion ne plan.platedesignversion) then $
         message, color_string('Plan file plateDesignVersion inconsistent with (obsolete) definition file value', 'red', 'bold')
@@ -158,6 +168,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
            default.(i)= definition.(j)
      endfor
   endfor
+
+  plate_obj->add, 'default', default
 
 ;; see if we should select guides at highest priority
   if(tag_exist(default, 'GUIDES_FIRST')) then begin
@@ -574,6 +586,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                               minstdinblock=minstdinblock[iinst], $
                                               minskyinblock=minskyinblock[iinst], $
                                               maxskyinblock=maxskyinblock[iinst], $
+											  plate_obj=plate_obj, $
                                               /nostd, /noscience
                  endif
               endfor 
@@ -610,7 +623,13 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                       'targets!'
            plate_log, plateid, 'Not completing plate design '+ $
                       strtrim(string(designid),2)
-           if(keyword_set(debug) eq false) then return else stop
+           if(keyword_set(debug) eq false) then begin
+		       obj_destroy, plate_obj
+			   return
+		   endif else begin
+		       stop
+		   endelse
+
         endif
         
         ;; Find light traps and assign them
@@ -655,6 +674,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                       maxskyinblock=maxskyinblock[iinst], $
                                       block=block, $
                                       respect_fiberid=respect_fiberid, $
+									  plate_obj=plate_obj, $
                                       all_design=design)
               design[icurr].fiberid= fiberids
               design[icurr].block= block
@@ -677,6 +697,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                'to attempt to assign unallocated fibers.'
                           splog, color_string(msg, 'red', 'bold')
                           plate_log, plateid, msg
+						  obj_destroy, plate_obj
                           return
                        endif else begin
                           nextrafibers[iinst,ip-1]=nextrafibers[iinst,ip-1]+1L
@@ -775,6 +796,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   end
 
   succeeded = true
+
+  obj_destroy, plate_obj
 
   return
 end

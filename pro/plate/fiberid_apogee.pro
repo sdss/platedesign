@@ -50,6 +50,7 @@ function fiberid_apogee, default, fibercount, design, $
                          nosky=nosky, nostd=nostd, noscience=noscience, $
                          quiet=quiet, block=block, $
                          respect_fiberid=respect_fiberid, $
+						 plate_obj=plate_obj, $
                          debug=debug, all_design=all_design
 
 common com_fiberid_apogee, fiberblocks

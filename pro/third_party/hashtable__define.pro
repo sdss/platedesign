@@ -49,6 +49,45 @@
 ;       HASHTABLE::STRUCT  returns hash table, converted to a structure
 ;
 ;
+; EXAMPLE:
+;
+;       ;; Create hash table object
+;       ht = obj_new('hashtable')
+;       
+;       ;; Add some entries
+;       ht->add, 'one', 1     ;; Add the scalar number 1
+;       ht->add, 'two', [1,2] ;; Add a vector [1,2]
+;       ht->add, 'struct', {alpha: 1, beta: 2} ;; Add a structure
+;       ht->add, 'hash', obj_new('hashtable')  ;; Add another hash table!
+;
+;       ht->add, 'one', 10    ;; Adding a duplicate entry!!
+;       ;; NOTE: if you do not wish to allow multiple entries with the
+;       ;; same key, then add entries like this:
+;       ht->add, 'one', 10, /replace
+;       ;; in which case 10 would replace 1.
+;
+;       ;; Number of entries stored
+;       print, ht->count()
+;        ---> 5
+;       
+;       ;; Retreive some entries
+;       print, ht->get('two')
+;        ---> [1,2]
+;
+;       ;; How multiple entries are retrieved
+;       print, ht->get('one', position=0)  ;; Returns first entry of this key
+;        ---> 10
+;       print, ht->get('one', position=1)  ;; Returns second entry of this key
+;        ---> 1
+;       
+;       ;; Show number of keys in table
+;       print, ht->keys()
+;        ---> ['two','one','one','struct', 'hash']
+;
+;       ;; Destroy hash table
+;       obj_destroy, ht
+;       
+;
 ; MODIFICATION HISTORY:
 ; 	Written and documented, Nov 2003, CM
 ;       Adjusted ::STRHASHVAL to accomodate possible overflow
@@ -73,10 +112,14 @@
 ;         (thanks to I. Zimine) 30 Jul 2007, CM
 ;       Fix case where user stores many identical keys (more than
 ;         LENGTH), 09 Aug 2007, CM
+;       Add POSITION keyword to ::REMOVE, 12 Nov 2008, CM
+;       Document the REPLACE keyword; correct COUNT() when replacing an
+;        entry, 28 Jun 2009, CM
+;       Add example documentation, 28 Jun 2009, CM
 ; 
-;  $Id: hashtable__define.pro,v 1.11 2007/08/17 00:22:07 craigm Exp $
+;  $Id: hashtable__define.pro,v 1.13 2009/07/01 16:00:05 craigm Exp $
 ;-
-; Copyright (C) 2003, 2004, 2006, 2007, Craig Markwardt
+; Copyright (C) 2003, 2004, 2006, 2007, 2008, 2009, Craig Markwardt
 ; This software is provided as is without any warranty whatsoever.
 ; Permission to use, copy, modify, and distribute modified or
 ; unmodified copies is granted, provided this copyright and disclaimer
@@ -273,7 +316,8 @@ end
 ;       Add an entry to a hash table.
 ;
 ; CALLING SEQUENCE:
-;       HT->ADD, KEYNAME, VALUE, HASHVAL=HASHVAL
+;       HT->ADD, KEYNAME, VALUE, HASHVAL=HASHVAL, REPLACE=REPLACE
+;         
 ;       
 ; DESCRIPTION:
 ;
@@ -292,6 +336,8 @@ end
 ;                 defined upon input, the hash value is computed
 ;                 internally.  Upon output, the hash value used is
 ;                 returned in this variable.
+;       REPLACE - If set, and if an entry with key KEYNAME already
+;                 exists in the table, then replace it with VALUE.
 ;
 ; EXAMPLE:
 ;
@@ -306,6 +352,7 @@ end
 ;
 ; MODIFICATION HISTORY:
 ;       Written and documented, Nov 2003, CM
+;       Document the REPLACE keyword, 28 Jun 2009, CM
 ; 	
 ;-
 
@@ -355,12 +402,13 @@ pro hashtable::add, key, value, hashval=hashval, position=position0, $
       endif else begin
           ;; Add the entry to the top of the bucket
           *(*self.table)[bucket] = [he, list]
+          self.count = self.count + 1
       endelse
   endif else begin
       (*self.table)[bucket] = ptr_new([he])
+      self.count = self.count + 1
   endelse
 
-  self.count = self.count + 1
   status = 1
 
   return
@@ -415,6 +463,13 @@ end
 ;       This method removes one or more hash entries from an existing
 ;       hash table.  Entries whose key matches KEYNAME are removed.
 ;
+;       If KEYNAME does not exist, then REMOVE returns silently.
+;
+;       If multiple entries with the same KEYNAME exist, then they are
+;       all deleted by default, unless the POSITION keyword is set.
+;       After deleting some entries, positions of the remaining
+;       entries may shift.
+;
 ; INPUTS:
 ;       KEYNAME - a scalar string to be removed from the hash table.
 ;
@@ -428,6 +483,10 @@ end
 ;
 ;       COUNT - The number of hash entries removed.
 ;
+;       POSITION - if more than one entry was found, then POSITION is
+;                  a list of indices to delete (indices start at 0).
+;                  IMPORTANT NOTE: out of bounds values are allowed,
+;                  and will be rounded to in-bounds values.
 ;
 ; EXAMPLE:
 ;       HT->REMOVE, 'X'
@@ -437,7 +496,8 @@ end
 ; 	
 ;-
 
-pro hashtable::remove, key, hashval=hashval, count=ct, all=all
+pro hashtable::remove, key, hashval=hashval, count=ct, all=all, $
+             position=position
 
   COMPILE_OPT strictarr
   ;; Compute hash value of key, if it wasn't already computed
@@ -461,6 +521,23 @@ pro hashtable::remove, key, hashval=hashval, count=ct, all=all
   wh = where(hashval EQ hashvals AND key EQ list.key, ct, $
              complement=whg, ncomplement=ctg)
   if ct EQ 0 then return
+
+  ;; Filter by POSITION
+  if n_elements(position) GT 0 then begin
+      mask = bytarr(ct)
+      mask[position] = 1
+      wh1 = where(mask, ct1, complement=whg1, ncomplement=ctg1)
+      if ct1 EQ 0 then return
+
+      ;; If our position filter was a partial hit, then
+      ;; sweep the unhit ones to the "keep" list.
+      if ctg1 GT 0 then begin
+          whg = [whg, wh[whg1]]  ;; Add to keep list
+          ctg = n_elements(whg)
+          wh = wh[wh1]           ;; Remove from delete list
+          ct = n_elements(wh)
+      endif
+  end
 
   if ctg EQ 0 then begin
       ;; No good entries left; clear the bucket
@@ -615,6 +692,10 @@ end
 ;                  found, then the POSITION'th entry is returned in
 ;                  VALUE (the index starts at 0).
 ;
+;                  WARNING: if the hash table has been changed using
+;                  ADD or REMOVE, then the order of elements in the
+;                  table may shift.
+;
 ;       HASHVAL - Use for performance.  If defined upon input,
 ;                 specifies the hash value for this KEYNAME.  If not
 ;                 defined upon input, the hash value is computed
@@ -678,6 +759,8 @@ end
 ; RETURNS:
 ;
 ;       A string array containing the keys of this hash table.
+;       If the table is empty, then COUNT will be set to zero,
+;       and a scalar string '' is returned.
 ;
 ; EXAMPLE:
 ;
@@ -695,7 +778,7 @@ function hashtable::keys, count=ct, _EXTRA=extra
   COMPILE_OPT strictarr
   table = *(self.table)
   wh = where(ptr_valid(table), ct)
-  if ct EQ 0 then return, 0
+  if ct EQ 0 then return, ''
 
   keys = ['']
   for i = 0L, ct-1 do begin

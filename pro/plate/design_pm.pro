@@ -19,7 +19,7 @@
 pro design_pm, design, toepoch=toepoch
 
 if(n_tags(design) eq 0) then $
-  message, 'Usage: design_pm, design, toepoch='
+  message, color_string('Usage: design_pm, design, toepoch=', 'yellow', 'bold')
 
 ;; some sanity checks
 if(tag_indx(design, 'TARGET_RA') eq -1 OR $
@@ -27,20 +27,20 @@ if(tag_indx(design, 'TARGET_RA') eq -1 OR $
    tag_indx(design, 'PMRA') eq -1 OR $
    tag_indx(design, 'PMDEC') eq -1 OR $
    tag_indx(design, 'EPOCH') eq -1) then begin
-    message, 'DESIGN structure must have RA, DEC, PMRA, PMDEC, EPOCH!'
+    message, color_string('DESIGN structure must have RA, DEC, PMRA, PMDEC, EPOCH!', 'red', 'bold')
 endif
 if(n_elements(toepoch) ne 1) then $
-  message, 'TOEPOCH must have one and only one element!'
+  message, color_string('TOEPOCH must have one and only one element!', 'red', 'bold')
 if(toepoch lt 1999.) then $
-  message, 'Do not adjust proper motions for the deep past!'
+  message, color_string('Do not adjust proper motions for the deep past!', 'red', 'bold')
 if(toepoch gt 2100.) then $
-  message, 'Do not adjust proper motions for the far future!'
+  message, color_string('Do not adjust proper motions for the far future!', 'red', 'bold')
 ibad= where(design.epoch lt 1900., nbad)
 if(nbad gt 0) then $
-  message, 'Some design elements have epoch < 1900'
+  message, color_string('Some design elements have epoch < 1900', 'red', 'bold')
 ibad= where(design.epoch gt 2100., nbad)
 if(nbad gt 0) then $
-  message, 'Some design elements have epoch > 2100'
+  message, coloar_string('Some design elements have epoch > 2100', 'red', 'bold')
 
 toepoch=toepoch[0]
 depoch= toepoch-design.epoch
