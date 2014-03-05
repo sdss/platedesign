@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   fiberid_manga
+;   fiberid_manga_single
 ; PURPOSE:
 ;   assign fiberid's to a list of MaNGA targets
 ; CALLING SEQUENCE:
-;   fiberid= fiberid_manga(design)
+;   fiberid= fiberid_manga_single(design)
 ; INPUTS:
 ;   design - [1000] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
@@ -43,13 +43,15 @@ function fiberid_manga_single, default, fibercount, design, $
 
 common com_fiberid_manga, fiberblocks
 
-skies_per_ifu = long((plate_obj->get('definition')).skiesPerIFU)
+;; Check for custom value for number of skies per IFU.
+IF tag_exist(plate_obj->get('definition'),'skiesPerIFU') THEN $
+	skies_per_ifu = long((plate_obj->get('definition')).skiesPerIFU)
 
 if(keyword_set(respect_fiberid)) then $
-  message, 'BOSS spectrograph designs cannot respect fiberid'
+  message, color_string('BOSS spectrograph designs cannot respect fiberid', 'yellow', 'bold')
 
 if(keyword_set(minstdinblock)) then $
-  message, 'Cannot set block constraints for standards in BOSS'
+  message, color_string('Cannot set block constraints for standards in BOSS', 'yellow', 'bold')
 
 platescale = 217.7358           ; mm/degree
 nsky_tot= 92L
@@ -62,7 +64,7 @@ npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 
 if(npointings ne 1 or noffsets ne 0) then $
-   message, 'MaNGA does not support more than one pointing or offset!'
+   message, color_string('MaNGA does not support more than one pointing or offset!', 'red', 'bold')
 
 ip=1L
 io=0L
@@ -83,10 +85,16 @@ for i=0L, nsci-1L do begin
     ;; how many skies needed?
     ifnames= where(fnames.ifudesign eq all_design[isci[i]].ifudesign, nfnames)
     if(nfnames eq 0) then $
-          message, 'Non-existent IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2)
+          message, color_string('Non-existent IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2), 'yellow', 'bold')
     if(nfnames gt 1) then $
-      message, 'More than one IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2)
-    nsky_curr= fnames[ifnames[0]].nsky
+      message, color_string('More than one IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2), 'yellow', 'bold')
+
+	IF n_elements(skies_per_ifu) THEN $
+	  nsky_curr = skies_per_ifu $
+	ELSE $
+	  nsky_curr = fnames[ifnames[0]].nsky
+
+    ;;nsky_curr= fnames[ifnames[0]].nsky
     
     ;; find still-free skies
     isky= where(strupcase(design.holetype) eq 'MANGA_SINGLE' and fiberid eq 0 and $
@@ -97,11 +105,11 @@ for i=0L, nsci-1L do begin
       design[isky].target_ra, design[isky].target_dec, skyradius, m1, m2, d12, $
       max=0
     if(m1[0] eq -1) then $
-      message, 'No available skies!'
+      message, color_string('No available skies!', 'red', 'bold')
     if(n_elements(m1) lt nsky_curr) then $
-      message, 'Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
+      message, color_string('Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
       strtrim(string(nsky_curr),2)+' are needed for IFUDESIGN '+ $
-      strtrim(string(all_design[isci[i]].ifudesign),2)
+      strtrim(string(all_design[isci[i]].ifudesign)), 2, 'red', 'bold')
     
     ;; get angular distribution of available skies
     sky_curr=lonarr(nsky_curr)-1L
@@ -118,7 +126,7 @@ for i=0L, nsci-1L do begin
     for j=0L, nsky_curr-1L do begin
         iok= where(fiberid[isky[m2]] eq 0, nok)
         if(nok eq 0) then $
-          message, 'Ran out of skies! Should not have been possible. Sign of a bug!'
+          message, color_string('Ran out of skies! Should not have been possible. Sign of a bug!', 'red', 'bold')
         dotp= sky_dx_start[j]*sky_dx[iok]+sky_dy_start[j]*sky_dy[iok]
         isort= reverse(sort(dotp))
         fiberid[isky[m2[iok[isort[0]]]]]= curr_fiberid+j
