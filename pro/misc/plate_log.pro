@@ -53,7 +53,7 @@ pro plate_log, plateid, log_string, clobber=clobber
         ;; -------------------
         ;; Set up catch routine for data type conversion error.
         ;; For details, see:
-        ;; http://www.dfanning.com/misc_tips/conversion_errors.html
+        ;; http://www.idlcoyote.com/misc_tips/conversion_errors.html
         ;; -------------------
         CATCH, err_status
         if (err_status NE false) then begin
