@@ -1,14 +1,14 @@
-# Default settings for BOSS
+# Default settings for APOGEE-MANGA
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
-#   SDSS BOSS MARVELS APOGEE
-instruments APOGEE
+#   SDSS BOSS MARVELS APOGEE MANGA
+instruments MANGA MANGA_SINGLE APOGEE
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
 # are not case sensitive. 
-targettypes science_bright science_medium science_faint standard_bright standard_medium sky 
+targettypes science sky standard science_bright science_medium science_faint standard_bright standard_medium
 
 # Number of pointings, and number of offsets per pointing
 # A pointing involves closing the shutter and reacquisition.
@@ -23,16 +23,18 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
+nMANGA_science 17
+nMANGA_sky 0
+nMANGA_standard 12
+nMANGA_SINGLE_science 0
+nMANGA_SINGLE_sky 92
+nMANGA_SINGLE_standard 0
 nAPOGEE_science_bright 85
 nAPOGEE_science_medium 100
 nAPOGEE_science_faint 75
 nAPOGEE_standard_bright 15 
 nAPOGEE_standard_medium 0 
 nAPOGEE_sky 25 
-
-# Placeholders
-nAPOGEE_science 0 
-nAPOGEE_standard 0 
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2
@@ -42,12 +44,24 @@ guidemag_minmax 13. 15.0
 nguidemax 600
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
-# Schlegel measured a minimum separation of 3.72231 mm. 
-# This is 61.5 arcsec at the average plate scale. no BOSS targets 
-# should appear closer than 62 arcsec
-#ferruleSizeBOSS 3.738 <- this is design #!!
+# The Ferrule diameter is 6.99mm
+# So I will assume 7mm here
+# In target selection I have resolved at 116" which is 
+# slightly larger than this
+ferruleSizeMANGA 7.0
+bufferSizeMANGA 0.000
+ferruleSizeMANGA_SINGLE 7.0
+bufferSizeMANGA_SINGLE 0.000
 ferruleSizeAPOGEE 3.72231
-bufferSizeAPOGEE 0.30
+bufferSizeAPOGEE 0.300
+
+# alignment offset for MANGA
+dxAlignmentMANGA -2.75
+dyAlignmentMANGA 0.00
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
 
 # Settings if platedesign is meant to find standards
 # Specify which instruments we need to find standards for
@@ -59,8 +73,9 @@ standardType NONE
 plateDesignSkies NONE
 skyType NONE
 
-# Use BOSS plugmap style
-plugmapstyle plplugmap_apogee
+# Use MANGA plugmap style
+plugmapstyle plplugmap_manga
+mangamagtype fiber2mag
 
 # Default pointing_name
 pointing_name A B C D E F

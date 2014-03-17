@@ -86,11 +86,13 @@ defaults/obsolete/plateDefault-MARVELS_PRE_SINGLE-v0_2.par -text
 defaults/obsolete/plateDefault-MARVELS_PRE_SINGLE-v0_3.par -text
 defaults/plateDefault-APOGEE-BULGE-v1.par -text
 defaults/plateDefault-APOGEE-MANGA-v0.par -text
+defaults/plateDefault-APOGEE-MANGA-v1.par -text
 defaults/plateDefault-APOGEE-MARVELS-DUAL-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-SINGLE-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-v0.par -text
 defaults/plateDefault-APOGEE-v2.par -text
 defaults/plateDefault-BOSS-v4.par -text
+defaults/plateDefault-MANGA-APOGEE-v0.par -text
 defaults/plateDefault-MANGA-v2.par -text
 defaults/plateDefault-MARVELS-DUAL-v1.par -text
 defaults/plateDefault-MARVELS-SINGLE-v1.par -text
