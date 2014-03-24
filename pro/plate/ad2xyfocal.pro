@@ -60,7 +60,7 @@ end
 pro ad2xyfocal, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
                 nodistort=nodistort, lambda=lambda, height=height, $
-                clambda=clambda, nordistort=nordistort
+                clambda=clambda, nordistort=nordistort, pressure=pressure
 
 if(n_elements(lambda) eq 0) then $
   lambda=replicate(5500., n_elements(ra))
