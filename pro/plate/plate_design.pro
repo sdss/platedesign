@@ -262,9 +262,9 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                              strtrim(string(instruments[i]),2)+ $
                              '_'+strtrim(string(targettypes[j]),2))
               if(itag eq -1) then $
-                 message, 'must specify n'+ $
+                 message, color_string('must specify n'+ $
                           strtrim(string(instruments[i]),2)+ $
-                          '_'+strtrim(string(targettypes[j]),2)
+                          '_'+strtrim(string(targettypes[j]),2), 'red', 'bold')
               ntot[i,j,*,*]= long(strsplit(default.(itag),/extr))
            endfor
         endfor
@@ -282,15 +282,15 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
         iboss= where(strupcase(fibercount.instruments) eq 'BOSS', nm)
         if(nm gt 0) then begin
            if(nm gt 1) then $
-              message, 'Only expect one instance of BOSS in instruments!'
+              message, color_string('Only expect one instance of BOSS in instruments!','red', 'bold')
            ntotboss= long(total(fibercount.ntot[iboss,*,*,*]))
            if(ntotboss ne 1000) then $
-              message, 'Expect a total of 1000 fibers for BOSS'
+              message, color_string('Expect a total of 1000 fibers for BOSS', 'red', 'bold')
         endif
         isdss= where(strupcase(fibercount.instruments) eq 'SDSS', nm)
         if(nm gt 0) then begin
            if(nm gt 1) then $
-              message, 'Only expect one instance of SDSS in instruments!'
+              message, color_string('Only expect one instance of SDSS in instruments!', 'red', 'bold')
            ntotsdss= long(total(fibercount.ntot[isdss,*,*,*]))
            if(ntotsdss ne 640) then $
               message, 'Expect a total of 640 fibers for SDSS'
@@ -306,10 +306,10 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
         iapogee= where(strupcase(fibercount.instruments) eq 'APOGEE', nm)
         if(nm gt 0) then begin
            if(nm gt 1) then $
-              message, 'Only expect one instance of APOGEE in instruments!'
+              message, color_string('Only expect one instance of APOGEE in instruments!', 'red', 'bold')
            ntotapogee= long(total(fibercount.ntot[iapogee,*,*,*]))
            if(ntotapogee ne 300) then $
-              message, 'Expect a total of 300 fibers for APOGEE'
+              message, color_string('Expect a total of 300 fibers for APOGEE', 'red', 'bold')
         endif
 
         ;; What conditions on fiber placement exist for each instrument?
@@ -341,8 +341,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
               iguidenums= $
                  tag_indx(default, 'guideNums'+strtrim(string(pointing),2))
               if(iguidenums eq -1) then $
-                 message, 'Must specify guide fiber numbers for pointing '+ $
-                          strtrim(string(pointing),2)
+                 message, color_string('Must specify guide fiber numbers for pointing '+ $
+                          strtrim(string(pointing),2), 'red', 'bold')
               guidenums=long(strsplit(default.(iguidenums),/extr))
               splog, 'Finding guides for pointing #'+ $
                      strtrim(string(pointing),2)
@@ -357,7 +357,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                  plate_assign_guide, definition, default, design, $
                                      guide_design, pointing, guidenums=guidenums 
               endif else begin
-                 message, 'there are no guide fibers! aborting!'
+                 message, color_string('there are no guide fibers! aborting!', 'red', 'bold')
               endelse
            endfor
         endif
