@@ -319,6 +319,11 @@ pro/third_party/galloy/mgarraylist__define.pro -text
 pro/third_party/galloy/mgarraylistiterator__define.pro -text
 pro/third_party/hashtable__define.pro -text
 pro/third_party/undefine.pro -text
+python/notes.md -text
+python/platedesign/Design.py -text
+python/platedesign/InputFile.py -text
+python/platedesign/Plate.py -text
+python/platedesign/__init__.py -text
 src/Makefile -text
 src/cs2/.svnignore -text
 src/cs2/COPYRIGHT -text
