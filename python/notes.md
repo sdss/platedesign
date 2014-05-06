@@ -20,7 +20,7 @@ Code that will verify input files for consistancy and survey-specific constraint
 
 #### Plate Design
 
-
+* *Automatically* copy all columns/fields from the input files into the plPlugMapP files.
 
 #### Postflight
 
