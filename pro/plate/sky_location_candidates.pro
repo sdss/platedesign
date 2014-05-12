@@ -37,7 +37,7 @@ false = 0
 if (~keyword_set(dss_cache)) then $
 	dss_cache_setup
 
-if (~keyword_set(exclude)) then exclude=120.
+if (~keyword_set(exclude)) then exclude=60 ;; 120. ;; fiber exclusion area in arcsec
 
 ; Look in database cache to see if we have done this lookup before.
 ; If nothing is found, input_id = 0.
@@ -46,7 +46,7 @@ dss_cache_lookup, ra, dec, radius, exclude, cand_ra, cand_dec, input_id
 ;splog, 'testing input_id: ' + toString(input_id)
 if (input_id) then begin
 	; we have the result, cand_ra and cand_dec are defined, can just return!
-	splog, 'ra/dec found in local cache.'
+	splog, 'ra/dec found in local cache: ' + toString(ra) + "," + toString(dec)
 	return
 endif
 
@@ -60,12 +60,12 @@ cand_dec=0
 
 ;; if SDSS exists, use its determinations
 if(keyword_set(getenv('PHOTO_SWEEP')) gt 0) then begin
-    objs= sdss_sweep_circle(ra, dec, radius, type='sky', /all, /silent)
-    if(n_tags(objs) gt 0) then begin
-        ing=spheregroup(objs.ra, objs.dec, exclude/3600., firstg=firstg)
-        nmult=max(ing)+1L
-        cand_ra=objs[firstg[0:nmult-1]].ra
-        cand_dec=objs[firstg[0:nmult-1]].dec
+    objs= sdss_sweep_circle(ra, dec, sqrt(2)*radius, type='sky', /all, /silent)
+    if(n_elements(objs) gt 10) then begin
+        ;;ing=spheregroup(objs.ra, objs.dec, exclude/3600., firstg=firstg)
+        ;;nmult=max(ing)+1L
+        cand_ra=objs.ra   ;; objs[firstg[0:nmult-1]].ra
+        cand_dec=objs.dec ;; objs[firstg[0:nmult-1]].dec
         return
     endif else begin
         cand_ra=0
@@ -77,7 +77,7 @@ endif
 ;; make sure we don't land in any detected object, and otherwise we
 ;; want to be in the lowest flux part of the VERY SMOOTHED image 
 ;;   a. download image
-ncand=25L
+ncand=100 ;;25L
 splog, 'Querying DSS.'
 querydss, [ra, dec], image, hdr, survey='2r', imsize=radius*2.*60.
 iz=where(image eq 0, nz)

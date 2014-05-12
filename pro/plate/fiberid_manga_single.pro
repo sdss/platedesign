@@ -108,8 +108,8 @@ for i=0L, nsci-1L do begin
       message, color_string('No available skies!', 'red', 'bold')
     if(n_elements(m1) lt nsky_curr) then $
       message, color_string('Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
-      strtrim(string(nsky_curr),2)+' are needed for IFUDESIGN '+ $
-      strtrim(string(all_design[isci[i]].ifudesign)), 2, 'red', 'bold')
+         strtrim(string(nsky_curr),2)+' are needed for IFUDESIGN '+ $
+         strtrim(string(all_design[isci[i]].ifudesign), 2), 'red', 'bold')
     
     ;; get angular distribution of available skies
     sky_curr=lonarr(nsky_curr)-1L
