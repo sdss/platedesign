@@ -80,6 +80,11 @@ design0={DESIGN_TARGET, $
          manga_target1:0L, $
          manga_target2:0L, $
          eboss_target0:long64(0), $
+		 eboss_target1:long64(0), $
+		 eboss_target2:long64(0), $
+		 eboss_target_id:0L, $
+		 thing_id_targeting:0L, $
+		 objid_targeting:long64(0), $
 		 apogee2_target1:0L, $
 		 apogee2_target2:0L, $
 		 apogee2_target3:0L, $

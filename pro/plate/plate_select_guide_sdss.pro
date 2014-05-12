@@ -120,8 +120,13 @@ if (keyword_set(objs)) then begin
 
     if(tag_indx(objs, 'fiber2flux') eq -1) then begin
       guide_design.fiber2mag= guide_design.fibermag+0.5
-	  message, guide_design.fibermag+0.5
-	  if finite(guide_design.fiber2mag) eq 0 then stop
+	  ;; message, guide_design.fibermag+0.5 - this returns an error - why is this here?
+	  ;; if finite(guide_design.fiber2mag) eq 0 then stop
+	  x = where(finite(guide_design.fiber2mag) eq 0, nan_count)
+	  if nan_count GT 0 then begin
+	    message, color_string('NaN values were found.', 'red', 'bold')
+		stop
+	  endif
     endif else begin
       sdss_flux2lups, objs.fiber2flux, objs.fiber2flux_ivar, counts_err, $
         fiber2mag, fiber2mag_err

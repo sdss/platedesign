@@ -73,15 +73,12 @@ if(keyword_set(doplot)) then begin
 endif
 
 nremember=6L
-while(i lt ngrid AND $
-      ngot lt nsky) do begin
+;;while(i lt ngrid AND $
+;;      ngot lt nsky) do begin
+for i=0, ngrid-1 do begin
     tmp_ra=ragrid[ishuffle[i]]
     tmp_dec=decgrid[ishuffle[i]]
     use_grid=1
-    if(keyword_set(old_ra)) then begin
-        spherematch, tmp_ra, tmp_dec, old_ra, old_dec, tilerad*10., m1, m2,d12
-        if(d12[0] lt tilerad*0.2) then use_grid=0
-    endif
     if(keyword_set(use_grid)) then begin
         sky_location_candidates, tmp_ra, tmp_dec, nspace/2., $
           cand_ra, cand_dec, exclude=exclude, seed=seed
@@ -101,7 +98,7 @@ while(i lt ngrid AND $
             ikeep=where(keep, nkeep)
             if(nkeep gt 0) then begin
                 gotone=1L
-                is=shuffle_indx(nkeep, num_sub=(nper<nkeep), seed=seed)
+                is=shuffle_indx(nkeep, seed=seed)
                 use_ra= cand_ra[ikeep[is]]
                 use_dec= cand_dec[ikeep[is]]
             endif
@@ -137,10 +134,11 @@ while(i lt ngrid AND $
             endif
         endif
     endif
-    i=(i+1) MOD ngrid
+    ;;i=(i+1) ;; MOD ngrid
     if(keyword_set(doplot)) then $
       soplot,rasky, decsky, psym=4, th=4, color='green'
-endwhile
+;;endwhile
+endfor
 
 sky_design= replicate(design_blank(), n_elements(rasky))
 sky_design.target_ra= rasky
