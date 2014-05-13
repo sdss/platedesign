@@ -542,7 +542,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                                  minstdinblock=minstdinblock[iinst], $
                                                  minskyinblock=minskyinblock[iinst], $
                                                  maxskyinblock=maxskyinblock[iinst], $
-                                                 /nosky, /noscience
+                                                 /nosky, /noscience, debug=debug
                     endif else begin
                        plate_assign, definition, default, fibercount, $
                                      design, sphoto_design, seed=seed, $
@@ -587,7 +587,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                                               minskyinblock=minskyinblock[iinst], $
                                               maxskyinblock=maxskyinblock[iinst], $
 											  plate_obj=plate_obj, $
-                                              /nostd, /noscience
+                                              /nostd, /noscience, debug=debug
                  endif
               endfor 
            endfor 

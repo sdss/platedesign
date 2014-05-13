@@ -14,7 +14,7 @@
 pro plate_assign_constrained, definition, default, instrument, $
                               targettype, fibercount, pointing, offset, $
                               design, in_new_design, seed=seed, $
-							  plate_obj=plate_obj, $
+							  plate_obj=plate_obj, debug=debug, $
                               _EXTRA=extra_for_fiberid
 
 ;; params from default

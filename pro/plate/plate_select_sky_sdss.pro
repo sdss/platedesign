@@ -13,6 +13,8 @@
 ;   nsky - number of sky fibers desired (default 64)
 ;   seed - random seed 
 ;   nper - maximum to add per cycle (default 10)
+; OPTIONAL KEYWORDS:
+;   /nosdss - do not use SDSS even if it is available (DSS instead)
 ; OPTIONAL OUTPUTS:
 ;   sky_design - output structure with sky coordinates in J2000 [NSKY]
 ; REVISION HISTORY:
@@ -20,7 +22,7 @@
 ;-
 ;------------------------------------------------------------------------------
 pro plate_select_sky_sdss, racen, deccen, nsky=nsky, tilerad=tilerad, $
-  seed=seed, sky_design=sky_design, nper=nper
+  seed=seed, sky_design=sky_design, nper=nper, nosdss=nosdss
 
 if(NOT keyword_set(nper)) then nper=2L
 if(NOT keyword_set(tilerad)) then tilerad=1.49
@@ -81,7 +83,7 @@ for i=0, ngrid-1 do begin
     use_grid=1
     if(keyword_set(use_grid)) then begin
         sky_location_candidates, tmp_ra, tmp_dec, nspace/2., $
-          cand_ra, cand_dec, exclude=exclude, seed=seed
+          cand_ra, cand_dec, exclude=exclude, seed=seed, nosdss=nosdss
         gotone=0L
         if(keyword_set(cand_ra)) then begin
             keep=lonarr(n_elements(cand_ra))
