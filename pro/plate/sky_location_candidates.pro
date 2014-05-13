@@ -13,6 +13,8 @@
 ;   cand_ra, cand_dec - [Nout] candidate sky locations
 ; OPTIONAL INPUTS:
 ;   exclude - exclusion area around each sky in arcsec (default 120'')
+; OPTIONAL KEYWORDS:
+;   /nosdss - do not use SDSS even if it is available
 ; COMMENTS:
 ;   First checks for SDSS imaging, uses PHOTO sky objects (returns all
 ;     in area).  Uses datasweeps, requires $PHOTO_SWEEP to be set.
@@ -23,8 +25,8 @@
 ;-
 ;------------------------------------------------------------------------------
 pro sky_location_candidates, ra, dec, radius,   $ ; inputs
-							 cand_ra, cand_dec, $ ; output
-                             exclude=exclude, seed=seed ; options
+                             cand_ra, cand_dec, $ ; output
+                             exclude=exclude, seed=seed, nosdss=nosdss ; options
 
 COMPILE_OPT idl2
 COMPILE_OPT logical_predicate
@@ -59,8 +61,10 @@ cand_ra=0
 cand_dec=0
 
 ;; if SDSS exists, use its determinations
-if(keyword_set(getenv('PHOTO_SWEEP')) gt 0) then begin
-    objs= sdss_sweep_circle(ra, dec, sqrt(2)*radius, type='sky', /all, /silent)
+if(keyword_set(getenv('PHOTO_SWEEP')) gt 0 AND $
+   keyword_set(nosdss) eq 0) then begin
+    objs= sdss_sweep_circle(ra, dec, sqrt(2.)*radius, type='sky', $
+                            /all, /silent)
     if(n_elements(objs) gt 10) then begin
         ;;ing=spheregroup(objs.ra, objs.dec, exclude/3600., firstg=firstg)
         ;;nmult=max(ing)+1L
@@ -77,7 +81,7 @@ endif
 ;; make sure we don't land in any detected object, and otherwise we
 ;; want to be in the lowest flux part of the VERY SMOOTHED image 
 ;;   a. download image
-ncand=100 ;;25L
+ncand=25L 
 splog, 'Querying DSS.'
 querydss, [ra, dec], image, hdr, survey='2r', imsize=radius*2.*60.
 iz=where(image eq 0, nz)

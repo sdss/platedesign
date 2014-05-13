@@ -89,6 +89,10 @@ if(nsky gt 0) then begin
               plate_select_sky_sdss, racen, deccen, $
                 nsky=nsky, seed=seed, $
                 sky_design=sky_design
+            'DSS': $
+              plate_select_sky_sdss, racen, deccen, $
+                nsky=nsky, seed=seed, $
+                sky_design=sky_design, /nosdss
             '2MASS': $
               plate_select_sky_tmass, racen, deccen, $
                 nsky=nsky, seed=seed, sky_design=sky_design
@@ -122,9 +126,9 @@ if(nsky gt 0) then begin
         endif
     endif else begin
     	check_file_exists, skyfile, plateid=plateid
-        in_sky_design= yanny_readone(skyfile, /anon)
-        sky_design= replicate(design_blank(), n_elements(in_sky_design))
-        struct_assign, in_sky_design, sky_design, /nozero
+      in_sky_design= yanny_readone(skyfile, /anon)
+      sky_design= replicate(design_blank(), n_elements(in_sky_design))
+      struct_assign, in_sky_design, sky_design, /nozero
     endelse
 endif
 
