@@ -66,7 +66,8 @@ if (keyword_set(objt)) then begin
 
     jkcolor= jmag-kmag
     mag= plate_tmass_to_sdss(jmag, hmag, kmag)
-    red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+    ;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+	red_fac = reddening()
     mag= mag+ red_fac#ebv
 
     indx = where(objt.tmass_bl_flg EQ 111 $

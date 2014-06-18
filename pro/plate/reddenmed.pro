@@ -15,7 +15,8 @@
 function reddenmed, ra, dec
 
 euler, ra, dec, ll, bb, 1
-reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+;reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+reddenvec = reddening() $
             * median(dust_getval(ll, bb, /interp))
 
 return, reddenvec

@@ -271,6 +271,7 @@ pro/plate/plugfile_plplugmap_manga.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/plugmap_blank.pro -text
 pro/plate/ra_in_range.pro -text
+pro/plate/reddening.pro -text
 pro/plate/reddenmed.pro -text
 pro/plate/sdss_plugprob.pro -text
 pro/plate/sdss_rdistort.pro -text

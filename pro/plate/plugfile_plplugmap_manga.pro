@@ -208,11 +208,13 @@ indx = where(strtrim(plug.holetype,2) EQ 'OBJECT' AND $
              holes.pointing eq 1, nobj)
 if(nobj gt 0) then begin
     euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
-    reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+    ;reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+	reddenvic = reddening() $
       * median(dust_getval(ll, bb, /interp))
 endif else begin
    euler, racen[0], deccen[0], ll, bb, 1
-   reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+   ;reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
+   reddenvic = reddening() $
                * (dust_getval(ll, bb, /interp))
 endelse
 

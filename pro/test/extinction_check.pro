@@ -2,7 +2,8 @@ pro extinction_check
 
 files= file_search('plPlugMapP-*.par')
 
-red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+red_fac = reddening()
  
 for i=0L, n_elements(files)-1L do begin
     pl=yanny_readone(files[i], hdr=hdr)
