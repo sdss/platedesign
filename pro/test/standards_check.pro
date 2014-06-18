@@ -28,7 +28,8 @@ usno=usno_read(racen, deccen, 1.5)
 if(n_tags(standards) gt 0) then begin
   ugriz= plate_tmass_to_sdss(standards.tmass_j, standards.tmass_h, $
                              standards.tmass_k)
-  red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+  ;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+  red_fac = reddening()
   glactc, standards.target_ra, standards.target_dec, 2000., gl, gb, 1, /deg
   ebv= dust_getval(gl,gb)
   gmag= ugriz[1,*] ;;+ebv*red_fac[1]

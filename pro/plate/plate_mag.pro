@@ -64,7 +64,8 @@ if(nusnob gt 0) then begin
    kmag= (holes[iusnob].tmass_k - ebv*0.367)
    jkcolor= jmag-kmag
    tmp_mag= plate_tmass_to_sdss(jmag, hmag, kmag)
-   red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+   ;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
+   red_fac = reddening()
    tmp_mag= tmp_mag+ red_fac#ebv
    offset= holes[iusnob].usnob_mag[2]-tmp_mag[1,*]
    for i=0L, 4L do $
