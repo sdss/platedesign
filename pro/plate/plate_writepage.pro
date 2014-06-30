@@ -306,9 +306,8 @@ for indx=0L, n_elements(plateid)-1L do begin
                                  '/plateLines-??????-'+ptype+'.block-*.png', count=count2)
           if(count2 gt 0) then linestable, 'Blocks by color', plunit, tmp_files2
           tmp_files2= file_search(plate_dir(plateid[i])+ $
-                                 '/plateLines-??????-'+ptype+'.*.png', count=count2)
-          if(count2 gt 0) then $
-            linestable, 'Blocks by fiber size', plunit, tmp_files2
+                                 '/plateLines-??????-'+ptype+'.groups-*.png', count=count2)
+          if(count2 gt 0) then linestable, 'Grouped by color', plunit, tmp_files2
        endif
     endfor
     tmp_files= file_search(plate_dir(plateid[i])+'/apogeeMagVsFiber-??????.png', $
