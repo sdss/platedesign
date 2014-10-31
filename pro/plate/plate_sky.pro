@@ -3,6 +3,9 @@
 ;   plate_sky 
 ; PURPOSE:
 ;   Return sky for a given plate set up
+;   This script writes the 'plateSky<instrument>-<designid>-<pointing>-<offset>.par file.
+; RETURN VALUE
+;   Returns a structure of the plateSky file.
 ; CALLING SEQUENCE:
 ;   sky= plate_sky(definition, default, pointing, offset )
 ; REVISION HISTORY:

@@ -54,8 +54,8 @@ if(keyword_set(minstdinblock)) then $
   message, color_string('Cannot set block constraints for standards in BOSS', 'yellow', 'bold')
 
 platescale = 217.7358           ; mm/degree
-nsky_tot= 92L
-nsci_tot= 29L
+;nsky_tot= 92L
+;nsci_tot= 29L
 skyradius= 14./60.
 
 fiberused=0L

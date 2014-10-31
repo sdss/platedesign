@@ -175,9 +175,9 @@ endif
 ;; spectrographid, throughput, primtarget not set
 iapogee=where(strupcase(holes.holetype) eq 'APOGEE', napogee)
 if(napogee gt 0) then begin
-   plug[iapogee].primtarget= holes[iapogee].apogee_target1
+   plug[iapogee].primtarget= holes[iapogee].apogee2_target1
    plug[iapogee].sectarget= plug[iapogee].sectarget OR $
-                            holes[iapogee].apogee_target2
+                            holes[iapogee].apogee2_target2
 endif
 
 imanga=where(strupcase(holes.holetype) eq 'MANGA' or $
