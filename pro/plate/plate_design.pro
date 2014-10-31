@@ -75,6 +75,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   epoch=plan.epoch
 
   plate_obj->add, 'plan', plan
+  plate_obj->add, 'designid', designid
 
   ;; sanity check for other plates with this designid
   iother= where(plans.designid eq designid AND $
@@ -89,6 +90,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                   nbad)
       if(nbad gt 0) then $
         message, color_string('Inconsistency in plan file between this plate and previous from same designid!', 'red', 'bold')
+		STOP
   endif
 
 ;; set random seed 
@@ -104,6 +106,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   spawn, 'mkdir -p '+platedir
 
   plate_obj->add, 'platedir', platedir
+  plate_obj->add, 'designdir', designdir
 
 ;; Delete any output files from a previous run
   if (keyword_set(superclobber)) then begin
@@ -236,6 +239,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
   npointings= long(default.npointings)
   nextrafibers=lonarr(ninstruments, npointings)
 
+  plate_obj->add, 'designfile', designfile
+
 ;; Design the plate if "clobber" is not set or if the output file doesn't exist.
   if (keyword_set(clobber) OR ~file_test(designfile)) then begin
 
@@ -251,6 +256,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
         if(~keyword_set(omit_center)) then $
            design=design_blank(/center)
         design.epoch= epoch
+
+		plate_obj->add, 'design', design
         
         ;; What instruments are being used, and how many science,
         ;; standard and sky fibers do we assign to each?
@@ -579,15 +586,26 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                     splog, 'Assigning initial fibers for skies in '+ $
                            'pointing #'+strtrim(string(pointing),2)+ $
                            ', offset #'+strtrim(string(offset),2)
-                    plate_assign_constrained, definition, default, $
-                                              instruments[iinst], $
-                                              'sky', fibercount, pointing, offset, design, $
-                                              sky_design, seed=seed, $
-                                              minstdinblock=minstdinblock[iinst], $
-                                              minskyinblock=minskyinblock[iinst], $
-                                              maxskyinblock=maxskyinblock[iinst], $
-											  plate_obj=plate_obj, $
-                                              /nostd, /noscience, debug=debug
+					plate_assign_constrained, plate_obj=plate_obj, $
+											 instruments[iinst], $
+					                         'sky', $                ; target type
+											 fibercount, pointing, offset, $
+											 sky_design, seed=seed, $
+											 minstdinblock=minstdinblock[iinst], $
+											 minskyinblock=minskyinblock[iinst], $
+											 maxskyinblock=maxskyinblock[iinst], $
+											 /nostd, /noscience, debug=debug
+
+
+;                    plate_assign_constrained, default, $
+;                                              instruments[iinst], $
+;                                              'sky', fibercount, pointing, offset, design, $
+;                                              sky_design, seed=seed, $
+;                                              minstdinblock=minstdinblock[iinst], $
+;                                              minskyinblock=minskyinblock[iinst], $
+;                                              maxskyinblock=maxskyinblock[iinst], $
+;											  plate_obj=plate_obj, $
+;                                              /nostd, /noscience, debug=debug
                  endif
               endfor 
            endfor 
@@ -619,10 +637,8 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
            endfor
            
            splog, color_string('Not completing plate design '+strtrim(string(designid),2), 'red', 'bold')
-           plate_log, plateid, 'Unused fibers found. Please specify more '+ $
-                      'targets!'
-           plate_log, plateid, 'Not completing plate design '+ $
-                      strtrim(string(designid),2)
+           plate_log, plateid, 'Unused fibers found. Please specify more targets!'
+           plate_log, plateid, 'Not completing plate design '+ strtrim(string(designid),2)
            if(keyword_set(debug) eq false) then begin
 		       obj_destroy, plate_obj
 			   return

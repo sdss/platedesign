@@ -144,6 +144,7 @@ smbox=smooth(image, 40)
 isort=sort(smbox[isky[ikeep]])
 cand_ra=dblarr(ncand)
 cand_dec=dblarr(ncand)
+cand_ra=ra_in_range(cand_ra)
 i=0L
 ic=0L
 
@@ -152,6 +153,7 @@ iteration_count = 0
 while((i lt nkeep) AND (ic lt ncand) AND (iteration_count lt 10000)) do begin
     curr_ra= tmp_ra[isort[i]]
     curr_dec= tmp_dec[isort[i]]
+	curr_ra = ra_in_range(curr_ra)
     useit=1L
     if(ic gt 0) then begin
         spherematch, curr_ra, curr_dec, cand_ra[0:ic-1], cand_dec[0:ic-1], $

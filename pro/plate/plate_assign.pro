@@ -37,7 +37,7 @@ npointings= long(default.npointings)
 ;; such cases
 nlimit=fibercount.ntot
 if(keyword_set(collect)) then $
-  nlimit=fibercount.ncollect
+  nlimit=fibercount.ncollect + 500
 if(keyword_set(nextra)) then begin
     for i=0L, npointings-1L do begin
         for j=0L, ninstruments-1L do begin

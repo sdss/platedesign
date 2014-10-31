@@ -111,8 +111,8 @@ plug.yfocal=holes.yfocal
 ;; spectrographid, throughput, primtarget not set
 plug.spectrographid= 0
 plug.throughput= 0
-plug.primtarget= holes.apogee_target1
-plug.sectarget= plug.sectarget OR holes.apogee_target2
+plug.primtarget= holes.apogee2_target1
+plug.sectarget= plug.sectarget OR holes.apogee2_target2
 
 ;; no SDSS ID
 plug.objid[0]= 0

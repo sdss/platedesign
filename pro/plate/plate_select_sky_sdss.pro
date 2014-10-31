@@ -49,6 +49,7 @@ for i=0L, ngrid-1L do begin
 endfor
 ragrid=reform(ragrid, ngrid*ngrid)
 decgrid=reform(decgrid, ngrid*ngrid)
+ragrid = ra_in_range(ragrid)
 
 ;; but only keep those actually within the tile
 keep=lonarr(n_elements(ragrid))
@@ -74,6 +75,7 @@ if(keyword_set(doplot)) then begin
     soplot, ragrid, decgrid, psym=5, color='red'
 endif
 
+print, color_string('Number of skies requested: '+strtrim(nsky), 'green', 'bold')
 nremember=6L
 ;;while(i lt ngrid AND $
 ;;      ngot lt nsky) do begin
@@ -141,6 +143,8 @@ for i=0, ngrid-1 do begin
       soplot,rasky, decsky, psym=4, th=4, color='green'
 ;;endwhile
 endfor
+
+print, color_string('Number of skies found: '+strtrim(ngot), 'green', 'bold')
 
 sky_design= replicate(design_blank(), n_elements(rasky))
 sky_design.target_ra= rasky
