@@ -88,9 +88,10 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                   plans[iother].programname ne plan.programname OR $
                   plans[iother].drillstyle ne plan.drillstyle, $
                   nbad)
-      if(nbad gt 0) then $
+      if(nbad gt 0) then begin 
         message, color_string('Inconsistency in plan file between this plate and previous from same designid!', 'red', 'bold')
 		STOP
+	   endif
   endif
 
 ;; set random seed 
