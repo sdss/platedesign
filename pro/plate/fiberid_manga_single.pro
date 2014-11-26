@@ -1,5 +1,3 @@
-;+
-; NAME:
 ;   fiberid_manga_single
 ; PURPOSE:
 ;   assign fiberid's to a list of MaNGA targets
@@ -54,8 +52,8 @@ if(keyword_set(minstdinblock)) then $
   message, color_string('Cannot set block constraints for standards in BOSS', 'yellow', 'bold')
 
 platescale = 217.7358           ; mm/degree
-;nsky_tot= 92L
-;nsci_tot= 29L
+nsky_tot= 92L
+nsci_tot= 29L
 skyradius= 14./60.
 
 fiberused=0L
@@ -94,8 +92,6 @@ for i=0L, nsci-1L do begin
 	ELSE $
 	  nsky_curr = fnames[ifnames[0]].nsky
 
-    ;;nsky_curr= fnames[ifnames[0]].nsky
-    
     ;; find still-free skies
     isky= where(strupcase(design.holetype) eq 'MANGA_SINGLE' and fiberid eq 0 and $
                 design.pointing eq ip and design.offset eq io, nsky)

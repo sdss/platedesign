@@ -258,7 +258,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
            design=design_blank(/center)
         design.epoch= epoch
 
-		plate_obj->add, 'design', design
+		;plate_obj->add, 'design', design
         
         ;; What instruments are being used, and how many science,
         ;; standard and sky fibers do we assign to each?
@@ -587,26 +587,26 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                     splog, 'Assigning initial fibers for skies in '+ $
                            'pointing #'+strtrim(string(pointing),2)+ $
                            ', offset #'+strtrim(string(offset),2)
-					plate_assign_constrained, plate_obj=plate_obj, $
-											 instruments[iinst], $
-					                         'sky', $                ; target type
-											 fibercount, pointing, offset, $
-											 sky_design, seed=seed, $
-											 minstdinblock=minstdinblock[iinst], $
-											 minskyinblock=minskyinblock[iinst], $
-											 maxskyinblock=maxskyinblock[iinst], $
-											 /nostd, /noscience, debug=debug
+;					plate_assign_constrained, plate_obj=plate_obj, $
+;											 instruments[iinst], $
+;					                         'sky', $                ; target type
+;											 fibercount, pointing, offset, $
+;											 sky_design, seed=seed, $
+;											 minstdinblock=minstdinblock[iinst], $
+;											 minskyinblock=minskyinblock[iinst], $
+;											 maxskyinblock=maxskyinblock[iinst], $
+;											 /nostd, /noscience, debug=debug
 
 
-;                    plate_assign_constrained, default, $
-;                                              instruments[iinst], $
-;                                              'sky', fibercount, pointing, offset, design, $
-;                                              sky_design, seed=seed, $
-;                                              minstdinblock=minstdinblock[iinst], $
-;                                              minskyinblock=minskyinblock[iinst], $
-;                                              maxskyinblock=maxskyinblock[iinst], $
-;											  plate_obj=plate_obj, $
-;                                              /nostd, /noscience, debug=debug
+                    plate_assign_constrained, default, $
+                                              instruments[iinst], $
+                                              'sky', fibercount, pointing, offset, design, $
+                                              sky_design, seed=seed, $
+                                              minstdinblock=minstdinblock[iinst], $
+                                              minskyinblock=minskyinblock[iinst], $
+                                              maxskyinblock=maxskyinblock[iinst], $
+											  plate_obj=plate_obj, $
+                                              /nostd, /noscience, debug=debug
                  endif
               endfor 
            endfor 
