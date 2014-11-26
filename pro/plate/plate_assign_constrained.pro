@@ -14,20 +14,20 @@
 ;   28-Aug-2014  Demitri Muna, OSU - removed definition parameter for plate_obj, other edits.
 ;-
 ;------------------------------------------------------------------------------
-;pro plate_assign_constrained, default, instrument, $
-;                              targettype, fibercount, pointing, offset, $
-;                              design, in_new_design, seed=seed, $
-;							  plate_obj=plate_obj, debug=debug, $
-;                              _EXTRA=extra_for_fiberid
-pro plate_assign_constrained, plate_obj=plate_obj, instrument, targettype, $
-							  fibercount, pointing, offset, $
-							  in_new_design, seed=seed, $
-							  debug=debug, _EXTRA=extra_for_fiberid
+pro plate_assign_constrained, default, instrument, $
+                              targettype, fibercount, pointing, offset, $
+                              design, in_new_design, seed=seed, $
+							  plate_obj=plate_obj, debug=debug, $
+                              _EXTRA=extra_for_fiberid
+;pro plate_assign_constrained, plate_obj=plate_obj, instrument, targettype, $
+;							  fibercount, pointing, offset, $
+;							  in_new_design, seed=seed, $
+;							  debug=debug, _EXTRA=extra_for_fiberid
 
 ; Extract the values from the plate object for compatibility. These
 ; can be directly used below as convenient.
-default = plate_obj->get('default')
-design = plate_obj->get('design')
+;default = plate_obj->get('default')
+;design = plate_obj->get('design')
 
 ;; params from default
 targettypes= strsplit(default.targettypes, /extr)
