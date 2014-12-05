@@ -108,14 +108,15 @@ ifit= where(full[igood].lambda_eff eq guideon, nfit)
 if(nfit eq 0) then begin
    file_delete, adjustfile, /allow
    file_delete, offsetfile, /allow
-   splog, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
+   print, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
    return
 endif
 
 ; Set up hour angle window for guiding optimization and offset calculations
 if(ha[pointing-1L] lt -120. OR $
    ha[pointing-1L] gt  120.) then begin
-   message, 'HA desired is more than 120 deg! I refuse.'
+   ;message, color_string('HA desired is more than 120 deg! I refuse.', 'red', 'bold')
+   print, color_string('HA desired is more than 120 deg! Double check that this is intended.', 'yellow', 'blink')
 endif
 
 nha=17L
