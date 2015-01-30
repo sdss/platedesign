@@ -15,6 +15,7 @@
 ; REVISION HISTORY:
 ;   25-Aug-2009  MRB, NYU
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
+;   28-Jan-2015  Demitri Muna, Reading definition file with external function
 ;-
 pro designscale, plateid, altscale=altscale, azscale=azscale, pa=pa, $
                  lambda_eff=lambda_eff
@@ -36,14 +37,15 @@ iplate=where(plans.plateid eq plateid, nplate)
 plan=plans[iplate]
 
 ;; read in the definition
-definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
-              string(f='(i4.4)', (plan.designid/100L))+'XX'
-definitionfile=definitiondir+'/'+ $
-               'plateDefinition-'+ $
-               string(f='(i6.6)', plan.designid)+'.par'
-check_file_exists, definitionfile, plateid=plateid
-dum= yanny_readone(definitionfile, hdr=hdr)
-definition= lines2struct(hdr)
+;definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
+;              string(f='(i4.4)', (plan.designid/100L))+'XX'
+;definitionfile=definitiondir+'/'+ $
+;               'plateDefinition-'+ $
+;               string(f='(i6.6)', plan.designid)+'.par'
+;check_file_exists, definitionfile, plateid=plateid
+;dum= yanny_readone(definitionfile, hdr=hdr)
+;definition= lines2struct(hdr)
+definition = plate_definition(designid=plan.designid)
 
 ;; Read in the plate defaults file
 ;; (reset any tags that are overwritten by plateDefinition)

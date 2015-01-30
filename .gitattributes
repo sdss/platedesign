@@ -219,6 +219,7 @@ pro/plate/plate_assign_guide.pro -text
 pro/plate/plate_center.pro -text
 pro/plate/plate_counterbore.pro -text
 pro/plate/plate_counterbore_manga.pro -text
+pro/plate/plate_definition.pro -text
 pro/plate/plate_design.pro -text
 pro/plate/plate_dir.pro -text
 pro/plate/plate_guide.pro -text

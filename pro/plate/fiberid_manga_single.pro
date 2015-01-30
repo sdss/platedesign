@@ -1,4 +1,4 @@
-;   fiberid_manga_single
+
 ; PURPOSE:
 ;   assign fiberid's to a list of MaNGA targets
 ; CALLING SEQUENCE:
@@ -37,7 +37,7 @@ function fiberid_manga_single, default, fibercount, design, $
   quiet=quiet, block=block, $
   respect_fiberid=respect_fiberid, $
   plate_obj=plate_obj, $
-  debug=debug, all_design=all_design
+  debug=debug, all_design=all_design, respect_ifuid=respect_ifuid
 
 common com_fiberid_manga, fiberblocks
 
@@ -80,12 +80,15 @@ isci= where(strupcase(all_design.holetype) eq 'MANGA' and $
 fnames= yanny_readone(getenv('MANGACORE_DIR')+'/cartmaps/manga_ferrule_names.par')
 curr_fiberid= 1L+nsci+1L
 for i=0L, nsci-1L do begin
+
+	ifudesign = all_design[isci[i]].ifudesign
+
     ;; how many skies needed?
-    ifnames= where(fnames.ifudesign eq all_design[isci[i]].ifudesign, nfnames)
+    ifnames= where(fnames.ifudesign eq ifudesign, nfnames)
     if(nfnames eq 0) then $
-          message, color_string('Non-existent IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2), 'yellow', 'bold')
+          message, color_string('Non-existent IFUDESIGN: '+strtrim(string(ifudesign),2), 'yellow', 'bold')
     if(nfnames gt 1) then $
-      message, color_string('More than one IFUDESIGN: '+strtrim(string(all_design[isci[i]].ifudesign),2), 'yellow', 'bold')
+      message, color_string('More than one IFUDESIGN: '+strtrim(string(ifudesign),2), 'yellow', 'bold')
 
 	IF n_elements(skies_per_ifu) THEN $
 	  nsky_curr = skies_per_ifu $
@@ -95,17 +98,30 @@ for i=0L, nsci-1L do begin
     ;; find still-free skies
     isky= where(strupcase(design.holetype) eq 'MANGA_SINGLE' and fiberid eq 0 and $
                 design.pointing eq ip and design.offset eq io, nsky)
+
+    available_skies = design[isky]
+	
+    ;; check if the sky fibers are provided by ID
+    if tag_exist(plate_obj->get('definition'), 'RESPECTIFUID') then begin
+		;; reduce available skies to ones that match the ifudesign value
+		idx = where(available_skies.ifuid eq ifudesign, nidx)
+		if nidx eq 0 then $
+		    print, color_string('Warning: expected to find skies assigned for ifudesign=' + $
+			                    strtrim(string(ifudesign),2) + ', but none were found.', 'yellow', 'normal')
+		available_skies = available_skies[idx]
+    endif
     
-    ;; find available skies
+	;; find available skies
     spherematch, all_design[isci[i]].target_ra, all_design[isci[i]].target_dec, $
-      design[isky].target_ra, design[isky].target_dec, skyradius, m1, m2, d12, $
+      available_skies.target_ra, available_skies.target_dec, skyradius, m1, m2, d12, $
       max=0
     if(m1[0] eq -1) then $
       message, color_string('No available skies!', 'red', 'bold')
+	
     if(n_elements(m1) lt nsky_curr) then $
       message, color_string('Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
          strtrim(string(nsky_curr),2)+' are needed for IFUDESIGN '+ $
-         strtrim(string(all_design[isci[i]].ifudesign), 2), 'red', 'bold')
+         strtrim(string(ifudesign), 2), 'red', 'bold')
     
     ;; get angular distribution of available skies
     sky_curr=lonarr(nsky_curr)-1L
@@ -126,7 +142,7 @@ for i=0L, nsci-1L do begin
         dotp= sky_dx_start[j]*sky_dx[iok]+sky_dy_start[j]*sky_dy[iok]
         isort= reverse(sort(dotp))
         fiberid[isky[m2[iok[isort[0]]]]]= curr_fiberid+j
-        block[isky[m2[iok[isort[0]]]]]= all_design[isci[i]].ifudesign
+        block[isky[m2[iok[isort[0]]]]]= ifudesign
     endfor
     
     curr_fiberid= curr_fiberid+ nsky_curr
