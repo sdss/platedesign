@@ -132,18 +132,19 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
 ;;   $PLATELIST_DIR/definitions/[did/100]00/plateDefinition-[did].par
 ;; as in 
 ;;   $PLATELIST_DIR/definitions/001000/plateDefinition-001045.par
-  definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
-                string(f='(i4.4)', (designid/100L))+'XX'
-  definitionfile=definitiondir+'/'+ $
-                 'plateDefinition-'+ $
-                 string(f='(i6.6)', designid)+'.par'
-  check_file_exists, definitionfile, plateid=plateid
-  dum= yanny_readone(definitionfile, hdr=hdr)
-  if(~keyword_set(hdr)) then begin
-     message, 'Error: plateDefinition file not found: ' + $
-              definitionfile + ' (plate id: (' + string(plateid) + ')'
-  endif
-  definition= lines2struct(hdr)
+;  definitiondir=getenv('PLATELIST_DIR')+'/definitions/'+ $
+;                string(f='(i4.4)', (designid/100L))+'XX'
+;  definitionfile=definitiondir+'/'+ $
+;                 'plateDefinition-'+ $
+;                 string(f='(i6.6)', designid)+'.par'
+;  check_file_exists, definitionfile, plateid=plateid
+;  dum= yanny_readone(definitionfile, hdr=hdr)
+;  if(~keyword_set(hdr)) then begin
+;     message, 'Error: plateDefinition file not found: ' + $
+;              definitionfile + ' (plate id: (' + string(plateid) + ')'
+;  endif
+;  definition= lines2struct(hdr)
+definition = plate_definition(designid=designid)
 
   plate_obj->add, 'definition', definition
 
@@ -403,7 +404,7 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
                              ' param set'
                  infile=getenv('PLATELIST_DIR')+ $
                         '/inputs/'+definition.(itag)
-                 splog, 'Reading '+infile
+                 splog, 'Reading input: '+infile
                  check_file_exists, infile, plateid=plateid
                  tmp_targets= yanny_readone(infile, hdr=hdr, /anon)
                  if(n_tags(tmp_targets) eq 0) then $

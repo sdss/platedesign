@@ -106,7 +106,8 @@ design0={DESIGN_TARGET, $
          epoch:default_epoch(), $
          pmra:0., $
          pmdec:0., $
-         targetids:'NA' $
+         targetids:'NA', $
+		 ifuid: 0L $
         }
 
 if(keyword_set(center)) then begin
