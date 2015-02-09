@@ -6,6 +6,8 @@
 ; INPUTS:
 ;   design - [1000] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
+;			 This is the list being considered for potential assignment.
+;   all_design - full list of the design structure
 ; OPTIONAL INPUTS:
 ;   minstdinblock, minskyinblock, maxskyinblock
 ;          - nominally, min/max number of standards or skies to assign
@@ -19,6 +21,7 @@
 ;   /noscience - do not attempt to assign any of the science fibers
 ; OUTPUTS:
 ;   fiberid - 1-indexed list of fibers 
+;	block
 ; COMMENTS:
 ;   Uses sdss_plugprob to solve the plugging problem for skies.
 ;   First, assigns standards
@@ -28,6 +31,7 @@
 ;   4-Jun-2008 MRB, NYU 
 ;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;   20-Sep-2012 MRB, NYU, altered from BOSS for MaNGA
+;   Feb 2015, Demitri Muna, altered to accept survey-selected sky fibers per IFU
 ;-
 function fiberid_manga_single, default, fibercount, design, $
   minstdinblock=minstdinblock, $
@@ -68,6 +72,7 @@ ip=1L
 io=0L
 
 ;; assign science
+;;    isci - indices of science or standard targets
 block= lonarr(n_elements(fiberid))-1L
 isci= where(strupcase(all_design.holetype) eq 'MANGA' and $
             (strupcase(all_design.targettype) eq 'SCIENCE' or $
@@ -81,7 +86,8 @@ fnames= yanny_readone(getenv('MANGACORE_DIR')+'/cartmaps/manga_ferrule_names.par
 curr_fiberid= 1L+nsci+1L
 for i=0L, nsci-1L do begin
 
-	ifudesign = all_design[isci[i]].ifudesign
+	ifu = all_design[isci[i]] ; current IFU
+	ifudesign = ifu.ifudesign
 
     ;; how many skies needed?
     ifnames= where(fnames.ifudesign eq ifudesign, nfnames)
@@ -96,25 +102,23 @@ for i=0L, nsci-1L do begin
 	  nsky_curr = fnames[ifnames[0]].nsky
 
     ;; find still-free skies
+	;; isky indices are of 'design' for this file.  available skies, i.e. available_skies = design[isky]
     isky= where(strupcase(design.holetype) eq 'MANGA_SINGLE' and fiberid eq 0 and $
                 design.pointing eq ip and design.offset eq io, nsky)
 
-    available_skies = design[isky]
-	
     ;; check if the sky fibers are provided by ID
     if tag_exist(plate_obj->get('definition'), 'RESPECTIFUID') then begin
 		;; reduce available skies to ones that match the ifudesign value
-		idx = where(available_skies.ifuid eq ifudesign, nidx)
+		idx = where(design[isky].ifuid eq ifudesign, nidx)
 		if nidx eq 0 then $
 		    print, color_string('Warning: expected to find skies assigned for ifudesign=' + $
 			                    strtrim(string(ifudesign),2) + ', but none were found.', 'yellow', 'normal')
-		available_skies = available_skies[idx]
+		isky = isky[idx] ; update indices of available skies
     endif
     
 	;; find available skies
-    spherematch, all_design[isci[i]].target_ra, all_design[isci[i]].target_dec, $
-      available_skies.target_ra, available_skies.target_dec, skyradius, m1, m2, d12, $
-      max=0
+    spherematch, ifu.target_ra, ifu.target_dec, $
+      design[isky].target_ra, design[isky].target_dec, skyradius, m1, m2, d12, max=0
     if(m1[0] eq -1) then $
       message, color_string('No available skies!', 'red', 'bold')
 	
@@ -122,11 +126,14 @@ for i=0L, nsci-1L do begin
       message, color_string('Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
          strtrim(string(nsky_curr),2)+' are needed for IFUDESIGN '+ $
          strtrim(string(ifudesign), 2), 'red', 'bold')
+
+	;; filter out fibers that didn't match
+	isky = isky[m2]
     
     ;; get angular distribution of available skies
     sky_curr=lonarr(nsky_curr)-1L
-    sky_dx= design[isky[m2]].xf_default-all_design[isci[i]].xf_default
-    sky_dy= design[isky[m2]].yf_default-all_design[isci[i]].yf_default
+    sky_dx= design[isky].xf_default-ifu.xf_default
+    sky_dy= design[isky].yf_default-ifu.yf_default
     sky_dr= sqrt(sky_dx^2+sky_dy^2)
     sky_dx= sky_dx/sky_dr
     sky_dy= sky_dy/sky_dr
@@ -136,13 +143,13 @@ for i=0L, nsci-1L do begin
     sky_dx_start= cos(sky_angles_start)
     sky_dy_start= sin(sky_angles_start)
     for j=0L, nsky_curr-1L do begin
-        iok= where(fiberid[isky[m2]] eq 0, nok)
+        iok= where(fiberid[isky] eq 0, nok)
         if(nok eq 0) then $
           message, color_string('Ran out of skies! Should not have been possible. Sign of a bug!', 'red', 'bold')
         dotp= sky_dx_start[j]*sky_dx[iok]+sky_dy_start[j]*sky_dy[iok]
         isort= reverse(sort(dotp))
-        fiberid[isky[m2[iok[isort[0]]]]]= curr_fiberid+j
-        block[isky[m2[iok[isort[0]]]]]= ifudesign
+        fiberid[isky[iok[isort[0]]]]= curr_fiberid+j
+        block[isky[iok[isort[0]]]]= ifudesign
     endfor
     
     curr_fiberid= curr_fiberid+ nsky_curr
