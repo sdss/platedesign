@@ -79,6 +79,7 @@ design0={DESIGN_TARGET, $
          apogee_target2:0L, $
          manga_target1:0L, $
          manga_target2:0L, $
+		 manga_target3:0L, $
          eboss_target0:long64(0), $
 		 eboss_target1:long64(0), $
 		 eboss_target2:long64(0), $

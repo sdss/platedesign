@@ -94,6 +94,17 @@ pro plate_design, plateid, debug=debug, clobber=clobber, $
 	   endif
   endif
 
+;; Check for correct drill style. Valid values:
+;;
+;; - "boss" indicates a BOSS cart
+;; - "bright" indicates an APOGEE-only plate
+;; - "manga" indicates a MaNGA/APOGEE or APOGEE/MaNGA plate
+if (strpos(plan.platerun, 'manga') gt -1) then begin
+    ;; This is a MaNGA plate - check drillstyle which must be 'manga'
+    if (strmatch(plan.drillstyle, 'manga') eq 0) then $
+        message, color_string('The drill style for a MaNGA plate must be "manga", but is "' + plan.drillstyle + '".', 'red', 'bold')
+endif
+
 ;; set random seed 
   origseed=-designid
   seed=origseed
@@ -150,7 +161,8 @@ definition = plate_definition(designid=designid)
 
   if(tag_indx(definition, 'platedesignversion') ge 0) then begin
       if(definition.platedesignversion ne plan.platedesignversion) then $
-        message, color_string('Plan file plateDesignVersion inconsistent with (obsolete) definition file value', 'red', 'bold')
+        message, color_string('Plan file plateDesignVersion ("' + str(plan.platedesignversion) + $
+					'") inconsistent with (obsolete) definition file value ("' + str(definition.platedesignversion) + '")', 'red', 'bold')
   endif
 
 ;; Read in the plate defaults file
@@ -439,7 +451,7 @@ definition = plate_definition(designid=designid)
               ;; apply proper motions to the designs
               splog, 'Applying proper motions'
               design_pm, new_design, toepoch=epoch
-              
+
               ;; assign holes to each plateInput file
               splog, 'Assigning holes (checking geometric constraints)'
               plate_assign, definition, default, fibercount, design, $
@@ -544,7 +556,7 @@ definition = plate_definition(designid=designid)
                            'pointing #'+strtrim(string(pointing),2)+ $
                            ', offset #'+strtrim(string(offset),2)
                     if(minstdinblock[iinst] gt 0) then begin
-                       plate_assign_constrained, definition, default, $
+                       plate_assign_constrained, default, $
                                                  instruments[iinst], $
                                                  'standard', fibercount, pointing, offset, $
                                                  design, sphoto_design, seed=seed, $
@@ -562,7 +574,6 @@ definition = plate_definition(designid=designid)
            endfor 
         endfor
 
-        
         ;; Find sky fibers and assign them
         for pointing=1L, npointings do begin
            for offset=0L, noffsets do begin

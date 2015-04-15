@@ -15,7 +15,6 @@
 ;------------------------------------------------------------------------------
 function plate_sky, definition, default, instrument, pointing, offset, $
                     seed=seed
-
 if(NOT tag_exist(default, 'PLATEDESIGNSKIES')) then begin
     return, 0
 endif 

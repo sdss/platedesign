@@ -72,14 +72,14 @@ while(gotall eq 0) do begin
 			BREAK
 			END
 		'apogee': BEGIN
-			fiberids = fiberid_apogee(default=default, fibercount=test_fibercount, $
-			               design=test_design[icurr], all_design=test_design, $
+			fiberids = fiberid_apogee(default, test_fibercount, $
+			               test_design[icurr], all_design=test_design, $
 						   plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
 			BREAK
 			END
 		'boss': BEGIN
-			fiberids = fiberid_boss(default=default, fibercount=test_fibercount, $
-						 design=test_design[icurr], all_design=test_design, $
+			fiberids = fiberid_boss(default, test_fibercount, $
+						 test_design[icurr], all_design=test_design, $
 						 plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
 			BREAK
 			END

@@ -64,7 +64,7 @@ if(tag_exist(targets, 'PMRA') ne tag_exist(targets, 'PMDEC')) then $
   message, color_string('Must have both PMRA and PMDEC or neither in input target list!', 'yellow', 'normal')
 if(tag_exist(targets, 'PMRA') gt 0 AND $
    tag_exist(targets, 'EPOCH') eq 0) then $
-  message, color_string('If PMRA and PMDEC are set, EPOCH must be set as well!', 'yellow', 'normal')
+  message, color_string('If PMRA and PMDEC are set, EPOCH must be set as well! Please update the input file listed immediate above this line.', 'yellow', 'normal')
 if(tag_exist(targets, 'PMRA')) then begin
     pmra= targets.pmra
     pmdec= targets.pmdec
