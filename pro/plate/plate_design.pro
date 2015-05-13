@@ -20,6 +20,34 @@
 ;   3-Jan-2011 Demitri Muna, NYU, Adding color_string output so errors stand out.
 ;-
 ;------------------------------------------------------------------------------
+;
+; Gets position in definition structure for a given input number
+function itag_input, definition, iplateinput, inputtype=inputtype
+
+platetag= tag_indx(definition, $
+                   'plateInput'+strtrim(string(iplateinput),2))
+skytag= tag_indx(definition, $
+                 'skyInput'+strtrim(string(iplateinput),2))
+if(platetag eq -1 and skytag eq -1) then $
+  message, 'no plateInput'+strtrim(string(iplateinput),2)+ $
+  ' or skyInput'+strtrim(string(iplateinput),2)+' param set'
+if(platetag ge 0 and skytag ge 0) then $
+  message, 'both plateInput'+strtrim(string(iplateinput),2)+ $
+  ' or skyInput'+strtrim(string(iplateinput),2)+' params set; must '+ $
+  'set one or other but not both'
+if(platetag ge 0) then begin
+    itag=platetag
+    inputtype='plateInput'
+endif 
+if(skytag ge 0) then begin
+    itag=skytag
+    inputtype='skyInput'
+endif 
+
+return, itag
+
+end
+;
 pro plate_design, plateid, debug=debug, clobber=clobber, $
                   superclobber=superclobber, succeeded=succeeded
 
@@ -407,13 +435,18 @@ definition = plate_definition(designid=designid)
               
               ;; read in each plateInput file at this priority level
               new_design=0
+              current_inputtype=''
+              current_pointing=-1L
+              current_offset=-1L
+              current_instrument=''
               for j=0L, ncurr-1L do begin
                  k=icurr[j]
-                 itag=tag_indx(definition, $
-                               'plateInput'+strtrim(string(k+1),2))
-                 if(itag eq -1) then $
-                    message, 'no plateInput'+strtrim(string(k+1),2)+ $
-                             ' param set'
+                 ;; Get tag number in structure for input file
+                 ;; (either skyInput or plateInput)
+                 itag= itag_input(definition, k+1, inputtype=inputtype)
+                 current_inputtype=inputtype
+                 
+                 ;; Read in file and header
                  infile=getenv('PLATELIST_DIR')+ $
                         '/inputs/'+definition.(itag)
                  splog, 'Reading input: '+infile
@@ -423,6 +456,26 @@ definition = plate_definition(designid=designid)
                     message, 'empty plateInput file '+infile
                  hdrs[k]=ptr_new(hdr)
                  hdrstr=lines2struct(hdr)
+
+                 ;; Make sure for skyInput cases it is the only input
+                 ;; at this priority
+                 if(inputtype eq 'skyInput') then begin
+                     if(ncurr gt 1) then $
+                       message, 'Only one skyInput file allowed at a given priority level'
+                     current_pointing=hdrstr.pointing
+                     current_instrument=hdrstr.instrument
+                     ioff= tag_indx(hdrstr, 'OFFSET') 
+                     if(ioff ge 0) then $
+                       current_offset=hdrstr.(ioff) $
+                     else $
+                       current_offset=0
+                 endif
+                 
+                 ;; check that if skyInput is set, we are actually
+                 ;; looking at sky targets
+                 if(current_inputtype eq 'skyInput' and $
+                    strlowcase(hdrstr.targettype) ne 'sky') then $
+                   message, 'skyInput is being specified for non-sky targettype'
                  
                  ;; check data type of ra and dec -- abort if they are not
                  ;; typed double
@@ -446,17 +499,38 @@ definition = plate_definition(designid=designid)
                     ifirst= [ifirst, n_elements(new_design)]
                     new_design=[new_design, tmp_design]
                  endelse
-              endfor
-
+             endfor
+             
               ;; apply proper motions to the designs
               splog, 'Applying proper motions'
               design_pm, new_design, toepoch=epoch
 
               ;; assign holes to each plateInput file
-              splog, 'Assigning holes (checking geometric constraints)'
-              plate_assign, definition, default, fibercount, design, $
-                            new_design, seed=seed, nextra=nextrafibers
-
+              if(current_inputtype eq 'plateInput') then begin
+                  splog, 'Assigning holes (checking geometric constraints)'
+                  plate_assign, definition, default, fibercount, design, $
+                    new_design, seed=seed, nextra=nextrafibers
+              endif else if (current_inputtype eq 'skyInput') then begin
+                  splog, 'Assigning holes as if these were native platedesign skies'
+                  splog, 'Assigning initial fibers for skies in '+ $
+                    'pointing #'+strtrim(string(current_pointing),2)+ $
+                    ', offset #'+strtrim(string(current_offset),2)
+                  iinst= where(instruments eq current_instrument, ninst)
+                  if(ninst eq 0) then $
+                    message, 'No such instrument '+current_instrument
+                  iinst=iinst[0]
+                  plate_assign_constrained, default, $
+                    instruments[iinst],'sky', fibercount, current_pointing, $
+                    current_offset, design, $
+                    new_design, seed=seed, minstdinblock=minstdinblock[iinst], $
+                    minskyinblock=minskyinblock[iinst], $
+                    maxskyinblock=maxskyinblock[iinst], $
+                    plate_obj=plate_obj, $
+                    /nostd, /noscience, debug=debug
+              endif else begin
+                  message, 'No such input type '+inputtype
+              endelse
+                  
               ;; if first entry is a conflict, AND this is highest
               ;; priority level, that is fishy: flag a warning
               for j=0L, n_elements(ifirst)-1L do begin
@@ -476,12 +550,7 @@ definition = plate_definition(designid=designid)
                  if(nthis gt 0) then begin
                     outstr= new_design[ithis]
                     pdata= ptr_new(outstr)
-                    itag=tag_indx(definition, 'plateInput'+ $
-                                  strtrim(string(iplate[j]),2))
-                    if(itag eq -1) then $
-                       message, 'no plateInput'+ $
-                                strtrim(string(iplate[j]+1),2)+ $
-                                ' param set'
+                    itag= itag_input(definition, iplate)
                     infile=getenv('PLATELIST_DIR')+ '/inputs/'+ $
                            definition.(itag)
                     filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
@@ -599,16 +668,6 @@ definition = plate_definition(designid=designid)
                     splog, 'Assigning initial fibers for skies in '+ $
                            'pointing #'+strtrim(string(pointing),2)+ $
                            ', offset #'+strtrim(string(offset),2)
-;					plate_assign_constrained, plate_obj=plate_obj, $
-;											 instruments[iinst], $
-;					                         'sky', $                ; target type
-;											 fibercount, pointing, offset, $
-;											 sky_design, seed=seed, $
-;											 minstdinblock=minstdinblock[iinst], $
-;											 minskyinblock=minskyinblock[iinst], $
-;											 maxskyinblock=maxskyinblock[iinst], $
-;											 /nostd, /noscience, debug=debug
-
 
                     plate_assign_constrained, default, $
                                               instruments[iinst], $
