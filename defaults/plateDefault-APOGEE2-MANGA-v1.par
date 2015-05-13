@@ -88,4 +88,4 @@ pointing_name A B C D E F
 max_off_fiber_for_ha 0.3
 relaxed_fiber_classes 0
 
-collectfactor 3
+collectfactor 6
