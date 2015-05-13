@@ -120,7 +120,8 @@ for i=0L, nsci-1L do begin
     spherematch, ifu.target_ra, ifu.target_dec, $
       design[isky].target_ra, design[isky].target_dec, skyradius, m1, m2, d12, max=0
     if(m1[0] eq -1) then $
-      message, color_string('No available skies for IFUDESIGN ' + str(ifudesign) + '!', 'red', 'bold')
+      message, color_string('No available skies for IFUDESIGN ' + $
+                            strtrim(string(ifudesign),2) + '!', 'red', 'bold')
 	
     if(n_elements(m1) lt nsky_curr) then $
       message, color_string('Only '+strtrim(string(n_elements(m1)),2)+' skies, when '+ $
