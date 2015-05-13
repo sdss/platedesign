@@ -250,12 +250,17 @@ pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plate_xy2ad.pro -text
 pro/plate/platelines_apogee.pro -text
+pro/plate/platelines_apogee2_manga.pro -text
 pro/plate/platelines_boss.pro -text
 pro/plate/platelines_boss_all.pro -text
+pro/plate/platelines_circle.pro -text
+pro/plate/platelines_connect.pro -text
 pro/plate/platelines_guide.pro -text
+pro/plate/platelines_guidetest.pro -text
 pro/plate/platelines_manga.pro -text
 pro/plate/platelines_marvels.pro -text
 pro/plate/platelines_marvels_bright.pro -text
+pro/plate/platelines_print_start.pro -text
 pro/plate/platelines_segue2.pro -text
 pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
