@@ -83,6 +83,10 @@ xcurr= radius* cos(theta)
 ycurr= radius* sin(theta)
 djs_oplot, ycurr, xcurr
 
+xtab= [ -324.4, -332.0, -332.0, -324.4]
+ytab= [ -12., -12., 12., 12.]
+djs_oplot, xtab, ytab, th=3
+
 if(n_tags(plans) eq 0) then begin
   plateplans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
   check_file_exists, plateplans_file, plateid=plateid
