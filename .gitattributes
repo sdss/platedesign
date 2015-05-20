@@ -200,6 +200,7 @@ pro/plate/get_buffersize.pro -text
 pro/plate/get_ferrulesize.pro -text
 pro/plate/get_tilerad.pro -text
 pro/plate/gfiber2_params.pro -text
+pro/plate/gfiber_apogeesouthtest_params.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/guider_hdr.pro -text
 pro/plate/ha_apply.pro -text
