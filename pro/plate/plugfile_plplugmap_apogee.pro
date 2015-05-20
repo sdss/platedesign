@@ -132,15 +132,6 @@ if(nhole gt 0) then $
 ihole=where(holes.iguide ge 1, nhole)
 plug[ihole].fiberid= holes[ihole].iguide
 
-;; Compute the median reddening for objects on this plate
-;; (just for first pointing)
-indx = where(strtrim(plug.holetype,2) EQ 'OBJECT' AND $
-             holes.pointing eq 1, nobj)
-euler, plug[indx].ra, plug[indx].dec, ll, bb, 1
-;reddenvec = [5.155, 3.793, 2.751, 2.086, 1.479] $
-reddenvec = reddening() $
-  * median(dust_getval(ll, bb, /interp))
-
 ;; resort fibers
 ihole= where(plug.holetype eq 'LIGHT_TRAP', nhole)
 if(nhole gt 0) then begin
@@ -151,7 +142,7 @@ endif
 ihole= where(plug.holetype eq 'GUIDE' OR $
              plug.holetype eq 'ALIGNMENT', nhole)
 if(nhole gt 0) then begin
-    sortstr= string(plug[ihole].fiberid, f='(i2.2)')+ $
+    sortstr= string(plug[ihole].fiberid, f='(i3.3)')+ $
       plug[ihole].holetype
     isort=sort(sortstr)
     if(n_tags(newplug) gt 0) then begin
@@ -196,6 +187,18 @@ for pointing=1L, npointings do begin
     racen[pointing-1L]=tmp_racen
     deccen[pointing-1L]=tmp_deccen
 endfor
+
+;; Compute the median reddening for objects on this plate
+;; (just for first pointing). If there are no science objects
+;; just use center of the plate. 
+indx = where(strtrim(plug.holetype,2) EQ 'OBJECT' AND $
+             holes.pointing eq 1, nobj)
+if(nobj gt 0) then $
+  euler, plug[indx].ra, plug[indx].dec, ll, bb, 1 $
+else $
+  euler, racen[0], deccen[0], ll, bb, 1
+reddenvec = reddening() $
+  * median([dust_getval(ll, bb, /interp)]) 
 
 pointing_name = strsplit(definition.pointing_name, /extract)
 for pointing=1L, npointings do begin
