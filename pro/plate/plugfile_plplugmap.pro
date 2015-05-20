@@ -13,6 +13,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
+;   15-May-2015  Demitri Muna, Adding support for plate IDs > 9999
 ;-
 pro plugfile_plplugmap, plateid
 
@@ -251,17 +252,20 @@ for pointing=1L, npointings do begin
 
 
     ;; output file name
-    if(plateid ge 10000) then begin
-        splog, 'plateid exceeds 10000, which breaks data model'
-        platestr= strtrim(string(plateid),2)
-    endif else begin
-        platestr= strtrim(string(f='(i4.4)', plateid),2)
-    endelse
-    
+    ;if(plateid ge 10000) then begin
+    ;    splog, 'plateid exceeds 10000, which breaks data model'
+    ;    platestr= strtrim(string(plateid),2)
+    ;endif else begin
+    ;    platestr= strtrim(string(f='(i4.4)', plateid),2)
+    ;endelse
+    ;platestr = str(plateid)
+
     pointing_post = pointing_name[pointing-1]
     if (pointing_post eq 'A') then pointing_post = ''
-    plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
-      pointing_post+'.par' 
+    ;plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
+    ;  pointing_post+'.par' 
+	plugmapfile = plate_dir(plateid) + '/' + $
+		plugmap_filename(plateID=plateid, type='P', pointing=pointing_post)
     
     ;; for holes that aren't in this pointing, replace values with sky
     ;; values
@@ -292,10 +296,15 @@ for pointing=1L, npointings do begin
     ptr_free, pdata
 endfor
 
-plain_plug_map_name = plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par'
+;plain_plug_map_name = plate_dir(plateid)+'/plPlugMapP-'+platestr+'.par'
+plain_plug_map_name = plate_dir(plateid) + '/' + $
+	plugmap_filename(plateID=plateid, type='P')
+
 if (~file_test(plain_plug_map_name)) then begin
-	file_link, 'plPlugMapP-'+platestr+ pointing_post+'.par', $
-      plain_plug_map_name
+	;file_link, 'plPlugMapP-'+platestr+ pointing_post+'.par', $
+    ;  plain_plug_map_name
+	file_link, plugmap_filename(plateID=plateid, type='P', pointing=pointing_post),
+		plain_plug_map_name
 endif
 
 end

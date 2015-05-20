@@ -15,6 +15,7 @@
 ; REVISION HISTORY:
 ;   20-Oct-2008  MRB, NYU
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
+;	15-May-2015  Demitri Muna, Adding support for plate IDs > 9999
 ;-
 pro ha_limits, plateid, design=design, $
                hamin=hamin, hamax=hamax, maxoff_arcsec=maxoff_arcsec, $
@@ -31,7 +32,7 @@ endif
 iplan= where(plans.plateid eq plateid, nplan)
 if(nplan gt 1) then $
 	message, color_string('Multiple entries in platePlans for plateid='+ $
-		strtrim(string(plateid),2), 'red', 'bold')
+		string(plateid), 'red', 'bold')
 
 if(nplan eq 0) then begin
 
@@ -45,7 +46,7 @@ if(nplan eq 0) then begin
 	; try again
 	if(nplan eq 0) then $
 		message, color_string('No entries in platePlans for plateid='+ $
-			strtrim(string(plateid),2), 'red', 'bold')
+			string(plateid), 'red', 'bold')
 endif
 
 ;; set design values
