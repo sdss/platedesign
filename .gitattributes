@@ -259,7 +259,6 @@ pro/plate/platelines_guide.pro -text
 pro/plate/platelines_guidetest.pro -text
 pro/plate/platelines_manga.pro -text
 pro/plate/platelines_print_start.pro -text
-pro/plate/platelines_segue2.pro -text
 pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
 pro/plate/platerun_boss.pro -text
