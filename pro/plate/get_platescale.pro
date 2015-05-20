@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   platescale
+;   get_platescale
 ; PURPOSE:
 ;   Return average plate scale for APO or LCO
 ; CALLING SEQUENCE:
-;   scale= platescale(observatory)
+;   scale= get_platescale(observatory)
 ; INPUTS:
 ;   observatory - 'APO' or 'LCO'
 ; OUTPUTS:
@@ -13,7 +13,7 @@
 ;   20-May-2015  Written by MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function platescale, observatory
+function get_platescale, observatory
 
 if(size(observatory,/tname) ne 'STRING') then $
   message, 'observatory must be set to STRING type, with value "LCO" or "APO"'

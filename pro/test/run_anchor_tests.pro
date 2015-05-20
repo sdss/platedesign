@@ -1,7 +1,7 @@
 pro run_anchor_tests
 
 nran=60L
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 
 ntest=500L
 nfail=0L

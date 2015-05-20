@@ -12,7 +12,7 @@
 pro make_gridtest 
 
 tilerad= 1.49
-platescale = platescale('APO') ; mm/degree
+platescale = get_platescale('APO') ; mm/degree
 spacing= 10. ; mm
 nn= long(0.5*(2.1*tilerad*platescale/spacing))*2L+1L
 

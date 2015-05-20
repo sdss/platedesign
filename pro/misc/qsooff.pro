@@ -48,7 +48,7 @@ soplot, holes[itarg[iqso]].xfocal, holes[itarg[iqso]].yfocal, psym=4, $
 dr= sqrt(dx^2+dy^2)
 drmean= mean(dr[iqso])
 
-platescale = platescale('APO')           ; mm/degree
+platescale = get_platescale('APO')           ; mm/degree
 splog, 'Mean QSO offset= '+ $
   strtrim(string(f='(f40.3)',drmean/platescale*3600.),2)+' arcsec'
 

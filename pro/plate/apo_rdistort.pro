@@ -28,7 +28,7 @@ common com_rdistort, radii, lambda, fracd
 if(n_elements(rfocal) ne n_elements(inlambda)) then $
   message, 'RFOCAL and LAMBDA must be same # of elements'
 
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 
 if(n_elements(radii) eq 0) then begin
     sinradii= findgen(10.)*10./60.*(!DPI/180.)

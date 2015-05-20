@@ -26,7 +26,7 @@
 ;------------------------------------------------------------------------------
 pro platelines_rearrange, full, holes
 
-  platescale = platescale('APO')
+  platescale = get_platescale('APO')
   maxiter=3L
   nperblock=20L
   minyblocksize=0.3
@@ -129,7 +129,7 @@ if(n_tags(holes) eq 0) then begin
    full= yanny_readone(fullfile)
 endif
 
-platescale = platescale('APO') 
+platescale = get_platescale('APO') 
 
 if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
    msg='Could not find plPlugMapP or plateHolesSorted file for '+ $

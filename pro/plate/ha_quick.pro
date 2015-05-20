@@ -52,7 +52,7 @@ if(strupcase(observatory) eq 'LCO') then begin
       tilerad=0.95D
 endif
 
-platescale = platescale(observatory)
+platescale = get_platescale(observatory)
 
 if(NOT keyword_set(ralim)) then $
   ralim=tilerad*2.

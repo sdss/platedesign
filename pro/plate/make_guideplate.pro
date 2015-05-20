@@ -11,7 +11,7 @@
 pro make_guideplate 
 
 tilerad= 1.49
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 spacing= 10. ; mm
 nn= long(0.5*(2.1*tilerad*platescale/spacing))*2L+1L
 
