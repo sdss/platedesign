@@ -1,17 +1,17 @@
 pro test_ad2xy, plfile
 
-platescale = 217.7358D           ; mm/degree
+platescale= platescale('APO')
 
 pl= yanny_readone(plfile, hdr=hdr)
 hstr= lines2struct(hdr)
 
 help,/st,hstr
 
-ad2xyfocal, pl.ra, pl.dec, xf, yf, racen= double(hstr.racen), $
+ad2xyfocal, 'APO', pl.ra, pl.dec, xf, yf, racen= double(hstr.racen), $
   deccen=double(hstr.deccen), airtemp= double(hstr.temp), $
   lst=double(hstr.racen) +double(hstr.hamin)
 
-ad2xyfocal, pl.ra, pl.dec, xf2, yf2, racen= double(hstr.racen), $
+ad2xyfocal, 'APO', pl.ra, pl.dec, xf2, yf2, racen= double(hstr.racen), $
   deccen=double(hstr.deccen), airtemp= double(hstr.temp), $
   lst=double(hstr.racen)
 
@@ -44,7 +44,7 @@ splot_vec, pl[ii].xfocal, pl[ii].yfocal, $
 return
 
 
-plate_apo_refrac, pl.ra, pl.dec, double(hstr.racen), $
+plate_refrac, 'APO', pl.ra, pl.dec, double(hstr.racen), $
   double(hstr.deccen), rar, decr, airtemp=double(hstr.temp), $
   lst=double(hstr.racen)+double(hstr.hamin)
 

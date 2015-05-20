@@ -15,7 +15,7 @@
 ;------------------------------------------------------------------------------
 pro check_fiberreach, plateid , guide=guide
 
-platescale = 217.7358       ;; mm/degree
+platescale = platescale('APO')
 limitmm=8.*25.4   ;;; limit of reach in mm    
 
 blockfile=getenv('PLATEDESIGN_DIR')+'/data/marvels/fiberBlocksMarvels.par'

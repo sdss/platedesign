@@ -22,8 +22,6 @@ pro ha_limits, plateid, design=design, $
 
 common com_ha_limits, plans
 
-platescale = 217.7358D           ; mm/degree
-
 ;; read in plans
 if(n_tags(plans) eq 0) then begin
 	platePlans_file = getenv('PLATELIST_DIR')+'/platePlans.par'
@@ -67,6 +65,8 @@ else $
   yanny_read, designfile, hdr=hdr
 definition= lines2struct(hdr)
 default= definition
+
+platescale = get_observatory(definition, default)
 
 ;; handle old-style without lambda_eff
 lambda_eff= fltarr(n_elements(design))+5400.

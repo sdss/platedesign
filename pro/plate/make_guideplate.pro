@@ -11,7 +11,7 @@
 pro make_guideplate 
 
 tilerad= 1.49
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO')
 spacing= 10. ; mm
 nn= long(0.5*(2.1*tilerad*platescale/spacing))*2L+1L
 
@@ -24,7 +24,7 @@ design.pointing=1
 design.xf_default= 0.
 design.yf_default= 0.
 
-xyfocal2ad, design.xf_default, design.yf_default, ra, dec, $
+xyfocal2ad, 'APO', design.xf_default, design.yf_default, ra, dec, $
             racen=racen, deccen=deccen
 
 design.target_ra= ra

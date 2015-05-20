@@ -4,7 +4,7 @@
 ; PURPOSE:
 ;   Take XFOCAL AND YFOCAL and RA and DEC 
 ; CALLING SEQUENCE:
-;   xyfocal2ad, xfocal, yfocal, ra, dec,  racen=, deccen= [, $
+;   xyfocal2ad, observatory, xfocal, yfocal, ra, dec,  racen=, deccen= [, $
 ;      params for ad2xyfocal]
 ; INPUTS:
 ;   xfocal, yfocal - [N] arrays of focal plane positions
@@ -27,12 +27,12 @@
 ;------------------------------------------------------------------------------
 function xyfocal2ad_func, params
 
-common com_xfa, racen, deccen, xfocal, yfocal, lambda, extra_for_ad2xyfocal
+common com_xfa, observatory, racen, deccen, xfocal, yfocal, lambda, extra_for_ad2xyfocal
 
 ra=params[0]
 dec=params[1]
 
-ad2xyfocal, ra, dec, xfocal_fit, yfocal_fit, racen=racen, deccen=deccen, $
+ad2xyfocal, observatory, ra, dec, xfocal_fit, yfocal_fit, racen=racen, deccen=deccen, $
   lambda=lambda, _EXTRA=extra_for_ad2xyfocal
 
 deviates= [ xfocal_fit-xfocal, yfocal_fit-yfocal ]
@@ -41,7 +41,7 @@ return, deviates
 
 end
 ;;
-pro xyfocal2ad, in_xfocal, in_yfocal, ra, dec, $
+pro xyfocal2ad, in_observatory, in_xfocal, in_yfocal, ra, dec, $
                 racen=in_racen, deccen=in_deccen, $
                 lambda=in_lambda, _EXTRA=in_extra_for_ad2xyfocal
 
@@ -50,7 +50,16 @@ common com_xfa
 if(n_elements(in_lambda) eq 0) then $
   in_lambda= replicate(5500., n_elements(in_xfocal))
 
-platescale = 217.7358D           ; mm/degree
+if(size(in_observatory,/tname) ne 'STRING') then $
+  message, 'observatory must be set to STRING type, with value "LCO" or "APO"'
+
+if(strupcase(in_observatory) ne 'APO' and $
+   strupcase(in_observatory) ne 'LCO') then $
+  message, 'Must set observatory to APO or LCO'
+
+observatory= in_observatory
+
+platescale = platescale(observatory)
 
 racen= in_racen
 deccen= in_deccen

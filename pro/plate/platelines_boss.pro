@@ -26,7 +26,7 @@
 ;------------------------------------------------------------------------------
 pro platelines_rearrange, full, holes
 
-  platescale = 217.7358D        ; mm/degree
+  platescale = platescale('APO')
   maxiter=3L
   nperblock=20L
   minyblocksize=0.3
@@ -96,9 +96,8 @@ end
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty, $
                      rearrange=rearrange, relax_lines=relax_lines
 
-common com_plb, plateid, full, holes
+common com_plb, plateid, full, holes, hdr, hdrstr
 
-platescale = 217.7358D           ; mm/degree
 nblocks=50L
 nper=20L
 nperblue=10L
@@ -129,6 +128,8 @@ if(n_tags(holes) eq 0) then begin
    check_file_exists, fullfile, plateid=plateid
    full= yanny_readone(fullfile)
 endif
+
+platescale = platescale('APO') 
 
 if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
    msg='Could not find plPlugMapP or plateHolesSorted file for '+ $

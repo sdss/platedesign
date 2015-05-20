@@ -21,7 +21,7 @@ compile_opt logical_predicate
 
 ; PLATE ID = 3623
 
-platescale = 217.7358D	; mm/degree
+platescale = platescale('APO')
 
 racen= 180.
 deccen= 0.
@@ -40,7 +40,7 @@ fiber_block_centers_y = [-137.80, -137.80, -137.80, -137.80, -137.80, -277.50, -
 
 ; Hole type: GUIDE
 
-xyfocal2ad, fiber_block_centers_x, fiber_block_centers_y, $
+xyfocal2ad, 'APO', fiber_block_centers_x, fiber_block_centers_y, $
 	fiber_block_centers_ra, fiber_block_centers_dec, racen=racen, deccen=deccen
 
 ; Hole #2: The "index" hole (diameter .043"),
@@ -59,7 +59,7 @@ index_hole_y[idx] = fiber_block_centers_y[idx] + (0.101 * 25.4)
 idx = where(fiber_block_centers_y lt 0)
 index_hole_y[idx] = fiber_block_centers_y[idx] - (0.101 * 25.4)
 
-xyfocal2ad, index_hole_x, index_hole_y, $
+xyfocal2ad, 'APO', index_hole_x, index_hole_y, $
 	index_hole_ra, index_hole_dec, racen=racen, deccen=deccen
 
 
@@ -86,16 +86,16 @@ east_holes_y = fiber_block_centers_y
 west_holes_x = fiber_block_centers_x - r
 west_holes_y = fiber_block_centers_y
 
-xyfocal2ad, north_holes_x, north_holes_y, $
+xyfocal2ad, 'APO', north_holes_x, north_holes_y, $
 	north_holes_ra, north_holes_dec, racen=racen, deccen=deccen
 
-xyfocal2ad, south_holes_x, south_holes_y, $
+xyfocal2ad, 'APO', south_holes_x, south_holes_y, $
 	south_holes_ra, south_holes_dec, racen=racen, deccen=deccen
 
-xyfocal2ad, east_holes_x, east_holes_y, $
+xyfocal2ad, 'APO', east_holes_x, east_holes_y, $
 	east_holes_ra, east_holes_dec, racen=racen, deccen=deccen
 
-xyfocal2ad, west_holes_x, west_holes_y, $
+xyfocal2ad, 'APO', west_holes_x, west_holes_y, $
 	west_holes_ra, west_holes_dec, racen=racen, deccen=deccen
 
 ; Define the PLUGMAPOBJ structure

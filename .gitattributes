@@ -144,7 +144,6 @@ pro/misc/fiberreach_image.pro -text
 pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
-pro/misc/make_dummy_marvels_blocks.pro -text
 pro/misc/make_flat_plate.pro -text
 pro/misc/make_trap_file.pro -text
 pro/misc/p_end_print.pro -text
@@ -195,7 +194,6 @@ pro/plate/fiberid_boss.pro -text
 pro/plate/fiberid_dummy.pro -text
 pro/plate/fiberid_manga.pro -text
 pro/plate/fiberid_manga_single.pro -text
-pro/plate/fiberid_marvels.pro -text
 pro/plate/fiberid_sdss.pro -text
 pro/plate/get_buffersize.pro -text
 pro/plate/get_ferrulesize.pro -text
@@ -211,10 +209,8 @@ pro/plate/ha_quick.pro -text
 pro/plate/make_gridtest.pro -text
 pro/plate/make_guideplate.pro -text
 pro/plate/make_hexpack_1353.pro -text
-pro/plate/marvels_fiberblocks.pro -text
 pro/plate/minmaxinblock.pro -text
 pro/plate/plate_ad2xy.pro -text
-pro/plate/plate_apo_refrac.pro -text
 pro/plate/plate_assign.pro -text
 pro/plate/plate_assign_constrained.pro -text
 pro/plate/plate_assign_guide.pro -text
@@ -233,6 +229,7 @@ pro/plate/plate_mag.pro -text
 pro/plate/plate_plug_trim.pro -text
 pro/plate/plate_pmotion_correct.pro -text
 pro/plate/plate_pmotion_star.pro -text
+pro/plate/plate_refrac.pro -text
 pro/plate/plate_refract_list.pro -text
 pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
@@ -261,8 +258,6 @@ pro/plate/platelines_connect.pro -text
 pro/plate/platelines_guide.pro -text
 pro/plate/platelines_guidetest.pro -text
 pro/plate/platelines_manga.pro -text
-pro/plate/platelines_marvels.pro -text
-pro/plate/platelines_marvels_bright.pro -text
 pro/plate/platelines_print_start.pro -text
 pro/plate/platelines_segue2.pro -text
 pro/plate/platelines_start.pro -text
@@ -274,7 +269,6 @@ pro/plate/platerun_match.pro -text
 pro/plate/plplugmap_blank.pro -text
 pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_apogee.pro -text
-pro/plate/plugfile_plplugmap_apogee_marvels.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_manga.pro -text
 pro/plate/plugfile_plplugmap_segue2.pro -text
@@ -296,7 +290,6 @@ pro/retro/old_segue2_platelines.pro -text
 pro/retro/retrofit_bad_ra.pro -text
 pro/retro/retrofit_boss_200905.pro -text
 pro/retro/retrofit_boss_200908.pro -text
-pro/retro/retrofit_marvels_200909.pro -text
 pro/retro/retrofit_segue2_200904.pro -text
 pro/retro/retrofit_segue2_aug08d.pro -text
 pro/retro/retrofit_segue2_jul08.pro -text
@@ -319,7 +312,6 @@ pro/test/test_2mass_usnob.pro -text
 pro/test/test_ad2xy.pro -text
 pro/test/test_adr_pr.pro -text
 pro/test/test_guide_stars.pro -text
-pro/test/test_marvels_fiberblocks.pro -text
 pro/test/test_tmass_conversion.pro -text
 pro/test/write_platelines_run.pro -text
 pro/third_party/galloy/dir-overview.html -text

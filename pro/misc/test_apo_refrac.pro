@@ -37,10 +37,10 @@ for i=0L, n_elements(files)-1L do begin
     lst= racen+ hamin
     
     lambda=replicate(5000., n_elements(pl))
-    ad2xyfocal, pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
+    ad2xyfocal, 'APO', pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
       airtemp=temp, lst=lst, lambda=lambda, clambda=5000., $
       /nordistort
-    ad2xyfocal, pl.ra, pl.dec, sxf, syf, racen=racen, deccen=deccen, $
+    ad2xyfocal, 'APO', pl.ra, pl.dec, sxf, syf, racen=racen, deccen=deccen, $
       airtemp=temp, lst=lst, height=1., lambda=lambda, clambda=5000., $
       /nordistort
     
@@ -196,7 +196,7 @@ pl=yanny_readone(tt, hdr=hdr) & $
     temp= double(hdrstr.temp) & $
     hamin= double(hdrstr.hamin) & $
     lst= racen+ hamin & $
-    ad2xyfocal, pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
+    ad2xyfocal, 'APO', pl.ra, pl.dec, xf, yf, racen=racen, deccen=deccen, $
       airtemp=temp, lst=lst & $
     ii=where(pl.holetype eq 'OBJECT', nii) & $
        xdiff= (xf[ii]-pl[ii].xfocal)*1000. & $

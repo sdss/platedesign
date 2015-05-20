@@ -55,16 +55,6 @@ pro platelines_apogee2s_test, in_plateid, project=project
 
 common com_pla
 
-platescale = 217.7358D          ; mm/degree
-connect_thick=3
-circle_thick=3
-trap_thick=1
-     
-;; set buffer for lines, and circle size
-buffer= 80./3600. * platescale
-circle= 75./3600. * platescale
-guide_circle= 120./3600. * platescale
-white_circle= 60./3600. * platescale
 
 if(NOT keyword_set(in_plateid)) then $
   message, 'Plate ID must be given!'
@@ -97,6 +87,22 @@ if(n_tags(holes) eq 0) then begin
     check_file_exists, fullfile, plateid=plateid
     full= yanny_readone(fullfile)
 endif
+
+itag=tag_indx(hdrstr,'OBSERVATORY')
+if(itag eq -1) then $
+  platescale = platescale('APO') $
+else $
+  platescale = platescale(hdrstr.(itag))
+
+connect_thick=3
+circle_thick=3
+trap_thick=1
+     
+;; set buffer for lines, and circle size
+buffer= 80./3600. * platescale
+circle= 75./3600. * platescale
+guide_circle= 120./3600. * platescale
+white_circle= 60./3600. * platescale
 
 if(n_tags(holes) eq 0 OR n_tags(full) eq 0) then begin
     msg='Could not find plPlugMapP or plateHolesSorted file for '+ $

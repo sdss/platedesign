@@ -37,12 +37,14 @@ if(n_elements(in_dec) ne ntargets OR $
    n_elements(lambda) ne ntargets) then $
   message, 'RA, DEC and LAMBDA must all have same # of elements!'
 
+observatory= get_observatory(definition, default)
+
 ;; what is our raCen and decCen for this pointing and offset
 plate_center, definition, default, pointing, offset, $
   racen=racen, deccen=deccen
 
 ;; convert targets to xfocal and yfocal for this pointing, offset
-ad2xyfocal, in_ra, in_dec, xfocal, yfocal, lambda=lambda, $
+ad2xyfocal, observatory, in_ra, in_dec, xfocal, yfocal, lambda=lambda, $
   racen=racen, deccen=deccen, lst=lst, airtemp=airtemp
 
 return

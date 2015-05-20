@@ -1,6 +1,6 @@
 pro test_plug
 
-platescale = 217.7358           ; mm/degree
+platescale = platescale('APO')           ; mm/degree
 th= randomu(seed, 640)*2.*!DPI
 r2= randomu(seed, 640)*1.49
 xx= platescale*sqrt(r2)*cos(th)

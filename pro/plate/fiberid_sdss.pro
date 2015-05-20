@@ -43,7 +43,7 @@ common com_fiberid_sdss, fiberblocks
 if(keyword_set(respect_fiberid)) then $
   message, 'SDSS spectrograph designs cannot respect fiberid'
 
-platescale = 217.7358           ; mm/degree
+platescale = platescale('APO')
 limitdegree=7.*0.1164 ;; limit of fiber reach
 skylimitdegree= limitdegree ;; stretch just as far for skies
 stdlimitdegree= limitdegree ;; ... and standards

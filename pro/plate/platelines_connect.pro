@@ -8,7 +8,7 @@
 ; INPUTS:
 ;   xfocal, yfocal - [N] list of X, Y positions
 ; OPTIONAL INPUTS:
-;   buffer - buffer value (default 105./3600.*platescale)
+;   buffer - buffer value (default 6.3)
 ;   thick - default 2
 ;   color - default 'black'
 ; REVISION HISTORY:
@@ -18,10 +18,8 @@
 pro platelines_connect, xfocal, yfocal, buffer=buffer, thick=thick, $
                         color=color
 
-platescale = 217.7358D          ; mm/degree
-
 if(keyword_set(buffer) eq 0) then $
-   buffer= 105./3600.*platescale
+   buffer= 6.3
 if(keyword_set(thick) eq 0) then $
    thick=2
 if(keyword_set(color) eq 0) then $

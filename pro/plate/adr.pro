@@ -13,6 +13,7 @@
 ;   pressure - air pressure, millibars (default 1013.25)
 ;   temperature - temperature, C (default 5)
 ;   lambda - wavelength, angstroms (default 5500)
+;   fhumid - water vapor pressor, mm Hg (default 8)
 ; OUTPUTS:
 ;   adr - [N] refraction relative to 5500 in arcsec
 ; COMMENTS:
@@ -23,11 +24,12 @@
 ;------------------------------------------------------------------------------
 function adr, trualt, pressure=pressure, $
               temperature=temperature, lambda=lambda, $
-              pr72=pr72
+              pr72=pr72, fhumid=fhumid
 
 reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
 if(NOT keyword_set(pressure)) then pressure=1013.25
+if(n_elements(fhumid) eq 0) then fhumid=8.
 if(n_elements(temperature) eq 0) then temperature=5.
 
 ;; lambda in microns
@@ -65,10 +67,10 @@ irefract6_tp_ref= irefract6_ref* tpfact
 ;; are ambiguously worded. I looked at the relevant pages of the
 ;; enormous Barrell & Sears (1939) article, but I couldn't make much
 ;; sense of it].
-fhumid= 8. ;; in mm Hg, typical value
 fhoffset= fhumid*(0.0624-0.000680/mlambda^2)/(1.+0.003661*temperature)
 irefract6_f= irefract6_tp- fhoffset
-irefract6_f_ref= irefract6_tp_ref- fhoffset
+fhoffset_ref= fhumid*(0.0624-0.000680/mreflambda^2)/(1.+0.003661*temperature)
+irefract6_f_ref= irefract6_tp_ref- fhoffset_ref
 
 ;; Now convert to shift
 ;; delta_r = (r(lambda)-r(5500)) = 206265*(n(lambda)-n(5500))*tan z

@@ -10,6 +10,7 @@ nplates=1000L
 seed=1001L
 nobj=3000L
 tilerad=1.49
+observatory='APO'
 
 lst=midlst+(randomu(seed, nplates)-0.5)*2.*maxha
 racen= replicate(180., nplates)
@@ -31,7 +32,7 @@ for i=0L, nplates-1L do begin
     indx=shuffle_indx(nobj, num_sub=nobj/2L)
     lambda[indx]=4000.
 
-    ad2xyfocal, ra, dec, xf, yf, racen=racen[i], deccen=deccen[i], $
+    ad2xyfocal, observatory, ra, dec, xf, yf, racen=racen[i], deccen=deccen[i], $
       airtemp=airtemp[i], lst=lst[i], lambda=lambda
 
     spherematch, ra, dec, ra, dec, 65./3600., m1, m2, d12, max=0

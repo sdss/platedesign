@@ -29,11 +29,10 @@ pro platelines_manga, in_plateid, diesoft=diesoft, $
                       sorty=sorty, relaxed=relaxed, $
                       rearrange=rearrange, swap=swap
 
-common com_pla, plateid, full, hdr
+common com_pla, plateid, full, hdr, hdrstr
 
 fnames= yanny_readone(getenv('MANGACORE_DIR')+'/cartmaps/manga_ferrule_names.par')
 
-platescale = 217.7358D          ; mm/degree
 rearrange=1
 
 if(NOT keyword_set(in_plateid)) then $
@@ -57,8 +56,15 @@ if(n_tags(full) eq 0) then begin
       fullfile= platedir+'/plateHolesSorted-'+ $
       strtrim(string(f='(i6.6)',plateid),2)+'-swap.par'
     check_file_exists, fullfile, plateid=plateid
-    full= yanny_readone(fullfile)
+    full= yanny_readone(fullfile, hdr=hdr)
+    hdrstr= lines2struct(hdr)
 endif
+
+itag=tag_indx(hdrstr,'OBSERVATORY')
+if(itag eq -1) then $
+  platescale = platescale('APO') $
+else $
+  platescale = platescale(hdrstr.(itag))
 
 if(n_tags(full) eq 0) then begin
     msg='Could not find plateHolesSorted file for '+ $

@@ -21,8 +21,6 @@ pro apogee_fibervhmag, in_plateid
 
   common com_afvh, plateid, full
 
-  platescale = 217.7358D        ; mm/degree
-
   full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksAPOGEE.par'
   blocks= yanny_readone(full_blockfile)
   blocks=blocks[sort(blocks.fiberid)]
