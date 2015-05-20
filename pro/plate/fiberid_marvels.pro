@@ -48,7 +48,7 @@ function fiberid_marvels, default, fibercount, design, $
   true = 1
   false = 0
 
-  platescale = 217.7358       ;; mm/degree
+  platescale = platescale('APO')
   nperblock=6L
 
   if(keyword_set(minstdinblock) eq false) then minstdinblock=0L

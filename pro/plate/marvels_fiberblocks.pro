@@ -22,7 +22,7 @@
 ;------------------------------------------------------------------------------
 pro marvels_fiberblocks
 
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO')
 inchpermm= 0.039370              ; inch per mm
 
 mblocks= replicate({TIFIBERBLOCK, blockid:0L, fibercenx:0.D, $
