@@ -24,7 +24,7 @@ for i=0L, nsdss-1L do begin
         
         lst= racen+ hamin
         
-        ad2xyfocal, plug.ra, plug.dec, xf, yf, racen=racen, deccen=deccen, $
+        ad2xyfocal, 'APO', plug.ra, plug.dec, xf, yf, racen=racen, deccen=deccen, $
           airtemp=temp, lst=lst
         
         ii=where(plug.holetype eq 'OBJECT', nii)

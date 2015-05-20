@@ -13,7 +13,7 @@
 pro make_hexpack_1353
 
 tilerad= 0.5 ; degrees
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO')
 spacing = (1. / 60.) * platescale   ; mm
 rmin = (100. / 3600.) * platescale    ; mm to avoid central
 
@@ -46,7 +46,7 @@ design= replicate(design0, nkeep)
 design.xf_default= xx
 design.yf_default= yy
 
-xyfocal2ad, design.xf_default, design.yf_default, ra, dec, $
+xyfocal2ad, 'APO', design.xf_default, design.yf_default, ra, dec, $
             racen=racen, deccen=deccen, /norefrac
 
 design.target_ra= ra

@@ -30,6 +30,8 @@
 pro plate_xy2ad, definition, default, pointing, offset, xfocal, yfocal, $
                  lambda, ra=ra, dec=dec, lst=lst, airtemp=airtemp
 
+observatory= get_observatory(definition, default)
+
 ntargets=n_elements(xfocal)
 
 ;; what is our raCen and decCen for this pointing and offset
@@ -37,7 +39,7 @@ plate_center, definition, default, pointing, offset, $
               racen=racen, deccen=deccen
 
 ;; convert targets to xfocal and yfocal for this pointing, offset
-xyfocal2ad, xfocal, yfocal, ra, dec, $
+xyfocal2ad, observatory, xfocal, yfocal, ra, dec, $
   racen=racen, deccen=deccen, lst=lst, $
   airtemp=airtemp, lambda=lambda
 

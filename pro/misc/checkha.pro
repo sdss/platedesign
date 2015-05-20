@@ -20,11 +20,11 @@ for k=0L, n_elements(hadesvals)-1L do begin
         dec= locs[i].dec+yy
         
         lst= locs[i].ra+hades[i]
-        ad2xyfocal, ra, dec, xf, yf, racen=locs[i].ra, deccen=locs[i].dec, $
+        ad2xyfocal, 'APO', ra, dec, xf, yf, racen=locs[i].ra, deccen=locs[i].dec, $
                     airtemp=randomu(seed)*15., lst=lst
         
         lst= locs[i].ra+haobs[i]
-        ad2xyfocal, ra, dec, hxf, hyf, racen=locs[i].ra, deccen=locs[i].dec, $
+        ad2xyfocal, 'APO', ra, dec, hxf, hyf, racen=locs[i].ra, deccen=locs[i].dec, $
                     airtemp=randomu(seed)*15., lst=lst
         
 
@@ -75,7 +75,7 @@ for k=0L, n_elements(hadesvals)-1L do begin
         mdoff[i]= max(doff)
     endfor
 
-    mdoff=mdoff/ 217.7*3600.
+    mdoff=mdoff/ platescale('APO')*3600.
     
     save, filename='~/checkha-'+strtrim(string(hadesvals[k], f='(i2.2)'),2)+ $
           '.sav'

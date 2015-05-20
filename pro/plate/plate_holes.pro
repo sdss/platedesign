@@ -20,8 +20,6 @@ pro plate_holes, designid, plateid, ha, temp, epoch
 true = 1
 false = 0
 
-platescale = 217.7358D           ; mm/degree
-
 ;; import design file and settings in header
 designdir= design_dir(designid)
 designfile=designdir+'/plateDesign-'+ $

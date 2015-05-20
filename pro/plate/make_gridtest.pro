@@ -12,7 +12,7 @@
 pro make_gridtest 
 
 tilerad= 1.49
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO') ; mm/degree
 spacing= 10. ; mm
 nn= long(0.5*(2.1*tilerad*platescale/spacing))*2L+1L
 
@@ -38,7 +38,7 @@ rr= sqrt(design.xf_default^2+design.yf_default^2)
 ikeep=where(rr lt 324.500)
 design=design[ikeep]
 
-xyfocal2ad, design.xf_default, design.yf_default, ra, dec, $
+xyfocal2ad, 'APO', design.xf_default, design.yf_default, ra, dec, $
             racen=racen, deccen=deccen
 
 design.target_ra= ra

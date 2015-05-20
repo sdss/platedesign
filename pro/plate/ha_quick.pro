@@ -4,10 +4,12 @@
 ; PURPOSE:
 ;   Quickly determine HA limits of plate position
 ; CALLING SEQUENCE:
-;   ha_quick, racen, deccen, ha, hamin=, hamax=, maxoff_arcsec=, /plot
+;   ha_quick, observatory, racen, deccen, ha, hamin=, hamax=, maxoff_arcsec=, /plot
 ;      [, haact= ]
 ; REQUIRED INPUTS:
-;   plateid - plate ID number
+;   observatory - 'APO' or 'LCO'
+;   ra, dec - plate location
+;   ha - drilling hour angle
 ; OPTIONAL INPUTS:
 ;   maxoff_arcsec - maximum offset required, arcsec (default 0.3)
 ;   lambda_eff - wavelength to check, angstrom (default 5400.)
@@ -27,16 +29,31 @@
 ; REVISION HISTORY:
 ;   20-Oct-2008  MRB, NYU
 ;-
-pro ha_quick, racen, deccen, ha, hamin=hamin, hamax=hamax, $
+pro ha_quick, observatory, racen, deccen, ha, hamin=hamin, hamax=hamax, $
               maxoff_arcsec=maxoff_arcsec, lambda_eff=lambda_eff, $
               plot=plot, haact=haact, noscale=noscale, $
               tilerad=tilerad, ralim=ralim, declim=declim, $
               rafter=rafter, lambda_cen=lambda_cen, _EXTRA=extra_for_plot
               
+if(size(observatory,/tname) ne 'STRING') then $
+  message, 'observatory must be set to STRING type, with value "LCO" or "APO"'
 
-platescale = 217.7358D           ; mm/degree
-if(NOT keyword_set(tilerad)) then $
-  tilerad=1.49D
+if(strupcase(observatory) ne 'APO' and $
+   strupcase(observatory) ne 'LCO') then $
+  message, 'Must set observatory to APO or LCO'
+
+if(strupcase(observatory) eq 'APO') then begin
+    if(NOT keyword_set(tilerad)) then $
+      tilerad=1.49D
+endif
+
+if(strupcase(observatory) eq 'LCO') then begin
+    if(NOT keyword_set(tilerad)) then $
+      tilerad=0.95D
+endif
+
+platescale = platescale(observatory)
+
 if(NOT keyword_set(ralim)) then $
   ralim=tilerad*2.
 if(NOT keyword_set(declim)) then $
@@ -76,9 +93,9 @@ ytest= -xtestr*sin(-rafter/180.*!DPI)+ ytestr*cos(-rafter/180.*!DPI)
 
 ;; get ra/decs
 lst= racen+ ha
-xyfocal2ad, xtest, ytest, ratest, dectest, racen=racen, deccen=deccen, $
+xyfocal2ad, observatory, xtest, ytest, ratest, dectest, racen=racen, deccen=deccen, $
             airtemp=airtemp, lst=lst, lambda=ltest
-xyfocal2ad, oxtest, oytest, oratest, odectest, racen=racen, deccen=deccen, $
+xyfocal2ad, observatory, oxtest, oytest, oratest, odectest, racen=racen, deccen=deccen, $
             airtemp=airtemp, lst=lst, lambda=lcen
 
 ;; cycle through HA values
@@ -95,9 +112,9 @@ endif else begin
 endelse
 for i=0L, ntry-1L do begin
     try_lst= racen+try_ha[i]
-    ad2xyfocal, ratest, dectest, try_xf, try_yf, racen=racen, deccen=deccen, $
+    ad2xyfocal, observatory, ratest, dectest, try_xf, try_yf, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=try_lst, lambda=ltest
-    ad2xyfocal, oratest, odectest, otry_xf, otry_yf, $
+    ad2xyfocal, observatory, oratest, odectest, otry_xf, otry_yf, $
                 racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=try_lst, lambda=lcen
     

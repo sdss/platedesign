@@ -7,7 +7,7 @@ deccen=0.
 ra= replicate(racen, 200L)
 dec= deccen+radii
 
-ad2xyfocal, ra, dec, xf, yf, racen=racen, deccen=deccen, $
+ad2xyfocal, 'APO', ra, dec, xf, yf, racen=racen, deccen=deccen, $
             /norefrac 
 
 offset= findgen(10)/9.*90.

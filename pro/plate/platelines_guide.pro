@@ -14,8 +14,6 @@
 ;------------------------------------------------------------------------------
 pro platelines_guide, plateid, holes, full, hdrstr
 
-platescale = 217.7358D           ; mm/degree
-
 platedir= plate_dir(plateid)
 
 if(n_tags(holes) eq 0 OR n_tags(hdrstr) eq 0 or n_tags(full) eq 0) then begin
@@ -33,6 +31,12 @@ if(n_tags(holes) eq 0 OR n_tags(hdrstr) eq 0 or n_tags(full) eq 0) then begin
     check_file_exists, fullfile, plateid=plateid 
     full= yanny_readone(fullfile)
 endif
+
+itag=tag_indx(hdrstr,'OBSERVATORY')
+if(itag eq -1) then $
+  platescale = platescale('APO') $
+else $
+  platescale = platescale(hdrstr.(itag))
 
 gfibertype= 'gfiber'
 if(tag_indx(hdrstr, 'gfibertype') ne -1) then $

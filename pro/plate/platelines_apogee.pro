@@ -26,9 +26,7 @@
 ;------------------------------------------------------------------------------
 pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
 
-  common com_pla, plateid, full, holes, hdr
-
-  platescale = 217.7358D        ; mm/degree
+  common com_pla, plateid, full, holes, hdr, hdrstr
 
   if(NOT keyword_set(in_plateid)) then $
      message, 'Plate ID must be given!'
@@ -63,7 +61,13 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
 
-  endif
+ endif
+
+ itag=tag_indx(hdrstr,'OBSERVATORY')
+ if(itag eq -1) then $
+   platescale = platescale('APO') $
+ else $
+   platescale = platescale(hdrstr.(itag))
 
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
   if(nsci eq 0) then return

@@ -4,19 +4,21 @@
 ; PURPOSE:
 ;   Take RA and DEC values and return XFOCAL and YFOCAL for a plate
 ; CALLING SEQUENCE:
-;   ad2xyfocal, ra, dec, xfocal, yfocal, racen=, $
+;   ad2xyfocal, observatory, ra, dec, xfocal, yfocal, racen=, $
 ;     deccen=, airtemp=, lst=, /norefrac, /nodistort
 ; INPUTS:
+;   observatory - 'APO' or 'LCO'
 ;   ra,dec     - [N] arrays of locations (J2000 deg)
 ;   racen      - RA center for tile (J2000 deg)
 ;   deccen     - DEC center for tile (J2000 deg)
 ; OPTIONAL INPUTS:
 ;   lst        - LST of observation (defaults to racen)
-;   airtemp    - Design temperature (in C, default to 5)
+;   airtemp    - Design temperature (in C, default to 5 for APO,
+;                                    12 for LCO)
 ;   lambda     - scalar or [N], optimum wavelength in angstroms
-;                (default 5500)
+;                (default 5500 for APO, 8000 for LCO)
 ;   clambda    - wavelength to assume for plate center diffraction
-;                (default 5500)
+;                (default 5500 for APO, 8000 for LCO)
 ; OPTIONAL KEYWORDS:
 ;   /norefrac - do not account for refraction
 ;   /nodistort - do not account for optical plate distortion
@@ -26,7 +28,7 @@
 ;   xfocal, yfocal - [N] arrays of focal plane positions
 ; COMMENTS:
 ;   HA= LST-RA
-;   Designed for the SDSS 2.5m at APO
+;   Designed for the SDSS 2.5m at APO or the du Pont Telescope at LCO
 ;   PA=0 ALWAYS
 ;   Technique copied from plMakePlateFromTile (plPlateDesign.c) 
 ;     and plCoordTransform (plPlateUtils.c) in the plate product
@@ -34,13 +36,15 @@
 ;   Normally "clambda" should have no practical effect, i.e. will just
 ;     be a shift in XFOCAL, YFOCAL, but no rotation or scale. It is
 ;     included to facilitate comparisons to old results from plate.
+;   For APO, XFOCAL increases to the East, YFOCAL to the North
+;   For LCO, XFOCAL increases to the West, YFOCAL to the South
 ; REVISION HISTORY:
 ;   26-Oct-2006  Written by MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
 pro altaz2rpa, alt, az, altcen, azcen, rfocal, posang
 
-platescale = 217.7358D           ; mm/degree
+common com_ad2xyfocal, platescale
 
 xx= -sin(az*!DPI/180.) * sin(((90.D)-alt)*!DPI/180.)
 yy= -cos(az*!DPI/180.) * sin(((90.D)-alt)*!DPI/180.)
@@ -57,43 +61,66 @@ posang=atan(-xl, zl)
 
 end
 ;;
-pro ad2xyfocal, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
+pro ad2xyfocal, observatory, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
                 nodistort=nodistort, lambda=lambda, height=height, $
                 clambda=clambda, nordistort=nordistort, pressure=pressure
 
-if(n_elements(lambda) eq 0) then $
-  lambda=replicate(5500., n_elements(ra))
+common com_ad2xyfocal
 
-if n_elements(airtemp) EQ 0 then airtemp = 5.
-airtemp_k=airtemp+273.155  ; C to Kelvin
-if n_elements(height) EQ 0 then height = 2797.D
-if n_elements(pressure) EQ 0 then $
-  pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
+if(size(observatory,/tname) ne 'STRING') then $
+  message, 'observatory must be set to STRING type, with value "LCO" or "APO"'
+
+if(strupcase(observatory) ne 'APO' and $
+   strupcase(observatory) ne 'LCO') then $
+  message, 'Must set observatory to APO or LCO'
+
+platescale = platescale(observatory)
+
+if(strupcase(observatory) eq 'APO') then begin
+    if(n_elements(lambda) eq 0) then $
+      lambda=replicate(5500., n_elements(ra))
+    if n_elements(airtemp) EQ 0 then airtemp = 5.
+    airtemp_k=airtemp+273.155   ; C to Kelvin
+    if n_elements(height) EQ 0 then height = 2797.D
+    if n_elements(pressure) EQ 0 then $
+      pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
+   ;; from $PLATE_DIR/test/plParam.par
+    rcoeffs=[-0.000137627D, -0.00125238D, 1.5447D-09, 8.23673D-08, $
+             -2.74584D-13, -1.53239D-12, 6.04194D-18, 1.38033D-17, $
+             -2.97064D-23, -3.58767D-23] 
+endif
+
+if(strupcase(observatory) eq 'LCO') then begin
+    if(n_elements(lambda) eq 0) then $
+      lambda=replicate(8000., n_elements(ra))
+    if n_elements(airtemp) EQ 0 then airtemp = 12.
+    airtemp_k=airtemp+273.155   ; C to Kelvin
+    if n_elements(height) EQ 0 then height = 2380.D
+    if n_elements(pressure) EQ 0 then $
+      pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
+    ;; TBD, to be supplied by Guillermo!!
+    rcoeffs=[0.0, 1.0, 0., 0.]
+endif
 
 if(n_elements(lambda) ne 1 AND $
    n_elements(lambda) ne n_elements(ra)) then $
   message, 'LAMBDA must have same number of elements as RA'
 
-;; from $PLATE_DIR/test/plParam.par
-rcoeffs=[-0.000137627D, -0.00125238D, 1.5447D-09, 8.23673D-08, $
-         -2.74584D-13, -1.53239D-12, 6.04194D-18, 1.38033D-17, $
-         -2.97064D-23, -3.58767D-23] 
-
 ;; set fiducial point 1.5 deg north (to peg rotation)
 rafid= racen
 decfid= deccen+1.5D
 
-;; deal with atmospheric refraction and get to alt/az for 5500
-;; angstroms
-plate_apo_refrac, ra, dec, lst=lst, airtemp=airtemp, $
+;; deal with atmospheric refraction and get to alt/az for default 
+;; wavelength
+plate_refrac, observatory, ra, dec, lst=lst, airtemp=airtemp, $
   alt=alt, az=az, norefrac=norefrac, pressure=pressure
-plate_apo_refrac, rafid, decfid, lst=lst, airtemp=airtemp, $
+plate_refrac, observatory, rafid, decfid, lst=lst, airtemp=airtemp, $
   alt=altfid, az=azfid, norefrac=norefrac, pressure=pressure
-plate_apo_refrac, racen, deccen, lst=lst, airtemp=airtemp, $
+plate_refrac, observatory, racen, deccen, lst=lst, airtemp=airtemp, $
   alt=altcen, az=azcen, norefrac=norefrac, pressure=pressure
 
-;; handle differential refraction relative to 5500
+;; handle differential refraction relative to default wavelength
 adrval= adr(alt, lambda=lambda, temperature=airtemp, pressure=pressure)
 alt= alt+ adrval/3600.
 
