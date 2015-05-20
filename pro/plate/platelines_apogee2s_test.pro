@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   platelines_apogee2_manga
+;   platelines_apogee2s_test
 ; PURPOSE:
 ;   write plateLines-????.ps file for a APOGEE2-MANGA or MANGA-APOGEE2 plate
 ; CALLING SEQUENCE:
-;   platelines_apogee2_manga, plateid 
+;   platelines_apogee2s_test, plateid 
 ; INPUTS:
 ;   plateid - plate ID to run on
 ; COMMENTS:
@@ -24,7 +24,7 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-function platelines_apogee2_manga_hole_color, targettype, fiberid
+function platelines_apogee2s_test_manga_hole_color, targettype, fiberid
 
 common com_pla, plateid, full, holes, hdr, hdrstr, apogee_blocks
   
@@ -51,7 +51,7 @@ return, color
   
 end
 ;
-pro platelines_apogee2_manga, in_plateid, project=project
+pro platelines_apogee2s_test, in_plateid, project=project
 
 common com_pla
 
@@ -64,6 +64,7 @@ trap_thick=1
 buffer= 80./3600. * platescale
 circle= 75./3600. * platescale
 guide_circle= 120./3600. * platescale
+white_circle= 60./3600. * platescale
 
 if(NOT keyword_set(in_plateid)) then $
   message, 'Plate ID must be given!'
@@ -112,7 +113,7 @@ filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
 if(NOT keyword_set(project)) then $
    platelines_print_start, plateid, filebase, 'APOGEE', note=note $
 else $
-   platelines_print_start, plateid, filebase, 'APOGEE', note=note $
+   platelines_start, plateid, filebase+'-project', 'APOGEE', note=note 
 
 isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
 if(nsci eq 0) then return
@@ -146,7 +147,7 @@ for i=0L, nblocks-1L do begin
    ;; draw holes
    for j=0L, nii-1L do begin
       current_hole= full[isci[ii[j]]]
-      color=platelines_apogee2_manga_hole_color(current_hole.targettype, $
+      color=platelines_apogee2s_test_hole_color(current_hole.targettype, $
                                                 current_hole.fiberid)
       platelines_circle, current_hole.xfocal, current_hole.yfocal, $
                          circle, color=color
@@ -205,8 +206,19 @@ for i=0L, ngstar-1L do begin
       
    endelse
 endfor
+
+;; whiteout all holes
+platelines_circlefill, holes.xfocal, holes.yfocal, white_circle, color='white'
+
+;; test with thin black line
+;platelines_circle, holes.xfocal, holes.yfocal, white_circle, color='black', $
+  ;th=1
+
    
-platelines_print_end
+if(NOT keyword_set(project)) then $
+   platelines_print_end $
+else $
+   platelines_end
 
 return
 end
