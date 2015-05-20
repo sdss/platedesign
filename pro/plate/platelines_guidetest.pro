@@ -35,9 +35,9 @@ endif
 
 itag=tag_indx(hdrstr,'OBSERVATORY')
 if(itag eq -1) then $
-  platescale = platescale('APO') $
+  platescale = get_platescale('APO') $
 else $
-  platescale = platescale(hdrstr.(itag))
+  platescale = get_platescale(hdrstr.(itag))
 
 gfibertype= 'gfiber'
 if(tag_indx(hdrstr, 'gfibertype') ne -1) then $

@@ -24,7 +24,7 @@
 ;------------------------------------------------------------------------------
 pro bright_fiberblocks
 
-platescale = platescale('APO')           ; mm/degree
+platescale = get_platescale('APO')           ; mm/degree
 inchpermm= 0.039370              ; inch per mm
 fspace=0.15/inchpermm
 

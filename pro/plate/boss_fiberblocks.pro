@@ -20,7 +20,7 @@
 ;------------------------------------------------------------------------------
 pro boss_fiberblocks
 
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 mm2inch= 0.039370              ; inch per mm
 inch2mm= 1./0.039370              ; mm per inch
 

@@ -62,9 +62,9 @@ endif
 
 itag=tag_indx(hdrstr,'OBSERVATORY')
 if(itag eq -1) then $
-  platescale = platescale('APO') $
+  platescale = get_platescale('APO') $
 else $
-  platescale = platescale(hdrstr.(itag))
+  platescale = get_platescale(hdrstr.(itag))
 
 if(n_tags(full) eq 0) then begin
     msg='Could not find plateHolesSorted file for '+ $

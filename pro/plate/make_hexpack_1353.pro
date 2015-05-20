@@ -13,7 +13,7 @@
 pro make_hexpack_1353
 
 tilerad= 0.5 ; degrees
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 spacing = (1. / 60.) * platescale   ; mm
 rmin = (100. / 3600.) * platescale    ; mm to avoid central
 

@@ -1,6 +1,6 @@
 pro test_ad2xy, plfile
 
-platescale= platescale('APO')
+platescale= get_platescale('APO')
 
 pl= yanny_readone(plfile, hdr=hdr)
 hstr= lines2struct(hdr)

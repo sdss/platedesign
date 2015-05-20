@@ -11,7 +11,7 @@ yh=y+yf
 
 ir=where(boss_reachcheck(xf, yf, xh,yh))
 
-scale=platescale('APO')*0.1
+scale=get_platescale('APO')*0.1
 splot, xh*scale, yh*scale, psym=3
 soplot, xh[ir]*scale, yh[ir]*scale, psym=3, color='red'
 

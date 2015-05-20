@@ -65,9 +65,9 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
 
  itag=tag_indx(hdrstr,'OBSERVATORY')
  if(itag eq -1) then $
-   platescale = platescale('APO') $
+   platescale = get_platescale('APO') $
  else $
-   platescale = platescale(hdrstr.(itag))
+   platescale = get_platescale(hdrstr.(itag))
 
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
   if(nsci eq 0) then return

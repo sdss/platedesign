@@ -59,7 +59,7 @@ if(strupcase(in_observatory) ne 'APO' and $
 
 observatory= in_observatory
 
-platescale = platescale(observatory)
+platescale = get_platescale(observatory)
 
 racen= in_racen
 deccen= in_deccen

@@ -90,9 +90,9 @@ endif
 
 itag=tag_indx(hdrstr,'OBSERVATORY')
 if(itag eq -1) then $
-  platescale = platescale('APO') $
+  platescale = get_platescale('APO') $
 else $
-  platescale = platescale(hdrstr.(itag))
+  platescale = get_platescale(hdrstr.(itag))
 
 connect_thick=3
 circle_thick=3

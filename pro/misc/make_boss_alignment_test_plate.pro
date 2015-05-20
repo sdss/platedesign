@@ -21,7 +21,7 @@ compile_opt logical_predicate
 
 ; PLATE ID = 3623
 
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 
 racen= 180.
 deccen= 0.

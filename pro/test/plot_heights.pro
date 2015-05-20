@@ -26,7 +26,7 @@ k_print, filename='heights.ps'
 
 !Y.MARGIN=0
 
-platescale = platescale('APO')
+platescale = get_platescale('APO')
 
 poff= (yf/platescale-dec)*3600.
 joff= (heights/platescale-offset/60.)*3600.
