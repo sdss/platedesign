@@ -4,6 +4,7 @@
 # At least one argument required, from among:
 #   SDSS BOSS MARVELS APOGEE MANGA
 instruments APOGEESOUTH
+observatory LCO
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
