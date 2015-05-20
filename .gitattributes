@@ -253,10 +253,11 @@ pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plate_xy2ad.pro -text
 pro/plate/platelines_apogee.pro -text
-pro/plate/platelines_apogee2_manga.pro -text
+pro/plate/platelines_apogee2s_test.pro -text
 pro/plate/platelines_boss.pro -text
 pro/plate/platelines_boss_all.pro -text
 pro/plate/platelines_circle.pro -text
+pro/plate/platelines_circlefill.pro -text
 pro/plate/platelines_connect.pro -text
 pro/plate/platelines_guide.pro -text
 pro/plate/platelines_guidetest.pro -text
