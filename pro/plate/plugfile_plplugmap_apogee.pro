@@ -11,6 +11,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
+;   15-May-2015  Demitri Muna, Adding support for plate IDs > 9999
 ;-
 pro plugfile_plplugmap_apogee, plateid
 
@@ -236,16 +237,18 @@ for pointing=1L, npointings do begin
       outhdr= [outhdr, 'platedesign_version '+platedesign_version()]
    
    ;; output file name
-   if(plateid ge 10000) then begin
-      splog, 'plateid exceeds 10000, which breaks data model'
-      stop
-      platestr= strtrim(string(plateid),2)
-   endif else begin
-      platestr= strtrim(string(f='(i4.4)', plateid),2)
-   endelse
-   plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
-                pointing_post+'.par' 
-   
+   ;if(plateid ge 10000) then begin
+   ;   splog, 'plateid exceeds 10000, which breaks data model'
+   ;   stop
+   ;   platestr= strtrim(string(plateid),2)
+   ;endif else begin
+   ;   platestr= strtrim(string(f='(i4.4)', plateid),2)
+   ;endelse
+   ;plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
+   ;             pointing_post+'.par' 
+   plugmapfile = plate_dir(plateid) + '/' + $
+   		plugmap_filename(plateID=plateid, type='P')
+
    ;; for holes that aren't in this pointing, replace values with sky
    ;; values
    thisplug=plug

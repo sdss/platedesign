@@ -12,6 +12,7 @@
 ;   10-Jun-2008  MRB, NYU
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;   04-Oct-2012  MRB, NYU, alterations for MaNGA
+;   15-May-2015  Demitri Muna, Adding support for plate IDs > 9999
 ;-
 pro plugfile_plplugmap_manga, plateid, keepoldcoords=keepoldcoords
 
@@ -324,18 +325,22 @@ for pointing=1L, npointings do begin
       outhdr= [outhdr, 'platedesign_version '+platedesign_version()]
 
     ;; output file name
-    if(plateid ge 10000) then begin
-        splog, 'plateid exceeds 10000, which breaks data model'
-        stop
-        platestr= strtrim(string(plateid),2)
-    endif else begin
-        platestr= strtrim(string(f='(i4.4)', plateid),2)
-    endelse
-    plugmapfile_h= plate_dir(plateid)+'/plPlugMapH-'+platestr+ $
-      pointing_post[pointing-1]+'.par' 
-    plugmapfile_p= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
-      pointing_post[pointing-1]+'.par' 
-    
+    ;if(plateid ge 10000) then begin
+    ;    splog, 'plateid exceeds 10000, which breaks data model'
+    ;    stop
+    ;    platestr= strtrim(string(plateid),2)
+    ;endif else begin
+    ;    platestr= strtrim(string(f='(i4.4)', plateid),2)
+    ;endelse
+    ;plugmapfile_h= plate_dir(plateid)+'/plPlugMapH-'+platestr+ $
+    ;  pointing_post[pointing-1]+'.par' 
+    ;plugmapfile_p= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
+    ;  pointing_post[pointing-1]+'.par' 
+    plugmapfile_h = plate_dir(plateid) + '/' + $
+			plugmap_filename(plateID=plateid, type='H')
+	plugmapfile_p = plate_dir(plateid) + '/' + $
+			plugmap_filename(plateID=plateid, type='P')
+
     ;; for holes that aren't in this pointing, replace values with sky
     ;; values
     thisplug=plug
