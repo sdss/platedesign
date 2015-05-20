@@ -29,7 +29,7 @@
 ;   4-Oct-2010 MRB, adjusted for APOGEE
 ;-
 pro set_blockcen_apogee, design, blocks, fiberid, blockcenx, blockceny
-  platescale = 217.7358         ; mm/degree
+  platescale = platescale('APO')
 
   ;; now find the center location for each block, and limits in
   ;; y-direction of targets
@@ -77,7 +77,7 @@ if(keyword_set(nostd)) then $
 if(keyword_set(noscience)) then $
   message, 'No version in APOGEE that ignores science'
 
-platescale = 217.7358           ; mm/degree
+platescale = platescale('APO')
 nperblock=20L
 minyblocksize=0.3
 

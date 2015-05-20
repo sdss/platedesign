@@ -154,8 +154,8 @@ if(NOT keyword_set(nodistort)) then begin
     ;; telescope optics. note that ASSUMES that the fibers are
     ;; backstopped appropriately
     if(NOT keyword_set(nordistort)) then begin
-        rf5000= sdss_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
-        rfthis= sdss_rdistort(rfocal, lambda)
+        rf5000= apo_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
+        rfthis= apo_rdistort(rfocal, lambda)
         rfoff= rfthis-rf5000
         rfocal= rfocal+rfoff
     endif

@@ -1,16 +1,17 @@
 ;+
 ; NAME:
-;   sdss_rdistort
+;   apo_rdistort
 ; PURPOSE:
 ;   Account for radial distortion through the telescope relative to 5500 A
 ; CALLING SEQUENCE:
-;   rdistort= sdss_rdistort(rfocal, lambda)
+;   rdistort= apo_rdistort(rfocal, lambda)
 ; INPUTS:
 ;   rfocal - [N] current set of radii (mm)
 ;   lambda - [N] current set of wavelengths (Angstroms)
 ; OUTPUTS:
 ;   rdistort - [N] distorted radii
 ; COMMENTS:
+;   APO-specific
 ;   Uses $PLATEDESIGN_DIR/data/sdss/image-heights.txt
 ;   Supplied by Jim Gunn, message sdss3-infrastructure/946
 ;   Returns distortion relative to 5500 Angstroms
@@ -20,14 +21,14 @@
 ;   7-Aug-2008  MRB, NYU
 ;-
 ;------------------------------------------------------------------------------
-function sdss_rdistort, rfocal, inlambda
+function apo_rdistort, rfocal, inlambda
 
 common com_rdistort, radii, lambda, fracd
 
 if(n_elements(rfocal) ne n_elements(inlambda)) then $
   message, 'RFOCAL and LAMBDA must be same # of elements'
 
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO')
 
 if(n_elements(radii) eq 0) then begin
     sinradii= findgen(10.)*10./60.*(!DPI/180.)

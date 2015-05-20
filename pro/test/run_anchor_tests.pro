@@ -1,7 +1,7 @@
 pro run_anchor_tests
 
 nran=60L
-platescale = 217.7358D           ; mm/degree
+platescale = platescale('APO')
 
 ntest=500L
 nfail=0L
