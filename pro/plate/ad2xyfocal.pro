@@ -75,8 +75,7 @@ if(strupcase(observatory) ne 'APO' and $
    strupcase(observatory) ne 'LCO') then $
   message, 'Must set observatory to APO or LCO'
 
-platescale = get_get_platescale(observatory)
-print, observatory
+platescale = get_platescale(observatory)
 
 if(strupcase(observatory) eq 'APO') then begin
     if(n_elements(lambda) eq 0) then $
