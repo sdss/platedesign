@@ -67,7 +67,7 @@ else $
 definition= lines2struct(hdr)
 default= definition
 
-platescale = get_observatory(definition, default)
+platescale = get_platescale(get_observatory(definition, default))
 
 ;; handle old-style without lambda_eff
 lambda_eff= fltarr(n_elements(design))+5400.
