@@ -18,16 +18,16 @@ platedir= plate_dir(plateid)
 
 if(n_tags(holes) eq 0 OR n_tags(hdrstr) eq 0 or n_tags(full) eq 0) then begin
     plplug= platedir+'/plPlugMapP-'+ $
-      strtrim(string(f='(i4.4)',plateid),2)+'.par'
+      strtrim(string(plateid),2)+'.par'
     if(NOT file_test(plplug)) then $
       plplug= platedir+'/plPlugMapH-'+ $
-      strtrim(string(f='(i4.4)',plateid),2)+'.par'
+      strtrim(string(plateid),2)+'.par'
     check_file_exists, plplug, plateid=plateid
     holes= yanny_readone(plplug, hdr=hdr)
     hdrstr= lines2struct(hdr, /relaxed)
     
     fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(f='(i6.6)',plateid),2)+'.par'
+      strtrim(string(plateid),2)+'.par'
     check_file_exists, fullfile, plateid=plateid 
     full= yanny_readone(fullfile)
 endif
@@ -55,7 +55,7 @@ endif
 circle= 45./3600. * platescale
 buffer= 48./3600. * platescale
 
-filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
+filebase= platedir+'/plateLines-'+strtrim(string(plateid),2)+ $
           '-guide'
 
 noguide=lonarr(n_elements(gfiber))

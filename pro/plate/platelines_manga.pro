@@ -51,10 +51,10 @@ platedir= plate_dir(plateid)
 
 if(n_tags(full) eq 0) then begin
     fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(f='(i6.6)',plateid),2)+'.par'
+      strtrim(string(plateid),2)+'.par'
     if(keyword_set(swap)) then $
       fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(f='(i6.6)',plateid),2)+'-swap.par'
+      strtrim(string(plateid),2)+'-swap.par'
     check_file_exists, fullfile, plateid=plateid
     full= yanny_readone(fullfile, hdr=hdr)
     hdrstr= lines2struct(hdr)
@@ -82,7 +82,7 @@ postfix=''
 if(keyword_set(version)) then $
   postfix='-'+version
 
-filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2)+ $
+filebase= platedir+'/plateLines-'+strtrim(string(plateid),2)+ $
   postfix
 
 connect_thick=3

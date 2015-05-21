@@ -37,11 +37,11 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
 
   if(n_tags(holes) eq 0 OR n_tags(dpos) eq 0) then begin
      fullfile= platedir+'/plateHolesSorted-'+ $
-               strtrim(string(f='(i6.6)',plateid),2)+'.par'
+               strtrim(string(plateid),2)+'.par'
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
      dposfile= platerun_dir+'/plDrillPos-'+ $
-               strtrim(string(f='(i4.4)',plateid),2)+'.par'
+               strtrim(string(plateid),2)+'.par'
      check_file_exists, dposfile, plateid=plateid
      dpos= yanny_readone(dposfile)
   endif
@@ -55,13 +55,13 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
      return
 
   if(keyword_set(cunit)) then $
-     printf, cunit, string(plateid, f='(i4.4)')
+     printf, cunit, strtrim(string(plateid),2)
   
-  openw, unit, platerun_dir+'/plCounterBore-'+string(f='(i6.6)', plateid)+'.txt', /get_lun
+  openw, unit, platerun_dir+'/plCounterBore-'+strtrim(string(plateid),2)+'.txt', /get_lun
   
   printf, unit, '%'
-  printf, unit, 'O'+string(f='(i4.4)', plateid MOD 7000)+' (SDSS PLUG-PLATE '+ $
-        string(plateid)+')'
+  printf, unit, 'O'+strtrim(string(plateid MOD 7000),2)+' (SDSS PLUG-PLATE '+ $
+        strtrim(string(plateid),2)+')'
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#10.  5/64" END MILL)'
   printf, unit, ''
@@ -103,7 +103,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
      endelse
   endfor
   
-  pstr= string(plateid, f='(i4.4)')
+  pstr= strtrim(string(plateid),2)
   d1= strmid(pstr,0,1)
   d2= strmid(pstr,1,1)
   d3= strmid(pstr,2,1)

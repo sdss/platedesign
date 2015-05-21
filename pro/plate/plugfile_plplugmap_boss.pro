@@ -19,7 +19,7 @@ makesimple=0
 
 platedir= plate_dir(plateid)
 platefile= platedir+'/plateHoles-'+ $
-  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+  strtrim(string(plateid),2)+'.par'
 check_file_exists, platefile, plateid=plateid
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
@@ -216,7 +216,7 @@ plug=newplug
 holes=newholes
 
 sortedplatefile= platedir+'/plateHolesSorted-'+ $
-  strtrim(string(f='(i6.6)',plateid),2)+'.par'
+  strtrim(string(plateid),2)+'.par'
 pdata= ptr_new(holes)
 yanny_write, sortedplatefile, pdata, hdr=hdr
 ptr_free, pdata
