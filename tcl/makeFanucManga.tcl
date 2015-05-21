@@ -349,7 +349,7 @@ proc makeFanucManga { args } {
 			[expr $numPathFixed + $numPathFixed2] paths fixed"
 	    }
 	    set fanucFile [open $fanucFilePath a]	    
-	    copyEndGCodeFile $endCodesFileName $fanucFile [format %04d $plateId]
+	    copyEndGCodeFile $endCodesFileName $fanucFile [format %d $plateId]
 	    puts $fanucFile %
 	    close $fanucFile
 	}
