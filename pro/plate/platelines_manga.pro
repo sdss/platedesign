@@ -29,7 +29,7 @@ pro platelines_manga, in_plateid, diesoft=diesoft, $
                       sorty=sorty, relaxed=relaxed, $
                       rearrange=rearrange, swap=swap
 
-common com_pla, plateid, full, hdr, hdrstr
+common com_plm, plateid, full, hdr, hdrstr
 
 fnames= yanny_readone(getenv('MANGACORE_DIR')+'/cartmaps/manga_ferrule_names.par')
 
