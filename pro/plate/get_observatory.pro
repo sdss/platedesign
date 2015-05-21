@@ -16,9 +16,9 @@ function get_observatory, definition, default
 observatory='APO'
 
 if(tag_indx(default, 'observatory') ne -1) then $
-   observatory= double(default.observatory)
+   observatory= (default.observatory)
 if(tag_indx(definition, 'observatory') ne -1) then $
-   observatory= double(definition.observatory)
+   observatory= (definition.observatory)
 
 if(strupcase(observatory) ne 'APO' and $
    strupcase(observatory) ne 'LCO') then $

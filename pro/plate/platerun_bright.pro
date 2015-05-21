@@ -87,7 +87,6 @@ if(keyword_set(nolines) eq 0) then begin
    for i=0L, n_elements(plateid)-1L do begin
        platelines_apogee, plateid[i], /sorty
        apogee_fibervhmag, plateid[i]
-       platelines_marvels_bright, plateid[i]
        platelines_guide, plateid[i]
    endfor
 

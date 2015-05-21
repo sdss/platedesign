@@ -17,6 +17,8 @@ function plate_trap, definition, default, pointing, offset, rerun=rerun
 
 designid= long(definition.designid)
 
+tilerad= get_tilerad(definition, default)
+
 ;; file name
 outdir= design_dir(designid)
 trapfile=outdir+'/plateTrap-'+ $
@@ -31,7 +33,7 @@ if(NOT file_test(trapfile)) then begin
                   racen=racen, deccen=deccen
 
     tycvlimit = 7.5
-    tycdat = tycho_read(racen=racen, deccen=deccen, radius=1.48, $
+    tycdat = tycho_read(racen=racen, deccen=deccen, radius=tilerad-0.01, $
                         epoch=default_epoch())
     if (keyword_set(tycdat)) then begin
         ;; Sort so that we add the brightest Tycho stars first.

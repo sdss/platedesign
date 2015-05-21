@@ -17,7 +17,7 @@ FUNCTION plugmap_filename, plateID=plateID, type=type, pointing=pointing
 	filename = filename + '-'
 
 	; add the plate id
-	filename = filename + str(plateid)
+	filename = filename + strtrim(string(plateid),2)
 
 	; Handle the pointing
 	if keyword_set(pointing) then begin
