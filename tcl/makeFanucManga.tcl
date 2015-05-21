@@ -201,7 +201,7 @@ proc makeFanucManga { args } {
 	set obsTemp [exprGet $plObs.temp]
 	handleDel $plObs
 
-	set plugMapFileName [format plPlugMapP-%04d.par $plateId]
+	set plugMapFileName [format plPlugMapP-%d.par $plateId]
 	set plugMapFilePath [format %s/%s $outFileDir $plugMapFileName]
    echo $plugMapFilePath
 	set plugMapData [ param2Chain $plugMapFilePath plugMapHdr ]
@@ -227,12 +227,12 @@ proc makeFanucManga { args } {
 	set trapHolesChn [keylget return lighttraps]
 	set alignHolesChn [keylget return alignment]
 
-	set fanucFileName [format plFanucUnadjusted-%04d.par $plateId]
+	set fanucFileName [format plFanucUnadjusted-%d.par $plateId]
 	set fanucFilePath [format %s/%s $outFileDir $fanucFileName]
 	set fanucFile [open $fanucFilePath w]
 
 	puts $fanucFile "%"
-	puts $fanucFile [format "O%04d(SDSS/MaNGA PLUG-PLATE %d)"\
+	puts $fanucFile [format "O%d(SDSS/MaNGA PLUG-PLATE %d)"\
 		[expr $plateId % 7000] $plateId]
 	puts $fanucFile [format "(Drilling temperature %5.1f degrees F)"\
 		[expr 32 + $tempShop * 1.8] ]
