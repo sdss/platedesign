@@ -113,9 +113,9 @@ nfibers=n_elements(xfiber)
 if(~keyword_set(nmax)) then nmax= nfibers
 iblock=where(fiberblocks.blockid eq 1, nfibersblock)
 
-;; target positions to new
-xtarget=double(in_xtarget)
-ytarget=double(in_ytarget)
+;; target positions in deg not mm
+xtarget=double(in_xtarget/platescale)
+ytarget=double(in_ytarget/platescale)
 ntargets=n_elements(xtarget)
 
 ;; signal fibers that are used

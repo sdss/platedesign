@@ -149,7 +149,7 @@ if(NOT keyword_set(nosky)) then begin
                   nmax=nmax, reachfunc='boss_reachcheck', $
                   blockcenx=blockcenx, blockceny=blockceny, /quiet, $
                   blockfile=blockfile, ylimits=blockylimits, $
-                  /noycost, fiberused=fiberused
+                  /noycost, fiberused=fiberused, platescale=platescale
                 
                 iassigned=where(tmp_fiberid ge 1, nassigned)
                 help, nassigned, nmax
