@@ -5,6 +5,7 @@
 #   SDSS BOSS MARVELS APOGEE MANGA
 instruments APOGEESOUTH
 observatory LCO
+tilerad 0.95
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
