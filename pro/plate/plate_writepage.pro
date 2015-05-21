@@ -100,7 +100,7 @@ for indx=0L, n_elements(plateid)-1L do begin
     i= isort[indx]
 
     plateholesfile= plate_dir(plateid[i])+'/plateHolesSorted-'+ $
-                    string(f='(i6.6)', plateid[i])+'.par'
+                    strtrim(string(plateid[i]),2)+'.par'
     yanny_read, plateholesfile, hdr=hdr
     npointings= long(yanny_par(hdr, 'npointings'))
     pointing_name= yanny_par(hdr, 'pointing_name')
@@ -142,7 +142,7 @@ for indx=0L, n_elements(plateid)-1L do begin
            guides[ip]= ptr_new(yanny_par(hdr, $
                                          'guidenums'+strtrim(string(ip+1L),2)))
 
-    plfile='plateLines-'+string(plateid[i], f='(i6.6)')+'.html'
+    plfile='plateLines-'+strtrim(string(plateid[i]),2)+'.html'
 
     class= classes[i mod n_elements(classes)]
     tdst= '<td class="'+class+'">'
@@ -152,7 +152,7 @@ for indx=0L, n_elements(plateid)-1L do begin
             if(ip eq 0 AND it eq 0) then begin
                 printf, unit, tdst
                 printf, unit, '<a href="'+plfile+'">'+ $
-                        string(plateid[i], f='(i6.6)')+'</a>'
+                        strtrim(string(plateid[i]),2)+'</a>'
                 printf, unit, '</td>'
                 printf, unit, tdst
                 printf, unit, tileid
@@ -192,7 +192,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, '</td>'
 
                 plugname='plPlugMapP-'+ $
-                          string(f='(i4.4)', plateid[i])
+                          strtrim(string(plateid[i]),2)
                 if(pointing_name[ip] ne 'A') then $
                   plugname= plugname+pointing_name[ip]
                 plugname=plugname+'.par'
@@ -207,7 +207,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                 lastwords= words[n_elements(words)-3L]+'/'+ $
                            words[n_elements(words)-2L]
                 gpath= '../../plates/'+lastwords
-                ghtml= 'guideDSS-'+ string(f='(i6.6)', plateid[i])+ $
+                ghtml= 'guideDSS-'+ strtrim(string(plateid[i]),2)+ $
                   '-p'+strtrim(string(ip+1L),2)+'.html'
                 
                 printf, unit, tdst
@@ -252,10 +252,10 @@ for indx=0L, n_elements(plateid)-1L do begin
     openw, plunit, runpath+'/'+plfile, /get_lun
     printf, plunit, '<html>'
     printf, plunit, '<head>'
-    printf, plunit, '<title>plateLines-'+string(plateid[i], f='(i6.6)')+ $
+    printf, plunit, '<title>plateLines-'+strtrim(string(plateid[i]),2)+ $
             ' from drilling run: '+runname+'</title>'
     printf, plunit, '</head>'
-    printf, plunit, '<h1>plateLines-'+string(plateid[i], f='(i6.6)')+ $
+    printf, plunit, '<h1>plateLines-'+strtrim(string(plateid[i]),2)+ $
             ' from drilling run: '+runname+'</h1>'
     printf, plunit, '</head>'
     printf, plunit, '<body style="background-color:#ccc">'

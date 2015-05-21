@@ -63,7 +63,7 @@ plobs= replicate(plobs0, n_elements(plateid))
 ;; Assumes only one pointing per plate!
 for i=0L, n_elements(plateid)-1L do begin
     plugmap_filename = plate_dir(plateid[i])+'/plPlugMapH-'+ $
-                       strtrim(string(plateid[i],f='(i4.4)'),2)+'.par'
+                       strtrim(string(plateid[i]),2)+'.par'
     
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
@@ -79,7 +79,7 @@ for i=0L, n_elements(plateid)-1L do begin
     plobs[i].hamax= float(hdrstr.hamax)
     spawn, 'cp -f '+plugmap_filename+' '+ $
       platerun_dir+ $
-      '/plPlugMapP-'+strtrim(string(plateid[i], f='(i4.4)'),2)+'.par'
+      '/plPlugMapP-'+strtrim(string(plateid[i]),2)+'.par'
 endfor
 pdata=ptr_new(plobs)
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
@@ -115,7 +115,7 @@ spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
 
 for i=0L, n_elements(plateid)-1L do begin
     fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanucUnadjusted-'+ $
-      string(plateid[i],f='(i4.4)')+'.par'
+      strtrim(string(plateid[i]),2)+'.par'
     if(file_test(fanucfile) eq 0) then $
       message, color_string(fanucfile+' not successfully made!', 'red')
     if(file_test(fanucfile+'.BAD') ne 0) then $

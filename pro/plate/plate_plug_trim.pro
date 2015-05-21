@@ -30,7 +30,7 @@ for i=0L, nplate-1L do begin
     platedir= (plate_dir(plateid))[0]
 
     files= file_search(platedir+'/plPlugMapP-'+ $
-                       string(f='(i4.4)', plateid)+'*.par')
+                       string(plateid)+'*.par')
     for j=0L, n_elements(files)-1L do begin
         basename= file_basename(files[j])
         extract= stregex(basename, 'plPlugMapP-[0-9][0-9][0-9][0-9](.*)\.par', /extr, /sub)
@@ -44,7 +44,7 @@ for i=0L, nplate-1L do begin
             if(letter ne 'A') then $
               message, 'We only expect spare A files to be around to be deleted!'
             otherfile= file_search(platedir+'/plPlugMapP-'+ $
-                                   string(f='(i4.4)', plateid)+pointing+'.par')
+                                   string( plateid)+pointing+'.par')
             if(NOT file_test(otherfile)) then $
               message, 'We expect the REAL file to exist!'
             spawn, /nosh, ['diff', '-q', files[j], otherfile], diffout

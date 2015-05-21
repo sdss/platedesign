@@ -17,7 +17,7 @@ pro create_derivs, plateid
 
 ; get number of pointings (np) for given plateid
 plug= yanny_readone(plate_dir(plateid)+'/plPlugMapP-'+ $
-					string(plateid, f='(i4.4)')+'.par', hdr=hdr)
+					strtrim(string(plateid),2)+'.par', hdr=hdr)
 
 np=yanny_par(hdr, 'npointings')
 

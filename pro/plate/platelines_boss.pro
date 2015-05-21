@@ -119,12 +119,12 @@ platedir= plate_dir(plateid)
 
 if(n_tags(holes) eq 0) then begin
    plplug= platedir+'/plPlugMapP-'+ $
-           strtrim(string(f='(i4.4)',plateid),2)+'.par'
+           strtrim(string(plateid),2)+'.par'
    check_file_exists, plplug, plateid=plateid
    holes= yanny_readone(plplug)
    
    fullfile= platedir+'/plateHolesSorted-'+ $
-             strtrim(string(f='(i6.6)',plateid),2)+'.par'
+             strtrim(string(plateid),2)+'.par'
    check_file_exists, fullfile, plateid=plateid
    full= yanny_readone(fullfile)
 endif

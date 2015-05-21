@@ -41,7 +41,7 @@ function check_photoplate, plate
 	compile_opt idl2
 	compile_opt logical_predicate
 
-	pstr = strtrim(string(f='(i4.4)',plate),2)
+	pstr = strtrim(string(plate),2)
 	
 	pdir = getenv('PHOTOPLATE_DIR')+'/'+pstr
 	
