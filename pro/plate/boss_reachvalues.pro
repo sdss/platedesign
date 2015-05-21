@@ -6,7 +6,7 @@
 ; CALLING SEQUENCE:
 ;   boss_reachvalues, xval=, yval=
 ; OUTPUTS:
-;   xval, yval - [N] positions of furthest reach (deg)
+;   xval, yval - [N] positions of furthest reach (mm)
 ; COMMENTS:
 ;   Reach values measured by Larry Carey, sdss3-infrastructure/907
 ;   See the PDFs in $PLATEDESIGN_DIR/data/boss
@@ -21,8 +21,6 @@
 ;------------------------------------------------------------------------------
 pro boss_reachvalues, xval=xval, yval=yval
 
-platescale = 217.7358D           ; mm/degree
-
 xcm= [25., 20., 15., 10., 5., 0., -5., -10., -15., -17., -17., $
       -17., -15., -10., -5., 0., 5., 10., 15., 20., 25.]
 ycm= [0., 15., 19., 21., 22., 22., 22., 20., 15., 2., 0., $
@@ -31,8 +29,8 @@ ycm= [0., 15., 19., 21., 22., 22., 22., 20., 15., 2., 0., $
 xmm= 10.*xcm
 ymm= 10.*ycm
 
-xval= xmm/platescale
-yval= ymm/platescale
+xval= xmm
+yval= ymm
 
 return
 end

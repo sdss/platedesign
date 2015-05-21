@@ -50,13 +50,15 @@ pro sdss_plugprob, in_xtarget, in_ytarget, fiberid, minavail=minavail, $
                    toblock=toblock, blockcenx=blockcenx, blockceny=blockceny, $
                    maxinblock=maxinblock, blockfile=in_blockfile, $
                    noycost=noycost, ylimits=ylimits, reachfunc=reachfunc, $
-                   stretch=stretch
+                   stretch=stretch, platescale=platescale
 
 common com_plugprob, fiberblocks, blockfile
 
-platescale = 217.7358           ; mm/degree
+if(NOT keyword_set(platescale)) then $
+  platescale= get_platescale('APO')
+
 if(~keyword_set(limitdegree) AND ~keyword_set(reachfunc)) then $
-  limitdegree= 7.*0.1164        ; limit of fiber reach
+  limitdegree= 7.*0.1164
 if(~keyword_set(toblock)) then toblock= lonarr(n_elements(in_xtarget))
 if(~keyword_set(mininblock)) then mininblock= 0L
 if(~keyword_set(maxinblock)) then maxinblock= 20L
@@ -111,9 +113,9 @@ nfibers=n_elements(xfiber)
 if(~keyword_set(nmax)) then nmax= nfibers
 iblock=where(fiberblocks.blockid eq 1, nfibersblock)
 
-;; convert target positions from mm to deg
-xtarget=double(in_xtarget/platescale)
-ytarget=double(in_ytarget/platescale)
+;; target positions to new
+xtarget=double(in_xtarget)
+ytarget=double(in_ytarget)
 ntargets=n_elements(xtarget)
 
 ;; signal fibers that are used
@@ -126,8 +128,10 @@ if(keyword_set(reachfunc)) then begin
     fibertargetspossible=lonarr(nfibers, ntargets)
     for i=0L, nfibers-1L do $
           fibertargetspossible[i,*]= $
-            call_function(reachfunc, xfiber[i], yfiber[i], $
-                          xtarget, ytarget, stretch=stretch)
+            call_function(reachfunc, xfiber[i]*platescale, $
+                          yfiber[i]*platescale, $
+                          xtarget*platescale, $
+                          ytarget*platescale, stretch=stretch)
     inputpossible=1L
     limitdegree=0.
 endif else begin

@@ -44,17 +44,17 @@ matches=ptrarr(nguide)
 costs=ptrarr(nguide)
 nmtot=0L
 ismatched= lonarr(ntarget)
-platescale = 217.7358D          ; mm/degree
+
 coff=lonarr(n_elements(gfiber))+90000L
 ibig= where(gfiber.guidetype eq 'A', nbig)
 if(nbig eq 0) then $
   message, color_string('No acquisition fibers! Senseless.', 'red', 'bold')
 coff[ibig]=0L
 for i=0L, n_elements(gfiber)-1L do begin
-    inrange= boss_reachcheck(gfiber[i].xreach/platescale, $
-                             gfiber[i].yreach/platescale, $
-                             design.xf_default/platescale, $
-                             design.yf_default/platescale, $
+    inrange= boss_reachcheck(gfiber[i].xreach, $
+                             gfiber[i].yreach, $
+                             design.xf_default, $
+                             design.yf_default, $
                              stretch=stretch)
     imatch=where(inrange gt 0, nmatch)
     if(nmatch eq 0) then begin

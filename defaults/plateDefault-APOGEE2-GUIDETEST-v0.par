@@ -17,7 +17,7 @@ targettypes science_bright science_medium science_faint standard_bright standard
 # An offset is a small offset (arcminutish) during an exposure.
 # "nOffsets 0" means we don't move during the exposure.
 # If there is an offset, it must be the same for all exposures.
-nPointings 3
+nPointings 4
 nOffsets 0
 
 # For each instrument, you must specify how many 

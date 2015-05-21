@@ -6,8 +6,8 @@
 ; CALLING SEQUENCE:
 ;   inreach= boss_reachcheck(xfiber, yfiber, xhole, yhole [, /stretch])
 ; INPUTS:
-;   xfiber, yfiber - fiber position relative to plate center (deg)
-;   xhole, yhole - [N] position relative to plate center (deg)
+;   xfiber, yfiber - fiber position relative to plate center (mm)
+;   xhole, yhole - [N] position relative to plate center (mm)
 ; OPTIONAL KEYWORDS:
 ;   /stretch - add some reach (e.g. for certain guide star plates)
 ; OUTPUTS:
@@ -23,8 +23,6 @@
 function boss_reachcheck, xfiber, yfiber, xhole, yhole, stretch=stretch
 
 common com_reachcheck, rval, thval
-
-platescale = 217.7358D           ; mm/degree
 
 if(n_elements(rval) eq 0) then begin
     boss_reachvalues, xval=xval, yval=yval
@@ -49,7 +47,7 @@ thoff= (atan(yoff, xoff)+!DPI*2.) mod (!DPI*2.)
 rreach= interpol(rval, thval, thoff, /spline)
 
 if(keyword_set(stretch)) then $
-  rreach = rreach + 25.4/platescale*float(stretch)
+  rreach = rreach + 25.4*float(stretch)
 
 return, rreach gt roff
 

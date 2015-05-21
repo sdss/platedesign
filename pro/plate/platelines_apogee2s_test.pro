@@ -53,7 +53,7 @@ end
 ;
 pro platelines_apogee2s_test, in_plateid, project=project
 
-common com_pla
+common com_plat
 
 
 if(NOT keyword_set(in_plateid)) then $
