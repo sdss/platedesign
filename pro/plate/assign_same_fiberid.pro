@@ -26,8 +26,7 @@ pro assign_same_fiberid, inputfile, plate, outputfile=outputfile, radec=radec
   endif
   
 ;; read in fiberid from old plate
-  oldfibersfile=plate_dir(plate)+ '/plateHolesSorted-'+ $
-                strtrim(string(f='(i6.6)', plate),2)+'.par'
+  oldfibersfile=plate_dir(plate)+ '/'+plateholes_filename(plateid=plate, /sorted)
   check_file_exists, oldfibersfile, plateid=plate
   oldfibers= yanny_readone(oldfibersfile, hdr=hdr, /anon)
   

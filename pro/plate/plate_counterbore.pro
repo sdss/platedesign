@@ -36,8 +36,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   platedir= plate_dir(plateid)
 
   if(n_tags(holes) eq 0 OR n_tags(dpos) eq 0) then begin
-     fullfile= platedir+'/plateHolesSorted-'+ $
-               strtrim(string(plateid),2)+'.par'
+     fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
      dposfile= platerun_dir+'/plDrillPos-'+ $

@@ -55,8 +55,7 @@ adjustfile= platedir+'/plateGuideAdjust-'+post+'.par'
 offsetfile=platedir+'/plateGuideOffsets-'+post+'.par'
 
 ; Construct path to input plateHoles file, contains fiber positions and other relevant information
-fullfile= platedir+'/plateHolesSorted-'+ $
-          strtrim(string(f='(i6.6)',plateid),2)+'.par'
+fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
 check_file_exists, fullfile, plateid=plateid
 
 ; Parse contents of input file, 

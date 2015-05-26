@@ -26,8 +26,7 @@ if(n_tags(holes) eq 0 OR n_tags(hdrstr) eq 0 or n_tags(full) eq 0) then begin
     holes= yanny_readone(plplug, hdr=hdr)
     hdrstr= lines2struct(hdr, /relaxed)
     
-    fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(plateid),2)+'.par'
+    fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
     check_file_exists, fullfile, plateid=plateid 
     full= yanny_readone(fullfile)
 endif

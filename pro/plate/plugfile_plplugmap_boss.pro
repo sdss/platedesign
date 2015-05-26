@@ -18,8 +18,7 @@ pro plugfile_plplugmap_boss, plateid, keepoldcoords=keepoldcoords
 makesimple=0
 
 platedir= plate_dir(plateid)
-platefile= platedir+'/plateHoles-'+ $
-  strtrim(string(plateid),2)+'.par'
+platefile= platedir+'/'+plateholes_filename(plateid=plateid)
 check_file_exists, platefile, plateid=plateid
 holes= yanny_readone(platefile, hdr=hdr, /anon)
 
@@ -215,8 +214,7 @@ if(n_elements(newplug) ne n_elements(plug)) then $
 plug=newplug
 holes=newholes
 
-sortedplatefile= platedir+'/plateHolesSorted-'+ $
-  strtrim(string(plateid),2)+'.par'
+sortedplatefile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
 pdata= ptr_new(holes)
 yanny_write, sortedplatefile, pdata, hdr=hdr
 ptr_free, pdata

@@ -29,11 +29,9 @@ if(plan.platerun ne '2009.05.b.boss') then $
 
 platedir=plate_dir(plateid)
 
-holes= yanny_readone(platedir+'/plateHoles-'+ $
-                     string(plateid, f='(i6.6)')+'.par', $
+holes= yanny_readone(platedir+'/'+plateholes_filename(plateid=plateid), $
                      enum=enum, struct=struct, hdr=hdr)
-sholes= yanny_readone(platedir+'/plateHolesSorted-'+ $
-                      string(plateid, f='(i6.6)')+'.par', $
+sholes= yanny_readone(platedir+'/'+plateholes_filename(plateid=plateid, /sorted), $
                       enum=senum, struct=sstruct, hdr=shdr)
 
 
@@ -70,12 +68,12 @@ holes[iscih[m2]].zoffset= sholes[isci[m1]].zoffset
 holes[iscih[m2]].bluefiber= sholes[isci[m1]].bluefiber
 
 pdata= ptr_new(sholes)
-yanny_write, platedir+'/plateHolesSorted-'+string(plateid, f='(i6.6)')+'.par', $
+yanny_write, platedir+'/'+plateholes_filename(plateid=plateid, /sorted), 
   pdata, enum=senum, struct=sstruct, hdr=shdr
 ptr_free, pdata
 
 pdata= ptr_new(holes)
-yanny_write, platedir+'/plateHoles-'+string(plateid, f='(i6.6)')+'.par', $
+yanny_write, platedir+'/'+plateholes_filename(plateid=plateid), 
   pdata, enum=enum, struct=struct, hdr=hdr
 ptr_free, pdata
 
