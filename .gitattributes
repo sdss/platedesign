@@ -251,6 +251,7 @@ pro/plate/plate_trap.pro -text
 pro/plate/plate_tycho_to_sdss.pro -text
 pro/plate/plate_writepage.pro -text
 pro/plate/plate_xy2ad.pro -text
+pro/plate/plateholes_filename.pro -text
 pro/plate/platelines_apogee.pro -text
 pro/plate/platelines_apogee2s_test.pro -text
 pro/plate/platelines_boss.pro -text
