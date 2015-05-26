@@ -273,7 +273,6 @@ pro/plate/plugfile_plplugmap.pro -text
 pro/plate/plugfile_plplugmap_apogee.pro -text
 pro/plate/plugfile_plplugmap_boss.pro -text
 pro/plate/plugfile_plplugmap_manga.pro -text
-pro/plate/plugfile_plplugmap_segue2.pro -text
 pro/plate/plugmap_blank.pro -text
 pro/plate/plugmap_filename.pro -text
 pro/plate/ra_in_range.pro -text
