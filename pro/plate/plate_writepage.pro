@@ -99,8 +99,8 @@ isort= sort(plateid)
 for indx=0L, n_elements(plateid)-1L do begin
     i= isort[indx]
 
-    plateholesfile= plate_dir(plateid[i])+'/plateHolesSorted-'+ $
-                    strtrim(string(plateid[i]),2)+'.par'
+    plateholesfile= plate_dir(plateid[i])+'/'+ $
+      plateholes_filename(plateid=plateid[i], /sorted)
     yanny_read, plateholesfile, hdr=hdr
     npointings= long(yanny_par(hdr, 'npointings'))
     pointing_name= yanny_par(hdr, 'pointing_name')

@@ -24,8 +24,7 @@ xfiber= fiberblocks.fibercenx*platescale
 yfiber= fiberblocks.fiberceny*platescale
 
 platedir= plate_dir(plateid)
-holes= yanny_readone(platedir+'/plateHoles-'+ $
-                     strtrim(string(f='(i6.6)', plateid),2)+'.par')
+holes= yanny_readone(platedir+'/'+ plateholes_filename(plateid=plateid))
 
 im= where(holes.holetype eq 'MARVELS', nm)
 if(nm eq 0) then begin

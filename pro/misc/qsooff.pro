@@ -14,8 +14,7 @@ pro qsooff, plate
 holes= yanny_readone(getenv('PLATELIST_DIR')+'/plates/'+ $
                      strtrim(string(plate/100L, f='(i4.4)'),2)+'XX/'+ $
                      strtrim(string(plate, f='(i6.6)'),2)+'/'+ $
-                     'plateHolesSorted-'+ $
-                     strtrim(string(plate, f='(i6.6)'),2)+'.par', hdr=hdr)
+                     plateholes_filename(plateid=plate, /sorted), hdr=hdr)
 hstr= lines2struct(hdr)
 np= long(hstr.npointings)
 ha= long(strsplit(hstr.ha, /extr))

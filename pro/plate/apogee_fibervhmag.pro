@@ -41,8 +41,7 @@ pro apogee_fibervhmag, in_plateid
 
   if(n_tags(full) eq 0) then begin
 
-     fullfile= platedir+'/plateHolesSorted-'+ $
-               strtrim(string(f='(i6.6)',plateid),2)+'.par'
+     fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
      check_file_exists, fullfile, plateid=plateid
      full= yanny_readone(fullfile)
 

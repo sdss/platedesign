@@ -123,8 +123,7 @@ if(n_tags(holes) eq 0) then begin
    check_file_exists, plplug, plateid=plateid
    holes= yanny_readone(plplug)
    
-   fullfile= platedir+'/plateHolesSorted-'+ $
-             strtrim(string(plateid),2)+'.par'
+   fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
    check_file_exists, fullfile, plateid=plateid
    full= yanny_readone(fullfile)
 endif

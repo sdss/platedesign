@@ -50,11 +50,8 @@ endelse
 platedir= plate_dir(plateid)
 
 if(n_tags(full) eq 0) then begin
-    fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(plateid),2)+'.par'
-    if(keyword_set(swap)) then $
-      fullfile= platedir+'/plateHolesSorted-'+ $
-      strtrim(string(plateid),2)+'-swap.par'
+    fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted,  $
+                                               swap=swap)
     check_file_exists, fullfile, plateid=plateid
     full= yanny_readone(fullfile, hdr=hdr)
     hdrstr= lines2struct(hdr)

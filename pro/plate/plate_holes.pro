@@ -152,8 +152,7 @@ outhdr=['plateId '+strtrim(string(plateid),2), $
         hdr]
 pdata= ptr_new(holes)
 platedir= plate_dir(plateid)
-platefile=platedir+'/plateHoles-'+ $
-  string(plateid, f='(i6.6)')+'.par'
+platefile= platedir+'/'+plateholes_filename(plateid= plateid)
 yanny_write, platefile, pdata, hdr=outhdr
 ptr_free, pdata
 
