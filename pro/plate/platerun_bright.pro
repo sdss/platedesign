@@ -11,7 +11,7 @@
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
 ;-
-pro platerun_bright, platerun, plateid, nolines=nolines
+pro platerun_bright, platerun, plateid, nolines=nolines, nocounterbores=nocounterbores
 
 platerun_dir= getenv('PLATELIST_DIR')+'/runs/'+platerun
 
@@ -126,12 +126,14 @@ for i=0L, n_elements(plateid)-1L do begin
  endfor
 
 ;; make counterbores
-openw, cunit, getenv('PLATELIST_DIR')+'/runs/'+platerun+'/'+ $
-       'plCounterBoreList-'+platerun+'.txt', /get_lun
-printf, cunit, '# List of APOGEE plates in this run to be counterbored'
-for i=0L, n_elements(plateid)-1L do $
-   plate_counterbore, platerun, plateid[i], cunit=cunit
-free_lun, cunit
+if(NOT keyword_set(nocounterbores)) then begin
+    openw, cunit, getenv('PLATELIST_DIR')+'/runs/'+platerun+'/'+ $
+      'plCounterBoreList-'+platerun+'.txt', /get_lun
+    printf, cunit, '# List of APOGEE plates in this run to be counterbored'
+    for i=0L, n_elements(plateid)-1L do $
+      plate_counterbore, platerun, plateid[i], cunit=cunit
+    free_lun, cunit
+endif
 
 splog, message, color_string('"plate_writepage, ''' + platerun + '''" can now be run.', 'green', 'bold')
 
