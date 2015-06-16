@@ -93,7 +93,7 @@ endif
 
 if(strupcase(observatory) eq 'LCO') then begin
     if(n_elements(lambda) eq 0) then $
-      lambda=replicate(8000., n_elements(ra))
+      lambda=replicate(7500., n_elements(ra))
     if n_elements(airtemp) EQ 0 then airtemp = 12.
     airtemp_k=airtemp+273.155   ; C to Kelvin
     if n_elements(height) EQ 0 then height = 2380.D
@@ -164,6 +164,12 @@ endif
 
 xfocal= rfocal*sin(posang) 
 yfocal= rfocal*cos(posang)
+
+;; rotate 180 deg for LCO
+if(strupcase(observatory) eq 'LCO') then begin
+    xfocal= -xfocal
+    yfocal= -yfocal
+endif
 
 return
 end
