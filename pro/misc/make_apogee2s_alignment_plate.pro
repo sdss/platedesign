@@ -8,7 +8,7 @@
 ;
 ; Once in its proper place: "$PLATELIST_DIR/plates/0086XX/008633/plPlugMapP-8633.par",
 ; the plate is finished by running:
-;   IDL> platerun_apogee, '2015.06.x.apogee', 8633, /nolines
+;   IDL> platerun_bright, '2015.06.x.apogee', 8633, /nolines
 ;
 ; MRB, NYU 2015-06-16
 
