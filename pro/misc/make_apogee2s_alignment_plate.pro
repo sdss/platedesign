@@ -212,7 +212,7 @@ end
 ;ninputs 1
 ;plateinput1 xxxx
 ;priority 1
-;platerun @platerun
+;platerun 2015.06.b.apogee2
 ;platedesign_version trunk
 ;
 ;typedef enum {
