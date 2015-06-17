@@ -14,8 +14,10 @@
 ;                  .YPREFER - preferred location (Y)
 ;                  .BLOCK - block ID
 ; COMMENTS:
-;   Returns 48 guide positions; just the regular 48 repeated 3 times. 
-;   Calls gfiber2_params and replicates 3 times (incrementing guide
+;   Returns 48x4 guide positions; just the regular 16 repeated 12 times. 
+;   This is usually going to be interpreted as 3 sets of guide stars
+;    for each of 4 pointings
+;   Calls gfiber2_params and replicates 12 times (incrementing guide
 ;     numbers)
 ; REVISION HISTORY:
 ;   10-Jun-2008  MRB, NYU
@@ -29,11 +31,14 @@ gfiberorig= gfiber2_params()
 gfiberorig= struct_addtags(gfiberorig, $
                            replicate({block:-1L}, n_elements(gfiberorig)))
 
-;; replicate it nine times, incrementing guide number
+nrepeat=12L
+
+;; replicate it twelve times, incrementing guide number
 gfiber= [gfiberorig, gfiberorig, gfiberorig, $
          gfiberorig, gfiberorig, gfiberorig, $
+         gfiberorig, gfiberorig, gfiberorig, $
          gfiberorig, gfiberorig, gfiberorig]
-for i=0L, 8L do begin
+for i=0L, nrepeat-1L do begin
     offset= float((i mod 3)-1L)*20.
     gfiber[i*16:(i+1)*16-1].yprefer= gfiber[i*16:(i+1)*16-1].yprefer+offset 
     gfiber[i*16:(i+1)*16-1].block=  $
