@@ -26,7 +26,7 @@
 ;------------------------------------------------------------------------------
 function platelines_apogee2s_test_manga_hole_color, targettype, fiberid
 
-common com_pla, plateid, full, holes, hdr, hdrstr, apogee_blocks
+common com_plat, plateid, full, holes, hdr, hdrstr, apogee_blocks
   
 if(strupcase(targettype) eq 'SKY') then $
    color='blue'
@@ -219,7 +219,6 @@ platelines_circlefill, holes.xfocal, holes.yfocal, white_circle, color='white'
 ;platelines_circle, holes.xfocal, holes.yfocal, white_circle, color='black', $
   ;th=1
 
-   
 if(NOT keyword_set(project)) then $
    platelines_print_end $
 else $

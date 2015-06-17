@@ -97,7 +97,7 @@ iguide= where(holes.holetype eq 'GUIDE', ngstar)
 nguide=16L
 nper=3L
 holecolors= ['green', 'blue', 'magenta']
-connect_colors= ['black', 'brown', 'red']
+connect_colors= ['black', 'brown', 'red','orange']
 
 if(nper*nguide*hdrstr.npointings ne ngstar) then $
   message, 'Bad number of guide stars'
