@@ -269,6 +269,7 @@ pro/plate/platelines_manga.pro -text
 pro/plate/platelines_print_start.pro -text
 pro/plate/platelines_start.pro -text
 pro/plate/platerun.pro -text
+pro/plate/platerun_apogee_south.pro -text
 pro/plate/platerun_boss.pro -text
 pro/plate/platerun_bright.pro -text
 pro/plate/platerun_manga.pro -text
