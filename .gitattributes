@@ -53,6 +53,7 @@ data/sdss/g_codes_object.txt -text
 data/sdss/holtzman-adr.txt -text
 data/sdss/image-heights.txt -text
 data/sdss/plParam.par -text
+data/sdss/plParam_LCO.par -text
 data/sdss/plPlugMapP-blank.par -text
 data/sdss/plate-orientation.txt -text
 data/sdss/plugMap-blank.par -text
