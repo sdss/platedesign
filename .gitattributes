@@ -48,6 +48,7 @@ data/sdss/SDSS3GuideFbrHrnssNumSysV1.pdf -text
 data/sdss/fiberBlocks.par -text
 data/sdss/g_codes_alignment.txt -text
 data/sdss/g_codes_completion.txt -text
+data/sdss/g_codes_completion_lco.txt -text
 data/sdss/g_codes_lighttrap.txt -text
 data/sdss/g_codes_object.txt -text
 data/sdss/holtzman-adr.txt -text
