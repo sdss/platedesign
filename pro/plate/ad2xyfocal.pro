@@ -99,8 +99,8 @@ if(strupcase(observatory) eq 'LCO') then begin
     if n_elements(height) EQ 0 then height = 2380.D
     if n_elements(pressure) EQ 0 then $
       pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
-    ;; TBD, to be supplied by Guillermo!!
-    rcoeffs=[0.0, 0.0, 0., 0.]
+    ;; still not finalized as of 2015-06-17
+    rcoeffs=[0.0, 0.0, 2.07489/platescale^3, 0.]
 endif
 
 if(n_elements(lambda) ne 1 AND $
