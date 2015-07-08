@@ -5,6 +5,7 @@ bin/.svnignore -text
 bin/drillrun2zip -text
 bin/fanuc2xy -text
 bin/get_plugmap_files.py -text
+bin/plate_overlay -text
 bin/platedesign_version -text
 bin/qsub_match.pl -text
 data/apogee/JointAnchorBlockPositionsR4.dat -text
