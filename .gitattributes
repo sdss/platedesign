@@ -208,6 +208,7 @@ pro/plate/get_platescale.pro -text
 pro/plate/get_tilerad.pro -text
 pro/plate/gfiber2_params.pro -text
 pro/plate/gfiber_apogeesouthtest_params.pro -text
+pro/plate/gfiber_lco_params.pro -text
 pro/plate/gfiber_params.pro -text
 pro/plate/guider_hdr.pro -text
 pro/plate/ha_apply.pro -text
