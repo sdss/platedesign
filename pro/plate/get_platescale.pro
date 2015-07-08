@@ -26,7 +26,7 @@ if(strupcase(observatory) eq 'APO') then $
   platescale = 217.7358D        ; mm/degree
 
 if(strupcase(observatory) eq 'LCO') then $
-  platescale = 328.58279D          ; mm/degree, still not final as of 2015-06-17 
+  platescale = 328.589265D          ; mm/degree, still not final as of 2015-07-13 
 
 return, platescale
 end
