@@ -245,7 +245,7 @@ for pointing=1L, npointings do begin
    ;plugmapfile= plate_dir(plateid)+'/plPlugMapP-'+platestr+ $
    ;             pointing_post+'.par' 
    plugmapfile = plate_dir(plateid) + '/' + $
-   		plugmap_filename(plateID=plateid, type='P')
+   		plugmap_filename(plateID=plateid, type='P', pointing=pointing_post)
 
    ;; for holes that aren't in this pointing, replace values with sky
    ;; values
