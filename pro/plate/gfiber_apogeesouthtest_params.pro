@@ -27,7 +27,7 @@
 function gfiber_apogeesouthtest_params
 
 ;; get real guide fiber configuration
-gfiberorig= gfiber2_params()
+gfiberorig= gfiber_lco_params()
 gfiberorig= struct_addtags(gfiberorig, $
                            replicate({block:-1L}, n_elements(gfiberorig)))
 
@@ -40,7 +40,7 @@ gfiber= [gfiberorig, gfiberorig, gfiberorig, $
          gfiberorig, gfiberorig, gfiberorig]
 for i=0L, nrepeat-1L do begin
     offset= float((i mod 3)-1L)*20.
-    gfiber[i*16:(i+1)*16-1].yprefer= gfiber[i*16:(i+1)*16-1].yprefer+offset 
+    gfiber[i*16:(i+1)*16-1].xprefer= gfiber[i*16:(i+1)*16-1].xprefer+offset 
     gfiber[i*16:(i+1)*16-1].block=  $
       gfiber[i*16:(i+1)*16-1].guidenum 
     gfiber[i*16:(i+1)*16-1].guidenum=  $
