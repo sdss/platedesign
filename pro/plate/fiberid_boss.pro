@@ -193,7 +193,7 @@ if(nsci gt 0) then begin
         splog, color_string('distribution, and also verify that you are not being too', 'red', 'bold')
         splog, color_string('restrictive on the block assignments (minskytinblock, maxskyinblock)', 'red', 'bold')
 		splog, ''
-		splog, color_string('If you are getting "Missed a target" for all targets,', 'yellow', bold')
+		splog, color_string('If you are getting "Missed a target" for all targets,', 'yellow', 'bold')
 		splog, color_string('try running "evilmake" in $PLATEDESIGN_DIR. Do NOT do this in a production directory!!', 'yellow', 'bold')
         message, color_string('Bombing out for your own good!', 'red', 'bold')
     endif
