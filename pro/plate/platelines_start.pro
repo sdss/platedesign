@@ -25,7 +25,7 @@ file_delete, filebase+'.ps'
 
 end
 ;
-pro platelines_start, plateid, in_filebase, label, note=note
+pro platelines_start, plateid, in_filebase, label, note=note, observatory=observatory
 
 common com_pl_print
 
@@ -124,7 +124,12 @@ if(keyword_set(note)) then $
 arrow, -320, -320, -320, -270, /data, th=3, hsize=150
 arrow, -320, -320, -270, -320, /data, th=3, hsize=150
 
-djs_xyouts, [-335.], [-260], '+X, +RA', charsize=0.8
-djs_xyouts, [-260.], [-325], '+Y, +Dec', charsize=0.8
+sign='+'
+if(keyword_set(observatory)) then begin
+    if(observatory eq 'LCO') then $
+      sign='-'
+endif
+djs_xyouts, [-335.], [-260], '+X, '+sign+'RA', charsize=0.8
+djs_xyouts, [-260.], [-325], '+Y, '+sign+'Dec', charsize=0.8
 
 end
