@@ -54,7 +54,7 @@ endif
 circle= 45./3600. * platescale
 buffer= 48./3600. * platescale
 
-filebase= platedir+'/plateLines-'+strtrim(string(plateid),2)+ $
+filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)', plateid),2)+ $
           '-guide'
 
 noguide=lonarr(n_elements(gfiber))
