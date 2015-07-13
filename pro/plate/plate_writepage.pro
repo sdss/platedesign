@@ -207,7 +207,7 @@ for indx=0L, n_elements(plateid)-1L do begin
                 lastwords= words[n_elements(words)-3L]+'/'+ $
                            words[n_elements(words)-2L]
                 gpath= '../../plates/'+lastwords
-                ghtml= 'guideDSS-'+ strtrim(string(plateid[i]),2)+ $
+                ghtml= 'guideDSS-'+ strtrim(string(f='(i6.6)', plateid[i]),2)+ $
                   '-p'+strtrim(string(ip+1L),2)+'.html'
                 
                 printf, unit, tdst
