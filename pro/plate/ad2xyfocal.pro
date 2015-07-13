@@ -64,7 +64,8 @@ end
 pro ad2xyfocal, observatory, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
                 airtemp=airtemp, lst=lst, norefrac=norefrac, $
                 nodistort=nodistort, lambda=lambda, height=height, $
-                clambda=clambda, nordistort=nordistort, pressure=pressure
+                clambda=clambda, nordistort=nordistort, pressure=pressure, $
+                platescale=in_platescale, cubic=in_cubic
 
 common com_ad2xyfocal
 
@@ -76,6 +77,13 @@ if(strupcase(observatory) ne 'APO' and $
   message, 'Must set observatory to APO or LCO'
 
 platescale = get_platescale(observatory)
+
+;; Put in hook to set plate scale explicitly
+if(keyword_set(in_platescale)) then begin
+    if(observatory ne 'LCO') then $
+      message, 'We should not be setting plate scale for APO'
+    platescale= in_platescale
+endif
 
 if(strupcase(observatory) eq 'APO') then begin
     if(n_elements(lambda) eq 0) then $
@@ -99,8 +107,16 @@ if(strupcase(observatory) eq 'LCO') then begin
     if n_elements(height) EQ 0 then height = 2380.D
     if n_elements(pressure) EQ 0 then $
       pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
-    ;; still not finalized as of 2015-06-17
-    rcoeffs=[0.0, 0.0, 0.0, 2.0747889/platescale^3]
+    ;; Number from Guillermo Damke and Mike Blanton analyses
+    ;; of the March 2015 engring run.
+    cubic= 2.0747889
+    if(keyword_set(in_cubic)) then begin
+        if(observatory ne 'LCO') then $
+          message, 'We should not be setting plate scale for APO'
+        cubic= in_cubic
+    endif
+    
+    rcoeffs=[0.0, 0.0, 0.0, cubic/platescale^3]
 endif
 
 if(n_elements(lambda) ne 1 AND $
