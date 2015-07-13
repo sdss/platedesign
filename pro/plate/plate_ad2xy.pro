@@ -39,13 +39,22 @@ if(n_elements(in_dec) ne ntargets OR $
 
 observatory= get_observatory(definition, default)
 
+if(tag_indx(definition, 'PLATESCALE') ne -1) then $
+  platescale= float(definition.platescale)
+if(tag_indx(definition, 'PLATESCALE_CUBIC') ne -1) then $
+  cubic= float(definition.platescale_cubic)
+if(keyword_set(cubic) ne 0  or $
+   keyword_set(platescale) ne 0) then $
+  splog, 'SETTING EXPLICIT PLATE SCALE! ONLY SHOULD BE DONE FOR GUIDE TESTS!'
+
 ;; what is our raCen and decCen for this pointing and offset
 plate_center, definition, default, pointing, offset, $
   racen=racen, deccen=deccen
 
 ;; convert targets to xfocal and yfocal for this pointing, offset
 ad2xyfocal, observatory, in_ra, in_dec, xfocal, yfocal, lambda=lambda, $
-  racen=racen, deccen=deccen, lst=lst, airtemp=airtemp
+  racen=racen, deccen=deccen, lst=lst, airtemp=airtemp, $
+  platescale=platescale, cubic=cubic
 
 return
 end
