@@ -70,7 +70,7 @@ for i=0L, nguide-1L do begin
    icurr= iguide[isort[i]]
    post=string(f='(i6.6)', plateid[0])+ $
      '-p'+strtrim(string(pointing),2)+ $
-     '-'+string(f='(i2.2)', full[icurr].iguide)
+     '-'+string(f='(i3.3)', full[icurr].iguide)
    filebase= platedir+'/guideDSS-r2-'+post
    querydss, [full[icurr].target_ra, full[icurr].target_dec], $
              image, hdr, survey='2r', imsize=3.
