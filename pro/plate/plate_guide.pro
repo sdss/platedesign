@@ -35,6 +35,10 @@ if(tag_exist(default, 'NGUIDEMAX')) then begin
     nguidemax=long(default.nguidemax)
 endif
 
+if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
+    guide_lambda_eff=float(default.guide_lambda_eff)
+endif
+
 ;; file name
 outdir= design_dir(designid)
 guidefile=outdir+'/plateGuide-'+ $
@@ -66,13 +70,6 @@ if(file_test(guidefile) eq 0 OR $
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
           rerun=rerun, guide_design=guide_design, nguidemax=nguidemax, $
           gminmax=gminmax, tilerad=tilerad, seed=seed
-        if(n_tags(guide_design) gt 0) then begin
-            plate_ad2xy, definition, default, pointing, 0L, $
-              guide_design.target_ra, guide_design.target_dec, $
-              guide_design.lambda_eff, xf=xf, yf=yf
-            guide_design.xf_default=xf
-            guide_design.yf_default=yf
-        endif
     endif
     
     ;; find 2MASS guide fibers 
@@ -80,13 +77,6 @@ if(file_test(guidefile) eq 0 OR $
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
           gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax, seed=seed
-        if(n_tags(guide_design) gt 0) then begin
-            plate_ad2xy, definition, default, pointing, 0L, $
-              guide_design.target_ra, guide_design.target_dec, $
-              guide_design.lambda_eff, xf=xf, yf=yf
-            guide_design.xf_default=xf
-            guide_design.yf_default=yf
-        endif
     endif
 
     ;; find USNOB guide fibers 
@@ -94,18 +84,20 @@ if(file_test(guidefile) eq 0 OR $
         plate_select_guide_usnob, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
           gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax, seed=seed
-        if(n_tags(guide_design) gt 0) then begin
-            plate_ad2xy, definition, default, pointing, 0L, $
-              guide_design.target_ra, guide_design.target_dec, $
-              guide_design.lambda_eff, xf=xf, yf=yf
-            guide_design.xf_default=xf
-            guide_design.yf_default=yf
-        endif
     endif
-    
+
     if(n_tags(guide_design) gt 0) then begin
         guide_design.pointing=pointing
         guide_design.offset=0
+
+        if(keyword_set(guide_lambda_eff)) then $
+          guide_design.lambda_eff= guide_lambda_eff
+
+        plate_ad2xy, definition, default, pointing, 0L, $
+          guide_design.target_ra, guide_design.target_dec, $
+          guide_design.lambda_eff, xf=xf, yf=yf
+        guide_design.xf_default=xf
+        guide_design.yf_default=yf
         
         pdata= ptr_new(guide_design)
         hdrstr=plate_struct_combine(default, definition)
