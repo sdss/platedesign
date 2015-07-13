@@ -25,8 +25,10 @@ if(strupcase(observatory) ne 'APO' and $
 if(strupcase(observatory) eq 'APO') then $
   platescale = 217.7358D        ; mm/degree
 
+;; Number from Guillermo Damke and Mike Blanton analyses
+;; of the March 2015 engring run.
 if(strupcase(observatory) eq 'LCO') then $
-  platescale = 328.589265D          ; mm/degree, still not final as of 2015-07-13 
+  platescale = 328.589265D          ; mm/degree
 
 return, platescale
 end
