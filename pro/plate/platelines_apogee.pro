@@ -69,9 +69,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
    platescale = get_platescale(hdrstr.(itag))
 
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
-  if(nsci eq 0) then return
 
-  if(keyword_set(relaxed)) then begin
+  if(keyword_set(relaxed) ne 0 and nsci gt 0) then begin
       plug= yanny_readone(plplug, hdr=hdr)
       default= lines2struct(hdr, /relaxed)
       if(tag_indx(default, 'relaxed_fiber_classes') eq -1) then $
@@ -135,120 +134,122 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      circle= 45./3600. * platescale
      
      ;; set colors of each brightness fiber
-     nblocks=50L
-     nper=6L
-     for i=0L, nblocks-1L do begin
-        ii= where(-holes[isci].fiberid ge i*nper+1L and $
-                  -holes[isci].fiberid le (i+1L)*nper, nii)
-        if(nii gt 0) then begin
-           if(keyword_set(sorty)) then $
-              isort= sort(holes[isci[ii]].yfocal) $
-           else $
-              isort= sort(-holes[isci[ii]].fiberid) 
-           color= colors[i mod n_elements(colors)]
-
-           ;; connect lines
-           doblock=1
-           if (strmatch(version,'apogee.block-*') gt 0) then begin
-              colorval= (strsplit(version, '-', /extr))[1]
-              if(colorval ne color) then $
-                 doblock=0
-           endif
-           if (strmatch(version,'traps') ne 0) then begin
-              doblock=0
-           endif
-           if(doblock gt 0) then begin
-              for j=0L, (nper-2L) do begin
-                 xhole1= holes[isci[ii[isort[j]]]].xfocal
-                 xhole2= holes[isci[ii[isort[j+1]]]].xfocal
-                 yhole1= holes[isci[ii[isort[j]]]].yfocal
-                 yhole2= holes[isci[ii[isort[j+1]]]].yfocal
-                 length= sqrt((xhole2-xhole1)^2+(yhole2-yhole1)^2)
-                 sbuffer=buffer 
-                 ebuffer=(length-buffer) 
-                 if(ebuffer gt sbuffer) then begin
-                    xdir= (xhole2-xhole1)/length
-                    ydir= (yhole2-yhole1)/length
-                    xstart= (xhole1+sbuffer*xdir) 
-                    ystart= (yhole1+sbuffer*ydir) 
-                    xend= (xhole1+ebuffer*xdir) 
-                    yend= (yhole1+ebuffer*ydir) 
-                    djs_oplot, [ystart, yend], [xstart, xend], $
-                               th=connect_thick, color=color
-                 endif
-              endfor
-           endif
-           
-           ;; draw holes; 
-           for j=0L, (nper-1L) do begin
-              theta= findgen(100)/float(99.)*!DPI*2.
-              xcurr= holes[isci[ii[j]]].xfocal+ circle* cos(theta)
-              ycurr= holes[isci[ii[j]]].yfocal+ circle* sin(theta)
-              ncirc=1L
-              if(version eq 'apogee.sky') then begin
-                 ;; SKY as thick RED, 
-                 ;; any other as thin black
-                 case strupcase(full[isci[ii[j]]].targettype) of
-                    'SKY': begin
-                       currcolor='blue'
-                       currthick=4
-                    end
-                    else: begin 
-                       currcolor='black'
-                       currthick=1
-                    end
-                 endcase
-              endif else if (version eq 'apogee.std') then begin
-                 ;; standard as thick blue
-                 ;; any other as thin black
-                 case strmid(strupcase(full[isci[ii[j]]].targettype),0,8) of
-                    'STANDARD': begin
-                       currcolor='red'
-                       currthick=4
-                    end
-                    else: begin 
-                       currcolor='black'
-                       currthick=1
-                    end
-                 endcase
-              endif else if (version eq 'traps') then begin
-                 currcolor='black'
-                 currthick=1
-              endif else begin
-                 ;; should color according to fiber type
-                 currthick=circle_thick
-                 currthick=circle_thick
-                 ib= where(blocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
-                 if(nb eq 0) then $
-                    message, 'Unknown fiber!'
-                 if(nb gt 1) then $
-                    message, 'Duplicate fiber in blocks!'
-                 curr_ftype= blocks[ib[0]].ftype 
-                 if(curr_ftype eq 'B') then $
-                    currcolor='red'
-                 if(curr_ftype eq 'M') then $
-                    currcolor='green'
-                 if(curr_ftype eq 'F') then $
-                    currcolor='blue'
+     if(nsci gt 0) then begin
+         nblocks=50L
+         nper=6L
+         for i=0L, nblocks-1L do begin
+             ii= where(-holes[isci].fiberid ge i*nper+1L and $
+                       -holes[isci].fiberid le (i+1L)*nper, nii)
+             if(nii gt 0) then begin
+                 if(keyword_set(sorty)) then $
+                   isort= sort(holes[isci[ii]].yfocal) $
+                 else $
+                   isort= sort(-holes[isci[ii]].fiberid) 
+                 color= colors[i mod n_elements(colors)]
                  
+                 ;; connect lines
+                 doblock=1
                  if (strmatch(version,'apogee.block-*') gt 0) then begin
-                    colorval= (strsplit(version, '-', /extr))[1]
-                    if(colorval ne color) then begin
-                       currcolor='black'
-                       currthick=1
-                    endif
+                     colorval= (strsplit(version, '-', /extr))[1]
+                     if(colorval ne color) then $
+                       doblock=0
                  endif
-              endelse
-              djs_oplot, ycurr, xcurr, color=currcolor, th=currthick
-              for l=1L, ncirc-1L do begin
-                 scale=l*0.3+1.
-                 xcurr= holes[isci[ii[j]]].xfocal+ scale*circle* cos(theta)
-                 ycurr= holes[isci[ii[j]]].yfocal+ scale*circle* sin(theta)
-                 djs_oplot, ycurr, xcurr, color=currcolor, th=1
-              endfor
-           endfor
-        endif
-     endfor
+                 if (strmatch(version,'traps') ne 0) then begin
+                     doblock=0
+                 endif
+                 if(doblock gt 0) then begin
+                     for j=0L, (nper-2L) do begin
+                         xhole1= holes[isci[ii[isort[j]]]].xfocal
+                         xhole2= holes[isci[ii[isort[j+1]]]].xfocal
+                         yhole1= holes[isci[ii[isort[j]]]].yfocal
+                         yhole2= holes[isci[ii[isort[j+1]]]].yfocal
+                         length= sqrt((xhole2-xhole1)^2+(yhole2-yhole1)^2)
+                         sbuffer=buffer 
+                         ebuffer=(length-buffer) 
+                         if(ebuffer gt sbuffer) then begin
+                             xdir= (xhole2-xhole1)/length
+                             ydir= (yhole2-yhole1)/length
+                             xstart= (xhole1+sbuffer*xdir) 
+                             ystart= (yhole1+sbuffer*ydir) 
+                             xend= (xhole1+ebuffer*xdir) 
+                             yend= (yhole1+ebuffer*ydir) 
+                             djs_oplot, [ystart, yend], [xstart, xend], $
+                               th=connect_thick, color=color
+                         endif
+                     endfor
+                 endif
+           
+                 ;; draw holes; 
+                 for j=0L, (nper-1L) do begin
+                     theta= findgen(100)/float(99.)*!DPI*2.
+                     xcurr= holes[isci[ii[j]]].xfocal+ circle* cos(theta)
+                     ycurr= holes[isci[ii[j]]].yfocal+ circle* sin(theta)
+                     ncirc=1L
+                     if(version eq 'apogee.sky') then begin
+                         ;; SKY as thick RED, 
+                         ;; any other as thin black
+                         case strupcase(full[isci[ii[j]]].targettype) of
+                             'SKY': begin
+                                 currcolor='blue'
+                                 currthick=4
+                                 end
+                             else: begin 
+                                 currcolor='black'
+                                 currthick=1
+                             end
+                         endcase
+                     endif else if (version eq 'apogee.std') then begin
+                         ;; standard as thick blue
+                         ;; any other as thin black
+                         case strmid(strupcase(full[isci[ii[j]]].targettype),0,8) of
+                             'STANDARD': begin
+                                 currcolor='red'
+                                 currthick=4
+                                 end
+                             else: begin 
+                                 currcolor='black'
+                                 currthick=1
+                             end
+                         endcase
+                     endif else if (version eq 'traps') then begin
+                         currcolor='black'
+                         currthick=1
+                     endif else begin
+                         ;; should color according to fiber type
+                         currthick=circle_thick
+                         currthick=circle_thick
+                         ib= where(blocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
+                         if(nb eq 0) then $
+                           message, 'Unknown fiber!'
+                         if(nb gt 1) then $
+                           message, 'Duplicate fiber in blocks!'
+                         curr_ftype= blocks[ib[0]].ftype 
+                         if(curr_ftype eq 'B') then $
+                           currcolor='red'
+                         if(curr_ftype eq 'M') then $
+                           currcolor='green'
+                         if(curr_ftype eq 'F') then $
+                           currcolor='blue'
+                         
+                         if (strmatch(version,'apogee.block-*') gt 0) then begin
+                             colorval= (strsplit(version, '-', /extr))[1]
+                             if(colorval ne color) then begin
+                                 currcolor='black'
+                                 currthick=1
+                             endif
+                         endif
+                     endelse
+                     djs_oplot, ycurr, xcurr, color=currcolor, th=currthick
+                     for l=1L, ncirc-1L do begin
+                         scale=l*0.3+1.
+                         xcurr= holes[isci[ii[j]]].xfocal+ scale*circle* cos(theta)
+                         ycurr= holes[isci[ii[j]]].yfocal+ scale*circle* sin(theta)
+                         djs_oplot, ycurr, xcurr, color=currcolor, th=1
+                     endfor
+                 endfor
+             endif
+         endfor 
+     endif
 
      ;; draw traps in traps case
      if(version eq 'traps') then begin
