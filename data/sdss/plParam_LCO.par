@@ -70,7 +70,8 @@ bendDistScale   1.0    # at the moment, scale not used for bending
 bendDistParity  1
 bendDistXcenter 0.0
 bendDistYcenter 0.0
-bendDistCoeff   0.0 -1.825e-4 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+bendDistCoeff   0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+#bendDistCoeff   0.0 -1.825e-4 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 
 # Params for plate shape (deflection in z, perpendicular to the plate face
 plateShapeScale   1.0    # at the moment, scale not used for curvature
