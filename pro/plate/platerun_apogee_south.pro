@@ -89,11 +89,17 @@ if(keyword_set(nolines) eq 0) then begin
        apogee_fibervhmag, plateid[i]
        platelines_guide, plateid[i]
    endfor
-
-   ;; make the guide images
-   for i=0L, n_elements(plateid)-1L do $
-     plate_guide_images, plateid[i]
 endif
+
+;; make the guide images
+for i=0L, n_elements(plateid)-1L do begin
+    plugmap_filename = plate_dir(plateid[i])+'/plPlugMapP-'+ $
+      strtrim(string(plateid[i]),2)+'.par'
+    plug= yanny_readone(plugmap_filename, hdr=hdr)
+    npointings= long(yanny_par(hdr, 'npointings'))
+    for pointing= 1, npointings do $
+      plate_guide_images, plateid[i], pointing=pointing
+endfor
 
 print, 'In the "plate" product run the following commands:"'
 print, '   makeFanuc'
