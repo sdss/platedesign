@@ -42,6 +42,10 @@ if(NOT keyword_set(gminmax)) then $
 objt = tmass_read(racen, deccen, tilerad)
 usnob = usno_read(racen, deccen, tilerad*3.)
 
+;; restrict USNO-B to stars
+istar= where(usnob.sg[2] gt 5)
+usnob= usnob[istar]
+
 spherematch, racen, deccen, usnob.ra, usnob.dec, tilerad, m1, m2, max=0
 usnob= usnob[m2]
 
