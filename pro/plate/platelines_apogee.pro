@@ -47,27 +47,28 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
   platedir= plate_dir(plateid)
 
   if(n_tags(holes) eq 0) then begin
-     plplug= platedir+'/plPlugMapH-'+ $
-             strtrim(string(plateid),2)+'.par'
-     if(NOT file_test(plplug)) then $
-       plplug= platedir+'/plPlugMapP-'+ $
-       strtrim(string(plateid),2)+'.par'
-     check_file_exists, plplug, plateid=plateid
-     holes= yanny_readone(plplug, hdr=hdr)
-     hdrstr= lines2struct(hdr)
-
-     fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
-     check_file_exists, fullfile, plateid=plateid
-     full= yanny_readone(fullfile)
-
- endif
-
- itag=tag_indx(hdrstr,'OBSERVATORY')
- if(itag eq -1) then $
-   platescale = get_platescale('APO') $
- else $
-   platescale = get_platescale(hdrstr.(itag))
-
+      plplug= platedir+'/plPlugMapH-'+ $
+        strtrim(string(plateid),2)+'.par'
+      if(NOT file_test(plplug)) then $
+        plplug= platedir+'/plPlugMapP-'+ $
+        strtrim(string(plateid),2)+'.par'
+      check_file_exists, plplug, plateid=plateid
+      holes= yanny_readone(plplug, hdr=hdr)
+      hdrstr= lines2struct(hdr)
+      
+      fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
+      check_file_exists, fullfile, plateid=plateid
+      full= yanny_readone(fullfile)
+      
+  endif
+  
+  itag=tag_indx(hdrstr,'OBSERVATORY')
+  if(itag eq -1) then $
+    observatory = 'APO' $
+  else $
+    observatory = hdrstr.(itag)
+  platescale = get_platescale(observatory)
+  
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
 
   if(keyword_set(relaxed) ne 0 and nsci gt 0) then begin
@@ -126,7 +127,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      if(version ne 'apogee') then $
         label=label+' ('+version+')'
      note=''
-     platelines_start, plateid, filebase, label, note=note
+     platelines_start, plateid, filebase, label, note=note, observatory=observatory
      
      ;; set buffer for lines, and circle size
      ;; (48 and 45 arcsec respectively
