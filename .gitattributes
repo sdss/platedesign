@@ -115,6 +115,7 @@ defaults/plateDefault-guideplate-v0.par -text
 defaults/plateDefault-guidertest-v0.par -text
 docs/SDSS3GdFbrAnchrPtandRch955.pdf -text
 docs/validation.txt -text
+etc/platedesign.module -text
 lib/.svnignore -text
 obsolete/pro/coo_read.pro -text
 obsolete/pro/make_example.pro -text
