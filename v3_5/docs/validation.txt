@@ -1,5 +1,0 @@
-Some validation tests to implement, perform:
-
-- standard fiberreach tests
-- for MARVELS, first hole check
-- for MARVELS, spectrophotometric stars
