@@ -1,0 +1,23 @@
+Michael,
+
+Just to doubly close the loop the location tab is at  (x=0 - y).
+Looking at the plate from the sky side.
+
+
+                       +y,  dec(N)
+
+
+
+    -x, RA (W)         o                  +x RA(E)
+
+
+
+                       -y,  dec(S)
+                      TAB
+                 engraved plate
+                     number
+
+Spectrograph 1  fed by  -ve y fibers
+Spectrograph 2  feb by  +ve y fibers
+
+Paul.

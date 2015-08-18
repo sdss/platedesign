@@ -1,0 +1,91 @@
+<!-- DTD file for XML plate definition files.
+History:
+2008.10.23  First version, DNM (demitri.muna@nyu.edu)
+-->
+
+<!-- Creating (or editing) these files are a big pile of not fun; a few
+tips follow that should make it easier to edit this file. -->
+
+<!--
+    Symbols:
+        ? : zero or one occurances allowed
+        * : zero or more occurances allowed
+        + : one or more occurances allowed
+          : (no symbol) specifically one occurance required
+
+    Data types:
+        (#PCDATA) : parsed character data (i.e. string and no other data)
+        There are no numeric types (XML is a text file) - conversion
+            is done in the mapping.
+-->
+
+<!--
+NOTE: Fields must appear in the XML file as they are defined here, or
+you will get an error that looks like this:
+
+% IDLFFXMLSAX::PARSEFILE: Parser SAX error: File: /home/users/dm139/idl_sandbox/sample.xml,
+               line: 25, column: 22 : Element 'POINTING' is not valid for content model:
+               '(PLATEID,LOCATIONID,HA,TEMP,EPOCH,RA_CEN,DEC_CEN,DRILL_STYLE,RERUN,PLATERUN,P
+               LATE_NAME,POINTING+,COMMENT?)'
+
+For example, take: 
+<!ELEMENT DESIGN (DESIGN_ID, PLATE_PLAN+)>
+
+The tag <DESIGN_ID> must appear first, followed by one
+or more <PLATE_PLAN> tags.
+
+Consequently, if a required field is missing you will get the same
+kind of error.
+-->
+
+<!--
+See the link below to learn how to make the DTD declaration
+internal rather than external, however, there's no good reason
+to do this unless you know what you are doing.
+http://www.w3schools.com/DTD/dtd_intro.asp
+
+Here is a handy DTD validator:
+http://www.validome.org/grammar/validate/
+
+Note that more validation can be performed here.
+-->
+
+<!ELEMENT DESIGN_LIST (DESIGN)+> <!-- can have one or more designs -->
+<!-- design must have one design_id and one or more plate_plans -->
+
+<!--
+	<!ELEMENT TAG (FIELD1 | FIELD2 | FIELD3 )*>
+	Indicates that the fields can occur in any order, but can be only
+	one, two, or three of the times.
+-->
+
+<!-- ======= DESIGN ====== -->
+
+<!ELEMENT DESIGN (DESIGN_ID, LOCATION_ID, DRILL_STYLE, POINTING+, PLATE_PLAN+, DESIGN_COMMENT?)>
+<!ELEMENT DESIGN_ID (#PCDATA)>  <!-- type of data -->
+<!ELEMENT LOCATION_ID (#PCDATA)>
+<!ELEMENT DRILL_STYLE (#PCDATA)>
+<!ELEMENT DESIGN_COMMENT (#PCDATA)>
+
+<!-- ======= PLATE_PLAN ====== -->
+
+<!ELEMENT PLATE_PLAN (PLATEID, TEMP, EPOCH, RERUN, PLATE_RUN, PLATE_NAME, PLATE_COMMENT?)>
+<!ELEMENT PLATEID       (#PCDATA)>
+<!ELEMENT TEMP          (#PCDATA)>
+<!ELEMENT EPOCH         (#PCDATA)>
+<!ELEMENT RERUN         (#PCDATA)>
+<!ELEMENT PLATE_RUN     (#PCDATA)>
+<!ELEMENT PLATE_NAME    (#PCDATA)>
+<!ELEMENT PLATE_COMMENT (#PCDATA)>
+
+<!-- ======= POINTING ====== -->
+
+<!ELEMENT POINTING (FILENAME, POINTING_PRIORITY, HOUR_ANGLE, RA_CEN, DEC_CEN, RA_OFFSET, DEC_OFFSET, POINTING_COMMENT?)>
+<!ELEMENT FILENAME          (#PCDATA)>
+<!ELEMENT POINTING_PRIORITY (#PCDATA)>
+<!ELEMENT HOUR_ANGLE 		(#PCDATA)>
+<!ELEMENT RA_CEN     		(#PCDATA)>
+<!ELEMENT DEC_CEN    		(#PCDATA)>
+<!ELEMENT RA_OFFSET			(#PCDATA)>
+<!ELEMENT DEC_OFFSET		(#PCDATA)>
+<!ELEMENT POINTING_COMMENT	(#PCDATA)>
