@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2" hint="target=sky">
+<Document>
+<name>guide_sdss.kml</name>
+<description>Trying ra and dec.</description>
+<Style id="circleIcon">
+<IconStyle>
+<color>#ffffffff</color>
+<Icon><href>icon.png</href></Icon>'
+</IconStyle>
+</Style>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+1.2485311500,8.7944137337,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+0.0190280727,8.9998673502,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+0.3500933424,9.0514835247,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+0.3705114053,9.0574970663,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+1.1338765915,9.0543518950,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+1.2768381748,8.9883983286,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+-0.5118405298,9.3456743983,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+0.5445512185,9.8468093233,0
+</coordinates>
+</Point>
+</Placemark>
+<Placemark id="ID">
+<styleUrl>#circleIcon</styleUrl>
+<description><![CDATA[
+SDSS-based guide
+]]></description>
+<Point>
+<coordinates>
+0.9534759267,9.9285750367,0
+</coordinates>
+</Point>
+</Placemark>
+</Document>
+</kml>

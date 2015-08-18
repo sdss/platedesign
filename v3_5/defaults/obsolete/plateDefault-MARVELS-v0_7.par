@@ -1,0 +1,52 @@
+# Default settings for MARVELS_SURVEY plates 
+#Dual pointings 60 + 60 fibers 
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE
+instruments MARVELS 
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes science 
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 2
+nOffsets 0
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p1/o1 ... p1/oN .. pM/o0 ... pM/oN
+# (for M pointings and N offsets).
+nMARVELS_science 60 60
+nMARVELS_sky 0 0
+nMARVELS_standard 0 0
+
+# Guide fibers to use for each pointing
+guideType 2MASS 2mass
+
+guideNums1 1  3  5  7  9  11
+guideNums2 2  4  6  8  10
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# (Include guide instrument here)
+# BUG: CENTER HOLE and TRAP SIZE NOT DEFINED HERE 
+ferruleSizeMARVELS 2.500
+bufferSizeMARVELS 1.000
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+# Mininum and maximum guide star magnitudes
+# (g-band)
+guidemag_minmax 13. 14.5
+nguidemax 600
+
+pointing_name A B C D E F

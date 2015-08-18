@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import pdb
+import getopt
+import platedesign
+import sys
+
+def main(argv):
+
+    # Parse header
+    helpstr='plate_overlay -p <plateid>' 
+    try:
+        opts, args = getopt.getopt(argv,"hp:",["help=","plate="])
+    except getopt.GetoptError:
+        print helpstr
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == ("-h", "--help"):
+            print helpstr;
+            sys.exit()
+        elif opt in ("-p", "--plate"):
+            plate = int(arg)
+            
+    platedesign.overlay_print(plate)
+
+if __name__ == "__main__": 
+    main(sys.argv[1:])
