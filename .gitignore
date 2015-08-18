@@ -3,8 +3,3 @@ lib/lib*.dylib
 lib/lib*.so
 src/cs2/cs2
 src/fiber/*.o
-v3_5/bin/skycalc
-v3_5/lib/lib*.dylib
-v3_5/lib/lib*.so
-v3_5/src/cs2/cs2
-v3_5/src/fiber/*.o
