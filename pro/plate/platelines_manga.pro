@@ -79,8 +79,7 @@ postfix=''
 if(keyword_set(version)) then $
   postfix='-'+version
 
-filebase= platedir+'/plateLines-'+strtrim(string(plateid),2)+ $
-  postfix
+filebase= platedir+'/plateLines-'+strtrim(string(f='(i6.6)',plateid),2) + postfix
 
 connect_thick=3
 circle_thick=2
