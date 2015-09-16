@@ -111,6 +111,10 @@ for pointing=1L, hdrstr.npointings do begin
 
         isort=sort(holes[iguide].yfocal)
         iguide=iguide[isort]
+        
+        insort= sort(holes[iguide].fiberid)
+        icolor= lonarr(nper)
+        icolor[insort]= lindgen(nper)
 
         if(ncurr ne nper) then $
           message, 'Bad number of options per pointing per guide fiber'
@@ -118,7 +122,13 @@ for pointing=1L, hdrstr.npointings do begin
             theta= findgen(100)/float(99.)*!DPI*2.
             xcurr= holes[iguide[i]].xfocal+ circle* cos(theta)
             ycurr= holes[iguide[i]].yfocal+ circle* sin(theta)
-            djs_oplot, ycurr, xcurr, color=holecolors[i], th=circle_thick
+            djs_oplot, ycurr, xcurr, color=holecolors[icolor[i]], $
+              th=circle_thick 
+            djs_xyouts, holes[iguide[i]].yfocal, $
+              holes[iguide[i]].xfocal+1.0*buffer, $
+              strtrim(string(holes[iguide[i]].fiberid),2), $
+              align=0.5, charsize= 0.6,  $
+              color=holecolors[icolor[i]]
         endfor
 
         for i=0L, (nper-2L) do begin
