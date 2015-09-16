@@ -181,11 +181,5 @@ endif
 xfocal= rfocal*sin(posang) 
 yfocal= rfocal*cos(posang)
 
-;; rotate 180 deg for LCO
-if(strupcase(observatory) eq 'LCO') then begin
-    xfocal= -xfocal
-    yfocal= -yfocal
-endif
-
 return
 end
