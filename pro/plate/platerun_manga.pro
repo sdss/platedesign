@@ -118,8 +118,15 @@ for i=0L, n_elements(plateid)-1L do begin
       strtrim(string(plateid[i]),2)+'.par'
     if(file_test(fanucfile) eq 0) then $
       message, color_string(fanucfile+' not successfully made!', 'red')
-    if(file_test(fanucfile+'.BAD') ne 0) then $
+    if(file_test(fanucfile+'.BAD') ne 0) then begin
       plate_log, plateid[i], fanucfile+'.BAD exists --- why?'
+    endif else begin
+       newfanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+ $
+                     '/plNorthFanucUnadjusted-'+ $
+                     strtrim(string(plateid[i]),2)+'.par'
+       cmd = ['mv', fanucfile, newfanucfile]
+       spawn, /nosh, cmd
+    endelse
  endfor
 
 ;; make counterbores
