@@ -143,7 +143,6 @@ to_mjd = (epoch - 2000.)*365.25 + 51544.5d0
 plate_pmotion_correct, ra, dec, from_mjd=from_mjd, to_mjd=to_mjd, $
   mura=mura, mudec=mudec, racen=racen, deccen=deccen, tilerad=tilerad
 
-
 ;; Now put results into a design structure
 guide_design= replicate(design_blank(/guide), n_elements(objt))
 struct_assign, objt, guide_design, /nozero
