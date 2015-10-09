@@ -32,13 +32,17 @@ if(NOT file_test(trapfile)) then begin
     plate_center, definition, default, pointing, offset, $
                   racen=racen, deccen=deccen
 
+    ;; find tycho stars to V<7.5, though take the brightest two no
+    ;; matter what
     tycvlimit = 7.5
     tycdat = tycho_read(racen=racen, deccen=deccen, radius=tilerad-0.01, $
                         epoch=default_epoch())
     if (keyword_set(tycdat)) then begin
         ;; Sort so that we add the brightest Tycho stars first.
         tycdat = tycdat[sort(tycdat.vtmag)]
-        indx = where(tycdat.vtmag LT tycvlimit, ct)
+        order= lindgen(n_elements(tycdat))
+        indx = where(tycdat.vtmag LT tycvlimit or $
+                     order le 2, ct)
         if (ct EQ 0) then tycdat = 0 $
         else tycdat = tycdat[indx]
     endif
