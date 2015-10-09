@@ -10,6 +10,7 @@ bin/platedesign_version -text
 bin/qsub_match.pl -text
 data/apogee/JointAnchorBlockPositionsR4.dat -text
 data/apogee/exclude_fibers_a2s.par -text
+data/apogee/exclude_fibers_a2s_nov.par -text
 data/apogee/fiberBlocksAPOGEE.par -text
 data/apogee/fiberBlocksBrightAPOGEE.par -text
 data/apogee/fiberBlocksFaintAPOGEE.par -text
@@ -153,6 +154,7 @@ pro/misc/fiberreach_image.pro -text
 pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
 pro/misc/guidetest_run.pro -text
+pro/misc/guidetest_run_nov.pro -text
 pro/misc/make_apogee2s_alignment_plate.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_flat_plate.pro -text
