@@ -1,10 +1,11 @@
-# Default settings for APOGEE2-MANGA
+# Default settings for APOGEE2S 
 
 # Which instruments are to be used? 
 # At least one argument required, from among:
 #   SDSS BOSS MARVELS APOGEE MANGA
 instruments APOGEE_SOUTH
 observatory LCO
+tilerad 0.95
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
@@ -40,8 +41,8 @@ guide_lambda_eff 8000.
 nguidemax 600
 
 # Ferrule sizes to assume for each instrument's fiber (mm)
-ferruleSizeAPOGEE_SOUTH 4.25
-bufferSizeAPOGEE_SOUTH 0.02
+ferruleSizeAPOGEE_SOUTH 4.76
+bufferSizeAPOGEE_SOUTH 0.0
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
@@ -57,7 +58,7 @@ standardType NONE
 plateDesignSkies NONE
 skyType NONE
 
-# Use MANGA plugmap style
+# Use APOGEE-2S plugmap style
 plugmapstyle plplugmap_apogee_south
 
 # Default pointing_name
