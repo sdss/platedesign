@@ -83,9 +83,9 @@ yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
 ptr_free, pdata
 
 if(keyword_set(nolines) eq 0) then begin
-    ;; make the plateLines files
+   ;; make the plateLines files
    for i=0L, n_elements(plateid)-1L do begin
-       platelines_apogee, plateid[i], /sorty
+       platelines_apogee_south, plateid[i], /sortx
        apogee_fibervhmag, plateid[i]
        platelines_guide, plateid[i]
    endfor
