@@ -17,11 +17,15 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-pro apogee_fibervhmag, in_plateid
+pro apogee_fibervhmag, in_plateid, holetype=holetype
 
   common com_afvh, plateid, full
 
-  full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksAPOGEE.par'
+  if(NOT keyword_set(holetype)) then $
+    holetype='APOGEE'
+
+  full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocks'+ $
+    holetype+'.par'
   blocks= yanny_readone(full_blockfile)
   blocks=blocks[sort(blocks.fiberid)]
 
@@ -47,7 +51,7 @@ pro apogee_fibervhmag, in_plateid
 
   endif
 	
-  isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
+  isci= where(strupcase(strtrim(full.holetype,2)) eq holetype, nsci)
   if(nsci eq 0) then return
 
   filebase= platedir+'/apogeeMagVsFiber-'+strtrim(string(f='(i6.6)',plateid),2)
@@ -105,7 +109,7 @@ pro apogee_fibervhmag, in_plateid
   types=['F', 'M', 'B']
   colors=['blue', 'green', 'red']
   for i=0L, 49L do begin
-     ii= where(full.holetype eq 'APOGEE' and $
+     ii= where(full.holetype eq holetype and $
                full.fiberid ge (i*6L)+1L and $
                full.fiberid lt (i+1L)*6L+1L, nii)
      isort= sort(full[ii].fiberid)
@@ -131,7 +135,7 @@ pro apogee_fibervhmag, in_plateid
   ibad=where(hmag eq -9999, nbad)
   if(nbad gt 0) then $
      hmag[ibad]=14.
-  iapo= where(full.holetype eq 'APOGEE', napo)
+  iapo= where(full.holetype eq holetype, napo)
   isort= iapo[sort(full[iapo].fiberid)]
   diff= abs(hmag[isort[1:n_elements(isort)-1]]-hmag[isort[0:n_elements(isort)-2]])
   idiff= long((((diff>mindiff)<maxdiff)-mindiff)/(maxdiff-mindiff+0.001)*float(nbins))
