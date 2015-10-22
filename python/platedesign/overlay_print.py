@@ -4,6 +4,7 @@ from scipy.spatial import Voronoi, voronoi_plot_2d
 import sdss.utilities.yanny as yanny
 import sdss.files 
 import numpy as np
+import re
 
 limit_radius= 41.5
 full_radius= 39.7
@@ -255,12 +256,16 @@ def overlay_print(plate):
     survey= plans['PLATEPLANS']['survey'][iplan]
     programname= plans['PLATEPLANS']['programname'][iplan]
 
+    # Texify the string
+    programname_str = programname
+    programname_str = re.sub("_", "\_", programname_str)
+
     # Create information string
     information= r"\font\myfont=cmr10 at 40pt {\myfont"
     information+=" Plate="+str(plate)+"; "
     information+="Design="+str(designid)+"; "
     information+="Survey="+str(survey)+"; "
-    information+="Program="+str(programname)+"; "
+    information+="Program="+str(programname_str)+"; "
     information+="RA="+str(racen)+"; "
     information+="Dec="+str(deccen)+"; "
     information+="HA="+str(np.float32((ha.split())[0]))+"."
