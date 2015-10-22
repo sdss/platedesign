@@ -12,9 +12,13 @@ data/apogee/JointAnchorBlockPositionsR4.dat -text
 data/apogee/exclude_fibers_a2s.par -text
 data/apogee/exclude_fibers_a2s_nov.par -text
 data/apogee/fiberBlocksAPOGEE.par -text
+data/apogee/fiberBlocksAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksBrightAPOGEE.par -text
+data/apogee/fiberBlocksBrightAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksFaintAPOGEE.par -text
+data/apogee/fiberBlocksFaintAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksMediumAPOGEE.par -text
+data/apogee/fiberBlocksMediumAPOGEE_SOUTH.par -text
 data/boss/SDSS3FiberReach.pdf -text
 data/boss/SDSS3FiberReachData.pdf -text
 data/boss/SDSS3SFAnchrBlcks.pdf -text
