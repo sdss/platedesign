@@ -29,6 +29,7 @@ pro plate_assign_guide, definition, default, design, guide_design, $
   pointing, guidenums=guidenums
 
 tilerad= get_tilerad(definition, default)
+observatory= get_observatory(definition, default)
 
 stretch=0
 if(tag_indx(default, 'STRETCH_FOR_GUIDES') ge 0) then begin
@@ -89,10 +90,11 @@ iavailable=iavailable[m2]
 ;; assign the guides (first assign with priorities in mind, then 
 ;; reassign according to distance purely)
 gnum= distribute_guides(gfiber[iuse], guide_design[iavailable], dlim=dlim, $
-                        stretch=stretch)
+                        stretch=stretch, observatory=observatory)
 igood= where(gnum gt 0, ngood)
 regnum= distribute_guides(gfiber[iuse], guide_design[iavailable[igood]], $
-                          dlim=1.e-6, stretch=stretch)
+                          dlim=1.e-6, stretch=stretch, $
+                          observatory=observatory)
 gnum[igood]= regnum
 
 ;; check there are enough
