@@ -27,7 +27,7 @@ for j=0L, n_elements(files)-1L do begin
     path='../../plates/'+lastwords
     printf, plunit, '<td><a href="'+path+'">'
     printf, plunit, '<img src="'+path+'" width=300px>'
-    printf, plunit, '</a></td>
+    printf, plunit, '</a></td>'
 endfor
 printf, plunit, '</tr>
 
@@ -310,6 +310,10 @@ for indx=0L, n_elements(plateid)-1L do begin
           if(count2 gt 0) then linestable, 'Grouped by color', plunit, tmp_files2
        endif
     endfor
+    tmp_files= file_search(plate_dir(plateid[i])+'/plateLines-??????-print.png', $
+                           count=count)
+    if(count gt 0) then $
+       linestable, 'Printed Overlay (use PDF in zipfile)', plunit, tmp_files
     tmp_files= file_search(plate_dir(plateid[i])+'/apogeeMagVsFiber-??????.png', $
                            count=count)
     if(count gt 0) then $
