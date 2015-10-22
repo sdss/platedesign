@@ -29,7 +29,7 @@
 ;   4-Sep-2008 MRB, NYU 
 ;-
 function distribute_guides, gfiber, design, plot=plot, dlim=dlim, $
-                            stretch=stretch
+                            stretch=stretch, observatory=observatory
 
 if(NOT keyword_set(dlim)) then $
    dlim=80.
@@ -51,11 +51,18 @@ if(nbig eq 0) then $
   message, color_string('No acquisition fibers! Senseless.', 'red', 'bold')
 coff[ibig]=0L
 for i=0L, n_elements(gfiber)-1L do begin
-    inrange= boss_reachcheck(gfiber[i].xreach, $
-                             gfiber[i].yreach, $
-                             design.xf_default, $
-                             design.yf_default, $
-                             stretch=stretch)
+    if(observatory eq 'APO') then $
+      inrange= boss_reachcheck(gfiber[i].xreach, $
+                               gfiber[i].yreach, $
+                               design.xf_default, $
+                               design.yf_default, $
+                               stretch=stretch) $
+    else if(observatory eq 'LCO') then $
+      inrange= apogee_south_reachcheck(gfiber[i].xreach, $
+                                       gfiber[i].yreach, $
+                                       design.xf_default, $
+                                       design.yf_default, $
+                                       stretch=stretch) 
     imatch=where(inrange gt 0, nmatch)
     if(nmatch eq 0) then begin
         splog, color_string('No guide star available at ALL for #'+ $
