@@ -328,6 +328,7 @@ pro/test/test_2mass_guide.pro -text
 pro/test/test_2mass_usnob.pro -text
 pro/test/test_ad2xy.pro -text
 pro/test/test_adr_pr.pro -text
+pro/test/test_alignment.pro -text
 pro/test/test_guide_stars.pro -text
 pro/test/test_tmass_conversion.pro -text
 pro/test/write_platelines_run.pro -text
