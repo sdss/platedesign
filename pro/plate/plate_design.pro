@@ -189,8 +189,8 @@ definition = plate_definition(designid=designid)
 
   if(tag_indx(definition, 'platedesignversion') ge 0) then begin
       if(definition.platedesignversion ne plan.platedesignversion) then $
-        message, color_string('Plan file plateDesignVersion ("' + str(plan.platedesignversion) + $
-					'") inconsistent with (obsolete) definition file value ("' + str(definition.platedesignversion) + '")', 'red', 'bold')
+        message, color_string('Plan file plateDesignVersion ("' + strtrim(string(plan.platedesignversion),2) + $
+					'") inconsistent with (obsolete) definition file value ("' + strtrim(string(definition.platedesignversion),2) + '")', 'red', 'bold')
   endif
 
 ;; Read in the plate defaults file
