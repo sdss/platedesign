@@ -12,6 +12,7 @@
 ;                  .RREACH - maximum radius of reach
 ;                  .XPREFER - preferred location (X)
 ;                  .YPREFER - preferred location (Y)
+;                  .TWIST_AXIS - axis to define twist about
 ;                  .BLOCK - block ID
 ; COMMENTS:
 ;   Returns 48x4 guide positions; just the regular 16 repeated 12 times. 
