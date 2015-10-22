@@ -31,6 +31,8 @@ nAPOGEE_SOUTH_science_faint 75
 nAPOGEE_SOUTH_standard_bright 15 
 nAPOGEE_SOUTH_standard_medium 0 
 nAPOGEE_SOUTH_sky 25 
+nAPOGEE_SOUTH_science 0
+nAPOGEE_SOUTH_standard 0
 
 # Guide fibers to use for each pointing
 gfiberType gfiber_lco
@@ -59,7 +61,7 @@ plateDesignSkies NONE
 skyType NONE
 
 # Use APOGEE-2S plugmap style
-plugmapstyle plplugmap_apogee_south
+plugmapstyle plplugmap_apogee
 
 # Default pointing_name
 pointing_name A B C D E F
