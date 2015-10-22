@@ -183,6 +183,7 @@ pro/plate/adr.pro -text
 pro/plate/alignment_fiber.pro -text
 pro/plate/apo_rdistort.pro -text
 pro/plate/apogee_fibervhmag.pro -text
+pro/plate/apogee_south_reachcheck.pro -text
 pro/plate/assign_same_fiberid.pro -text
 pro/plate/boss_fiberblocks.pro -text
 pro/plate/boss_reachcheck.pro -text
