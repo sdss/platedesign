@@ -270,6 +270,7 @@ pro/plate/plate_xy2ad.pro -text
 pro/plate/plateholes_filename.pro -text
 pro/plate/platelines_apogee.pro -text
 pro/plate/platelines_apogee2s_test.pro -text
+pro/plate/platelines_apogee_south.pro -text
 pro/plate/platelines_boss.pro -text
 pro/plate/platelines_boss_all.pro -text
 pro/plate/platelines_circle.pro -text
