@@ -12,6 +12,7 @@
 ;                  .RREACH - maximum radius of reach
 ;                  .XPREFER - preferred location (X)
 ;                  .YPREFER - preferred location (Y)
+;                  .TWIST_AXIS - axis to define twist about
 ; COMMENTS:
 ;   The original info as from Larry Carey, sdss3-infrastructure/672.
 ;   Numbers updated from Harding, based on Carey's
@@ -37,6 +38,7 @@ gfiber0 = create_struct( $
                          'rreach'   , 0.0, $
                          'xprefer'  , 0.d, $
                          'yprefer'  , 0.d, $
+                         'twist_axis'  , ' ', $
                          'guidetype', ' ')
 gfiber = replicate(gfiber0, nguide)
 
@@ -99,6 +101,8 @@ gfiber[3].xprefer= gfiber[3].xprefer-70.
 gfiber[6].xprefer= gfiber[6].xprefer+70.
 gfiber[7].xprefer= gfiber[7].xprefer+70.
 gfiber[10].xprefer= gfiber[10].xprefer-70.
+
+gfiber.twist_axis='y'
 
 ;; finally, resort them to the final ordering
 filename = getenv('PLATEDESIGN_DIR')+'/data/sdss/sdss_newguide.par'
