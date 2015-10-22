@@ -43,7 +43,7 @@ def apogee_layer(holes):
     pyxcolor['blue']=color.cmyk.Blue
 
     # Get science fiber information
-    isci=np.nonzero(np.array(holes['holetype']) == 'APOGEE')[0]
+    isci=np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
     xfocal= np.array(holes['xfocal'])[isci]
     yfocal= np.array(holes['yfocal'])[isci]
     fiberid= np.array(holes['fiberid'])[isci]
