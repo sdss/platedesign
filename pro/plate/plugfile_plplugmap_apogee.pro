@@ -157,14 +157,24 @@ endif
 ihole= where(plug.holetype eq 'OBJECT', nhole)
 if(nhole gt 0) then begin
     isort= sort(abs(plug[ihole].fiberid))
-    newplug=[newplug, plug[ihole[isort]]]
-    newholes=[newholes, holes[ihole[isort]]]
+    if(n_tags(newplug) gt 0) then begin
+        newplug=[newplug, plug[ihole[isort]]]
+        newholes=[newholes, holes[ihole[isort]]]
+    endif else begin
+        newplug= plug[ihole[isort]]
+        newholes= holes[ihole[isort]]
+    endelse 
 endif
 
 ihole= where(plug.holetype eq 'QUALITY', nhole)
 if(nhole gt 0) then begin
-    newplug=[newplug, plug[ihole]]
-    newholes=[newholes, holes[ihole]]
+    if(n_tags(newplug) gt 0) then begin
+        newplug=[newplug, plug[ihole]]
+        newholes=[newholes, holes[ihole]]
+    endif else begin
+        newplug=plug[ihole]
+        newholes=holes[ihole]
+    endelse
 endif
 
 if(n_elements(newplug) ne n_elements(plug)) then $
