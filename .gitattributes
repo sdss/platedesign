@@ -163,6 +163,7 @@ pro/misc/guidetest_run_nov.pro -text
 pro/misc/make_apogee2s_alignment_plate.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_flat_plate.pro -text
+pro/misc/make_lco_gridtest.pro -text
 pro/misc/make_trap_file.pro -text
 pro/misc/p_end_print.pro -text
 pro/misc/p_print.pro -text
