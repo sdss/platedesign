@@ -6,6 +6,7 @@
 instruments dummy 
 observatory LCO
 tilerad 0.98
+round 1
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
