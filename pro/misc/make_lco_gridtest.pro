@@ -16,8 +16,8 @@ platescale = get_platescale('LCO') ; mm/degree
 spacing= 10. ; mm
 nn= long(0.5*(2.1*tilerad*platescale/spacing))*2L+1L
 
-racen= 180.
-deccen= 0.
+racen= 180.D
+deccen= 0.D
 
 design0= create_struct(design_blank(), 'ra', 0.D, 'dec', 0.D)
 design0.holetype='dummy'
@@ -27,21 +27,24 @@ design0.pointing=1
 design0.diameter=4.76 
 design0.buffer=0.0
 
-space= spacing*(findgen(nn)-float(nn/2L))
+space= spacing*(dindgen(nn)-double(nn/2L))
 
 design= replicate(design0, nn*nn)
 
-design.xf_default= reform(space#replicate(1.,nn), nn*nn)
-design.yf_default= reform(replicate(1.,nn)#space, nn*nn)
+xf_default= reform(space#replicate(1.D,nn), nn*nn)
+design.xf_default= xf_default
+yf_default= reform(replicate(1.D,nn)#space, nn*nn)
+design.yf_default= yf_default 
 
 rr= sqrt(design.xf_default^2+design.yf_default^2)
 ikeep=where(rr lt 324.500)
 design=design[ikeep]
+xf_default=xf_default[ikeep]
+yf_default=yf_default[ikeep]
 
-xyfocal2ad, 'LCO', design.xf_default, design.yf_default, ra, dec, $
+xyfocal2ad, 'LCO', xf_default, yf_default, ra, dec, $
   racen=racen, deccen=deccen, airtemp=5., $
-  lambda=replicate(5400., n_elements(design)), $
-  clambda=5400.
+  lambda=replicate(5400., n_elements(design))
 
 design.target_ra= ra
 design.target_dec= dec
