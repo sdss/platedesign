@@ -85,7 +85,7 @@ ZOffset          -3.8812    # drilling offset (inches)
 ZOffsetR          0.7112     # drilling offset (inches)
 thermalExpand    21.24e-6   # percentage expansion per deg C
 maxRadius       326.644     # max hole position radius (mm)
-objectCodesFile g_codes_object.txt
+objectCodesFile g_codes_object_lco.txt
 trapCodesFile   g_codes_lighttrap.txt
 endCodesFile    g_codes_completion_lco.txt
 alignCodesFile  g_codes_alignment.txt

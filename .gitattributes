@@ -58,6 +58,7 @@ data/sdss/g_codes_completion.txt -text
 data/sdss/g_codes_completion_lco.txt -text
 data/sdss/g_codes_lighttrap.txt -text
 data/sdss/g_codes_object.txt -text
+data/sdss/g_codes_object_lco.txt -text
 data/sdss/holtzman-adr.txt -text
 data/sdss/image-heights.txt -text
 data/sdss/plParam.par -text
