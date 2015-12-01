@@ -64,7 +64,8 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#10.  5/64" END MILL)'
   printf, unit, ''
-  printf, unit, 'M00'
+;;  printf, unit, 'M00'  ;; Remove
+  printf, unit, 'M98 P9780'
   printf, unit, 'N10 G20 G80 G69'
   printf, unit, 'G00 G28 G91 Z0.0 T10 M06 (5/64" END MILL)'
   printf, unit, 'G68 X0.0 Y0.0 R-90.0'
@@ -90,7 +91,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
      zstr= strtrim(string(zz, f='(f40.4)'),2)
 
      if(i eq 0) then begin
-        printf, unit, 'G54 X'+xstr+' Y'+ystr  
+        printf, unit, 'G55 X'+xstr+' Y'+ystr  
         printf, unit, 'G43 H10 Z1.0'
         printf, unit, 'M08'
         printf, unit, 'G00 Z'+zstr
