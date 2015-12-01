@@ -75,7 +75,8 @@ proc makeFanucManga { args } {
     set context plate
     ftclParseSave $context
 
-    ftclFullParse { -plan=plPlan.par -verbose -oneway} $args
+    ftclFullParse { -plan=plPlan.par -gcode=G54 -verbose -oneway} $args
+    set coordCode [ftclGetStr gcode]
     set planFile [ftclGetStr plan]
     if {[ftclPresent verbose]} {
 	set verbose [ftclGetStr verbose]
@@ -258,10 +259,10 @@ proc makeFanucManga { args } {
 	}
 	if {$verbose > 1} {
 	    set numPathFixed [ plMakeFanucCodes $singleHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 1 -verbose 1 ]
+		    $bendDistort $surfaceShape $fanucFilePath 1 $coordCode -verbose 1 ]
 	} else {
 	    set numPathFixed [ plMakeFanucCodes $singleHolesChn $plateInfo\
-		    $bendDistort $surfaceShape $fanucFilePath 1 ]
+		    $bendDistort $surfaceShape $fanucFilePath 1 $coordCode ]
 	}
 	set fanucFile [open $fanucFilePath a]
 
@@ -271,10 +272,10 @@ proc makeFanucManga { args } {
 	if {[chainSize $trapHolesChn]} {
 	    if {$verbose > 1} {
 		set numPathFixed2 [ plMakeFanucCodes $trapHolesChn $plateInfo\
-			$bendDistort $surfaceShape $fanucFilePath 2 -verbose 1 ]
+			$bendDistort $surfaceShape $fanucFilePath 2 $coordCode -verbose 1 ]
 	    } else {
 		set numPathFixed2 [ plMakeFanucCodes $trapHolesChn $plateInfo\
-			$bendDistort $surfaceShape $fanucFilePath 2 ]
+			$bendDistort $surfaceShape $fanucFilePath 2 $coordCode ]
 	    }
 	} else {
 	    set numPathFixed2 0
@@ -288,10 +289,10 @@ proc makeFanucManga { args } {
 			if {$verbose > 1} {
 					set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo \
 																	$bendDistort $surfaceShape $fanucFilePath \ 
-															3 -verbose 1 ]
+															3 $coordCode -verbose 1 ]
 			} else {
 					set numPathFixed3 [ plMakeFanucCodes $alignHolesChn $plateInfo\
-																	$bendDistort $surfaceShape $fanucFilePath 3 ]
+																	$bendDistort $surfaceShape $fanucFilePath 3 $coordCode ]
 			}
 	} else {
 			set numPathFixed3 0
@@ -305,10 +306,10 @@ proc makeFanucManga { args } {
 			if {$verbose > 1} {
 					set numPathFixed4 [ plMakeFanucCodes $mangaHolesChn $plateInfo \
 																	$bendDistort $surfaceShape $fanucFilePath \ 
-															11 -verbose 1 ]
+															11 $coordCode -verbose 1 ]
 			} else {
 					set numPathFixed4 [ plMakeFanucCodes $mangaHolesChn $plateInfo\
-																	$bendDistort $surfaceShape $fanucFilePath 11 ]
+																	$bendDistort $surfaceShape $fanucFilePath 11 $coordCode ]
 			}
 	} else {
 			set numPathFixed4 0
@@ -322,10 +323,10 @@ proc makeFanucManga { args } {
 			if {$verbose > 1} {
 					set numPathFixed5 [ plMakeFanucCodes $mangaAlignHolesChn $plateInfo \
 																	$bendDistort $surfaceShape $fanucFilePath \ 
-															12 -verbose 1 ]
+															12 $coordCode -verbose 1 ]
 			} else {
 					set numPathFixed5 [ plMakeFanucCodes $mangaAlignHolesChn $plateInfo\
-																	$bendDistort $surfaceShape $fanucFilePath 12 ]
+																	$bendDistort $surfaceShape $fanucFilePath 12 $coordCode ]
 			}
 	} else {
 			set numPathFixed5 0
