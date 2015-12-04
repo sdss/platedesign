@@ -75,4 +75,6 @@ module load platelist
 module load plate
 module load fitsverify
 module load mangacore
+module load sdss_access
+module load tree
 

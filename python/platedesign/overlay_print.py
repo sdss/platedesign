@@ -2,7 +2,7 @@ from platedesign.survey.APOGEE2 import apogee_blocks
 from pyx import *
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import sdss.utilities.yanny as yanny
-import sdss.files 
+#import sdss.files 
 import numpy as np
 import re
 
