@@ -159,9 +159,10 @@ retval = call_external(soname, 'idl_write_plugprob', $
                        string(probfile), long(noycost), $
                        double(ylimits))
 
+cs2_path = getenv('PLATEDESIGN_DIR') + '/src/cs2/cs2'
+check_file_exists, cs2_path, plateid=0
 spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
-  getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
-  ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
+  cs2_path + ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
 ansfile=tmpdir+'/tmp_ans_'+uid+'.txt'
 targetfiber=lonarr(ntargets)

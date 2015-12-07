@@ -130,9 +130,10 @@ printf, unit, 'a 0 '+strtrim(string(nnode-1L),2)+' 0 '+ $
 printf, unit, 'c end of flow problem'
 free_lun, unit
 
+cs2_path = getenv('PLATEDESIGN_DIR') + '/src/cs2/cs2'
+check_file_exists, cs2_path, plateid=0
 spawn, 'cat '+tmpdir+'/tmp_prob_'+uid+'.txt | '+ $
-  getenv('PLATEDESIGN_DIR')+'/src/cs2/cs2 '+ $
-  ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
+  cs2_path + ' > '+tmpdir+'/tmp_ans_'+uid+'.txt'
 
 tmp_ans_filename = tmpdir+'/tmp_ans_'+uid+'.txt'
 nlines= file_lines(tmp_ans_filename)
