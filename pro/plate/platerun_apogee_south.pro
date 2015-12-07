@@ -1,15 +1,15 @@
 ;+
 ; NAME:
-;   platerun_bright
+;   platerun_apogee_south
 ; PURPOSE:
 ;   Prepare files and run the low-level plate routines for bright cartridges
 ; CALLING SEQUENCE:
-;   platerun_bright, platerun, plateid
+;   platerun_iapogee_south, platerun, plateid
 ; INPUTS:
 ;   platerun - name of run to execute
 ;   plateid - [Nplate] plate number included in the run
 ; REVISION HISTORY:
-;   10-Jun-2008  MRB, NYU
+;   30-Nov-2015  MRB, NYU
 ;-
 pro platerun_apogee_south, platerun, plateid, nolines=nolines
 
