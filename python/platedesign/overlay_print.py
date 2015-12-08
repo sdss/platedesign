@@ -2,15 +2,16 @@ from platedesign.survey.APOGEE2 import apogee_blocks
 from pyx import *
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import sdss.utilities.yanny as yanny
-#import sdss.files 
+import sdss_access.path
 import numpy as np
+import os.path
 import re
 
 limit_radius= 41.5
 full_radius= 39.7
 interior_radius= 32.6 # cm
 
-sdss_path= sdss.files.path()
+sdss_path = sdss_access.path.path()
 
 def offset_line(offset_amount, vertex_start, vertex_end, point):
     # Get vector and unit vector along ridge
@@ -240,9 +241,18 @@ def outline_layer():
 def overlay_print(plate):
 
     outpdf= sdss_path.full('plateLines-print', plateid=plate)
+
+	# Get the needed files
+    plateHolesSorted_file = sdss_path.full('plateHolesSorted', plateid=plate)
+    if not os.path.isfile(plateHolesSorted_file):
+        raise IOError("File not found: {0}".format(plateHolesSorted_file))
+
+    platePlans_file = sdss_path.full('platePlans')
+    if not os.path.isfile(platePlans_file):
+	    raise IOError("File not found: {0}".format(platePlans_file))
     
     # Read in holes data, extract meta data
-    holes_yanny= yanny.yanny(sdss_path.full('plateHolesSorted', plateid=plate))
+    holes_yanny= yanny.yanny(plateHolesSorted_file)
     racen= holes_yanny['raCen']
     deccen= holes_yanny['decCen']
     designid= holes_yanny['designid']
@@ -251,7 +261,7 @@ def overlay_print(plate):
     holes= holes_yanny['STRUCT1']
 
     # Read in plans
-    plans= yanny.yanny(sdss_path.full('platePlans'))
+    plans= yanny.yanny(platePlans_file)
     iplan= np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plate)[0]
     survey= plans['PLATEPLANS']['survey'][iplan]
     programname= plans['PLATEPLANS']['programname'][iplan]
