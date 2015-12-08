@@ -1,27 +1,34 @@
 #!/usr/bin/env python
 
-import pdb
-import getopt
-import platedesign
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+'''
+This script is called to generate plate design overlays.
+Run the script on the command line with the argument "--help" for usage and options.
+'''
+
+__author__ = "Demitri Muna" # Dec 2015
+
 import sys
 
-def main(argv):
+import platedesign
+import argparse
 
-    # Parse header
-    helpstr='plate_overlay -p <plateid>' 
-    try:
-        opts, args = getopt.getopt(argv,"hp:",["help=","plate="])
-    except getopt.GetoptError:
-        print helpstr
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == ("-h", "--help"):
-            print helpstr;
-            sys.exit()
-        elif opt in ("-p", "--plate"):
-            plate = int(arg)
-            
-    platedesign.overlay_print(plate)
+# Create the command line parser
+# ------------------------------
+parser = argparse.ArgumentParser(description="Generate plate design overlays",
+							   usage="plate_overlay --plate 12345")
+							   
+# add arguments
+# -------------
 
-if __name__ == "__main__": 
-    main(sys.argv[1:])
+# plate ID (read value as args.plate)
+parser.add_argument("-p", "--plate", type=int, required=True, help="plate id")
+
+args = parser.parse_args() # parse input from command line
+
+platedesign.overlay_print(args.plate)
+
+
