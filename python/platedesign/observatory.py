@@ -10,7 +10,7 @@ lco_latitude= -29.0146 # deg
 lco_longitude= 289.3074 # deg
 lco_height= 2380. # meters
 
-class observatory(object):
+class Observatory(object):
     def __init__(self, name=None):
         if(name == 'APO'):
             lat= apo_latitude*units.deg

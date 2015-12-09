@@ -12,9 +12,14 @@ Run the script on the command line with the argument "--help" for usage and opti
 __author__ = "Demitri Muna" # Dec 2015
 
 import sys
+import os.path
+import argparse
+import subprocess
 
 import platedesign
-import argparse
+from sdss_access import SDSSPath
+
+sdssPath = SDSSPath()
 
 # Create the command line parser
 # ------------------------------
@@ -22,13 +27,31 @@ parser = argparse.ArgumentParser(description="Generate plate design overlays",
 							   usage="plate_overlay --plate 12345")
 							   
 # add arguments
-# -------------
-
+# ------------------------------
 # plate ID (read value as args.plate)
 parser.add_argument("-p", "--plate", type=int, required=True, help="plate id")
 
-args = parser.parse_args() # parse input from command line
+# output a png too?
+parser.add_argument("--png", dest='write_png', action='store_true')
+# ------------------------------
 
-platedesign.overlay_print(args.plate)
+# parse input from command line
+args = parser.parse_args()
 
+# get destination path and validate
+destination_path = sdssPath.full('plateLines-print', plateid=args.plate)
+dir_name = os.path.dirname(destination_path)
+if not os.path.exists(dir_name):
+	raise Exception("The directory at this location does not exist: {0}".format(dir_name))
+
+# create overlay (a Pyx 'document' object)
+overlay = platedesign.overlay_print(plateid=args.plate)
+
+# write overlay (PDF) to path
+overlay.writePDFfile(destination_path)
+
+if args.write_png:
+	# convert the PDF to a PNG file using the ImageMagick command line program
+	png_path = destination_path[0:-3] + "png" # replace "pdf" extension with "png"
+	subprocess.call(["convert", destination_path, png_path], shell=False)
 
