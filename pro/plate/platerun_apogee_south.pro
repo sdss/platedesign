@@ -88,7 +88,7 @@ if(keyword_set(nolines) eq 0) then begin
        platelines_apogee_south, plateid[i], /sortx
        apogee_fibervhmag, plateid[i], holetype='APOGEE_SOUTH'
        platelines_guide, plateid[i]
-       spawn, /noshell, ['plate_overlay', '-p', strtrim(string(plateid[i]),2)]
+       spawn, /noshell, ['plate_overlay', '--plate', strtrim(string(plateid[i]),2), '--png']
    endfor
 endif
 

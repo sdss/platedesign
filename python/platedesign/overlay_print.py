@@ -1,8 +1,8 @@
 from platedesign.survey.APOGEE2 import apogee_blocks
-from pyx import *
+from pyx import document, color, path, canvas, style, text, deco, trafo
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import sdss.utilities.yanny as yanny
-import sdss_access.path
+from sdss_access import SDSSPath
 import numpy as np
 import os.path
 import re
@@ -11,7 +11,8 @@ limit_radius= 41.5
 full_radius= 39.7
 interior_radius= 32.6 # cm
 
-sdss_path = sdss_access.path.path()
+#sdss_path = sdss_access.path.path()
+sdssPath = SDSSPath()
 
 def offset_line(offset_amount, vertex_start, vertex_end, point):
     # Get vector and unit vector along ridge
@@ -238,16 +239,24 @@ def outline_layer():
                    [style.linewidth.thick])
     return outline
 
-def overlay_print(plate):
-
-    outpdf= sdss_path.full('plateLines-print', plateid=plate)
+def overlay_print(plateid):
+    '''
+    This function returns a plate overlay as a pyx.document object.
+    The calling script can determine what to do with it. To print this
+    object as a PDF:
+    
+    overlay = overlay_print(plateid=12345)
+    overlay.writePDFfile(destination_path)
+    
+    '''
+    outpdf= sdssPath.full('plateLines-print', plateid=plateid)
 
 	# Get the needed files
-    plateHolesSorted_file = sdss_path.full('plateHolesSorted', plateid=plate)
+    plateHolesSorted_file = sdssPath.full('plateHolesSorted', plateid=plateid)
     if not os.path.isfile(plateHolesSorted_file):
         raise IOError("File not found: {0}".format(plateHolesSorted_file))
 
-    platePlans_file = sdss_path.full('platePlans')
+    platePlans_file = sdssPath.full('platePlans')
     if not os.path.isfile(platePlans_file):
 	    raise IOError("File not found: {0}".format(platePlans_file))
     
@@ -262,7 +271,7 @@ def overlay_print(plate):
 
     # Read in plans
     plans= yanny.yanny(platePlans_file)
-    iplan= np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plate)[0]
+    iplan= np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plateid)[0]
     survey= plans['PLATEPLANS']['survey'][iplan]
     programname= plans['PLATEPLANS']['programname'][iplan]
 
@@ -272,7 +281,7 @@ def overlay_print(plate):
 
     # Create information string
     information= r"\font\myfont=cmr10 at 40pt {\myfont"
-    information+=" Plate="+str(plate)+"; "
+    information+=" Plate="+str(plateid)+"; "
     information+="Design="+str(designid)+"; "
     information+="Survey="+str(survey)+"; "
     information+="Program="+str(programname_str)+"; "
@@ -288,8 +297,8 @@ def overlay_print(plate):
     apogee= apogee_layer(holes)
     guide= guide_layer(holes)
     whiteout= whiteout_layer(holes)
-    plate_circle= plate_circle_layer(plate, information, message_tex)
-    outline= outline_layer()
+    plate_circle= plate_circle_layer(plateid, information, message_tex)
+    outline= outline_layer() # pyx.canvas object
 
     outline.insert(apogee)
     outline.insert(guide)
@@ -298,5 +307,8 @@ def overlay_print(plate):
     
     pformat=document.paperformat(limit_radius*2., limit_radius*2.)
     final=document.page(outline, paperformat=pformat)
-    doc= document.document(pages=[final])
-    doc.writePDFfile(outpdf)
+    
+    return document.document(pages=[final])
+    
+    #doc= document.document(pages=[final])
+    #doc.writePDFfile(outpdf)
