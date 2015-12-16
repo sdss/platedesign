@@ -83,7 +83,7 @@ design0={DESIGN_TARGET, $
          eboss_target0:long64(0), $
 		 eboss_target1:long64(0), $
 		 eboss_target2:long64(0), $
-		 eboss_target_id:0L, $
+		 eboss_target_id:long64(0), $
 		 thing_id_targeting:0L, $
 		 objid_targeting:long64(0), $
 		 apogee2_target1:0L, $
