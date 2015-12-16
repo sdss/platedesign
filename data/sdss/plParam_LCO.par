@@ -81,8 +81,8 @@ plateShapeYcenter 0.0
 plateShapeCoeff   0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
 
 tempShop         20         # temperature of plate during drilling (deg C)
-ZOffset          -3.8812    # drilling offset (inches)
-ZOffsetR          0.7112     # drilling offset (inches)
+ZOffset          -4.2672    # drilling offset (mm)
+ZOffsetR          0.7112     # drilling offset (mm)
 thermalExpand    21.24e-6   # percentage expansion per deg C
 maxRadius       326.644     # max hole position radius (mm)
 objectCodesFile g_codes_object_lco.txt
