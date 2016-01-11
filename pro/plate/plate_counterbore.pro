@@ -64,7 +64,7 @@ pro plate_counterbore, platerun, in_plateid, cunit=cunit
   printf, unit, '(SET Z0.0 AT 0.125" ABOVE FIXTURE SURFACE)'
   printf, unit, '(#10.  5/64" END MILL)'
   printf, unit, ''
-;;  printf, unit, 'M00'  ;; Remove
+  printf, unit, 'G55'
   printf, unit, 'M98 P9780'
   printf, unit, 'N10 G20 G80 G69'
   printf, unit, 'G00 G28 G91 Z0.0 T10 M06 (5/64" END MILL)'
