@@ -1,0 +1,80 @@
+# Default settings for APOGEE2-MANGA
+
+# Which instruments are to be used? 
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE MANGA
+instruments APOGEESOUTH
+observatory LCO
+tilerad 0.95
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but 
+# are not case sensitive. 
+targettypes science_bright science_medium science_faint standard_bright standard_medium
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 4
+nOffsets 0
+
+# For each instrument, you must specify how many 
+# targets of each type are wanted. This is an array 
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
+# (for M pointings and N offsets).
+nAPOGEESOUTH_science_bright 0
+nAPOGEESOUTH_science_medium 0
+nAPOGEESOUTH_science_faint 0
+nAPOGEESOUTH_standard_bright 0 
+nAPOGEESOUTH_standard_medium 0 
+nAPOGEESOUTH_sky 0 
+
+# Guide fibers to use for each pointing
+gfiberType gfiber_apogeesouthtest
+guideType USNOB USNOB USNOB USNOB
+guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48
+guideNums2 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 
+guideNums3 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 
+guideNums4 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192
+guidemag_minmax 8. 16.0
+guidemag_minmax_band i
+guide_lambda_eff 7600.
+nguidemax 800
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# The Ferrule diameter is 6.99mm
+# So I will assume 7mm here
+# In target selection I have resolved at 116" which is 
+# slightly larger than this
+ferruleSizeAPOGEESOUTH 3.72231
+bufferSizeAPOGEESOUTH 0.300
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+# Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
+plateDesignStandards NONE
+standardType NONE
+
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
+plateDesignSkies NONE
+skyType NONE
+
+# Use MANGA plugmap style
+plugmapstyle plplugmap_apogee
+mangamagtype fiber2mag
+
+# Default pointing_name
+pointing_name A B C D E F
+
+# Set conditions for maximum offset (arcsec) of fiber in HA range
+max_off_fiber_for_ha 0.3
+relaxed_fiber_classes 0
+
+collectfactor 3
