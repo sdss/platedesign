@@ -12,6 +12,10 @@
 ;   epoch      - Epoch for output stars, for applying proper motion [yr]
 ; OPTIONAL INPUTS:
 ;   tilerad    - Tile radius; default to 1.49 deg
+;   gminmax_mag - magnitude limits for guides (default [13., 14.5]
+;   gminmax_band - band for mag limits (default 'g')
+;   jkminmax - obsolete
+;   nguidemax - maximum number of guides to seek (default infinite)
 ; OPTIONAL OUTPUTS:
 ;   guide_design   - Output structure with sky coordinates in J2000 [NSKY]
 ; COMMENTS:
@@ -23,8 +27,8 @@
 ;------------------------------------------------------------------------------
 pro plate_select_guide_usnob, racen, deccen, epoch=epoch, $
                               tilerad=tilerad1, guide_design=guide_design, $
-                              gminmax=gminmax, nguidemax=nguidemax, $
-                              jkminmax=jkminmax, seed=seed
+                              gminmax_mag=gminmax_mag, nguidemax=nguidemax, $
+                              jkminmax=jkminmax, seed=seed, gminmax_band=gminmax_band
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
@@ -35,8 +39,13 @@ else tilerad = 1.45
 ;; make sure we're not TOO close to the edge
 tilerad= tilerad < 1.45
 
-if(NOT keyword_set(gminmax)) then $
-  gminmax=[13., 14.5]
+if(NOT keyword_set(gminmax_mag)) then $
+  gminmax_mag=[13., 14.5]
+
+if(NOT keyword_set(gminmax_band)) then begin
+    gminmax_band = 1
+endif
+igminmax_band = filternum(gminmax_band)
 
 ;; Read all the 2MASS objects on the plate
 objt = tmass_read(racen, deccen, tilerad)
@@ -111,12 +120,31 @@ mag= plate_tmass_to_sdss(jmag, hmag, kmag)
 ;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
 red_fac = reddening()
 mag= mag+ red_fac#ebv
-offset= usnob.mag[2]-mag[1,*]
+goffset= usnob.mag[2]-mag[1,*] 
+roffset= usnob.mag[3]-mag[2,*] 
+ioffset= usnob.mag[4]-mag[3,*] 
+
+;; if g-band guide mag limits, offset from the equivalent in USNO-B
+;; (J)
+if(igminmax_band eq 1) then begin
+    offset = goffset 
+endif 
+
+;; if i-band guide mag limits, offset from equivalent in 
+;; (N) or from r-band equivalent (F) if N is bad
+if(igminmax_band eq 3) then begin
+    offset = ioffset 
+    ibad = where(usnob.mag[4] eq 0., nbad)
+    if(nbad gt 0) then $
+      offset[ibad] = roffset[ibad]
+endif 
+
+;; apply offsets
 for i=0L, 4L do $
    mag[i,*]= mag[i,*]+offset
 
-indx = where(mag[1, *] gt gminmax[0] AND $
-             mag[1, *] lt gminmax[1], ct) 
+indx = where(mag[igminmax_band, *] gt gminmax_mag[0] AND $
+             mag[igminmax_band, *] lt gminmax_mag[1], ct) 
 if (ct eq 0) then return
 usnob=usnob[indx]
 objt=objt[indx]
@@ -125,7 +153,7 @@ mag=mag[*,indx]
 ;; Trim back number to maximum; only allow brightest
 if(keyword_set(nguidemax)) then begin
     if(nguidemax lt n_elements(objt)) then begin
-        isort= sort(mag[1, *])
+        isort= sort(mag[igminmax_band, *])
         indx= isort[0:nguidemax-1]
         usnob=usnob[indx]
         objt=objt[indx]
@@ -156,7 +184,7 @@ guide_design.mag=mag
 
 ;; Finally, set priority; note that for guide stars priority is
 ;; used differently than elsewhere (see plate_assign_guide.pro)
-isort= sort(guide_design.mag[1])
+isort= sort(guide_design.mag[igminmax_band])
 guide_design[isort].priority= 1L+lindgen(n_elements(isort))
 
 return
