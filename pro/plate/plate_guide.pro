@@ -18,10 +18,10 @@ designid= long(definition.designid)
 tilerad= get_tilerad(definition, default)
 
 if(tag_exist(default, 'GUIDEMAG_MINMAX')) then begin
-   gminmax=float(strsplit(default.guidemag_minmax, /extr))
+   gminmax_mag=float(strsplit(default.guidemag_minmax, /extr))
 endif
 if(tag_exist(definition, 'GUIDEMAG_MINMAX')) then begin
-   gminmax=float(strsplit(definition.guidemag_minmax, /extr))
+   gminmax_mag=float(strsplit(definition.guidemag_minmax, /extr))
 endif
 
 if(tag_exist(default, 'GUIDE_JKMINMAX')) then begin
@@ -33,6 +33,13 @@ endif
 
 if(tag_exist(default, 'NGUIDEMAX')) then begin
     nguidemax=long(default.nguidemax)
+endif
+
+if(tag_exist(default, 'GUIDEMAG_MINMAX_BAND')) then begin
+    gminmax_band=default.guidemag_minmax_band
+endif
+if(tag_exist(definition, 'GUIDEMAG_MINMAX_BAND')) then begin
+    gminmax_band=definition.guidemag_minmax_band
 endif
 
 if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
@@ -69,21 +76,24 @@ if(file_test(guidefile) eq 0 OR $
     if(strupcase(guidetype) eq 'SDSS') then begin
         plate_select_guide_sdss, racen, deccen, epoch=epoch, $
           rerun=rerun, guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax, tilerad=tilerad, seed=seed
+          gminmax_mag=gminmax_mag, tilerad=tilerad, seed=seed, $
+          gminmax_band=gminmax_band
     endif
     
     ;; find 2MASS guide fibers 
     if(strupcase(guidetype) eq '2MASS') then begin
         plate_select_guide_2mass, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax, seed=seed
+          gminmax_mag=gminmax_mag, tilerad=tilerad, jkminmax=jkminmax, seed=seed, $
+          gminmax_band=gminmax_band
     endif
 
     ;; find USNOB guide fibers 
     if(strupcase(guidetype) eq 'USNOB') then begin
         plate_select_guide_usnob, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
-          gminmax=gminmax, tilerad=tilerad, jkminmax=jkminmax, seed=seed
+          gminmax_mag=gminmax_mag, tilerad=tilerad, jkminmax=jkminmax, seed=seed, $
+          gminmax_band=gminmax_band
     endif
 
     if(n_tags(guide_design) gt 0) then begin
