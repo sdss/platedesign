@@ -13,6 +13,10 @@
 ; OPTIONAL INPUTS:
 ;   rerun      - Rerun name(s)
 ;   tilerad    - Tile radius; default to 1.49 deg
+;   gminmax_mag - magnitude limits for guides (default [13., 14.5]
+;   gminmax_band - band for mag limits (default 'g')
+;   jkminmax - obsolete
+;   nguidemax - maximum number of guides to seek (default infinite)
 ; OPTIONAL OUTPUTS:
 ;   guide_design   - Output structure with sky coordinates in J2000 [NSKY]
 ; COMMENTS:
@@ -32,8 +36,8 @@
 pro plate_select_guide_sdss, racen, deccen, epoch=epoch, $
                              rerun=rerun, tilerad=tilerad1, $
                              guide_design=guide_design, $
-                             gminmax=gminmax, nguidemax=nguidemax, $
-                             seed=seed
+                             gminmax_mag=gminmax_mag, nguidemax=nguidemax, $
+                             seed=seed, gminmax_band=gminmax_band
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
@@ -44,8 +48,13 @@ else tilerad = 1.45
 ;; make sure we're not TOO close to the edge
 tilerad= tilerad < 1.45
 
-if(NOT keyword_set(gminmax)) then $
-  gminmax=[13., 14.5]
+if(NOT keyword_set(gminmax_mag)) then $
+  gminmax_mag=[13., 14.5]
+
+if(NOT keyword_set(gminmax_band)) then begin
+    gminmax_band = 1
+endif
+igminmax_band = filternum(gminmax_band)
 
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
@@ -65,7 +74,7 @@ if (keyword_set(objs)) then begin
     grcolor = transpose( mag[1,*] - mag[2,*] )
     ricolor = transpose( mag[2,*] - mag[3,*] )
     izcolor = transpose( mag[3,*] - mag[4,*] )
-    indx = where(mag[1,*] GT gminmax[0] AND mag[1,*] LT gminmax[1] $
+    indx = where(mag[igminmax_band,*] GT gminmax_mag[0] AND mag[igminmax_band,*] LT gminmax_mag[1] $
                  AND grcolor GT 0.3 AND grcolor LT 1.4 $
                  AND ricolor GT 0.0 AND ricolor LT 0.7 $
                  AND izcolor GT -0.4 AND izcolor LT 1.0, ct)
@@ -141,7 +150,7 @@ if (keyword_set(objs)) then begin
 
     ;; Finally, set priority; note that for guide stars priority is
     ;; used differently than elsewhere (see plate_assign_guide.pro)
-    isort= reverse(sort(guide_design.psfflux[1]))
+    isort= reverse(sort(guide_design.psfflux[igminmax_band]))
     guide_design[isort].priority= 1L+lindgen(n_elements(isort))
 endif
 
