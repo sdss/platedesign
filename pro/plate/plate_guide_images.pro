@@ -94,7 +94,9 @@ for i=0L, nguide-1L do begin
       mwrfits, image, filebase+'.fits', hdr, /create
    printf, unit, '<td>'
    printf, unit, '#'+strtrim(string(full[icurr].iguide),2)+ $
-           ' g='+strtrim(string(f='(f40.2)', full[icurr].mag[1]),2)+'<br/>'
+     ' g='+strtrim(string(f='(f40.2)', full[icurr].mag[1]),2)+ $
+     ', i='+strtrim(string(f='(f40.2)', full[icurr].mag[3]),2)+ $
+     '<br/>'
    printf, unit, '<a href="guideDSS-r2-'+post+'.png">'
    printf, unit, '<img src="guideDSS-r2-'+post+'.png" width=180px />'
    printf, unit, '</a>'
