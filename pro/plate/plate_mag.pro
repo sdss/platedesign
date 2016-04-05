@@ -67,9 +67,33 @@ if(nusnob gt 0) then begin
    ;red_fac = [5.155, 3.793, 2.751, 2.086, 1.479 ]
    red_fac = reddening()
    tmp_mag= tmp_mag+ red_fac#ebv
-   offset= holes[iusnob].usnob_mag[2]-tmp_mag[1,*]
+
+   goffset= holes[iusnob].usnob_mag[2]-tmp_mag[1,*] 
+   roffset= holes[iusnob].usnob_mag[3]-tmp_mag[2,*] 
+   ioffset= holes[iusnob].usnob_mag[4]-tmp_mag[3,*] 
+
+   offset = goffset 
+
+   ;; for holes designed for blue, offset to g
+   iblue = where(holes[iusnob].lambda_eff lt 6000., nblue)
+   if(nblue gt 0) then begin
+       offset[iblue] = goffset[iblue]
+   endif
+   
+   ;; for holes designed for red, offset to i
+   ;; (N) or from r-band equivalent (F) if N is bad
+   ired = where(holes[iusnob].lambda_eff ge 6000., nred)
+   if(nred gt 0) then begin
+       offset[ired] = ioffset[ired]
+       ibad = where(holes[iusnob[ired]].usnob_mag[4] eq 0. and $
+                    holes[iusnob[ired]].usnob_mag[3] gt 0., nbad)
+       if(nbad gt 0) then $
+         offset[ired[ibad]] = roffset[ired[ibad]]
+   endif
+
+   ;; apply offsets
    for i=0L, 4L do $
-      mag[i,iusnob]= tmp_mag[i,*]+offset
+     mag[i,iusnob]= tmp_mag[i,*]+offset
    type[iusnob]='USNOB'
 endif
 
