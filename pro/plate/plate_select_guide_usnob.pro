@@ -134,7 +134,8 @@ endif
 ;; (N) or from r-band equivalent (F) if N is bad
 if(igminmax_band eq 3) then begin
     offset = ioffset 
-    ibad = where(usnob.mag[4] eq 0., nbad)
+    ibad = where(usnob.mag[4] eq 0. and $
+                 usnob.mag[3] gt 0., nbad)
     if(nbad gt 0) then $
       offset[ibad] = roffset[ibad]
 endif 
