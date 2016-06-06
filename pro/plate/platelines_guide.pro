@@ -33,9 +33,10 @@ endif
 
 itag=tag_indx(hdrstr,'OBSERVATORY')
 if(itag eq -1) then $
-  platescale = get_platescale('APO') $
+  observatory = 'APO' $
 else $
-  platescale = get_platescale(hdrstr.(itag))
+  observatory = hdrstr.(itag)
+platescale = get_platescale(observatory)
 
 gfibertype= 'gfiber'
 if(tag_indx(hdrstr, 'gfibertype') ne -1) then $
@@ -77,7 +78,8 @@ pointing_name= ['A', 'B', 'C', 'D', 'E', 'F']
 if(tag_indx(hdrstr, 'pointing_name') ne -1) then $
   pointing_name= strsplit(hdrstr.pointing_name, /extr)
 
-platelines_start, plateid, filebase, 'guide fibers', note=note
+platelines_start, plateid, filebase, 'guide fibers', note=note, $
+  observatory=observatory
 
 ;; write magnitudes (in yellow and first so they don't
 ;; interfere
