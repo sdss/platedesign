@@ -9,11 +9,11 @@ class APOGEE2_Survey(object):
 class apogee_blocks():
     """
     Description of APOGEE cartridge block positions and fiber types
-    
+
     Attributes
     ==========
     blocks 
-    
+
     Methods
     =======
     ftype 
@@ -35,5 +35,27 @@ class apogee_blocks():
             return 'red'
         if(ftype == 'M'):
             return 'green'
+        if(ftype == 'F'):
+            return 'blue'
+
+class apogee_south_blocks(apogee_blocks):
+    """
+    Description of APOGEE South cartridge block positions and fiber types
+
+    Attributes
+    ==========
+    blocks
+
+    Methods
+    =======
+    ftype
+    fcolor
+    """
+    def fcolor(self, fiberid):
+        ftype = self.ftype(fiberid)
+        if(ftype == 'B'):
+            return 'red'
+        if(ftype == 'M'):
+            return 'black'
         if(ftype == 'F'):
             return 'blue'
