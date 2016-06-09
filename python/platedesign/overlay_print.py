@@ -1,49 +1,48 @@
-from platedesign.survey.APOGEE2 import apogee_blocks
+from platedesign.survey.APOGEE2 import apogee_south_blocks
 from pyx import document, color, path, canvas, style, text, deco, trafo
-from scipy.spatial import Voronoi, voronoi_plot_2d
+from scipy.spatial import Voronoi
 import sdss.utilities.yanny as yanny
 from sdss_access import SDSSPath
 import numpy as np
 import os.path
 import re
 
-limit_radius= 41.5
-full_radius= 39.7
-interior_radius= 32.6 # cm
+limit_radius = 41.5
+full_radius = 39.7
+interior_radius = 32.6  # cm
 
-#sdss_path = sdss_access.path.path()
+# sdss_path = sdss_access.path.path()
 sdssPath = SDSSPath()
+
 
 def offset_line(offset_amount, vertex_start, vertex_end, point):
     # Get vector and unit vector along ridge
-    distance= vertex_start-vertex_end
-    adistance= np.sqrt((distance**2).sum())
-    udistance= distance/adistance
-    
-    # Get unit vector from one end of ridge to point
-    topoint= point-vertex_start
-    atopoint= np.sqrt((topoint**2).sum())
-    utopoint= topoint/atopoint
-    
-    offset= topoint - (topoint*udistance).sum()*udistance
-    aoffset= np.sqrt((offset**2).sum())
-    uoffset= offset/aoffset
-    
-    return (vertex_start-offset_amount*uoffset, 
-            vertex_end-offset_amount*uoffset)
+    distance = vertex_start - vertex_end
+    adistance = np.sqrt((distance**2).sum())
+    udistance = distance / adistance
 
-def apogee_layer(holes):
+    # Get unit vector from one end of ridge to point
+    topoint = point - vertex_start
+
+    offset = topoint - (topoint * udistance).sum() * udistance
+    aoffset = np.sqrt((offset**2).sum())
+    uoffset = offset / aoffset
+
+    return(vertex_start - offset_amount * uoffset,
+           vertex_end - offset_amount * uoffset)
+
+def apogee_layer(holes, numbers=False):
     offset_amount=-0.03
     hole_radius= 0.4
 
     # Read in APOGEE blocks information
-    blocks= apogee_blocks()
-    
+    blocks= apogee_south_blocks()
+
     # Set up colors 
     pyxcolor= dict()
     pyxcolor['red']=color.cmyk.Red
-    pyxcolor['green']=color.cmyk.Green
-    pyxcolor['blue']=color.cmyk.Blue
+    pyxcolor['black']=color.cmyk.Black
+    pyxcolor['blue']=color.cmyk.NavyBlue
 
     # Get science fiber information
     isci=np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
@@ -93,7 +92,7 @@ def apogee_layer(holes):
             else:
                 color0= color.cmyk.Black
                 color1= color.cmyk.Black
-                
+
             vertex_start= vor.vertices[iv0,:]/10.
             vertex_end= vor.vertices[iv1,:]/10.
             (start0,end0)= offset_line(offset_amount, vertex_start, 
@@ -106,7 +105,7 @@ def apogee_layer(holes):
             interior.stroke(path.line(start1[1], start1[0], 
                                       end1[1], end1[0]),
                             [style.linewidth.THick, color1])
-        
+
     # Print circles around holes
     for indx in range(len(xfocal)):
         hole_color= pyxcolor[blocks.fcolor(fiberid[indx])]
@@ -114,6 +113,18 @@ def apogee_layer(holes):
                                     hole_radius), 
                         [style.linewidth.THick, hole_color])
 
+    if(numbers is True):
+        #  Print numbers near holes
+        for indx in range(len(xfocal)):
+            if(indx <= 150):
+                props = [text.halign.boxleft, text.valign.middle]
+            else:
+                props = [text.halign.boxright, text.valign.middle,
+                         trafo.rotate(180.)]
+            interior.text((yfocal[indx] / 10.) + hole_radius * 1.2,
+                          (xfocal[indx] / 10.),
+                          r"\font\myfont=cmr10 at 20pt {\myfont " +
+                          str(fiberid[indx]) + "}", props)
     return interior
 
 def guide_layer(holes):
@@ -124,12 +135,12 @@ def guide_layer(holes):
     guide_xfocal= np.array(holes['xfocal'])[iguide]
     guide_yfocal= np.array(holes['yfocal'])[iguide]
     guidenum= np.array(holes['iguide'])[iguide]
-    
+
     # Set up object to print
     clippath= path.circle(0., 0., interior_radius)
     clipobject = canvas.clip(clippath)
     interior=canvas.canvas([clipobject])
-    
+
     for indx in range(len(guide_xfocal)):
         interior.stroke(path.rect((guide_yfocal[indx]/10.)-guide_size*0.5, 
                                   (guide_xfocal[indx]/10.)-guide_size*0.5, 
@@ -141,7 +152,7 @@ def guide_layer(holes):
                       str(guidenum[indx])+"}",
                       [text.halign.boxleft, text.valign.middle, 
                        text.size.Huge])
-        
+
     return interior
 
 def whiteout_layer(holes):
@@ -239,7 +250,7 @@ def outline_layer():
                    [style.linewidth.thick])
     return outline
 
-def overlay_print(plateid):
+def overlay_print(plateid, numbers=False, noguides=False):
     '''
     This function returns a plate overlay as a pyx.document object.
     The calling script can determine what to do with it. To print this
@@ -289,26 +300,30 @@ def overlay_print(plateid):
     information+="Dec="+str(deccen)+"; "
     information+="HA="+str(np.float32((ha.split())[0]))+"."
     information+="}"
-   
+
     # Create message
-    message= "Una placa para probar el proceso de impresion"
+    message= "Una placa especial con numeros y sin estrellas brilliante"
     message_tex= r"\font\myfont=cmr10 at 40pt {\myfont "+message+"}"
 
-    apogee= apogee_layer(holes)
-    guide= guide_layer(holes)
-    whiteout= whiteout_layer(holes)
-    plate_circle= plate_circle_layer(plateid, information, message_tex)
-    outline= outline_layer() # pyx.canvas object
+    apogee = apogee_layer(holes, numbers=numbers)
+    if(noguides is False):
+        guide = guide_layer(holes)
+    else:
+        guide = None
+    whiteout = whiteout_layer(holes)
+    plate_circle = plate_circle_layer(plateid, information, message_tex)
+    outline = outline_layer()  # pyx.canvas object
 
     outline.insert(apogee)
-    outline.insert(guide)
+    if(guide is not None):
+        outline.insert(guide)
     outline.insert(plate_circle)
     outline.insert(whiteout)
-    
-    pformat=document.paperformat(limit_radius*2., limit_radius*2.)
-    final=document.page(outline, paperformat=pformat)
-    
+
+    pformat = document.paperformat(limit_radius * 2., limit_radius * 2.)
+    final = document.page(outline, paperformat=pformat)
+
     return document.document(pages=[final])
-    
+
     #doc= document.document(pages=[final])
     #doc.writePDFfile(outpdf)
