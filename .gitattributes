@@ -162,6 +162,7 @@ pro/misc/fiberreach_image.pro -text
 pro/misc/fix_for_pm.pro -text
 pro/misc/fix_kyle.pro -text
 pro/misc/guidetest_run.pro -text
+pro/misc/guidetest_run_jul16.pro -text
 pro/misc/guidetest_run_may16.pro -text
 pro/misc/guidetest_run_nov.pro -text
 pro/misc/make_apogee2s_alignment_plate.pro -text
