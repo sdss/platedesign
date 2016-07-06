@@ -61,6 +61,10 @@ iuse= where(useg gt 0, nuse)
 if(nuse eq 0) then $
   message, color_string('No guide numbers are specified?', 'red', 'bold')
 
+;; Check if enough guides
+if(n_elements(guide_design) lt n_elements(guidenums)) then $
+  message, color_string('NOT ENOUGH AVAILABLE GUIDES!','red', 'bold')
+
 ;; find non-conflicting set of guides
 for i=0L, n_elements(guide_design)-1L do begin
     conflicted=check_conflicts(design, guide_design[i]) gt 0 
@@ -69,14 +73,17 @@ for i=0L, n_elements(guide_design)-1L do begin
       check_conflicts(guide_design[0:i-1], guide_design[i]) gt 0 
     if(conflicted gt 0) then $
       guide_design[i].conflicted=1
- endfor
-
+endfor
 
 ;; find available guides that don't conflict with 
 ;; higher priority ones
 iavailable= where(guide_design.assigned eq 0 AND $
                   guide_design.conflicted eq 0 AND $
                   guide_design.pointing eq pointing, navailable)
+
+;; check there are enough unconflicted
+if(navailable lt n_elements(guidenums)) then $
+  message, color_string('NOT ENOUGH AVAILABLE GUIDES (SOME MAY HAVE COLLIDED)!', 'red', 'bold')
 
 ;; ensure that we aren't outside the plate
 plate_center, definition, default, pointing, 0L, $
