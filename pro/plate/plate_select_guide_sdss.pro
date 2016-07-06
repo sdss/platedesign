@@ -27,7 +27,7 @@
 ;     -0.4 < i-z < 1.0
 ;   All magnitudes and colors are without extinction-correction.
 ;   Changed to use datasweeps; requires $PHOTO_SWEEP to be set.
-;     (rerun input still allowed, but ignored)
+;   It uses rerun 301 by default.
 ;   Keeps stars away from edge (limits at 1.45 deg)
 ; REVISION HISTORY:
 ;   10-Oct-2007  Written by D. Schlegel, LBL
@@ -44,6 +44,7 @@ if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
   message,'Must specify RACEN, DECCEN, EPOCH'
 if (keyword_set(tilerad1)) then tilerad = tilerad1 $
 else tilerad = 1.45
+if(NOT keyword_set(rerun)) then rerun='301'
 
 ;; make sure we're not TOO close to the edge
 tilerad= tilerad < 1.45
@@ -58,6 +59,13 @@ igminmax_band = filternum(gminmax_band)
 
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
+
+;; Use rerun 301 only
+orerun = strtrim(objs.rerun,2)
+irerun = where(orerun eq rerun, nrerun)
+if(nrerun eq 0) then $
+  message, 'No guide stars from sought SDSS photometric rerun '+string(rerun)
+objs = objs[irerun]
 
 help,objs
 ;; Trim to good observations of isolated stars
@@ -88,6 +96,7 @@ if (keyword_set(objs)) then begin
         objs = 0
     endelse
 endif
+
 
 if (keyword_set(objs)) then begin
 
