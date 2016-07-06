@@ -22,10 +22,17 @@ pro plate_select_sky_boss, racen, deccen, nsky=nsky, tilerad=tilerad, $
   seed=seed, sky_design=sky_design
 
 if(NOT keyword_set(tilerad)) then tilerad=1.49
+if(NOT keyword_set(rerun)) then rerun='301'
 
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='sky', /all, /silent)
 if(n_tags(objs) eq 0) then $
    message, 'No sky objects!'
+
+orerun = strtrim(objs.rerun,2)
+irerun = where(orerun eq rerun, nrerun)
+if(nrerun eq 0) then $
+  message, 'No skies from sought SDSS photometric rerun '+string(rerun)
+objs = objs[irerun]
 
 indx= shuffle_indx(n_elements(objs), num_sub=nsky<n_elements(objs), seed=seed)
 objs=objs[indx]
