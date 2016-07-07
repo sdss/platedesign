@@ -107,7 +107,8 @@ ifit= where(full[igood].lambda_eff eq guideon, nfit)
 if(nfit eq 0) then begin
    file_delete, adjustfile, /allow
    file_delete, offsetfile, /allow
-   print, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
+   ;print, 'No holes with LAMBDA_EFF='+strtrim(string(guideon),2)
+   print, color_string('No holes with LAMBDA_EFF='+strtrim(string(guideon),2), 'yellow')
    return
 endif
 
