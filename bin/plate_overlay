@@ -37,6 +37,12 @@ parser.add_argument("--png", dest='write_png', action='store_true')
 # add hole numbers?
 parser.add_argument("--numbers", dest='numbers', action='store_true')
 
+# renumber holes
+parser.add_argument("--renumber", dest='renumber', action='store_true')
+
+# rotate holes
+parser.add_argument("--rotate-180", dest='rotate180', action='store_true')
+
 # omit guides?
 parser.add_argument("--no-guides", dest='noguides', action='store_true')
 # ------------------------------
@@ -52,7 +58,9 @@ if not os.path.exists(dir_name):
 
 # create overlay (a Pyx 'document' object)
 overlay = platedesign.overlay_print(plateid=args.plate, numbers=args.numbers,
-                                    noguides=args.noguides)
+                                    noguides=args.noguides,
+                                    renumber=args.renumber,
+                                    rotate180=args.rotate180)
 
 # write overlay (PDF) to path
 overlay.writePDFfile(destination_path)
