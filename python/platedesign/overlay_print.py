@@ -31,25 +31,30 @@ def offset_line(offset_amount, vertex_start, vertex_end, point):
     return(vertex_start - offset_amount * uoffset,
            vertex_end - offset_amount * uoffset)
 
-def apogee_layer(holes, numbers=False):
-    offset_amount=-0.03
-    hole_radius= 0.4
+
+def apogee_layer(holes, numbers=False, renumber=False):
+    offset_amount = -0.03
+    hole_radius = 0.4
 
     # Read in APOGEE blocks information
-    blocks= apogee_south_blocks()
+    blocks = apogee_south_blocks()
 
-    # Set up colors 
-    pyxcolor= dict()
-    pyxcolor['red']=color.cmyk.Red
-    pyxcolor['black']=color.cmyk.Black
-    pyxcolor['blue']=color.cmyk.NavyBlue
+    # Set up colors
+    pyxcolor = dict()
+    pyxcolor['red'] = color.cmyk.Red
+    pyxcolor['black'] = color.cmyk.Black
+    pyxcolor['blue'] = color.cmyk.NavyBlue
 
     # Get science fiber information
-    isci=np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
-    xfocal= np.array(holes['xfocal'])[isci]
-    yfocal= np.array(holes['yfocal'])[isci]
-    fiberid= np.array(holes['fiberid'])[isci]
-    block= np.array(holes['block'])[isci]
+    isci = np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
+    xfocal = np.array(holes['xfocal'])[isci]
+    yfocal = np.array(holes['yfocal'])[isci]
+    fiberid = np.array(holes['fiberid'])[isci]
+    block = np.array(holes['block'])[isci]
+
+    if(renumber):
+        fiberid = np.array(blocks.fibers['fiberid'])[fiberid - 1]
+        block = np.array(blocks.fibers['blockid'])[fiberid - 1]
 
     # Create Voronoi tessellation
     xy= np.array(zip(xfocal, yfocal))
@@ -239,73 +244,76 @@ def outline_layer():
     outline.stroke(path.line(-full_radius, -tab_ysize*0.5, 
                               -full_radius-tab_xsize, -tab_ysize*0.5),
                    [style.linewidth.thick])
-    outline.stroke(path.line(-full_radius, tab_ysize*0.5, 
-                              -full_radius-tab_xsize, tab_ysize*0.5),
+    outline.stroke(path.line(- full_radius, tab_ysize * 0.5,
+                             - full_radius - tab_xsize, tab_ysize * 0.5),
                    [style.linewidth.thick])
-    outline.stroke(path.line(-full_radius-tab_xsize, -tab_ysize*0.5, 
-                              -full_radius-tab_xsize, tab_ysize*0.5),
+    outline.stroke(path.line(- full_radius - tab_xsize, - tab_ysize * 0.5,
+                             - full_radius - tab_xsize, tab_ysize * 0.5),
                    [style.linewidth.thick])
-    outline.stroke(path.line(-full_radius-tab_xsize,  0., 
-                             -limit_radius,  0.),
+    outline.stroke(path.line(- full_radius - tab_xsize, 0.,
+                             - limit_radius, 0.),
                    [style.linewidth.thick])
     return outline
 
-def overlay_print(plateid, numbers=False, noguides=False):
+
+def overlay_print(plateid, numbers=False, noguides=False, renumber=False,
+                  rotate180=False):
     '''
     This function returns a plate overlay as a pyx.document object.
     The calling script can determine what to do with it. To print this
     object as a PDF:
-    
+
     overlay = overlay_print(plateid=12345)
     overlay.writePDFfile(destination_path)
-    
     '''
-    outpdf= sdssPath.full('plateLines-print', plateid=plateid)
 
-	# Get the needed files
+    # Get the needed files
     plateHolesSorted_file = sdssPath.full('plateHolesSorted', plateid=plateid)
     if not os.path.isfile(plateHolesSorted_file):
         raise IOError("File not found: {0}".format(plateHolesSorted_file))
 
     platePlans_file = sdssPath.full('platePlans')
     if not os.path.isfile(platePlans_file):
-	    raise IOError("File not found: {0}".format(platePlans_file))
-    
+        raise IOError("File not found: {0}".format(platePlans_file))
+
     # Read in holes data, extract meta data
-    holes_yanny= yanny.yanny(plateHolesSorted_file)
-    racen= holes_yanny['raCen']
-    deccen= holes_yanny['decCen']
-    designid= holes_yanny['designid']
-    ha= holes_yanny['ha']
-    platerun=holes_yanny['platerun']
-    holes= holes_yanny['STRUCT1']
+    holes_yanny = yanny.yanny(plateHolesSorted_file)
+    racen = holes_yanny['raCen']
+    deccen = holes_yanny['decCen']
+    designid = holes_yanny['designid']
+    ha = holes_yanny['ha']
+    holes = holes_yanny['STRUCT1']
+
+    if(rotate180):
+        holes['xfocal'] = - np.array(holes['xfocal'])
+        holes['yfocal'] = - np.array(holes['yfocal'])
 
     # Read in plans
-    plans= yanny.yanny(platePlans_file)
-    iplan= np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plateid)[0]
-    survey= plans['PLATEPLANS']['survey'][iplan]
-    programname= plans['PLATEPLANS']['programname'][iplan]
+    plans = yanny.yanny(platePlans_file)
+    iplan = np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plateid)[0]
+    survey = plans['PLATEPLANS']['survey'][iplan]
+    programname = plans['PLATEPLANS']['programname'][iplan]
 
     # Texify the string
     programname_str = programname
     programname_str = re.sub("_", "\_", programname_str)
 
     # Create information string
-    information= r"\font\myfont=cmr10 at 40pt {\myfont"
-    information+=" Plate="+str(plateid)+"; "
-    information+="Design="+str(designid)+"; "
-    information+="Survey="+str(survey)+"; "
-    information+="Program="+str(programname_str)+"; "
-    information+="RA="+str(racen)+"; "
-    information+="Dec="+str(deccen)+"; "
-    information+="HA="+str(np.float32((ha.split())[0]))+"."
-    information+="}"
+    information = r"\font\myfont=cmr10 at 40pt {\myfont"
+    information += " Plate=" + str(plateid) + "; "
+    information += "Design=" + str(designid) + "; "
+    information += "Survey=" + str(survey) + "; "
+    information += "Program=" + str(programname_str) + "; "
+    information += "RA=" + str(racen) + "; "
+    information += "Dec=" + str(deccen) + "; "
+    information += "HA=" + str(np.float32((ha.split())[0])) + "."
+    information += "}"
 
     # Create message
-    message= "Una placa especial con numeros y sin estrellas brilliante"
-    message_tex= r"\font\myfont=cmr10 at 40pt {\myfont "+message+"}"
+    message = "Una placa especial con numeros y sin estrellas brilliante"
+    message_tex = r"\font\myfont=cmr10 at 40pt {\myfont " + message + "}"
 
-    apogee = apogee_layer(holes, numbers=numbers)
+    apogee = apogee_layer(holes, numbers=numbers, renumber=renumber)
     if(noguides is False):
         guide = guide_layer(holes)
     else:
@@ -324,6 +332,3 @@ def overlay_print(plateid, numbers=False, noguides=False):
     final = document.page(outline, paperformat=pformat)
 
     return document.document(pages=[final])
-
-    #doc= document.document(pages=[final])
-    #doc.writePDFfile(outpdf)
