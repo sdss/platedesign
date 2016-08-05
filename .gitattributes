@@ -14,6 +14,7 @@ data/apogee/exclude_fibers_a2s.par -text
 data/apogee/exclude_fibers_a2s_nov.par -text
 data/apogee/fiberBlocksAPOGEE.par -text
 data/apogee/fiberBlocksAPOGEE_SOUTH.par -text
+data/apogee/fiberBlocksAPOGEE_SOUTH.unordered.par -text
 data/apogee/fiberBlocksBrightAPOGEE.par -text
 data/apogee/fiberBlocksBrightAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksFaintAPOGEE.par -text
