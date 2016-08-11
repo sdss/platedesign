@@ -62,7 +62,7 @@ for i=0, nplate-1 do begin
 	plateid = plans[iplate[i]].plateid
 	; read definition file
 	definition = plate_definition(plateid=plateid)
-	if (tag_exist(definition, 'guide_on_wavelengths') == 1) do begin
+	if (tag_exist(definition, 'guide_on_wavelengths') eq 1) then begin
 		wavelengths = strsplit(definition.guide_on_wavelengths, /extract)
 		create_derivs, plateid, wavelengths=wavelengths
 	endif else begin
