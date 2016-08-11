@@ -52,8 +52,22 @@ drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
   nolines=nolines
 
+;; create plateGuideOffsets, default wavelengths defined in create_derivs
+;for i=0, nplate-1 do begin
+;	create_derivs, plans[iplate[i]].plateid
+;endfor
+
+;; look for additional wavelengths requested in defintion file
 for i=0, nplate-1 do begin
-	create_derivs, plans[iplate[i]].plateid
+	plateid = plans[iplate[i]].plateid
+	; read definition file
+	definition = plate_definition(plateid=plateid)
+	if (tag_exist(definition, 'guide_on_wavelengths') == 1) do begin
+		wavelengths = strsplit(definition.guide_on_wavelengths, /extract)
+		create_derivs, plateid, wavelengths=wavelengths
+	endif else begin
+		create_derivs, plateid
+	endelse
 endfor
 
 splog, 'Completed.'
