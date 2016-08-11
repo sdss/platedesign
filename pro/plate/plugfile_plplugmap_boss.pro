@@ -106,6 +106,10 @@ ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
 if(nhole gt 0) then plug[ihole].objtype= 'GALAXY'
 
 ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
+            strtrim(strupcase(holes.sourcetype),2) eq 'ELG', nhole)
+if(nhole gt 0) then plug[ihole].objtype= 'GALAXY'
+
+ihole= where(strupcase(holes.targettype) eq 'SCIENCE' AND $
              strtrim(strupcase(holes.sourcetype),2) eq 'QSO', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'QSO'
 
@@ -280,7 +284,7 @@ for pointing=1L, npointings do begin
     endif
 
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
-    if(NOT keyword_set(keepoldcoords)) then begin
+    if(~keyword_set(keepoldcoords)) then begin
         plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
                      thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
                      lst=racen[pointing-1]+ha[pointing-1], airtemp= temp 

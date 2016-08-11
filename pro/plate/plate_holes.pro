@@ -143,10 +143,18 @@ if(tag_exist(tmpstr, 'locationid') eq false) then begin
     hdr=['locationId '+strtrim(string(locationid),2), hdr]
 endif
 
+; Need to get program name to add to plateholes header below.
+; I [dm] don't want to add yet another parameter to this function, so
+; I'll pull it out of the definition file directly. It's slower
+; this way, but more "object-oriented" which should make
+; future conversion to Python easier.
+programname = plans[where(plans.plateid eq plateid)].programname
+
 outhdr=['plateId '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
         'ha_observable_min '+strjoin(strtrim(string(hamin, f='(f40.3)'),2)+' '), $
         'ha_observable_max '+strjoin(strtrim(string(hamax, f='(f40.3)'),2)+' '), $
+		'programname '+programname, $
         'temp '+strtrim(string(temp, f='(f40.3)'),2), $
         guider_hdr(plateid), $
         hdr]
