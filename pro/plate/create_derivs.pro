@@ -27,8 +27,7 @@ plug= yanny_readone(plate_dir(plateid)+'/plPlugMapP-'+ $
 np=yanny_par(hdr, 'npointings')
 
 for pointing=1L, np do begin
-	help, plan, /st
-	for w_idx=0, n_elements(a)-1 do begin
+	for w_idx=0, n_elements(wavelengths)-1 do begin
 	    plate_guide_derivs, plateid, pointing, guideon=wavelengths[w_idx]
 	    ; plate_guide_derivs, plateid, pointing, guideon=16600.
 	    ; plate_guide_derivs, plateid, pointing, guideon=5400.
