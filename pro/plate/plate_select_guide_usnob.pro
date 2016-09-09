@@ -28,7 +28,9 @@
 pro plate_select_guide_usnob, racen, deccen, epoch=epoch, $
                               tilerad=tilerad1, guide_design=guide_design, $
                               gminmax_mag=gminmax_mag, nguidemax=nguidemax, $
-                              jkminmax=jkminmax, seed=seed, gminmax_band=gminmax_band
+                              jkminmax=jkminmax, seed=seed, gminmax_band=gminmax_band, $
+                              star_require=star_require
+
 
 if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
     OR n_elements(epoch) NE 1) then $
@@ -52,8 +54,10 @@ objt = tmass_read(racen, deccen, tilerad)
 usnob = usno_read(racen, deccen, tilerad*3.)
 
 ;; restrict USNO-B to stars
-istar= where(usnob.sg[2] gt 5)
-usnob= usnob[istar]
+if(keyword_set(star_require)) then begin
+    istar= where(usnob.sg[2] gt 5)
+    usnob= usnob[istar]
+endif
 
 spherematch, racen, deccen, usnob.ra, usnob.dec, tilerad, m1, m2, max=0
 usnob= usnob[m2]
