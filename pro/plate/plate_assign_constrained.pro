@@ -42,6 +42,7 @@ istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
 nneed= fibercount.ntot[iinst,istd, pointing-1, offset]
 if(ncurr lt nneed) then begin
   message, color_string('Not enough targets of type '+strupcase(targettype)+'!', 'red', 'bold')
+  message, color_string('Possible solution: increase "collectfactor" (e.g. 50) and rerun with /superclobber.', 'red', 'bold')
 endif
 
 test_design=0
@@ -123,6 +124,8 @@ while(gotall eq 0) do begin
                                pointing-1L, offset] gt $
            n_elements(new_design)) then begin
             splog, color_string('Not enough targets for plate_assign_constrained!', 'red', 'bold')
+			splog, color_string('Possible solution: increase "collectfactor" (e.g. 50) and rerun with /superclobber.', 'red', 'bold')
+
             if(keyword_set(debug)) then stop
             return
         endif
