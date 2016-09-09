@@ -31,6 +31,14 @@ if(tag_exist(definition, 'GUIDE_JKMINMAX')) then begin
     jkminmax=float(strsplit(definition.guide_jkminmax, /extr))
 endif
 
+guide_usnob_star_require = 1
+if(tag_exist(default, 'GUIDE_USNOB_STAR_REQUIRE')) then begin
+    guide_usnob_star_require=float(strsplit(default.guide_usnob_star_require, /extr))
+endif
+if(tag_exist(definition, 'GUIDE_USNOB_STAR_REQUIRE')) then begin
+    guide_usnob_star_require=float(strsplit(definition.guide_usnob_star_require, /extr))
+endif
+
 if(tag_exist(default, 'NGUIDEMAX')) then begin
     nguidemax=long(default.nguidemax)
 endif
@@ -93,7 +101,7 @@ if(file_test(guidefile) eq 0 OR $
         plate_select_guide_usnob, racen, deccen, epoch=epoch, $
           guide_design=guide_design, nguidemax=nguidemax, $
           gminmax_mag=gminmax_mag, tilerad=tilerad, jkminmax=jkminmax, seed=seed, $
-          gminmax_band=gminmax_band
+          gminmax_band=gminmax_band, star_require=guide_usnob_star_require
     endif
 
     if(n_tags(guide_design) gt 0) then begin
