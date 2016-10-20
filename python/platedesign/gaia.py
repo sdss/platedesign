@@ -4,60 +4,6 @@ import os
 import pydl.pydlutils.spheregroup as spheregroup
 
 
-def _radec_to_xyz(ra, dec):
-    """Converts ra and dec to Cartesian coordinates
-
-    Parameters
-    ----------
-    ra: np.float64
-        ndarray with right ascension in degrees
-    dec: np.float64
-        ndarray with declination in degrees
-
-    Returns
-    -----
-    x: np.float64
-        ndarray with X on unit sphere
-    y: np.float64
-        ndarray with Y on unit sphere
-    z: np.float64
-        ndarray with Z on unit sphere
-    """
-    ra_rad = ra * np.pi /180.
-    dec_rad = dec * np.pi /180.
-    x = np.cos(dec_rad) * np.cos(ra_rad)
-    y = np.cos(dec_rad) * np.sin(ra_rad)
-    z = np.sin(dec_rad)
-    return (x, y, z)
-
-def _angle_sep(ra1, dec1, ra2, dec2):
-    """Calculates angle separating two RA, Dec positions
-
-    Parameters
-    ----------
-    ra1: np.float64
-        right ascension in degrees
-    dec1: np.float64
-        declination in degrees
-    ra2: np.float64
-        right ascension in degrees
-    dec2: np.float64
-        declination in degrees
-
-    Returns
-    -----
-    sep: np.float64
-        great circle separation in degrees
-    """
-    (x1, y1, z1) = _radec_to_xyz(ra1, dec1)
-    (x2, y2, z2) = _radec_to_xyz(ra2, dec2)
-    xcross = y1 * z2 - y2 * z1
-    ycross = - x1 * z2 + x2 * z1
-    zcross = x1 * y2 - x2 * y1
-    cross = np.sqrt(xcross**2 + ycross**2 + zcross**2)
-    dot = x1 * x2 + y1 * y2 + z1*z2
-    return np.arctan(cross / dot) * 180. / np.pi
-
 def _partition_filename(ira, idec, dr='dr1'):
     """Return file name for partition file
 
