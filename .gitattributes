@@ -359,6 +359,7 @@ python/platedesign/Design.py -text
 python/platedesign/InputFile.py -text
 python/platedesign/__init__.py -text
 python/platedesign/ad2xyfocal.py -text
+python/platedesign/gaia.py -text
 python/platedesign/observatory.py -text
 python/platedesign/overlay_print.py -text
 python/platedesign/plate/APOGEE2_Plate.py -text
