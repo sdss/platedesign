@@ -35,7 +35,7 @@ pro plate_ad2xy, definition, default, pointing, offset, in_ra, in_dec, $
 ntargets=n_elements(in_ra)
 if(n_elements(in_dec) ne ntargets OR $
    n_elements(lambda) ne ntargets) then $
-  message, 'RA, DEC and LAMBDA must all have same # of elements!'
+  message, color_string('RA, DEC and LAMBDA must all have same # of elements!', 'red', 'bold')
 
 observatory= get_observatory(definition, default)
 
@@ -43,9 +43,10 @@ if(tag_indx(definition, 'PLATESCALE') ne -1) then $
   platescale= float(definition.platescale)
 if(tag_indx(definition, 'PLATESCALE_CUBIC') ne -1) then $
   cubic= float(definition.platescale_cubic)
-if(observatory eq 'LCO' and keyword_set(cubic) eq 0 or $
-   keyword_set(platescale) eq 0) then $
-  message, 'MUST SET PLATE SCALE EXPLICITLY FOR LCO UNTIL WE HAVE DEFAULT'
+if(observatory eq 'LCO') then begin 
+    if (keyword_set(cubic) eq 0 or keyword_set(platescale) eq 0) then $
+  message, color_string('MUST SET PLATE SCALE EXPLICITLY FOR LCO UNTIL WE HAVE DEFAULT', 'red', 'bold')
+endif
 ;;if(keyword_set(cubic) ne 0  or $
    ;;keyword_set(platescale) ne 0) then $
 ;;splog, 'SETTING EXPLICIT PLATE SCALE! ONLY SHOULD BE DONE FOR GUIDE TESTS!'
