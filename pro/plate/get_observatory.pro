@@ -20,10 +20,12 @@ if(tag_indx(default, 'observatory') ne -1) then $
 if(tag_indx(definition, 'observatory') ne -1) then $
    observatory= (definition.observatory)
 
-if(strupcase(observatory) ne 'APO' and $
-   strupcase(observatory) ne 'LCO') then $
-  message, 'Must set observatory to APO or LCO'
+observatory = strupcase(observatory)
+
+if ~((observatory eq 'APO') or (observatory eq 'LCO')) then $
+  message, color_string('Must set observatory to APO or LCO', 'red', 'bold')
 
 return, observatory
 
 end
+
