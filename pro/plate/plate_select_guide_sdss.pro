@@ -60,6 +60,10 @@ igminmax_band = filternum(gminmax_band)
 ;; Find all SDSS objects in the footprint
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
+;; check that objects were returned
+if (objs eq 0) then $
+	message, color_string('sdss_sweep_circle returned no objects - is ra, dec ('+strtrim(string(racen),2)+', '+strtrim(string(deccen),2)+') within the SDSS imaging?', 'red', 'bold')
+
 ;; Use rerun 301 only
 orerun = strtrim(objs.rerun,2)
 irerun = where(orerun eq rerun, nrerun)
