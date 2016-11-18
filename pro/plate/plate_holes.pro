@@ -29,6 +29,13 @@ designs= yanny_readone(designfile, hdr=hdr, /anon)
 definition= lines2struct(hdr)
 default= definition
 
+if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
+    guide_lambda_eff=float(default.guide_lambda_eff)
+endif 
+
+if(tag_indx(default, 'round') ne -1)  then $
+  roundit= long(default.round)
+
 ;; Warn us if we do not have a condition to set min/max HA 
 if(tag_indx(default, 'max_off_fiber_for_ha') eq -1) then begin
     default= create_struct(default, 'max_off_fiber_for_ha', '0.5')
@@ -71,7 +78,12 @@ for pointing=1L, npointings do begin
             plate_ad2xy, definition, default, pointing, offset, $
               holes[iin].target_ra, holes[iin].target_dec, $
               holes[iin].lambda_eff, lst=racen+ha[pointing-1L], $
-              airtemp=temp, xfocal=xf, yfocal=yf
+              airtemp=temp, xfocal=xf, yfocal=yf, $
+              zoffset=holes[iin].zoffset
+            if(keyword_set(roundit)) then begin
+                xf= round(xf)
+                yf= round(yf)
+            endif
             holes[iin].xfocal= xf
             holes[iin].yfocal= yf
         endif
@@ -95,6 +107,8 @@ for pointing=1L, npointings do begin
         align0.diameter=0.1
         align0.xfocal= xf_align
         align0.yfocal= yf_align
+        if(keyword_set(guide_lambda_eff)) then $
+          align0.lambda_eff = guide_lambda_eff
         if(n_tags(align) eq 0) then $
           align=align0 $
         else $
@@ -154,10 +168,24 @@ outhdr=['plateId '+strtrim(string(plateid),2), $
         'ha '+strjoin(strtrim(string(ha, f='(f40.3)'),2)+' '), $
         'ha_observable_min '+strjoin(strtrim(string(hamin, f='(f40.3)'),2)+' '), $
         'ha_observable_max '+strjoin(strtrim(string(hamax, f='(f40.3)'),2)+' '), $
-		'programname '+programname, $
+        'programname '+programname, $
         'temp '+strtrim(string(temp, f='(f40.3)'),2), $
-        guider_hdr(plateid), $
-        hdr]
+        guider_hdr(plateid)]
+
+observatory = get_observatory(definition, default)
+if(observatory eq 'LCO') then begin
+    scales = lco_scales()
+    outhdr = [outhdr, $
+              'scale_1600 ' + strtrim(string(scales[0].a0),2) + ' ' + $
+              strtrim(string(scales[0].a1),2) + ' ' + $
+              strtrim(string(scales[0].a2),2) + ' # linear, cubic, quint terms']
+    outhdr = [outhdr, $
+              'scale_760 ' + strtrim(string(scales[1].a0),2) + ' ' + $
+              strtrim(string(scales[1].a1),2) + ' ' + $
+              strtrim(string(scales[1].a2),2) + ' # linear, cubic, quint terms']
+endif
+
+outhdr=[outhdr, hdr]
 pdata= ptr_new(holes)
 platedir= plate_dir(plateid)
 platefile= platedir+'/'+plateholes_filename(plateid= plateid)
