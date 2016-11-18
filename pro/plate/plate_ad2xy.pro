@@ -14,6 +14,8 @@
 ;   pointing - pointing # 
 ;   offset - offset # 
 ; OPTIONAL INPUTS:
+;   zoffset    - [N] offset of fiber tip along optical axis (- towards
+;                sky)
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5)
 ; OUTPUTS:
@@ -30,7 +32,7 @@
 pro plate_ad2xy, definition, default, pointing, offset, in_ra, in_dec, $
                  lambda, xfocal=xfocal, yfocal=yfocal, lst=lst, $
                  airtemp=airtemp, pmra=pmra, pmdec=pmdec, $
-                 fromepoch=fromepoch, toepoch=toepoch
+                 fromepoch=fromepoch, toepoch=toepoch, zoffset=zoffset
 
 ntargets=n_elements(in_ra)
 if(n_elements(in_dec) ne ntargets OR $
@@ -39,26 +41,13 @@ if(n_elements(in_dec) ne ntargets OR $
 
 observatory= get_observatory(definition, default)
 
-if(tag_indx(definition, 'PLATESCALE') ne -1) then $
-  platescale= float(definition.platescale)
-if(tag_indx(definition, 'PLATESCALE_CUBIC') ne -1) then $
-  cubic= float(definition.platescale_cubic)
-if(observatory eq 'LCO') then begin 
-    if (keyword_set(cubic) eq 0 or keyword_set(platescale) eq 0) then $
-  message, color_string('MUST SET PLATE SCALE EXPLICITLY FOR LCO UNTIL WE HAVE DEFAULT', 'red', 'bold')
-endif
-;;if(keyword_set(cubic) ne 0  or $
-   ;;keyword_set(platescale) ne 0) then $
-;;splog, 'SETTING EXPLICIT PLATE SCALE! ONLY SHOULD BE DONE FOR GUIDE TESTS!'
-
 ;; what is our raCen and decCen for this pointing and offset
 plate_center, definition, default, pointing, offset, $
   racen=racen, deccen=deccen
 
 ;; convert targets to xfocal and yfocal for this pointing, offset
 ad2xyfocal, observatory, in_ra, in_dec, xfocal, yfocal, lambda=lambda, $
-  racen=racen, deccen=deccen, lst=lst, airtemp=airtemp, $
-  platescale=platescale, cubic=cubic
+  racen=racen, deccen=deccen, lst=lst, airtemp=airtemp, zoffset=zoffset
 
 return
 end
