@@ -61,7 +61,7 @@ igminmax_band = filternum(gminmax_band)
 objs= sdss_sweep_circle(racen, deccen, tilerad, type='star', /silent)
 
 ;; check that objects were returned
-if (objs eq 0) then $
+if (n_tags(objs) eq 0) then $
 	message, color_string('sdss_sweep_circle returned no objects - is ra, dec ('+strtrim(string(racen),2)+', '+strtrim(string(deccen),2)+') within the SDSS imaging?', 'red', 'bold')
 
 ;; Use rerun 301 only
