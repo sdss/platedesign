@@ -26,6 +26,10 @@ trapfile=outdir+'/plateTrap-'+ $
          '-p'+strtrim(string(pointing),2)+ $
          '-o'+strtrim(string(offset),2)+'.par'
 
+if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
+    guide_lambda_eff=float(default.guide_lambda_eff)
+endif
+
 trap_design=0
 if(NOT file_test(trapfile)) then begin
     ;; what is center for this pointing?
@@ -56,12 +60,14 @@ if(NOT file_test(trapfile)) then begin
         trap_design.pmra= tycdat.pmra
         trap_design.pmdec= tycdat.pmde
         trap_design.epoch= default_epoch()
+        if(keyword_set(guide_lambda_eff)) then $
+          trap_design.lambda_eff = guide_lambda_eff
         
         plate_ad2xy, definition, default, pointing, offset, $
                      trap_design.target_ra, $
                      trap_design.target_dec, $
                      trap_design.lambda_eff, $
-                     xf=xf, yf=yf
+                     xf=xf, yf=yf, zoffset=trap_design.zoffset
         trap_design.xf_default=xf
         trap_design.yf_default=yf
         
