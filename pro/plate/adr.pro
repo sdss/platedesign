@@ -24,9 +24,9 @@
 ;------------------------------------------------------------------------------
 function adr, trualt, pressure=pressure, $
               temperature=temperature, lambda=lambda, $
-              pr72=pr72, fhumid=fhumid
+              pr72=pr72, fhumid=fhumid, reflambda=reflambda
 
-reflambda=5500.
+if(NOT keyword_set(reflambda)) then reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
 if(NOT keyword_set(pressure)) then pressure=1013.25
 if(n_elements(fhumid) eq 0) then fhumid=8.
