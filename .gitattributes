@@ -266,6 +266,7 @@ pro/plate/plate_refrac.pro -text
 pro/plate/plate_refract_list.pro -text
 pro/plate/plate_sanity.pro -text
 pro/plate/plate_select_guide_2mass.pro -text
+pro/plate/plate_select_guide_gaia.pro -text
 pro/plate/plate_select_guide_sdss.pro -text
 pro/plate/plate_select_guide_usnob.pro -text
 pro/plate/plate_select_sky_boss.pro -text
