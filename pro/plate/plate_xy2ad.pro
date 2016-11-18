@@ -14,6 +14,8 @@
 ;   pointing - pointing # 
 ;   offset - offset # 
 ; OPTIONAL INPUTS:
+;   zoffset    - [N] offset of fiber tip along optical axis (- towards
+;                sky)
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5)
 ; OUTPUTS:
@@ -28,17 +30,10 @@
 ;   8-May-2008  Written by MRB, NYU
 ;-
 pro plate_xy2ad, definition, default, pointing, offset, xfocal, yfocal, $
-                 lambda, ra=ra, dec=dec, lst=lst, airtemp=airtemp
+                 lambda, ra=ra, dec=dec, lst=lst, airtemp=airtemp, $
+                 zoffset=zoffset
 
 observatory= get_observatory(definition, default)
-
-if(tag_indx(definition, 'PLATESCALE') ne -1) then $
-  platescale= float(definition.platescale)
-if(tag_indx(definition, 'PLATESCALE_CUBIC') ne -1) then $
-  cubic= float(definition.platescale_cubic)
-if(keyword_set(cubic) ne 0  or $
-   keyword_set(platescale) ne 0) then $
-  splog, 'SETTING EXPLICIT PLATE SCALE! ONLY SHOULD BE DONE FOR GUIDE TESTS!'
 
 ntargets=n_elements(xfocal)
 
@@ -49,8 +44,7 @@ plate_center, definition, default, pointing, offset, $
 ;; convert targets to xfocal and yfocal for this pointing, offset
 xyfocal2ad, observatory, xfocal, yfocal, ra, dec, $
   racen=racen, deccen=deccen, lst=lst, $
-  airtemp=airtemp, lambda=lambda, platescale=platescale, $
-  cubic=cubic
+  airtemp=airtemp, lambda=lambda, zoffset=zoffset
 
 return
 end
