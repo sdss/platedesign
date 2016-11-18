@@ -86,7 +86,7 @@ struct_assign, targets, design, /nozero
 ;; (not particular position for this LST and temp)
 plate_ad2xy, definition, default, pointing, offset, targets.ra, $
              targets.dec, design.lambda_eff, xfocal=xf_default, $
-             yfocal=yf_default
+             yfocal=yf_default, zoffset=design.zoffset
 
 ;; add per plateInput data 
 instruments=strsplit(default.instruments, /extr)
