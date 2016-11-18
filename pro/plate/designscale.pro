@@ -65,6 +65,10 @@ for i=0L, n_tags(default)-1L do begin
     endfor
 endfor
 
+if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
+    lambda_eff = float(default.guide_lambda_eff)
+endif
+
 ;; set tile 
 tilerad=get_tilerad(definition, default)
 
