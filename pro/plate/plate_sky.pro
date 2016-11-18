@@ -108,8 +108,9 @@ if(nsky gt 0) then begin
         sky_design.offset=offset
         sky_design.holetype=instrument
         plate_ad2xy, definition, default, pointing, offset, $
-                     sky_design.target_ra, sky_design.target_dec, $
-                     sky_design.lambda_eff, xf=xf, yf=yf
+          sky_design.target_ra, sky_design.target_dec, $
+          sky_design.lambda_eff, xf=xf, yf=yf, $
+          zoffset=sky_design.zoffset
         sky_design.xf_default=xf
         sky_design.yf_default=yf
         sky_design.diameter= ferrulesize
