@@ -62,6 +62,8 @@ design0={DESIGN_TARGET, $
          tyc_vmag:-9999., $
          mfd_mag:fltarr(6), $
          usnob_mag:fltarr(5), $
+         source_id: long64(0), $
+         phot_g_mean_mag: 0., $
          sp_param_source:'NA', $
          sp_params:fltarr(4), $
          sp_param_err:fltarr(4), $
@@ -108,7 +110,7 @@ design0={DESIGN_TARGET, $
          pmra:0., $
          pmdec:0., $
          targetids:'NA', $
-		 ifuid: 0L $
+         ifuid: 0L $
         }
 
 if(keyword_set(center)) then begin
