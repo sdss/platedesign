@@ -87,12 +87,13 @@ dec= full[igood].target_dec
 lambda= full[igood].lambda_eff ;; e.g., 5400 for LRGs, 4000 for QSOs, 16600 for APOGEE targets
 xforig= full[igood].xfocal
 yforig= full[igood].yfocal
+zoffset= full[igood].zoffset
 
 ; Calculate xfocal and yfocal for this pointing (should be similar 
 ; to xforig/yforig up to round-off)
 plate_ad2xy, definition, default, pointing, offset, ra, dec, $
              lambda, xf=xfocal, yf=yfocal, lst=racen+ha[pointing-1L], $
-             airtemp=temp
+             airtemp=temp, zoffset=zoffset
 
 ; I'm pretty sure this would grab all fibers with with lambda_eff at 5400, so basically
 ;  everything except the QSOs
@@ -138,7 +139,7 @@ for i=0L, nha-1L do begin
    ;; Calculate xtmp, ytmp (all igood targets) at this hour angle
    plate_ad2xy, definition, default, pointing, offset, ra, dec, $
                 lambda, xf=xtmp, yf=ytmp, lst=racen+hatest[i], $
-                airtemp=temp
+                airtemp=temp, zoffset=zoffset
    ;; Fit rotation, scale, shift parameters in guide targets
    ha_fit, xfocal[ifit], yfocal[ifit], xtmp[ifit], ytmp[ifit], $
            xnew=xtmp2, ynew=ytmp2, rot=rottmp, scale=scaletmp, $
