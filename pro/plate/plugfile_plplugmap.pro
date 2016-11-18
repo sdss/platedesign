@@ -280,7 +280,8 @@ for pointing=1L, npointings do begin
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
     plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
       thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
-      lst=racen[pointing-1]+ha[pointing-1], airtemp= temp
+      lst=racen[pointing-1]+ha[pointing-1], airtemp= temp, $
+      zoffset=holes.zoffset
     thisplug.ra= ra
     thisplug.dec= dec
 
