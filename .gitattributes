@@ -237,6 +237,7 @@ pro/plate/ha_apply.pro -text
 pro/plate/ha_fit.pro -text
 pro/plate/ha_limits.pro -text
 pro/plate/ha_quick.pro -text
+pro/plate/lco_rdistort.pro -text
 pro/plate/lco_scales.pro -text
 pro/plate/make_gridtest.pro -text
 pro/plate/make_guideplate.pro -text
