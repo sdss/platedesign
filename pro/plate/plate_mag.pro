@@ -32,6 +32,7 @@
 ;     (type = "MARVELS")
 ;   - if TMASS_J>0, then assumes TMASS_[HK] also set, and translates
 ;     these into approximate ugriz for stars (type = "2MASS")
+;   - if SOURCE_ID>0 then set MAG = G_MAG for all bands
 ;   If none of these things are true, then that object has the 
 ;   mag set to 25 in all bands.
 ; REVISION HISTORY:
@@ -41,6 +42,12 @@ function plate_mag, holes, default=default
 
 mag= fltarr(5, n_elements(holes))+25.
 type= strarr(n_elements(holes))
+
+igaia = where(holes.source_id ne 0, ngaia)
+if(ngaia gt 0) then begin
+   for i = 0L, 4L do $
+      mag[i,igaia] = holes[igaia].phot_g_mean_mag
+endif
 
 ;; first assign JHK-based mags where possible
 ;; (these will be overridden if ANYTHING better)
