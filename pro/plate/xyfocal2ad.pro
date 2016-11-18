@@ -27,13 +27,13 @@
 ;------------------------------------------------------------------------------
 function xyfocal2ad_func, params
 
-common com_xfa, observatory, racen, deccen, xfocal, yfocal, lambda, extra_for_ad2xyfocal
+common com_xfa, observatory, racen, deccen, xfocal, yfocal, lambda, zoffset, extra_for_ad2xyfocal
 
 ra=params[0]
 dec=params[1]
 
-ad2xyfocal, observatory, ra, dec, xfocal_fit, yfocal_fit, racen=racen, deccen=deccen, $
-  lambda=lambda, _EXTRA=extra_for_ad2xyfocal
+ad2xyfocal, observatory, ra, dec, xfocal_fit, yfocal_fit, racen=racen, $
+  deccen=deccen, lambda=lambda, zoffset=zoffset, _EXTRA=extra_for_ad2xyfocal
 
 deviates= [ xfocal_fit-xfocal, yfocal_fit-yfocal ]
 
@@ -43,12 +43,16 @@ end
 ;;
 pro xyfocal2ad, in_observatory, in_xfocal, in_yfocal, ra, dec, $
                 racen=in_racen, deccen=in_deccen, $
-                lambda=in_lambda, _EXTRA=in_extra_for_ad2xyfocal
+                lambda=in_lambda, zoffset=in_zoffset, $
+                _EXTRA=in_extra_for_ad2xyfocal
 
 common com_xfa
 
 if(n_elements(in_lambda) eq 0) then $
   in_lambda= replicate(5500., n_elements(in_xfocal))
+
+if(n_elements(in_zoffset) eq 0) then $
+  in_zoffset= replicate(0., n_elements(in_xfocal))
 
 if(size(in_observatory,/tname) ne 'STRING') then $
   message, 'observatory must be set to STRING type, with value "LCO" or "APO"'
@@ -73,6 +77,7 @@ for i=0L, n_elements(in_xfocal)-1L do begin
     xfocal= in_xfocal[i]
     yfocal= in_yfocal[i]
     lambda= in_lambda[i]
+    zoffset= in_zoffset[i]
 
     raguess= racen+xfocal/platescale/cos(!DPI/180.*deccen)
     decguess= deccen+yfocal/platescale
