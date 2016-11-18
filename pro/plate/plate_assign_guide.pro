@@ -127,6 +127,14 @@ for i=0l, n_elements(guidenums)-1L do begin
     ;; now add it:
     guide_design[ipick].assigned=1L
     guide_design[ipick].iguide=iguide
+
+    ;; put in right ZOFFSET; don't think this is needed in the end.
+    ;; ig = where(gfiber.guidenum eq iguide, ng)
+    ;; if(gfiber[ig].guidetype eq 'S') then $
+      ;; guide_design[ipick].zoffset = 600.
+    ;; if(gfiber[ig].guidetype eq 'L') then $
+      ;; guide_design[ipick].zoffset = -600.
+    
     if(n_tags(design) gt 0) then $
       design=[design, guide_design[ipick]] $
     else $
