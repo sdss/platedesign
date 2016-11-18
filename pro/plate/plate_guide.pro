@@ -73,6 +73,7 @@ if(file_test(guidefile) eq 0 OR $
 
     if(strupcase(guidetype) ne 'SDSS' AND $
        strupcase(guidetype) ne 'USNOB' AND $
+       strupcase(guidetype) ne 'GAIA' AND $
        strupcase(guidetype) ne '2MASS') then $
       message, color_string('No such guide type '+guidetype+'!', 'red', 'bold')
 
@@ -102,6 +103,13 @@ if(file_test(guidefile) eq 0 OR $
           guide_design=guide_design, nguidemax=nguidemax, $
           gminmax_mag=gminmax_mag, tilerad=tilerad, jkminmax=jkminmax, seed=seed, $
           gminmax_band=gminmax_band, star_require=guide_usnob_star_require
+     endif
+
+    ;; find GAIA guide fibers 
+    if(strupcase(guidetype) eq 'GAIA') then begin
+        plate_select_guide_gaia, racen, deccen, epoch=epoch, $
+          guide_design=guide_design, nguidemax=nguidemax, $
+          gminmax_mag=gminmax_mag, tilerad=tilerad, seed=seed
     endif
 
     if(n_tags(guide_design) gt 0) then begin
