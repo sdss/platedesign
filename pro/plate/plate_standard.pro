@@ -91,7 +91,7 @@ if(NOT file_test(stdfile)) then begin
           sphoto_design.target_ra, $
           sphoto_design.target_dec, $
           sphoto_design.lambda_eff, $
-          xf=xf, yf=yf
+          xf=xf, yf=yf, zoffset=sphoto_design.zoffset
         sphoto_design.xf_default=xf
         sphoto_design.yf_default=yf
         sphoto_design.diameter= ferrulesize
@@ -116,6 +116,7 @@ if(NOT file_test(stdfile)) then begin
         if(keyword_set(rerun)) then $
           outhdr=[outhdr, 'rerun '+strtrim(string(rerun),2)]
         yanny_write, stdfile, pdata, hdr=outhdr
+
         ptr_free, pdata
     endif
 endif else begin
