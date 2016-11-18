@@ -286,8 +286,9 @@ for pointing=1L, npointings do begin
     ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
     if(~keyword_set(keepoldcoords)) then begin
         plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
-                     thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
-                     lst=racen[pointing-1]+ha[pointing-1], airtemp= temp 
+          thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
+          lst=racen[pointing-1]+ha[pointing-1], airtemp= temp, $
+          zoffset=holes.zoffset
         thisplug.ra= ra
         thisplug.dec= dec
     endif
@@ -313,7 +314,7 @@ for pointing=1L, npointings do begin
         plugsimple[inotthis].sourcetype= 'SKY'
         pdata=ptr_new(plugsimple)
         yanny_write, plugsimplefile, pdata, hdr=outhdr, $
-                     enums=plugenum, structs=plugstruct
+          enums=plugenum, structs=plugstruct
         ptr_free, pdata
     endif
         
