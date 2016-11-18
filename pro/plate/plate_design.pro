@@ -224,6 +224,10 @@ definition = plate_definition(designid=designid)
      guides_first= long(definition.guides_first)
   endif
 
+  if(tag_exist(default, 'GUIDE_LAMBDA_EFF')) then begin
+      guide_lambda_eff=float(default.guide_lambda_eff)
+  endif
+
 ;; see if we should respect the fiberid
   if(tag_exist(definition, 'RESPECT_FIBERID')) then begin
      respect_fiberid= long(definition.respect_fiberid)
@@ -295,8 +299,11 @@ definition = plate_definition(designid=designid)
      while(keyword_set(needmorefibers) gt 0) do begin
 
         ;; Initialize design structure, including a center hole
-        if(~keyword_set(omit_center)) then $
-           design=design_blank(/center)
+        if(~keyword_set(omit_center)) then begin
+            design=design_blank(/center)
+            if(keyword_set(guide_lambda_eff)) then $
+              design.lambda_eff = guide_lambda_eff
+        endif
         design.epoch= epoch
 
 		;plate_obj->add, 'design', design
@@ -556,7 +563,7 @@ definition = plate_definition(designid=designid)
                     filebase= (stregex(infile, '.*\/([^/]*)\.par$', $
                                        /extr, /sub))[1]
                     yanny_write, designdir+'/'+filebase+'-output.par', $
-                                 pdata, hdr=(*hdrs[iplate[j]-1])
+                      pdata, hdr=(*hdrs[iplate[j]-1])
                     ptr_free, pdata
                  endif
               endfor
@@ -847,6 +854,7 @@ definition = plate_definition(designid=designid)
           endfor
 
            yanny_write, designfile, pdata, hdr=outhdr
+
            ptr_free, pdata
         endif
         
