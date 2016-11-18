@@ -12,6 +12,8 @@
 ;   racen      - RA center for tile (J2000 deg)
 ;   deccen     - DEC center for tile (J2000 deg)
 ; OPTIONAL INPUTS:
+;   zoffset    - [N] offset of fiber tip along optical axis (- towards
+;                sky)
 ;   lst        - LST of observation (defaults to racen)
 ;   airtemp    - Design temperature (in C, default to 5 for APO,
 ;                                    12 for LCO)
@@ -61,13 +63,16 @@ posang=atan(-xl, zl)
 
 end
 ;;
-pro ad2xyfocal, observatory, ra, dec, xfocal, yfocal, racen=racen, deccen=deccen, $
-                airtemp=airtemp, lst=lst, norefrac=norefrac, $
+pro ad2xyfocal, observatory, ra, dec, xfocal, yfocal, racen=racen, $
+                deccen=deccen, airtemp=airtemp, lst=lst, norefrac=norefrac, $
                 nodistort=nodistort, lambda=lambda, height=height, $
                 clambda=clambda, nordistort=nordistort, pressure=pressure, $
-                platescale=in_platescale, cubic=in_cubic
+                platescale=in_platescale, cubic=in_cubic, zoffset=zoffset
 
 common com_ad2xyfocal
+
+if(n_elements(zoffset) eq 0) then $
+  zoffset=replicate(0., n_elements(ra))
 
 if(size(observatory,/tname) ne 'STRING') then $
   message, 'observatory must be set to STRING type, with value "LCO" or "APO"'
@@ -79,10 +84,9 @@ if(strupcase(observatory) ne 'APO' and $
 platescale = get_platescale(observatory)
 
 ;; Put in hook to set plate scale explicitly
-if(keyword_set(in_platescale)) then begin
-    if(observatory ne 'LCO') then $
-      message, 'We should not be setting plate scale for APO'
-    platescale= in_platescale
+if(keyword_set(in_platescale) ne 0 OR $
+   keyword_set(in_cubic) ne 0) then begin
+    message, 'We should not be setting plate scale explicitly for APO or LCO'
 endif
 
 if(strupcase(observatory) eq 'APO') then begin
@@ -101,22 +105,13 @@ endif
 
 if(strupcase(observatory) eq 'LCO') then begin
     if(n_elements(lambda) eq 0) then $
-      lambda=replicate(7500., n_elements(ra))
+      lambda=replicate(16000., n_elements(ra))
     if n_elements(airtemp) EQ 0 then airtemp = 12.
     airtemp_k=airtemp+273.155   ; C to Kelvin
     if n_elements(height) EQ 0 then height = 2380.D
     if n_elements(pressure) EQ 0 then $
       pressure= 1013.25 * exp(-height/(29.3*airtemp_k))
-    ;; Number from Guillermo Damke and Mike Blanton analyses
-    ;; of the March 2015 engring run.
-    cubic= 2.0747889
-    if(keyword_set(in_cubic)) then begin
-        if(observatory ne 'LCO') then $
-          message, 'We should not be setting plate scale for APO'
-        cubic= in_cubic
-    endif
-    
-    rcoeffs=[0.0, 0.0, 0.0, cubic/platescale^3]
+    ;; No rcoeffs defined here; this is all done in lco_distort.pro
 endif
 
 if(n_elements(lambda) ne 1 AND $
@@ -159,23 +154,28 @@ posang= posang-posang_fid
 ;; apply radial distortions
 if(NOT keyword_set(nodistort)) then begin
 
-    ;; note that these distortions are appropriate for 5000 Angstroms
-    correction=replicate(rcoeffs[0], n_elements(rfocal))
-    for i=1L, n_elements(rcoeffs)-1L do begin
-        correction=correction+rcoeffs[i]*((double(rfocal))^(double(i)))
-    endfor
-    rfocal= rfocal+correction
+    if(strupcase(observatory) eq 'APO') then begin
+        ;; note that these distortions are appropriate for 5000 Angstroms
+        correction=replicate(rcoeffs[0], n_elements(rfocal))
+        for i=1L, n_elements(rcoeffs)-1L do begin
+            correction=correction+rcoeffs[i]*((double(rfocal))^(double(i)))
+        endfor
+        rfocal= rfocal+correction
 
-    ;; now wavelength dependence in radial distortion due to the
-    ;; telescope optics. note that ASSUMES that the fibers are
-    ;; backstopped appropriately
-    if(NOT keyword_set(nordistort)) then begin
-        rf5000= apo_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
-        rfthis= apo_rdistort(rfocal, lambda)
-        rfoff= rfthis-rf5000
-        rfocal= rfocal+rfoff
-    endif
-        
+        ;; now wavelength dependence in radial distortion due to the
+        ;; telescope optics. note that ASSUMES that the fibers are
+        ;; backstopped appropriately
+        if(NOT keyword_set(nordistort)) then begin
+            rf5000= apo_rdistort(rfocal, replicate(5000., n_elements(rfocal)))
+            rfthis= apo_rdistort(rfocal, lambda)
+            rfoff= rfthis-rf5000
+            rfocal= rfocal+rfoff
+        endif 
+    endif else if(strupcase(observatory) eq 'LCO') then begin
+        rfocal = lco_rdistort(rfocal/platescale, lambda, zoffset)
+    endif else begin
+        message, 'Not an observatory: ' + string(observatory)
+    endelse
 endif
 
 xfocal= rfocal*sin(posang) 
