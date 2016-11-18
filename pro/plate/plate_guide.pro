@@ -113,7 +113,8 @@ if(file_test(guidefile) eq 0 OR $
 
         plate_ad2xy, definition, default, pointing, 0L, $
           guide_design.target_ra, guide_design.target_dec, $
-          guide_design.lambda_eff, xf=xf, yf=yf
+          guide_design.lambda_eff, xf=xf, yf=yf, $
+          zoffset=guide_design.zoffset
         guide_design.xf_default=xf
         guide_design.yf_default=yf
         
