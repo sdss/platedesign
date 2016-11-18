@@ -271,8 +271,9 @@ for pointing=1L, npointings do begin
    
    ;; Now set ACTUAL RA and Dec (for the non-offset position anyway)
    plate_xy2ad, definition, default, pointing, 0L, thisplug.xfocal, $
-                thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
-                lst=racen[pointing-1]+ha[pointing-1], airtemp= temp 
+     thisplug.yfocal, holes.lambda_eff, ra=ra, dec=dec, $
+     lst=racen[pointing-1]+ha[pointing-1], airtemp= temp, $
+     zoffset=holes.zoffset
    thisplug.ra= ra
    thisplug.dec= dec
 
@@ -283,7 +284,7 @@ for pointing=1L, npointings do begin
    ;; write out the plPlugMapP file for plate
    pdata=ptr_new(thisplug)
    yanny_write, plugmapfile, pdata, hdr=outhdr, $
-                enums=plugenum, structs=plugstruct
+     enums=plugenum, structs=plugstruct
    ptr_free, pdata
    
    ;; now make simple plugging file
