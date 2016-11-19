@@ -21,7 +21,7 @@
 ;------------------------------------------------------------------------------
 pro plate_select_guide_gaia, racen, deccen, epoch=epoch, $
                              tilerad=tilerad1, guide_design=guide_design, $
-                             gminmax=gminmax, nguidemax=nguidemax, $
+                             gminmax_mag=gminmax, nguidemax=nguidemax, $
                              seed=seed
   
   if (n_elements(racen) NE 1 OR n_elements(deccen) NE 1 $
@@ -67,9 +67,9 @@ pro plate_select_guide_gaia, racen, deccen, epoch=epoch, $
   depoch = epoch - objg.ref_epoch
   if(nok gt 0) then begin
      ra[iok] = ra[iok] + $
-               depoch[iok] * objg[iok].pmra / 1000. / $
+               depoch[iok] * objg[iok].pmra / 1000. / 3600 / $
                cos(!DPI * objg[iok].dec / 180.)
-     dec[iok] = dec[iok] + depoch[iok] * objg[iok].pmdec / 1000.
+     dec[iok] = dec[iok] + depoch[iok] * objg[iok].pmdec / 1000. / 3600.
   endif
   
   ;; Now put results into a design structure
