@@ -253,6 +253,11 @@ definition = plate_definition(designid=designid)
      omit_traps= long(default.omit_traps)
   endif
 
+;; set center post size
+  if(tag_exist(default, 'CENTER_DIAMETER')) then begin
+     center_diameter= float(default.center_diameter)
+ endif
+
 ;; Get number of offsets, instruments, target types
   noffsets= long(default.noffsets) 
   instruments= strsplit(default.instruments, /extr)
@@ -303,6 +308,8 @@ definition = plate_definition(designid=designid)
             design=design_blank(/center)
             if(keyword_set(guide_lambda_eff)) then $
               design.lambda_eff = guide_lambda_eff
+            if(keyword_set(center_diameter)) then $
+              design.diameter = center_diameter
         endif
         design.epoch= epoch
 
