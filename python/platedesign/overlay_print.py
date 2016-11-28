@@ -43,7 +43,7 @@ def apogee_layer(holes, numbers=False, renumber=False):
     pyxcolor = dict()
     pyxcolor['red'] = color.cmyk.Red
     pyxcolor['black'] = color.cmyk.Black
-    pyxcolor['blue'] = color.cmyk.NavyBlue
+    pyxcolor['blue'] = color.cmyk.CornflowerBlue
 
     # Get science fiber information
     isci = np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
@@ -67,8 +67,6 @@ def apogee_layer(holes, numbers=False, renumber=False):
     interior=canvas.canvas([clipobject])
 
     # Print lines separating blocks
-    colors=[color.cmyk.Red, color.cmyk.Green, color.cmyk.Blue,
-            color.cmyk.Brown, color.cmyk.Yellow]
     for indx in range(nridges):
         iv0= vor.ridge_vertices[indx][0]
         iv1= vor.ridge_vertices[indx][1]
