@@ -70,7 +70,8 @@ pro plate_select_guide_gaia, racen, deccen, epoch=epoch, $
                depoch[iok] * objg[iok].pmra / 1000. / 3600 / $
                cos(!DPI * objg[iok].dec / 180.)
      dec[iok] = dec[iok] + depoch[iok] * objg[iok].pmdec / 1000. / 3600.
-  endif
+ endif
+
   
   ;; Now put results into a design structure
   guide_design= replicate(design_blank(/guide), n_elements(objg))
@@ -78,8 +79,8 @@ pro plate_select_guide_gaia, racen, deccen, epoch=epoch, $
   guide_design.target_ra= ra
   guide_design.target_dec= dec
   guide_design.epoch=epoch
-  guide_design.pmra=objg.pmra
-  guide_design.pmdec=objg.pmdec
+  guide_design[iok].pmra=objg[iok].pmra
+  guide_design[iok].pmdec=objg[iok].pmdec
   
   ;; Finally, set priority; note that for guide stars priority is
   ;; used differently than elsewhere (see plate_assign_guide.pro)
