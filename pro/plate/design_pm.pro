@@ -44,11 +44,15 @@ if(nbad gt 0) then $
 
 toepoch=toepoch[0]
 depoch= toepoch-design.epoch
-dalpha= design.pmra*depoch/3600./1000.
-ddelta= design.pmdec*depoch/3600./1000.
-secdec=1./cos(design.target_dec*!DPI/180.)
-design.target_ra= design.target_ra+dalpha*secdec
-design.target_dec= design.target_dec+ddelta
+iok = where(design.pmra eq design.pmra AND $
+            design.pmdec eq design.pmdec, nok)
+if(nok gt 0) then begin
+    dalpha= design[iok].pmra*depoch[iok]/3600./1000.
+    ddelta= design[iok].pmdec*depoch[iok]/3600./1000.
+    secdec=1./cos(design[iok].target_dec*!DPI/180.)
+    design[iok].target_ra= design[iok].target_ra+dalpha*secdec
+    design[iok].target_dec= design[iok].target_dec+ddelta
+endif
 design.epoch= toepoch
 
 end 
