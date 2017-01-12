@@ -73,9 +73,17 @@ for i=0L, n_elements(plateid)-1L do begin
     plobs[i].temp= float(hdrstr.temp)
     plobs[i].hamin= float(hdrstr.hamin)
     plobs[i].hamax= float(hdrstr.hamax)
+
+    ;; copy plugmap files from the individual plate directories
     spawn, 'cp -f '+plate_dir(plateid[i])+'/plPlugMapP-'+ $
            strtrim(string(plateid[i]),2)+'*.par '+ $
            platerun_dir
+
+    ;; copy the pdf overlays from the individual plate directories
+	spawn, 'cp -f '+plate_dir(plateid[i])+'/platelines-'+ $
+           strtrim(string(plateid[i]),2)+'*.pdf '+ $
+           platerun_dir
+
 endfor
 pdata=ptr_new(plobs)
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
