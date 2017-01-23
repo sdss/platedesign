@@ -80,8 +80,8 @@ for i=0L, n_elements(plateid)-1L do begin
            platerun_dir
 
     ;; copy the pdf overlays from the individual plate directories
-	spawn, 'cp -f '+plate_dir(plateid[i])+'/platelines-'+ $
-           strtrim(string(plateid[i]),2)+'*.pdf '+ $
+	spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
+           strtrim(string(plateid[i], FORMAT='(I06)'),2)+'-*.pdf '+ $
            platerun_dir
 
 endfor
