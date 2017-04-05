@@ -5,6 +5,7 @@
 # used by the UW plate drilling
 #
 # MRB May 13 2008
+# DM  April 5 2017 - Updated to only apply unix2dos to *txt and *par files. (This was breaking PDF files.)
 #
 
 set name = $1
@@ -15,7 +16,7 @@ cd $PLATELIST_DIR/runs/$name
 mkdir -p dos
 cp pl*CounterBore* plDrillPos* plFanuc* plNorthFanuc* plSouthFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* plateLines-*print.pdf dos
 cd dos
-unix2dos *
+unix2dos *.txt *par
 rm -f ../$name.dos.zip
 zip ../$name.dos.zip *
 cd ../
