@@ -168,8 +168,21 @@ for pointing=1L, npointings do begin
         iok= where(ok_ha, nok)
         if(nok eq 0) then $
           message, color_string('No valid HA choices close enough to design HA??','red', 'bold')
-        hamin[pointing-1]= min(int_ha[iok])
-        hamax[pointing-1]= max(int_ha[iok])
+        cha = min(abs(int_ha - ha[pointing - 1]), icha)
+        iha = icha
+        while iha gt 0 do begin
+            if(int_maxdist[iha - 1] gt max_off) then $
+              break
+            iha = iha - 1
+        endwhile
+        hamin[pointing-1]= int_ha[iha]
+        iha = icha
+        while iha lt n_elements(int_maxdist) - 2L do begin
+            if(int_maxdist[iha + 1] gt max_off) then $
+              break
+            iha = iha + 1
+        endwhile
+        hamax[pointing-1]= int_ha[iha]
 
         if(keyword_set(plot)) then begin
             splot, int_ha, int_maxdist
