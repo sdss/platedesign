@@ -386,6 +386,8 @@ src/cs2/sample.input -text
 src/cs2/timer.c -text
 src/cs2/types_cs2.h -text
 src/cs2/version -text
+src/fanuc/Makefile -text
+src/fanuc/anneal.c -text
 src/fiber/Makefile -text
 src/fiber/export.h -text
 src/fiber/fiber.h -text
