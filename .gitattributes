@@ -5,6 +5,7 @@ bin/.svnignore -text
 bin/drillrun2zip -text
 bin/fanuc2xy -text
 bin/get_plugmap_files.py -text
+bin/make_fanuc -text
 bin/plate_overlay -text
 bin/plate_overlay_old -text
 bin/platedesign_version -text
