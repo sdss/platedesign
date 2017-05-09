@@ -7,11 +7,22 @@
 
 SHELL = /bin/sh
 #
-.c.o : fiber.h
+.c.o :
 	$(CC) -c $(CCCHK) $(CFLAGS) $(X_CFLAGS) $*.c
-
+#.f.o :
+#	$(F77) -c $(CCCHK) $(CFLAGS) $(X_CFLAGS) $*.f
+#
 INC = ../../include
-CFLAGS  = $(SDSS_CFLAGS) -DCHECK_LEAKS -I$(INC)
+CFLAGS  = -O2 -fPIC -fno-common -D_REENTRANT -DCHECK_LEAKS -I$(INC)
+X_LD_FLAGS = -shared
+
+UNAME = $(shell uname)
+ifeq ($(UNAME), Darwin)
+	CFLAGS = -arch x86_64 -O2 -fPIC -dynamic -fno-common -D_REENTRANT -DCHECK_LEAKS -I$(INC)
+	X_LD_FLAGS = -arch x86_64 -bundle -flat_namespace -undefined suppress -macosx_version_min 10.11
+endif
+
+SO_EXT=so
 
 BIN = $(PLATEDESIGN_DIR)/bin
 LIB = $(PLATEDESIGN_DIR)/lib
