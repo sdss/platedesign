@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+import numpy as np
+import argparse
+import astropy.io.ascii as ascii
+
+"""
+Compare numbers in two Fanuc files
+"""
+
+__author__ = "Michael Blanton"
+
+# Create the command line parser
+# ------------------------------
+parser = argparse.ArgumentParser(description="Make Fanuc file",
+                                 usage="compare_meas -m1=<drillpos file> -m2=<drillpos file>")
+
+# add arguments
+# ------------------------------
+# plate ID (read value as args.plate)
+parser.add_argument("-m1", "--meas-1", dest="meas_file_1", type=str, required=True, help="Drill pos file name")
+parser.add_argument("-m2", "--meas-2", dest="meas_file_2", type=str, required=True, help="Drill pos file name")
+
+# parse input from command line
+args = parser.parse_args()
+
+meas1 = ascii.read(args.meas_file_1)
+meas2 = ascii.read(args.meas_file_2)
+
+if(len(meas1['col1']) != len(meas2['col2'])):
+    print("Different number of holes.")
+    exit(1)
+
+print("Tested {num} holes:".format(num=len(meas1['col1'])))
+template = "d{quantity}(min, max) = {min:6.9f}, {max:6.9f} mm"
+
+diffid = np.nonzero(meas1['col1'] != meas2['col1'])[0]
+if(len(diffid) > 0):
+    print("Holes with differing Ids.")
+
+cols = ['col2', 'col3', 'col4']
+names = ['xFlat', 'yFlat', 'holeDiam']
+
+for col, name in zip(cols, names):
+    dv = meas1[col] - meas2[col]
+    xmin = (np.min(dv))
+    xmax = (np.max(dv))
+    print(template.format(quantity=name, min=xmin, max=xmax))
