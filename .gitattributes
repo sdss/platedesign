@@ -2,7 +2,11 @@
 /Makefile -text
 /README -text
 bin/.svnignore -text
+bin/compare_drillpos -text
+bin/compare_fanuc -text
+bin/compare_meas -text
 bin/drillrun2zip -text
+bin/extract_fanuc -text
 bin/fanuc2xy -text
 bin/get_plugmap_files.py -text
 bin/make_fanuc -text

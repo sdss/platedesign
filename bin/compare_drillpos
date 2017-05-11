@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+import numpy as np
+import argparse
+import pydl.pydlutils.yanny as yanny
+
+"""
+Compare numbers in two Fanuc files
+"""
+
+__author__ = "Michael Blanton"
+
+# Create the command line parser
+# ------------------------------
+parser = argparse.ArgumentParser(description="Make Fanuc file",
+                                 usage="compare_drillpos -d1=<drillpos file> -d2=<drillpos file>")
+
+# add arguments
+# ------------------------------
+# plate ID (read value as args.plate)
+parser.add_argument("-d1", "--drillpos-1", dest="drillpos_file_1", type=str, required=True, help="Drill pos file name")
+parser.add_argument("-d2", "--drillpos-2", dest="drillpos_file_2", type=str, required=True, help="Drill pos file name")
+
+# parse input from command line
+args = parser.parse_args()
+
+dpos1 = yanny.yanny(args.drillpos_file_1)
+dpos2 = yanny.yanny(args.drillpos_file_2)
+
+if(len(dpos1['DRILLPOS']) != len(dpos2['DRILLPOS'])):
+    print("Different number of holes.")
+    exit(1)
+
+print("Tested {num} holes:".format(num=len(dpos1['DRILLPOS'])))
+template = "d{quantity}(min, max) = {min:6.9f}, {max:6.9f} mm"
+
+difftype = np.nonzero(dpos1['DRILLPOS']['holeType'] !=
+                      dpos2['DRILLPOS']['holeType'])[0]
+if(len(difftype) > 0):
+    print("Holes with differing types.")
+
+names = ['xFocal', 'yFocal', 'xFlat', 'yFlat', 'xDrill', 'yDrill',
+         'zDrill', 'holeDiam']
+
+for name in names:
+    dv = dpos1['DRILLPOS'][name] - dpos2['DRILLPOS'][name]
+    xmin = (np.min(dv))
+    xmax = (np.max(dv))
+    print(template.format(quantity=name, min=xmin, max=xmax))

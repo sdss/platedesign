@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+import argparse
+
+"""
+Code to extract X and Y from Fanuc file
+"""
+
+__author__ = "Michael Blanton"
+
+# Create the command line parser
+# ------------------------------
+parser = argparse.ArgumentParser(description="Make Fanuc file",
+                                 usage="make_fanuc --mode=<mode> --plan-file=<plan file>")
+
+# add arguments
+# ------------------------------
+# plate ID (read value as args.plate)
+parser.add_argument("-f", "--fanuc-file", dest="fanuc_file", type=str, required=True, help="Fanuc file name")
+
+# output a png too?
+parser.add_argument("-m", "--mode", dest="mode", type=str, required=True, help="plate drilling mode")
+
+# parse input from command line
+args = parser.parse_args()
+
+# create overlay (a Pyx 'document' object)
+fanuc.fanuc(mode=args.mode, planfile=args.plan_file)

@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+import numpy as np
+import argparse
+from platedesign.fanuc.extract import extract
+
+"""
+Compare numbers in two Fanuc files
+"""
+
+__author__ = "Michael Blanton"
+
+# Create the command line parser
+# ------------------------------
+parser = argparse.ArgumentParser(description="Make Fanuc file",
+                                 usage="compare_fanuc -f1=<fanuc file> -f2=<fanuc_file>")
+
+# add arguments
+# ------------------------------
+# plate ID (read value as args.plate)
+parser.add_argument("-f1", "--fanuc-1", dest="fanuc_file_1", type=str, required=True, help="Fanuc file name")
+parser.add_argument("-f2", "--fanuc-2", dest="fanuc_file_2", type=str, required=True, help="Fanuc file name")
+
+# parse input from command line
+args = parser.parse_args()
+
+(x1, y1, z1, zr1) = extract(args.fanuc_file_1)
+(x2, y2, z2, zr2) = extract(args.fanuc_file_2)
+
+i2 = np.zeros(len(x1), dtype=np.int32) - 1
+for i in np.arange(len(x1)):
+    d12 = 25.4 * np.sqrt((x1[i] - x2)**2 + (y1[i] - y2)**2)  # in mm
+    iclose = np.nonzero(d12 < 0.5)[0]
+    if(len(iclose) > 1):
+        print("Ambiguity!")
+    if(len(iclose) == 0):
+        print("Missing")
+    i2[i] = iclose
+
+print("Tested {num} holes:".format(num=len(x1)))
+template = "d{quantity}(min, max) = {min:6.5f}, {max:6.5f} inches"
+xmin = (np.min(x1 - x2[i2]))
+xmax = (np.max(x1 - x2[i2]))
+print(template.format(quantity='X', min=xmin, max=xmax))
+ymin = (np.min(y1 - y2[i2]))
+ymax = (np.max(y1 - y2[i2]))
+print(template.format(quantity='Y', min=ymin, max=ymax))
+zmin = (np.min(z1 - z2[i2]))
+zmax = (np.max(z1 - z2[i2]))
+print(template.format(quantity='Z', min=zmin, max=zmax))
+zrmin = (np.min(zr1 - zr2[i2]))
+zrmax = (np.max(zr1 - zr2[i2]))
+print(template.format(quantity='ZR', min=zrmin, max=zrmax))
