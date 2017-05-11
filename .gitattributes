@@ -367,6 +367,7 @@ python/platedesign/Design.py -text
 python/platedesign/InputFile.py -text
 python/platedesign/__init__.py -text
 python/platedesign/ad2xyfocal.py -text
+python/platedesign/fanuc/extract.py -text
 python/platedesign/fanuc/fanuc.py -text
 python/platedesign/fanuc/gcodes.py -text
 python/platedesign/fanuc/optimize_path.py -text

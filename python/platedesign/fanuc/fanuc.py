@@ -6,8 +6,6 @@ import pydl.pydlutils.yanny as yanny
 from platedesign.fanuc.gcodes import Gcodes
 from platedesign.fanuc.optimize_path import optimize_path
 
-# STILL NEED TO TEST Z, ZR, etc; actually, test all coords
-
 
 def _fanuc_length(x=None, y=None):
     length = 0.
