@@ -3,8 +3,11 @@ import numpy as np
 import copy
 import matplotlib.pyplot as plt
 import pydl.pydlutils.yanny as yanny
+import pydl.pydlutils.spheregroup as spheregroup
 from platedesign.fanuc.gcodes import Gcodes
 from platedesign.fanuc.optimize_path import optimize_path
+
+debug_str = '.test'
 
 
 def _fanuc_length(x=None, y=None):
@@ -105,8 +108,10 @@ def _fanuc_xyz(plugmap=None, plate=None, param=None):
 
     Returns
     -------
-    (x, y, z, zr) : np.float32
-        arrays containing positions necessary for CNC, in inches
+    (x, y, z, zr, zo) : np.float32
+        arrays containing positions necessary for CNC, in mm
+        zo is extra and only used for the plDrillPos file
+        [it has no offsets applied; not clear why this is necessary]
 
     Notes
     -----
@@ -138,7 +143,7 @@ def _fanuc_xyz(plugmap=None, plate=None, param=None):
     plateShapeCoeff = np.float32(param['plateShapeCoeff'].split())
     for i in np.arange(len(bendDistCoeff)):
         shape = shape + plateShapeCoeff[i] * r**(i)
-    z = shape
+    z_original = shape
 
     # Apply correction to radial position for plate bending
     r = (1. + thermExpFactor) * r - correction
@@ -155,16 +160,11 @@ def _fanuc_xyz(plugmap=None, plate=None, param=None):
     x[igt0] = x[igt0] + (thermExpFactor - correction[igt0]) * x[igt0]
     y[igt0] = y[igt0] + (thermExpFactor - correction[igt0]) * y[igt0]
 
-    # Convert to inches
-    x = x / 25.4
-    y = y / 25.4
-    z_original = z / 25.4
-
     # Apply offset to Z position
-    z = z_original + np.float32(param['ZOffset']) / 25.4
-    zr = z_original + np.float32(param['ZOffsetR']) / 25.4
+    z = z_original + np.float32(param['ZOffset'])
+    zr = z_original + np.float32(param['ZOffsetR'])
 
-    return(x, y, z, zr)
+    return(x, y, z, zr, z_original)
 
 
 def _fanuc_measure(gcodes=None, plugmap=None, plate=None, param=None,
@@ -182,9 +182,9 @@ def _fanuc_measure(gcodes=None, plugmap=None, plate=None, param=None,
     param : Yanny object
         plParam file object
     xdrill : np.float32
-        array of X drilling locations (inches)
+        array of X drilling locations (mm)
     ydrill : np.float32
-        array of Y drilling locations (inches)
+        array of Y drilling locations (mm)
 
     Returns
     -------
@@ -202,9 +202,9 @@ def _fanuc_measure(gcodes=None, plugmap=None, plate=None, param=None,
 
     # Apply center and parity (in practice this is always the identity
     # matrix) before the radial correction
-    xflat = xdrill * 25.4 - (np.float32(param['flatDistXcenter']) *
-                             np.float32(param['flatDistParity']))
-    yflat = ydrill * 25.4 - np.float32(param['flatDistYcenter'])
+    xflat = xdrill - (np.float32(param['flatDistXcenter']) *
+                      np.float32(param['flatDistParity']))
+    yflat = ydrill - np.float32(param['flatDistYcenter'])
     rflat = np.sqrt(xflat**2 + yflat**2)
     pa = np.arctan2(xflat, yflat)
 
@@ -238,22 +238,27 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
     gcodes : Gcodes object
         information about how to write CNC for this type of plate
     x : np.float32
-        array of X positions to drill
+        array of X positions to drill in mm
     y : np.float32
-        array of Y positions to drill
+        array of Y positions to drill in mm
     z : np.float32
-        array of Z positions to drill
+        array of Z positions to drill in mm
     zr : np.float32
-        an offset set of Z positions
+        an offset set of Z positions in mm
     objId : np.int32
         [5]-array of object identifiers (only meaningful
         for SDSS imaging targets )
     drillSeq : np.int32
         drilling sequence number (used to select bit)
     """
-    codes = gcodes.first(cx=x[0], cy=y[0], cz=z[0], czr=zr[0],
-                         drillSeq=drillSeq)
-    for cx, cy, cz, czr, cobjId in zip(x, y, z, zr, objId):
+    mm2inch = 1. / 25.4
+    x_inch = x * mm2inch
+    y_inch = y * mm2inch
+    z_inch = z * mm2inch
+    zr_inch = zr * mm2inch
+    codes = gcodes.first(cx=x_inch[0], cy=y_inch[0], cz=z_inch[0],
+                         czr=zr_inch[0], drillSeq=drillSeq)
+    for cx, cy, cz, czr, cobjId in zip(x_inch, y_inch, z_inch, zr_inch, objId):
         code = gcodes.hole(cx=cx, cy=cy, cz=cz, czr=czr, objId=cobjId)
         codes += code
     return(codes)
@@ -277,14 +282,14 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
     -----
     Writes plDrillPos and plMeas files
     """
-    drillpos_template = 'plDrillPos-{plate}.par'
-    meas_template = 'plMeas-{plate}.par'
+    drillpos_template = 'plDrillPos-{plate}.par' + debug_str
+    meas_template = 'plMeas-{plate}.par' + debug_str
     drillpos_name = drillpos_template.format(plate=plate['plateId'])
     meas_name = meas_template.format(plate=plate['plateId'])
 
     qdrill = _fanuc_xyz(plugmap=plugmap['PLUGMAPOBJ'],
                         plate=plate, param=param)
-    (xdrill, ydrill, zdrill, zrdrill) = qdrill
+    (xdrill, ydrill, zdrill, zrdrill, zodrill) = qdrill
     qmeasure = _fanuc_measure(gcodes, plugmap=plugmap['PLUGMAPOBJ'],
                               plate=plate, param=param,
                               xdrill=xdrill, ydrill=ydrill)
@@ -317,7 +322,7 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
     drillpos['yFlat'] = yflat
     drillpos['xDrill'] = xdrill
     drillpos['yDrill'] = ydrill
-    drillpos['zDrill'] = zdrill
+    drillpos['zDrill'] = zodrill
     drillpos['holeDiam'] = diameter
     hdr = dict()
     hdr['plateId'] = plate['plateId']
@@ -340,6 +345,51 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
                                     holeDiam=dpos['holeDiam'])
         mfp.write(line)
     mfp.close()
+
+
+def _fanuc_check(plateid=None):
+    """Read in plDrillPos file and make sure holes do not overlap
+
+    Parameters
+    ----------
+    plateid : np.int32, int
+        plate ID
+
+    Returns
+    -------
+    ok : boolean
+        True if OK, False if not
+
+    Notes 
+    -----
+    Assumes 5 arcmin is biggest thing it needs to check
+    """
+    drillpos_template = 'plDrillPos-{plate}.par' + debug_str
+    drillpos_name = drillpos_template.format(plate=plateid)
+    dpos = yanny.yanny(drillpos_name)
+    (m1, m2, d12) = spheregroup.spherematch(dpos['DRILLPOS']['ra'],
+                                            dpos['DRILLPOS']['dec'],
+                                            dpos['DRILLPOS']['ra'],
+                                            dpos['DRILLPOS']['dec'],
+                                            5. / 60., maxmatch=0)
+    for indx1, indx2 in zip(m1, m2):
+        if(indx1 != indx2):
+            dx = (dpos['DRILLPOS']['xDrill'][indx1] -
+                  dpos['DRILLPOS']['xDrill'][indx2])
+            dy = (dpos['DRILLPOS']['yDrill'][indx1] -
+                  dpos['DRILLPOS']['yDrill'][indx2])
+            d12 = np.sqrt(dx**2 + dy**2)
+            limit = 0.5 * (dpos['DRILLPOS']['holeDiam'][indx1] +
+                           dpos['DRILLPOS']['holeDiam'][indx2])
+            if(d12 < limit):
+                print("{x} {y}".format(x=dpos['DRILLPOS']['xDrill'][indx1],
+                                       y=dpos['DRILLPOS']['yDrill'][indx1]))
+                print("{x} {y}".format(x=dpos['DRILLPOS']['xDrill'][indx2],
+                                       y=dpos['DRILLPOS']['yDrill'][indx2]))
+                print("{indx1} {indx2}".format(indx1=indx1, indx2=indx2))
+                print("{dx} {dy} {limit}".format(dx=dx, dy=dy, limit=limit))
+                return(False)
+    return(True)
 
 
 def fanuc(mode='boss', planfile=None):
@@ -373,9 +423,10 @@ def fanuc(mode='boss', planfile=None):
     # Loop through the plates
     plug_dir = plan['outFileDir']
     plug_template = 'plPlugMapP-{plate}.par'
-    fanuc_template = 'plFanucUnadjusted-{plate}.par.test'
+    fanuc_template = 'plFanucUnadjusted-{plate}.par' + debug_str
     png_template = 'plFanucUnadjusted-{plate}.png'
     for plate in obs['PLOBS']:
+        print("Making files for plate {plateid}".format(plateid=plate['plateId']))
         plug_name = plug_template.format(plate=plate['plateId'])
         fanuc_name = fanuc_template.format(plate=plate['plateId'])
         png_name = png_template.format(plate=plate['plateId'])
@@ -386,6 +437,12 @@ def fanuc(mode='boss', planfile=None):
         # Make plDrillPos file
         _fanuc_drillpos(gcodes=gcodes, plugmap=plugmap,
                         plate=plate, param=param)
+
+        # Check overlapping holes
+        ok = _fanuc_check(plateid=plate['plateId'])
+        if(ok is False):
+            print(" ... overlapping holes! not making holes for {plate}".format(plate=plate['plateId']))
+            break
 
         # Separate into types for sorting
         (objects, lighttraps, alignment) = _fanuc_separate(plugmap)
@@ -399,43 +456,43 @@ def fanuc(mode='boss', planfile=None):
         # Open drilling path PNG
         plt.figure(dpi=150, figsize=(5, 5))
         plt.title("plate {plateId}".format(plateId=plate['plateId']))
-        plt.xlim((-16., 16.))
-        plt.ylim((-16., 16.))
-        plt.xlabel("X drill")
-        plt.ylabel("Y drill")
+        plt.xlim((-405., 405.))
+        plt.ylim((-405., 405.))
+        plt.xlabel("X drill (mm)")
+        plt.ylabel("Y drill (mm)")
 
         # Now start in with science-sized holes
         iorder = optimize_path(objects['xFocal'], objects['yFocal'])
         ffp.write(gcodes.objects)
-        (x, y, z, zr) = _fanuc_xyz(plugmap=objects[iorder], plate=plate,
-                                   param=param)
+        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=objects[iorder], plate=plate,
+                                       param=param)
         length = _fanuc_length(x, y)
         codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
                              objId=objects['objId'][iorder], drillSeq=1)
         ffp.write(codes)
-        label = "object holes ({length:>.0f} inches)".format(length=length)
+        label = "object holes ({length:.1f} m)".format(length=length / 1000.)
         plt.plot(x, y, color='red', label=label)
 
         ffp.write(gcodes.lighttrap)
         iorder = optimize_path(lighttraps['xFocal'], lighttraps['yFocal'])
-        (x, y, z, zr) = _fanuc_xyz(plugmap=lighttraps[iorder], plate=plate,
-                                   param=param)
+        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=lighttraps[iorder], plate=plate,
+                                       param=param)
         codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
                              objId=lighttraps['objId'][iorder], drillSeq=2)
         ffp.write(codes)
         length = _fanuc_length(x, y)
-        label = "traps/center ({length:>.0f} inches)".format(length=length)
+        label = "traps/center ({length:.1f} m)".format(length=length / 1000.)
         plt.plot(x, y, color='green', label=label)
 
         ffp.write(gcodes.align)
         iorder = optimize_path(alignment['xFocal'], alignment['yFocal'])
-        (x, y, z, zr) = _fanuc_xyz(plugmap=alignment[iorder], plate=plate,
-                                   param=param)
+        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=alignment[iorder], plate=plate,
+                                       param=param)
         codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
                              objId=alignment['objId'][iorder], drillSeq=3)
         ffp.write(codes)
         length = _fanuc_length(x, y)
-        label = "alignment ({length:>.0f} inches)".format(length=length)
+        label = "alignment ({length:.1f} m)".format(length=length / 1000.)
         plt.plot(x, y, color='blue', label=label)
 
         completion = gcodes.completion(plateId=plate['plateId'])
@@ -446,3 +503,4 @@ def fanuc(mode='boss', planfile=None):
 
         plt.legend(fontsize=6)
         plt.savefig(png_name)
+        plt.close()
