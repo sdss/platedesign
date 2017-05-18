@@ -18,12 +18,12 @@ class Gcodes(object):
         self.mode = mode
         self.parametersdir = parametersdir
         self.param = yanny.yanny(paramfile)
-        self.align = self._set_align(mode=mode)
+        self.alignment = self._set_alignment(mode=mode)
         self.lighttrap = self._set_lighttrap(mode=mode)
         self.objects = self._set_objects(mode=mode)
         self.completion_text = self._set_completion_text(mode=mode)
         self.manga = self._set_manga(mode=mode)
-        self.manga_align = self._set_manga_align(mode=mode)
+        self.manga_alignment = self._set_manga_alignment(mode=mode)
 
         # Use different codes for movement for APOGEE south plates,
         # appropriate to drilling on a flat mandrel.
@@ -49,7 +49,16 @@ O{plateId7K:d}({name} PLUG-PLATE {plateId:d})
 G43 H{drillSeq:02d} Z0.1
 M08
 """
-        self.hole_text = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.5 F9.0
+        self.hole_text = dict()
+        self.hole_text['objects'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.5 F9.0
+G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
+"""
+        self.hole_text['lighttrap'] = self.hole_text['objects']
+        self.hole_text['manga'] = self.hole_text['objects']
+        self.hole_text['alignment'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.02 F2.0
+G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
+"""
+        self.hole_text['manga_alignment'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.02 F1.5
 G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
 """
 
@@ -62,6 +71,13 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         self.holediam_values['MANGA'] = np.float32(2.8448)
         self.holediam_values['MANGA_ALIGNMENT'] = np.float32(0.7874)
         self.holediam_values['MANGA_SINGLE'] = np.float32(2.16662)
+
+        self.drillSeq = dict()
+        self.drillSeq['objects'] = 1
+        self.drillSeq['lighttrap'] = 2
+        self.drillSeq['alignment'] = 3
+        self.drillSeq['manga'] = 11
+        self.drillSeq['manga_alignment'] = 12
 
     def _get_text(self, filename):
         """Gets text from a CNC template file
@@ -81,7 +97,7 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         fp.close()
         return(text)
 
-    def _set_align(self, mode='boss'):
+    def _set_alignment(self, mode='boss'):
         """Set alignment template
         """
         return(self._get_text(self.param['alignCodesFile']))
@@ -109,7 +125,7 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         else:
             return(None)
 
-    def _set_manga_align(self, mode='boss'):
+    def _set_manga_alignment(self, mode='boss'):
         """Set MaNGA alignment template
         """
         if(mode == 'manga'):
@@ -169,11 +185,14 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         return(self.first_text.format(cx=cx, cy=cy, cz=cz, czr=czr,
                                       drillSeq=drillSeq))
 
-    def hole(self, cx=None, cy=None, cz=None, czr=None, objId=None):
-        """Create CNC code for regular hole
+    def hole(self, holetype=None, cx=None, cy=None, cz=None, czr=None,
+             objId=None):
+        """Create CNC code for holes
 
         Parameters
         ----------
+        holetype : str
+            type of hole
         cx : np.float32
             X position of hole (inches)
         cy : np.float32
@@ -190,8 +209,8 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         text : str
             CNC code
         """
-        return(self.hole_text.format(cx=cx, cy=cy, cz=cz, czr=czr,
-                                     objId=objId))
+        return(self.hole_text[holetype].format(cx=cx, cy=cy, cz=cz, czr=czr,
+                                               objId=objId))
 
     def completion(self, plateId=None):
         """Create CNC code for plate completion

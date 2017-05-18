@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import copy
+import collections
 import matplotlib.pyplot as plt
 import pydl.pydlutils.yanny as yanny
 import pydl.pydlutils.spheregroup as spheregroup
@@ -30,8 +31,10 @@ def _fanuc_separate(plugmap=None):
 
     Returns
     -------
-    (objects, lighttrap, alignment) : Yanny file object
-        plPlugMapP contents sorted into three types
+    rdict : OrderedDict
+        Each value is a Yanny file object with plPlugMapP contents
+        Keywords are: 'object', 'lighttrap', 'alignment', 'manga',
+          'manga_alignment'
 
     Notes
     -----
@@ -51,12 +54,25 @@ def _fanuc_separate(plugmap=None):
                             (iscenter == np.bool(False)))[0]
     plugmap_alignment = plugmap['PLUGMAPOBJ'][ialignment]
 
-    iother = np.nonzero((holeType != b'ALIGNMENT') &
-                        (holeType != b'LIGHT_TRAP') &
-                        (iscenter == np.bool(False)))[0]
+    imanga = np.nonzero(holeType == b'MANGA')[0]
+    plugmap_manga = plugmap['PLUGMAPOBJ'][imanga]
+
+    imanga_alignment = np.nonzero(holeType == b'MANGA_ALIGNMENT')[0]
+    plugmap_manga_alignment = plugmap['PLUGMAPOBJ'][imanga_alignment]
+
+    iother = np.nonzero(((holeType != b'ALIGNMENT') &
+                         (holeType != b'LIGHT_TRAP') &
+                         (iscenter == np.bool(False))))[0]
     plugmap_other = plugmap['PLUGMAPOBJ'][iother]
 
-    return (plugmap_other, plugmap_lighttrap, plugmap_alignment)
+    return_dict = collections.OrderedDict()
+    return_dict['objects'] = plugmap_other
+    return_dict['lighttrap'] = plugmap_lighttrap
+    return_dict['alignment'] = plugmap_alignment
+    return_dict['manga'] = plugmap_manga
+    return_dict['manga_alignment'] = plugmap_manga_alignment
+
+    return (return_dict)
 
 
 def _fanuc_header(gcodes=None, plate=None, param=None,
@@ -71,21 +87,15 @@ def _fanuc_header(gcodes=None, plate=None, param=None,
         row entry in plObs file
     param : Yanny object
         plParam file object
-    plug_name : str
-        plPlugMapP file name
     fanuc_name : str
         name of Fanuc file being written to
+    plug_name : str
+        plPlugMapP file name
 
     Returns
     -------
-    (objects, lighttrap, alignment) : Yanny file object
-        plPlugMapP contents sorted into three types
-
-    Notes
-    -----
-
-    Separates into LIGHT_TRAP, ALIGNMENT, and other classes (excluding
-    the center hole from "other" and including it as LIGHT_TRAP).
+    hdr : str
+        header for Fanuc
     """
     plateId = plate['plateId']
     tempShop = np.float32(param['tempShop'])
@@ -230,7 +240,7 @@ def _fanuc_measure(gcodes=None, plugmap=None, plate=None, param=None,
 
 
 def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
-                 objId=None, drillSeq=1):
+                 objId=None, holetype=None):
     """Write codes for list of holes
 
     Parameters
@@ -248,8 +258,8 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
     objId : np.int32
         [5]-array of object identifiers (only meaningful
         for SDSS imaging targets )
-    drillSeq : np.int32
-        drilling sequence number (used to select bit)
+    holetype : str
+        type of hole
     """
     mm2inch = 1. / 25.4
     x_inch = x * mm2inch
@@ -257,9 +267,10 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
     z_inch = z * mm2inch
     zr_inch = zr * mm2inch
     codes = gcodes.first(cx=x_inch[0], cy=y_inch[0], cz=z_inch[0],
-                         czr=zr_inch[0], drillSeq=drillSeq)
+                         czr=zr_inch[0], drillSeq=gcodes.drillSeq[holetype])
     for cx, cy, cz, czr, cobjId in zip(x_inch, y_inch, z_inch, zr_inch, objId):
-        code = gcodes.hole(cx=cx, cy=cy, cz=cz, czr=czr, objId=cobjId)
+        code = gcodes.hole(holetype=holetype, cx=cx, cy=cy, cz=cz, czr=czr,
+                           objId=cobjId)
         codes += code
     return(codes)
 
@@ -445,7 +456,7 @@ def fanuc(mode='boss', planfile=None):
             break
 
         # Separate into types for sorting
-        (objects, lighttraps, alignment) = _fanuc_separate(plugmap)
+        pmaps = _fanuc_separate(plugmap)
 
         # Open Fanuc file and write header
         ffp = open(fanuc_name, 'w')
@@ -461,40 +472,31 @@ def fanuc(mode='boss', planfile=None):
         plt.xlabel("X drill (mm)")
         plt.ylabel("Y drill (mm)")
 
-        # Now start in with science-sized holes
-        iorder = optimize_path(objects['xFocal'], objects['yFocal'])
-        ffp.write(gcodes.objects)
-        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=objects[iorder], plate=plate,
-                                       param=param)
-        length = _fanuc_length(x, y)
-        codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
-                             objId=objects['objId'][iorder], drillSeq=1)
-        ffp.write(codes)
-        label = "object holes ({length:.1f} m)".format(length=length / 1000.)
-        plt.plot(x, y, color='red', label=label)
+        # Loop through plug map hole types
+        linecolor = dict()
+        linecolor['objects'] = 'red'
+        linecolor['lighttrap'] = 'blue'
+        linecolor['alignment'] = 'green'
+        linecolor['manga'] = 'cyan'
+        linecolor['manga_alignment'] = 'magenta'
+        for holetype in pmaps.keys():
+            pmap = pmaps[holetype]
+            if(len(pmap) > 0):
+                ffp.write(getattr(gcodes, holetype))
+                iorder = optimize_path(pmap['xFocal'], pmap['yFocal'])
+                (x, y, z, zr, zo) = _fanuc_xyz(plugmap=pmap[iorder],
+                                               plate=plate, param=param)
+                length = _fanuc_length(x, y)
+                codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
+                                     objId=pmap['objId'][iorder],
+                                     holetype=holetype)
+                ffp.write(codes)
+                label = "{holetype} holes ({length:.1f} m)"
+                label = label.format(holetype=holetype,
+                                     length=length / 1000.)
+                plt.plot(x, y, color=linecolor[holetype], label=label)
 
-        ffp.write(gcodes.lighttrap)
-        iorder = optimize_path(lighttraps['xFocal'], lighttraps['yFocal'])
-        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=lighttraps[iorder], plate=plate,
-                                       param=param)
-        codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
-                             objId=lighttraps['objId'][iorder], drillSeq=2)
-        ffp.write(codes)
-        length = _fanuc_length(x, y)
-        label = "traps/center ({length:.1f} m)".format(length=length / 1000.)
-        plt.plot(x, y, color='green', label=label)
-
-        ffp.write(gcodes.align)
-        iorder = optimize_path(alignment['xFocal'], alignment['yFocal'])
-        (x, y, z, zr, zo) = _fanuc_xyz(plugmap=alignment[iorder], plate=plate,
-                                       param=param)
-        codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
-                             objId=alignment['objId'][iorder], drillSeq=3)
-        ffp.write(codes)
-        length = _fanuc_length(x, y)
-        label = "alignment ({length:.1f} m)".format(length=length / 1000.)
-        plt.plot(x, y, color='blue', label=label)
-
+        # Write completion
         completion = gcodes.completion(plateId=plate['plateId'])
         ffp.write(completion)
         ffp.write("%\n")
