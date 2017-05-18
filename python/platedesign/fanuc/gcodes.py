@@ -74,6 +74,8 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
 
         self.drillSeq = dict()
         self.drillSeq['objects'] = 1
+        if(self.mode == 'apogee_south'):
+            self.drillSeq['objects'] = 11
         self.drillSeq['lighttrap'] = 2
         self.drillSeq['alignment'] = 3
         self.drillSeq['manga'] = 11
