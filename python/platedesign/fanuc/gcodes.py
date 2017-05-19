@@ -70,7 +70,7 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         self.holediam_values['ALIGNMENT'] = np.float32(1.1811)
         self.holediam_values['MANGA'] = np.float32(2.8448)
         self.holediam_values['MANGA_ALIGNMENT'] = np.float32(0.7874)
-        self.holediam_values['MANGA_SINGLE'] = np.float32(2.16662)
+        self.holediam_values['MANGA_SINGLE'] = np.float32(3.2766)
 
         self.drillSeq = dict()
         self.drillSeq['objects'] = 1
