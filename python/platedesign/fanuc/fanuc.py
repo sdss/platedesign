@@ -8,7 +8,7 @@ import pydl.pydlutils.spheregroup as spheregroup
 from platedesign.fanuc.gcodes import Gcodes
 from platedesign.fanuc.optimize_path import optimize_path
 
-debug_str = '.test'
+post_str = ""
 
 
 def _fanuc_length(x=None, y=None):
@@ -293,8 +293,8 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
     -----
     Writes plDrillPos and plMeas files
     """
-    drillpos_template = 'plDrillPos-{plate}.par' + debug_str
-    meas_template = 'plMeas-{plate}.par' + debug_str
+    drillpos_template = 'plDrillPos-{plate}.par' + post_str
+    meas_template = 'plMeas-{plate}.par' + post_str
     drillpos_name = drillpos_template.format(plate=plate['plateId'])
     meas_name = meas_template.format(plate=plate['plateId'])
 
@@ -375,7 +375,7 @@ def _fanuc_check(plateid=None):
     -----
     Assumes 5 arcmin is biggest thing it needs to check
     """
-    drillpos_template = 'plDrillPos-{plate}.par' + debug_str
+    drillpos_template = 'plDrillPos-{plate}.par' + post_str
     drillpos_name = drillpos_template.format(plate=plateid)
     dpos = yanny.yanny(drillpos_name)
     (m1, m2, d12) = spheregroup.spherematch(dpos['DRILLPOS']['ra'],
@@ -434,7 +434,7 @@ def fanuc(mode='boss', planfile=None):
     # Loop through the plates
     plug_dir = plan['outFileDir']
     plug_template = 'plPlugMapP-{plate}.par'
-    fanuc_template = 'plFanucUnadjusted-{plate}.par' + debug_str
+    fanuc_template = 'plFanucUnadjusted-{plate}.par' + post_str
     png_template = 'plFanucUnadjusted-{plate}.png'
     for plate in obs['PLOBS']:
         print("Making files for plate {plateid}".format(plateid=plate['plateId']))
