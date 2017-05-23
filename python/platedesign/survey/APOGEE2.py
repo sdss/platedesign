@@ -20,7 +20,7 @@ class apogee_blocks():
     fcolor
     """
     def __init__(self):
-        import sdss.utilities.yanny as yanny
+        import pydl.pydlutils.yanny as yanny
         import os
         blockfile = os.path.join(os.getenv('PLATEDESIGN_DIR'), 'data',
                                  'apogee', 'fiberBlocksAPOGEE.par')
@@ -33,11 +33,11 @@ class apogee_blocks():
 
     def fcolor(self, fiberid):
         ftype = self.ftype(fiberid)
-        if(ftype == 'B'):
+        if(ftype == b'B'):
             return 'red'
-        if(ftype == 'M'):
+        if(ftype == b'M'):
             return 'green'
-        if(ftype == 'F'):
+        if(ftype == b'F'):
             return 'blue'
 
 
@@ -55,7 +55,7 @@ class apogee_south_blocks(apogee_blocks):
     fcolor
     """
     def __init__(self):
-        import sdss.utilities.yanny as yanny
+        import pydl.pydlutils.yanny as yanny
         import os
         blockfile = os.path.join(os.getenv('PLATEDESIGN_DIR'), 'data',
                                  'apogee', 'fiberBlocksAPOGEE_SOUTH.par')
@@ -64,9 +64,9 @@ class apogee_south_blocks(apogee_blocks):
 
     def fcolor(self, fiberid):
         ftype = self.ftype(fiberid)
-        if(ftype == 'B'):
+        if(ftype == b'B'):
             return 'red'
-        if(ftype == 'M'):
+        if(ftype == b'M'):
             return 'black'
-        if(ftype == 'F'):
+        if(ftype == b'F'):
             return 'blue'
