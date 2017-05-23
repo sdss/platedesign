@@ -310,7 +310,7 @@ def overlay_print(plateid, numbers=False, noguides=False, renumber=False,
     information += "}"
 
     # Create message
-    message = "Una placa especial con numeros y sin estrellas brilliante"
+    message = "Una placa para APOGEE Sur"
     message_tex = r"\font\myfont=cmr10 at 40pt {\myfont " + message + "}"
 
     apogee = apogee_layer(holes, numbers=numbers, renumber=renumber)
