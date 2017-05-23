@@ -1,7 +1,7 @@
 from platedesign.survey.APOGEE2 import apogee_south_blocks
 from pyx import document, color, path, canvas, style, text, deco, trafo
 from scipy.spatial import Voronoi
-import sdss.utilities.yanny as yanny
+import pydl.pydlutils.yanny as yanny
 from sdss_access import SDSSPath
 import numpy as np
 import os.path
@@ -46,7 +46,7 @@ def apogee_layer(holes, numbers=False, renumber=False):
     pyxcolor['blue'] = color.cmyk.CornflowerBlue
 
     # Get science fiber information
-    isci = np.nonzero(np.array(holes['holetype']) == 'APOGEE_SOUTH')[0]
+    isci = np.nonzero(np.array(holes['holetype']) == b'APOGEE_SOUTH')[0]
     xfocal = np.array(holes['xfocal'])[isci]
     yfocal = np.array(holes['yfocal'])[isci]
     fiberid = np.array(holes['fiberid'])[isci]
@@ -57,9 +57,9 @@ def apogee_layer(holes, numbers=False, renumber=False):
         block = np.array(blocks.fibers['blockid'])[fiberid - 1]
 
     # Create Voronoi tessellation
-    xy= np.array(zip(xfocal, yfocal))
-    vor= Voronoi(xy)
-    nridges= vor.ridge_points.shape[0]
+    xy = np.array([xfocal, yfocal]).transpose()
+    vor = Voronoi(xy)
+    nridges = vor.ridge_points.shape[0]
 
     # Set up object to print
     clippath= path.circle(0., 0., interior_radius)
@@ -111,9 +111,9 @@ def apogee_layer(holes, numbers=False, renumber=False):
 
     # Print circles around holes
     for indx in range(len(xfocal)):
-        hole_color= pyxcolor[blocks.fcolor(fiberid[indx])]
-        interior.stroke(path.circle(yfocal[indx]/10., xfocal[indx]/10., 
-                                    hole_radius), 
+        hole_color = pyxcolor[blocks.fcolor(fiberid[indx])]
+        interior.stroke(path.circle(yfocal[indx] / 10., xfocal[indx] / 10.,
+                                    hole_radius),
                         [style.linewidth.THick, hole_color])
 
     if(numbers is True):
@@ -134,7 +134,7 @@ def guide_layer(holes):
     guide_size= 1.2
 
     # Get guide fiber information
-    iguide= np.nonzero(np.array(holes['holetype']) == 'GUIDE')[0]
+    iguide= np.nonzero(np.array(holes['holetype']) == b'GUIDE')[0]
     guide_xfocal= np.array(holes['xfocal'])[iguide]
     guide_yfocal= np.array(holes['yfocal'])[iguide]
     guidenum= np.array(holes['iguide'])[iguide]
@@ -158,29 +158,31 @@ def guide_layer(holes):
 
     return interior
 
+
 def whiteout_layer(holes):
-    whiteout= canvas.canvas()
+    whiteout = canvas.canvas()
     for indx in range(len(holes['xfocal'])):
-        radius=0.25
-        if(holes['holetype'][indx] == 'GUIDE'):
-            radius=0.54
-        if(holes['holetype'][indx] == 'ALIGNMENT'):
-            radius=0.1
-        if(holes['holetype'][indx] == 'MANGA'):
-            radius=0.4
-        if(holes['holetype'][indx] == 'MANGA_SINGLE'):
-            radius=0.4
-        if(holes['holetype'][indx] == 'MANGA_ALIGNMENT'):
-            radius=0.2
-        if(holes['holetype'][indx] == 'CENTER'):
-            radius=0.36
-        if(holes['holetype'][indx] == 'TRAP'):
-            radius=0.45
+        radius = 0.25
+        if(holes['holetype'][indx] == b'GUIDE'):
+            radius = 0.54
+        if(holes['holetype'][indx] == b'ALIGNMENT'):
+            radius = 0.1
+        if(holes['holetype'][indx] == b'MANGA'):
+            radius = 0.4
+        if(holes['holetype'][indx] == b'MANGA_SINGLE'):
+            radius = 0.4
+        if(holes['holetype'][indx] == b'MANGA_ALIGNMENT'):
+            radius = 0.2
+        if(holes['holetype'][indx] == b'CENTER'):
+            radius = 0.36
+        if(holes['holetype'][indx] == b'TRAP'):
+            radius = 0.45
         whiteout.fill(path.circle(holes['yfocal'][indx]/10., 
                                   holes['xfocal'][indx]/10., radius), 
                       [color.rgb.white])
-    
+
     return whiteout
+
 
 def plate_circle_layer(plate, information, message, plate_radius= 32.6):
     outerclip= 39.6
@@ -289,11 +291,11 @@ def overlay_print(plateid, numbers=False, noguides=False, renumber=False,
     # Read in plans
     plans = yanny.yanny(platePlans_file)
     iplan = np.nonzero(np.array(plans['PLATEPLANS']['plateid']) == plateid)[0]
-    survey = plans['PLATEPLANS']['survey'][iplan]
-    programname = plans['PLATEPLANS']['programname'][iplan]
+    survey = plans['PLATEPLANS']['survey'][iplan[0]].decode()
+    programname = plans['PLATEPLANS']['programname'][iplan[0]].decode()
 
     # Texify the string
-    programname_str = programname
+    programname_str = str(programname)
     programname_str = re.sub("_", "\_", programname_str)
 
     # Create information string
