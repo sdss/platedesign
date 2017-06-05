@@ -38,6 +38,16 @@ class Gcodes(object):
         else:
             self.name = 'SDSS'
 
+        self.acquisition_template = """(CAMERA MOUNTING HOLES)
+G90 G56
+G68 X0.0 Y0.0 R-90.0
+G00 X{axy[0]:.6f} Y{axy[1]:.6f}
+M98 P9775
+G69
+M98 P9776
+M01
+"""
+
         self.header_text = """%
 O{plateId7K:d}({name} PLUG-PLATE {plateId:d})
 (Drilling temperature {tempShopF:5.1f} degrees F)
@@ -71,6 +81,8 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         self.holediam_values['MANGA'] = np.float32(2.8448)
         self.holediam_values['MANGA_ALIGNMENT'] = np.float32(0.7874)
         self.holediam_values['MANGA_SINGLE'] = np.float32(3.2766)
+        self.holediam_values['ACQUISITION_CENTER'] = np.float32(60.)
+        self.holediam_values['ACQUISITION_OFFAXIS'] = np.float32(68.)
 
         self.drillSeq = dict()
         self.drillSeq['objects'] = 1
@@ -214,13 +226,15 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
         return(self.hole_text[holetype].format(cx=cx, cy=cy, cz=cz, czr=czr,
                                                objId=objId))
 
-    def completion(self, plateId=None):
+    def completion(self, plateId=None, axy=None):
         """Create CNC code for plate completion
 
         Parameters
         ----------
         plateId : np.int32, int
             plate ID number
+        axy : (np.float32, np.float32) tuple
+            X and Y drill location of off-axis acquisition camera (mm)
 
         Returns
         -------
@@ -239,6 +253,13 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
             repl = "{digit_int:0>2} ({digit_str})"
             repl = repl.format(digit_int=digit_int, digit_str=digit_str)
             completion_text = completion_text.replace("--", repl, 1)
+
+        if(self.mode == 'apogee_south'):
+            ax = axy[0] / 25.4
+            ay = axy[1] / 25.4
+            acquisition_text = self.acquisition_template.format(axy=(ax, ay))
+            completion_text = completion_text.format(acquisition_text=acquisition_text)
+
         return(completion_text)
 
     def holediam(self, holetype=None, objId=None):
