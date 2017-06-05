@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import copy
 import collections
@@ -50,8 +51,7 @@ def _fanuc_separate(plugmap=None):
                             (iscenter == np.bool(True)))[0]
     plugmap_lighttrap = plugmap['PLUGMAPOBJ'][ilighttrap]
 
-    ialignment = np.nonzero((holeType == b'ALIGNMENT') &
-                            (iscenter == np.bool(False)))[0]
+    ialignment = np.nonzero((holeType == b'ALIGNMENT'))[0]
     plugmap_alignment = plugmap['PLUGMAPOBJ'][ialignment]
 
     imanga = np.nonzero(holeType == b'MANGA')[0]
@@ -60,9 +60,18 @@ def _fanuc_separate(plugmap=None):
     imanga_alignment = np.nonzero(holeType == b'MANGA_ALIGNMENT')[0]
     plugmap_manga_alignment = plugmap['PLUGMAPOBJ'][imanga_alignment]
 
-    iother = np.nonzero(((holeType != b'ALIGNMENT') &
-                         (holeType != b'LIGHT_TRAP') &
-                         (iscenter == np.bool(False))))[0]
+    iacquisition_center = np.nonzero(holeType == b'ACQUISITION_CENTER')[0]
+    plugmap_acquisition_center = plugmap['PLUGMAPOBJ'][iacquisition_center]
+
+    iacquisition_offaxis = np.nonzero(holeType == b'ACQUISITION_OFFAXIS')[0]
+    plugmap_acquisition_offaxis = plugmap['PLUGMAPOBJ'][iacquisition_offaxis]
+
+    iother = np.nonzero(((holeType == b'OBJECT') |
+                         (holeType == b'COHERENT_SKY') |
+                         (holeType == b'GUIDE') |
+                         (holeType == b'QUALITY') |
+                         (holeType == b'MANGA_SINGLE')) &
+                        (iscenter == np.bool(False)))[0]
     plugmap_other = plugmap['PLUGMAPOBJ'][iother]
 
     return_dict = collections.OrderedDict()
@@ -71,6 +80,16 @@ def _fanuc_separate(plugmap=None):
     return_dict['alignment'] = plugmap_alignment
     return_dict['manga'] = plugmap_manga
     return_dict['manga_alignment'] = plugmap_manga_alignment
+    return_dict['acquisition_center'] = plugmap_acquisition_center
+    return_dict['acquisition_offaxis'] = plugmap_acquisition_offaxis
+
+    nall = len(plugmap['PLUGMAPOBJ'])
+    nall_check = 0
+    for name, plug in zip(return_dict.keys(), return_dict.values()):
+        nall_check = nall_check + len(plug)
+    if(nall != nall_check):
+        print("Not all plug map entries accounted for!")
+        sys.exit()
 
     return (return_dict)
 
@@ -266,6 +285,7 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
     y_inch = y * mm2inch
     z_inch = z * mm2inch
     zr_inch = zr * mm2inch
+
     codes = gcodes.first(cx=x_inch[0], cy=y_inch[0], cz=z_inch[0],
                          czr=zr_inch[0], drillSeq=gcodes.drillSeq[holetype])
     for cx, cy, cz, czr, cobjId in zip(x_inch, y_inch, z_inch, zr_inch, objId):
@@ -481,7 +501,9 @@ def fanuc(mode='boss', planfile=None):
         linecolor['manga_alignment'] = 'magenta'
         for holetype in pmaps.keys():
             pmap = pmaps[holetype]
-            if(len(pmap) > 0):
+            if((len(pmap) > 0) &
+               (holetype != 'acquisition_center') &
+               (holetype != 'acquisition_offaxis')):
                 ffp.write(getattr(gcodes, holetype))
                 iorder = optimize_path(pmap['xFocal'], pmap['yFocal'])
                 (x, y, z, zr, zo) = _fanuc_xyz(plugmap=pmap[iorder],
@@ -497,7 +519,15 @@ def fanuc(mode='boss', planfile=None):
                 plt.plot(x, y, color=linecolor[holetype], label=label)
 
         # Write completion
-        completion = gcodes.completion(plateId=plate['plateId'])
+        if('acquisition_offaxis' in pmaps.keys()):
+            (ax, ay, az, azr, azo) = _fanuc_xyz(plugmap=pmaps['acquisition_offaxis'],
+                                                plate=plate, param=param)
+        else:
+            ax = None
+            ay = None
+
+        completion = gcodes.completion(plateId=plate['plateId'],
+                                       axy=(ax[0], ay[0]))
         ffp.write(completion)
         ffp.write("%\n")
 
