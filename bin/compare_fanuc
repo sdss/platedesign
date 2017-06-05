@@ -4,6 +4,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+import sys
 import numpy as np
 import argparse
 from platedesign.fanuc.extract import extract
@@ -30,6 +31,10 @@ args = parser.parse_args()
 
 (x1, y1, z1, zr1) = extract(args.fanuc_file_1)
 (x2, y2, z2, zr2) = extract(args.fanuc_file_2)
+
+if(len(x1) != len(x2)):
+    print("Different numbers of holes in fanuc!")
+    sys.exit()
 
 i2 = np.zeros(len(x1), dtype=np.int32) - 1
 for i in np.arange(len(x1)):
