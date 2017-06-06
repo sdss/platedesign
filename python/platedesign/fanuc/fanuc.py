@@ -3,6 +3,8 @@ import sys
 import numpy as np
 import copy
 import collections
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import pydl.pydlutils.yanny as yanny
 import pydl.pydlutils.spheregroup as spheregroup
