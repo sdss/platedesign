@@ -254,7 +254,9 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
             repl = repl.format(digit_int=digit_int, digit_str=digit_str)
             completion_text = completion_text.replace("--", repl, 1)
 
-        if(self.mode == 'apogee_south'):
+        if((self.mode == 'apogee_south') &
+           (axy[0] is not None) &
+           (axy[1] is not None)):
             ax = axy[0] / 25.4
             ay = axy[1] / 25.4
             acquisition_text = self.acquisition_template.format(axy=(ax, ay))
