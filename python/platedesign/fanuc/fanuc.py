@@ -318,6 +318,11 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
     drillpos_name = drillpos_template.format(plate=plate['plateId'])
     meas_name = meas_template.format(plate=plate['plateId'])
 
+    imeas = np.nonzero((plugmap['PLUGMAPOBJ']['holeType'] !=
+                        b'ACQUISITION_CENTER') &
+                       (plugmap['PLUGMAPOBJ']['holeType'] !=
+                        b'ACQUISITION_OFFAXIS'))[0]
+
     qdrill = _fanuc_xyz(plugmap=plugmap['PLUGMAPOBJ'],
                         plate=plate, param=param)
     (xdrill, ydrill, zdrill, zrdrill, zodrill) = qdrill
@@ -369,7 +374,7 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
 
     mfp = open(meas_name, 'w')
     line_template = "{objId[0]:d} {objId[1]:d} {objId[2]:d} {objId[3]:d} {objId[4]:d}, {xFlat:f}, {yFlat:f}, {holeDiam:f}\n"
-    for dpos in drillpos:
+    for dpos in drillpos[imeas]:
         line = line_template.format(objId=dpos['objId'],
                                     xFlat=dpos['xFlat'],
                                     yFlat=dpos['yFlat'],
@@ -519,15 +524,14 @@ def fanuc(mode='boss', planfile=None):
                 plt.plot(x, y, color=linecolor[holetype], label=label)
 
         # Write completion
-        if('acquisition_offaxis' in pmaps.keys()):
-            (ax, ay, az, azr, azo) = _fanuc_xyz(plugmap=pmaps['acquisition_offaxis'],
-                                                plate=plate, param=param)
-        else:
-            ax = None
-            ay = None
+        (ax, ay, az, azr, azo) = _fanuc_xyz(plugmap=pmaps['acquisition_offaxis'],
+                                            plate=plate, param=param)
+        if(len(ax) > 0):
+            ax = ax[0]
+            ay = ay[0]
 
         completion = gcodes.completion(plateId=plate['plateId'],
-                                       axy=(ax[0], ay[0]))
+                                       axy=(ax, ay))
         ffp.write(completion)
         ffp.write("%\n")
 
