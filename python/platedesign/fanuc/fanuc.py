@@ -531,6 +531,9 @@ def fanuc(mode='boss', planfile=None):
         if(len(ax) > 0):
             ax = ax[0]
             ay = ay[0]
+        else:
+            ax = None
+            ay = None
 
         completion = gcodes.completion(plateId=plate['plateId'],
                                        axy=(ax, ay))
