@@ -77,4 +77,6 @@ module load fitsverify
 module load mangacore
 module load sdss_access
 module load tree
-
+#
+module load tycho2
+prereq tycho2
