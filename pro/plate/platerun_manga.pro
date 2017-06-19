@@ -100,18 +100,21 @@ if(keyword_set(nolines) eq 0) then begin
      plate_guide_images, plateid[i]
 endif
 
-print, 'In the "plate" product run the following commands:"'
-print, '   makeFanucManga'
-print, '   makeDrillPos'
-print, '   makePlots -skipBrightCheck'
-print
-setupplate = 'setup plate'
-spawn, setupplate +'; echo "source '+getenv('PLATEDESIGN_DIR')+'/tcl/makeFanucManga.tcl ;makeFanucManga -plan='+planfile+' " | plate -noTk'
-spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
+spawn, 'make_fanuc --mode=manga --plan-file=' + planfile
+
+;; This is the old call to the plate product to create the fanuc files
+;;print, 'In the "plate" product run the following commands:"'
+;;print, '   makeFanucManga'
+;;print, '   makeDrillPos'
+;;print, '   makePlots -skipBrightCheck'
+;;print
+;;setupplate = 'setup plate'
+;; spawn, setupplate +'; echo "source '+getenv('PLATEDESIGN_DIR')+'/tcl/makeFanucManga.tcl ;makeFanucManga -plan='+planfile+' " | plate -noTk'
+;; spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
 ;; spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
 ;; planname+'" | plate -noTk'
-spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
-       planfile+'" | plate -noTk'
+;; spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
+;;        planfile+'" | plate -noTk'
 
 for i=0L, n_elements(plateid)-1L do begin
     fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanucUnadjusted-'+ $
