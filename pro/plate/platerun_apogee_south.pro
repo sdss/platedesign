@@ -60,7 +60,7 @@ plobs= replicate(plobs0, n_elements(plateid))
 for i=0L, n_elements(plateid)-1L do begin
     plugmap_filename = plate_dir(plateid[i])+'/plPlugMapP-'+ $
                        strtrim(string(plateid[i]),2)+'.par'
-    
+
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
         message, color_string('plPlugMapP file does not exist as expected: ' + $
@@ -90,7 +90,7 @@ if(keyword_set(nolines) eq 0) then begin
    for i=0L, n_elements(plateid)-1L do begin
        platelines_apogee_south, plateid[i], /sortx
        apogee_fibervhmag, plateid[i], holetype='APOGEE_SOUTH'
-       platelines_guide, plateid[i] 
+       platelines_guide, plateid[i]
        spawn, /noshell, ['plate_overlay', '--plate', strtrim(string(plateid[i]),2), '--png']
 
        ;; copy the pdf overlays from the individual plate directories
@@ -110,7 +110,7 @@ for i=0L, n_elements(plateid)-1L do begin
       plate_guide_images, plateid[i], pointing=pointing
 endfor
 
-spawn, 'make_fanuc --mode=apogee_south --plan-file=' + planfile
+spawn, /nosh, ['make_fanuc', '--mode=apoge_south', '--plan-file=' + planfile]
 
 ;; This is the old call to the plate product to create the fanuc files
 ;;print, 'In the "plate" product run the following commands:"'

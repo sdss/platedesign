@@ -64,7 +64,7 @@ plobs= replicate(plobs0, n_elements(plateid))
 for i=0L, n_elements(plateid)-1L do begin
     plugmap_filename = plate_dir(plateid[i])+'/plPlugMapH-'+ $
                        strtrim(string(plateid[i]),2)+'.par'
-    
+
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
         message, color_string('plPlugMapH file does not exist as expected: ' + $
@@ -100,7 +100,7 @@ if(keyword_set(nolines) eq 0) then begin
      plate_guide_images, plateid[i]
 endif
 
-spawn, 'make_fanuc --mode=manga --plan-file=' + planfile
+spawn, /nosh, ['make_fanuc', '--mode=manga', '--plan-file=' + planfile]
 
 ;; This is the old call to the plate product to create the fanuc files
 ;;print, 'In the "plate" product run the following commands:"'

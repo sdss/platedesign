@@ -86,7 +86,7 @@ ptr_free, pdata
 if(keyword_set(nolines) eq 0) then $
   platelines_boss_all, platerun
 
-spawn, 'make_fanuc --mode=boss --plan-file=' + planfile
+spawn, /nosh, ['make_fanuc', '--mode=boss', '--plan-file=' + planfile]
 
 ; This is the old call to the plate product to create the fanuc files
 ; print, 'In the "plate" product run the following commands:"'
