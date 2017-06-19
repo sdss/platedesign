@@ -108,7 +108,7 @@ for i=0L, n_elements(plateid)-1L do begin
     npointings= long(yanny_par(hdr, 'npointings'))
     for pointing= 1, npointings do begin
        plate_guide_images, plateid[i], pointing=pointing
-       plate_acquisition_images, plateid[i], pointing=pointing
+       plate_acquisition_images, plateid[i], pointing=pointing, /fits
     endfor
 endfor
 
