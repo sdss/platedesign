@@ -34,6 +34,9 @@ if(n_elements(rval) eq 0) then begin
     rval= sqrt(xval^2+yval^2)
     thval= (atan(yval, xval)+!DPI*2.) mod (!DPI*2.)
     thval[n_elements(thval)-1L]=2.*!DPI
+    isort = sort(thval)
+    rval = rval[isort]
+    thval = thval[isort]
 endif
 
 if(n_elements(xfiber) ne 1 OR $
