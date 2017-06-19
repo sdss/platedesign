@@ -10,7 +10,7 @@ tilerad 0.95
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
 # are not case sensitive. 
-targettypes sky science_bright science_medium science_faint standard_bright standard_medium
+targettypes sky science_bright science_medium science_faint standard_bright standard_medium acquisition
 
 # Number of pointings, and number of offsets per pointing
 # A pointing involves closing the shutter and reacquisition.
@@ -74,3 +74,11 @@ max_off_fiber_for_ha 0.3
 relaxed_fiber_classes 0
 
 collectfactor 6
+
+omit_center 1
+acquisition_camera 1
+
+ferruleSizeACQUISITION_CENTER 60.
+bufferSizeACQUISITION_CENTER 0.0
+ferruleSizeACQUISITION_OFFAXIS 68.
+bufferSizeACQUISITION_OFFAXIS 0.0
