@@ -119,10 +119,11 @@ for iter=0L, maxiter-1L do begin
                      (strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
                       strupcase(design.targettype) eq 'SCIENCE_BRIGHT'), nbright)
       sdss_plugprob, design[ibright].xf_default, $
-                     design[ibright].yf_default, tmp_fiberid, $
-                     reachfunc='boss_reachcheck', maxinblock=2L, $
-                     minavail=0L, blockfile=bright_blockfile, $
-                     blockcenx=blockcenx, blockceny=blockceny
+        design[ibright].yf_default, tmp_fiberid, $
+        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
+        minavail=0L, blockfile=bright_blockfile, $
+        blockcenx=blockcenx, blockceny=blockceny, $
+        platescale=platescale
       ibad= where(tmp_fiberid le 0, nbad)
       if(nbad gt 0) then begin
          message, 'Failed to assign all bright targets!'
@@ -150,10 +151,11 @@ for iter=0L, maxiter-1L do begin
                      (strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
                       strupcase(design.targettype) eq 'SCIENCE_MEDIUM'), nmedium)
       sdss_plugprob, design[imedium].xf_default, $
-                     design[imedium].yf_default, tmp_fiberid, $
-                     reachfunc='boss_reachcheck', maxinblock=2L, $
-                     minavail=0L, blockfile=medium_blockfile, $
-                     blockcenx=blockcenx, blockceny=blockceny
+        design[imedium].yf_default, tmp_fiberid, $
+        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
+        minavail=0L, blockfile=medium_blockfile, $
+        blockcenx=blockcenx, blockceny=blockceny, $
+        platescale=platescale
       ibad= where(tmp_fiberid le 0, nbad)
       if(nbad gt 0) then begin
          message, 'Failed to assign all medium targets!'
@@ -182,10 +184,11 @@ for iter=0L, maxiter-1L do begin
                      strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
                      strupcase(design.targettype) eq 'SKY'), nfaint)
       sdss_plugprob, design[ifaint].xf_default, $
-                     design[ifaint].yf_default, tmp_fiberid, $
-                     reachfunc='boss_reachcheck', maxinblock=2L, $
-                     minavail=0L, blockfile=faint_blockfile, $
-                     blockcenx=blockcenx, blockceny=blockceny 
+        design[ifaint].yf_default, tmp_fiberid, $
+        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
+        minavail=0L, blockfile=faint_blockfile, $
+        blockcenx=blockcenx, blockceny=blockceny , $
+        platescale=platescale
       ibad= where(tmp_fiberid le 0, nbad)
       if(nbad gt 0) then begin
          message, 'Failed to assign all faint targets!'
@@ -213,10 +216,11 @@ for iter=0L, maxiter-1L do begin
                       strupcase(design.targettype) eq 'SCIENCE' OR $
                       strupcase(design.targettype) eq 'SKY'), napogee)
       sdss_plugprob, design[iapogee].xf_default, $
-                     design[iapogee].yf_default, tmp_fiberid, $
-                     reachfunc='boss_reachcheck', maxinblock=6L, $
-                     minavail=0L, blockfile=full_blockfile, $
-                     blockcenx=blockcenx, blockceny=blockceny 
+        design[iapogee].yf_default, tmp_fiberid, $
+        reachfunc='apogee_south_reachcheck', maxinblock=6L, $
+        minavail=0L, blockfile=full_blockfile, $
+        blockcenx=blockcenx, blockceny=blockceny , $
+        platescale=platescale
       ibad= where(tmp_fiberid le 0, nbad)
       if(nbad gt 0) then begin
          message, color_string('Failed to assign all targets!','red','bold')
