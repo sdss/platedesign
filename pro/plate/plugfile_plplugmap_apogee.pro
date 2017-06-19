@@ -65,6 +65,16 @@ if(nhole gt 0) then plug[ihole].holetype= 'QUALITY'
 ihole= where(strupcase(holes.holetype) eq 'TRAP', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'LIGHT_TRAP'
 
+;; holetype ACQUISITION_CENTER in holes -> 
+;; holetype ACQUISITION_CENTER in plPlugMap
+ihole= where(strupcase(holes.holetype) eq 'ACQUISITION_CENTER', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'ACQUISITION_CENTER'
+
+;; holetype ACQUISITION_OFFAXIS in holes -> 
+;; holetype ACQUISITION_OFFAXIS in plPlugMap
+ihole= where(strupcase(holes.holetype) eq 'ACQUISITION_OFFAXIS', nhole)
+if(nhole gt 0) then plug[ihole].holetype= 'ACQUISITION_OFFAXIS'
+
 plug.ra= holes.target_ra
 plug.dec= holes.target_dec
 
@@ -167,6 +177,17 @@ if(nhole gt 0) then begin
 endif
 
 ihole= where(plug.holetype eq 'QUALITY', nhole)
+if(nhole gt 0) then begin
+    if(n_tags(newplug) gt 0) then begin
+        newplug=[newplug, plug[ihole]]
+        newholes=[newholes, holes[ihole]]
+    endif else begin
+        newplug=plug[ihole]
+        newholes=holes[ihole]
+    endelse
+endif
+
+ihole= where(strmatch(plug.holetype, 'ACQUISITION_*'), nhole)
 if(nhole gt 0) then begin
     if(n_tags(newplug) gt 0) then begin
         newplug=[newplug, plug[ihole]]

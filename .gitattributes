@@ -20,12 +20,15 @@ data/apogee/exclude_fibers_a2s_nov.par -text
 data/apogee/fiberBlocksAPOGEE.par -text
 data/apogee/fiberBlocksAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksAPOGEE_SOUTH.unordered.par -text
+data/apogee/fiberBlocksAPOGEE_SOUTH_CART22.par -text
 data/apogee/fiberBlocksBrightAPOGEE.par -text
 data/apogee/fiberBlocksBrightAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksFaintAPOGEE.par -text
 data/apogee/fiberBlocksFaintAPOGEE_SOUTH.par -text
 data/apogee/fiberBlocksMediumAPOGEE.par -text
 data/apogee/fiberBlocksMediumAPOGEE_SOUTH.par -text
+data/apogee/fiberBlocksSouth-2017-05-30.dat -text
+data/apogee/fiberBlocksSouth-Cart22-2017-06-01.dat -text
 data/boss/SDSS3FiberReach.pdf -text
 data/boss/SDSS3FiberReachData.pdf -text
 data/boss/SDSS3SFAnchrBlcks.pdf -text
@@ -108,6 +111,7 @@ defaults/plateDefault-APOGEE-MARVELS-DUAL-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-SINGLE-v2.par -text
 defaults/plateDefault-APOGEE-MARVELS-v0.par -text
 defaults/plateDefault-APOGEE-SOUTH-v0.par -text
+defaults/plateDefault-APOGEE-SOUTH-v1.par -text
 defaults/plateDefault-APOGEE-v2.par -text
 defaults/plateDefault-APOGEE2-GUIDETEST-v0.par -text
 defaults/plateDefault-APOGEE2-GUIDETEST-v1.par -text
@@ -172,6 +176,7 @@ pro/misc/guidetest_run_jul16.pro -text
 pro/misc/guidetest_run_may16.pro -text
 pro/misc/guidetest_run_nov.pro -text
 pro/misc/make_apogee2s_alignment_plate.pro -text
+pro/misc/make_apogee_south_blocks.pro -text
 pro/misc/make_boss_alignment_test_plate.pro -text
 pro/misc/make_flat_plate.pro -text
 pro/misc/make_lco_gridtest.pro -text
@@ -195,6 +200,7 @@ pro/objects/plate_design__define.pro -text
 pro/objects/plate_plan__define.pro -text
 pro/objects/pointing__define.pro -text
 pro/objects/xml2design_list__define.pro -text
+pro/plate/acquisition.pro -text
 pro/plate/ad2xyfocal.pro -text
 pro/plate/adr.pro -text
 pro/plate/alignment_fiber.pro -text
@@ -337,6 +343,7 @@ pro/retro/set_fiberid_3067_to_3079.pro -text
 pro/retro/set_fiberid_brians.pro -text
 pro/test/check_adr.pro -text
 pro/test/check_collisions.pro -text
+pro/test/check_reach.pro -text
 pro/test/check_reachcheck.pro -text
 pro/test/create_apogee_derivs.pro -text
 pro/test/extinction_check.pro -text

@@ -258,6 +258,11 @@ definition = plate_definition(designid=designid)
      center_diameter= float(default.center_diameter)
  endif
 
+;; tag for acquisition camera
+  if(tag_exist(default, 'ACQUISITION_CAMERA')) then begin
+     acquisition_camera= float(default.acquisition_camera)
+ endif
+
 ;; Get number of offsets, instruments, target types
   noffsets= long(default.noffsets) 
   instruments= strsplit(default.instruments, /extr)
@@ -310,8 +315,14 @@ definition = plate_definition(designid=designid)
               design.lambda_eff = guide_lambda_eff
             if(keyword_set(center_diameter)) then $
               design.diameter = center_diameter
+            design.epoch= epoch
+        endif 
+
+        if(keyword_set(acquisition_camera)) then begin
+            if(n_tags(design) gt 0) then $
+              message, 'Acquisition cameras are placed at center - no hole should be present yet'
+            design = acquisition(definition, default)
         endif
-        design.epoch= epoch
 
 		;plate_obj->add, 'design', design
         

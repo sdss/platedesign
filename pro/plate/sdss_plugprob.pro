@@ -140,6 +140,7 @@ endif else begin
     inputpossible=0L
 endelse
 
+
 tmpdir=getenv('PLATELIST_DIR')+'/tmp'
 
 spawn, /nosh, ['uuidgen'], uid

@@ -11,6 +11,8 @@
 ;   targets - target structure
 ;   design - design structure
 ;   info - structure with information tags for various options
+; OPTIONAL KEYWORD:
+;   /relax_targettype - don't check targettype 
 ; COMMENTS:
 ;   Designed to be run at first input of plateInput file in plate_drillrun
 ;   Required in default structure:
@@ -27,7 +29,8 @@
 ;   8-May-2008  Written by MRB, NYU
 ;	12-July-2011  Colorized error messages, Demitri Muna, NYU
 ;-
-pro target2design, definition, default, targets, design, info=info
+pro target2design, definition, default, targets, design, info=info, $
+                   relax_targettype=relax_targettype
 
 ;; which pointing are we adding these targets to?
 pointing= 1L
@@ -97,8 +100,10 @@ design.holetype= info.instrument
 
 targettypes=strsplit(default.targettypes, /extr)
 itt=where(strlowcase(info.targettype) eq strlowcase(targettypes), ntt)
-if(ntt eq 0) then $
-  message, color_string('no targettype '+info.targettype+' in this plate!', 'yellow', 'normal')
+if(ntt eq 0) then begin
+    if(~keyword_set(relax_targettype)) then $
+      message, color_string('no targettype '+info.targettype+' in this plate!', 'yellow', 'normal')
+endif
 design.targettype= strlowcase(info.targettype)
 
 design.pointing=pointing

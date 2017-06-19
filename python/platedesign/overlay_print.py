@@ -6,10 +6,16 @@ from sdss_access import SDSSPath
 import numpy as np
 import os.path
 import re
+import sys
 
 limit_radius = 41.5
 full_radius = 39.7
 interior_radius = 32.6  # cm
+
+# acquisition camera settings
+center_radius = 3.0
+offaxis_xsize = 5.5
+offaxis_ysize = 4.0
 
 # sdss_path = sdss_access.path.path()
 sdssPath = SDSSPath()
@@ -130,31 +136,76 @@ def apogee_layer(holes, numbers=False, renumber=False):
                           str(fiberid[indx]) + "}", props)
     return interior
 
+
 def guide_layer(holes):
-    guide_size= 1.2
+    guide_size = 1.2
 
     # Get guide fiber information
-    iguide= np.nonzero(np.array(holes['holetype']) == b'GUIDE')[0]
-    guide_xfocal= np.array(holes['xfocal'])[iguide]
-    guide_yfocal= np.array(holes['yfocal'])[iguide]
-    guidenum= np.array(holes['iguide'])[iguide]
+    iguide = np.nonzero(np.array(holes['holetype']) == b'GUIDE')[0]
+    guide_xfocal = np.array(holes['xfocal'])[iguide]
+    guide_yfocal = np.array(holes['yfocal'])[iguide]
+    guidenum = np.array(holes['iguide'])[iguide]
 
     # Set up object to print
-    clippath= path.circle(0., 0., interior_radius)
+    clippath = path.circle(0., 0., interior_radius)
     clipobject = canvas.clip(clippath)
-    interior=canvas.canvas([clipobject])
+    interior = canvas.canvas([clipobject])
 
     for indx in range(len(guide_xfocal)):
-        interior.stroke(path.rect((guide_yfocal[indx]/10.)-guide_size*0.5, 
-                                  (guide_xfocal[indx]/10.)-guide_size*0.5, 
+        interior.stroke(path.rect((guide_yfocal[indx] / 10.) -
+                                  guide_size * 0.5,
+                                  (guide_xfocal[indx] / 10.) -
+                                  guide_size * 0.5,
                                   guide_size, guide_size),
                         [style.linewidth.THick, color.cmyk.Black])
-        interior.text((guide_yfocal[indx]/10.)+guide_size*0.66,
-                      (guide_xfocal[indx]/10.), 
-                      r"\font\myfont=cmr10 at 35pt {\myfont "+ 
-                      str(guidenum[indx])+"}",
-                      [text.halign.boxleft, text.valign.middle, 
+        interior.text((guide_yfocal[indx] / 10.) + guide_size * 0.66,
+                      (guide_xfocal[indx] / 10.),
+                      r"\font\myfont=cmr10 at 35pt {\myfont " +
+                      str(guidenum[indx]) + "}",
+                      [text.halign.boxleft, text.valign.middle,
                        text.size.Huge])
+
+    return interior
+
+
+def acquisition_layer(holes):
+
+    # Get camera info
+    icenter = np.nonzero(np.array(holes['holetype']) ==
+                         b'ACQUISITION_CENTER')[0]
+    if(len(icenter) == 0):
+        return None
+    if(len(icenter) > 1):
+        print("Expect just one central acquisition camera.")
+    center_xfocal = np.array(holes['xfocal'])[icenter[0]]
+    center_yfocal = np.array(holes['yfocal'])[icenter[0]]
+
+    ioffaxis = np.nonzero(np.array(holes['holetype']) ==
+                          b'ACQUISITION_OFFAXIS')[0]
+    if(len(ioffaxis) == 0):
+        print("If there is a center acquisition camera we expect an off-axis.")
+        sys.exit()
+    if(len(ioffaxis) > 1):
+        print("Expect just one off-axis acquisition camera.")
+        sys.exit()
+    offaxis_xfocal = np.array(holes['xfocal'])[ioffaxis[0]]
+    offaxis_yfocal = np.array(holes['yfocal'])[ioffaxis[0]]
+
+    # Set up object to print
+    clippath = path.circle(0., 0., interior_radius)
+    clipobject = canvas.clip(clippath)
+    interior = canvas.canvas([clipobject])
+
+    interior.stroke(path.circle(center_yfocal / 10., center_xfocal / 10.,
+                                center_radius),
+                    [style.linewidth.THick, color.cmyk.Black])
+
+    interior.stroke(path.rect((offaxis_yfocal / 10.) -
+                              offaxis_ysize * 0.5,
+                              (offaxis_xfocal / 10.) -
+                              offaxis_xsize * 0.5,
+                              offaxis_ysize, offaxis_xsize),
+                    [style.linewidth.THick, color.cmyk.Black])
 
     return interior
 
@@ -177,9 +228,28 @@ def whiteout_layer(holes):
             radius = 0.36
         if(holes['holetype'][indx] == b'TRAP'):
             radius = 0.45
-        whiteout.fill(path.circle(holes['yfocal'][indx]/10., 
-                                  holes['xfocal'][indx]/10., radius), 
+        if(holes['holetype'][indx] == b'ACQUISITION_CENTER'):
+            radius = 2.9
+        whiteout.fill(path.circle(holes['yfocal'][indx] / 10.,
+                                  holes['xfocal'][indx] / 10., radius),
                       [color.rgb.white])
+
+    ioffaxis = np.nonzero(np.array(holes['holetype']) ==
+                          b'ACQUISITION_OFFAXIS')[0]
+    if(len(ioffaxis) == 0):
+        print("If there is a center acquisition camera we expect an off-axis.")
+        sys.exit()
+    if(len(ioffaxis) > 1):
+        print("Expect just one off-axis acquisition camera.")
+        sys.exit()
+    offaxis_xfocal = np.array(holes['xfocal'])[ioffaxis[0]]
+    offaxis_yfocal = np.array(holes['yfocal'])[ioffaxis[0]]
+    whiteout.fill(path.rect((offaxis_yfocal / 10.) -
+                            offaxis_ysize * 0.49,
+                            (offaxis_xfocal / 10.) -
+                            offaxis_xsize * 0.49,
+                            0.98 * offaxis_ysize, 0.98 * offaxis_xsize),
+                  [color.rgb.white])
 
     return whiteout
 
@@ -321,11 +391,14 @@ def overlay_print(plateid, numbers=False, noguides=False, renumber=False,
     whiteout = whiteout_layer(holes)
     plate_circle = plate_circle_layer(plateid, information, message_tex)
     outline = outline_layer()  # pyx.canvas object
+    acquisition = acquisition_layer(holes)
 
     outline.insert(apogee)
     if(guide is not None):
         outline.insert(guide)
     outline.insert(plate_circle)
+    if(acquisition is not None):
+        outline.insert(acquisition)
     outline.insert(whiteout)
 
     pformat = document.paperformat(limit_radius * 2., limit_radius * 2.)
