@@ -2,7 +2,7 @@
 ; NAME:
 ;   platerun_boss
 ; PURPOSE:
-;   Prepare files and run the low-level plate routines for BOSS 
+;   Prepare files and run the low-level plate routines for BOSS
 ; CALLING SEQUENCE:
 ;   platerun_boss, platerun, plateid
 ; INPUTS:
@@ -60,7 +60,7 @@ plobs= replicate(plobs0, n_elements(plateid))
 for i=0L, n_elements(plateid)-1L do begin
     plugmap_filename = plate_dir(plateid[i])+'/plPlugMapP-'+ $
                        strtrim(string(plateid[i]),2)+'.par'
-    
+
     ;; Check if plug file exists - fatal error if not
     if (~file_test(plugmap_filename)) then begin
         message, 'plPlugMapP file does not exist as expected: ' + $
@@ -86,26 +86,29 @@ ptr_free, pdata
 if(keyword_set(nolines) eq 0) then $
   platelines_boss_all, platerun
 
-print, 'In the "plate" product run the following commands:"'
-print, '   makeFanuc'
-print, '   makeDrillPos'
-print, '   use_cs3'
-print, '   makePlots -skipBrightCheck'
-print
-setupplate = 'setup plate'
-spawn, setupplate +'; echo "makeFanuc -plan='+planfile+' " | plate -noTk'
-spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
-spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
-       planname+'" | plate -noTk', outcs3
-for i=0L, n_elements(outcs3)-1L do begin
-    bad= strmatch(outcs3[i], 'collision*')
-    if(bad) then begin
-        print, outcs3
-        message, 'Final plate collision check failed!'
-    endif
-endfor
-spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
-       planfile+'" | plate -noTk'
+spawn, 'make_fanuc --mode=boss --plan-file=' + planfile
+
+; This is the old call to the plate product to create the fanuc files
+; print, 'In the "plate" product run the following commands:"'
+; print, '   makeFanuc'
+; print, '   makeDrillPos'
+; print, '   use_cs3'
+; print, '   makePlots -skipBrightCheck'
+; print
+; setupplate = 'setup plate'
+; spawn, setupplate +'; echo "makeFanuc -plan='+planfile+' " | plate -noTk'
+; spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
+; spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
+;        planname+'" | plate -noTk', outcs3
+; for i=0L, n_elements(outcs3)-1L do begin
+;     bad= strmatch(outcs3[i], 'collision*')
+;     if(bad) then begin
+;         print, outcs3
+;         message, 'Final plate collision check failed!'
+;     endif
+; endfor
+; spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
+;        planfile+'" | plate -noTk'
 
 for i=0L, n_elements(plateid)-1L do begin
     fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanucUnadjusted-'+ $
