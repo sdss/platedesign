@@ -106,11 +106,13 @@ for i=0L, n_elements(plateid)-1L do begin
       strtrim(string(plateid[i]),2)+'.par'
     plug= yanny_readone(plugmap_filename, hdr=hdr)
     npointings= long(yanny_par(hdr, 'npointings'))
-    for pointing= 1, npointings do $
-      plate_guide_images, plateid[i], pointing=pointing
+    for pointing= 1, npointings do begin
+       plate_guide_images, plateid[i], pointing=pointing
+       plate_acquisition_images, plateid[i], pointing=pointing
+    endfor
 endfor
 
-spawn, /nosh, ['make_fanuc', '--mode=apoge_south', '--plan-file=' + planfile]
+spawn, /nosh, ['make_fanuc', '--mode=apogee_south', '--plan-file=' + planfile]
 
 ;; This is the old call to the plate product to create the fanuc files
 ;;print, 'In the "plate" product run the following commands:"'

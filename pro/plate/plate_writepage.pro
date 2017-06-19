@@ -85,6 +85,7 @@ printf, unit, '<td>HA (deg E)</td>'
 printf, unit, '<td>HA<sub>min</sub></td>'
 printf, unit, '<td>HA<sub>max</sub></td>'
 printf, unit, '<td>Guides</td>'
+printf, unit, '<td>Acq. cams</td>'
 printf, unit, '<td>plugmap link</td>'
 printf, unit, '<td>Instrument</td>'
 printf, unit, '<td>N<sub>sci</sub></td>'
@@ -216,6 +217,16 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, *guides[ip]
                 if(file_test(plate_dir(plateid[i])+'/'+ghtml) gt 0) then $
                   printf, unit, '</a>'
+                printf, unit, '</td>'
+
+                ahtml= 'acquisitionDSS-'+ strtrim(string(f='(i6.6)', plateid[i]),2)+ $
+                  '-p'+strtrim(string(ip+1L),2)+'.html'
+                
+                printf, unit, tdst
+                if(file_test(plate_dir(plateid[i])+'/'+ahtml) gt 0) then $
+                   printf, unit, '<a href="'+gpath+'/'+ahtml+'">cameras</a>' $
+                else $
+                   printf, unit, 'no cameras'
                 printf, unit, '</td>'
 
                 printf, unit, tdst+'<a href="'+path+'">'+plugname
