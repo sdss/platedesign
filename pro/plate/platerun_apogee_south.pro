@@ -110,26 +110,29 @@ for i=0L, n_elements(plateid)-1L do begin
       plate_guide_images, plateid[i], pointing=pointing
 endfor
 
-print, 'In the "plate" product run the following commands:"'
-print, '   makeFanuc'
-print, '   makeDrillPos'
-print, '   use_cs3'
-print, '   makePlots -skipBrightCheck'
-print
-setupplate = 'setup plate'
-spawn, setupplate +'; echo "makeFanuc -gcode=G56 -plan='+planfile+' " | plate -noTk'
-spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
-spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
-       planname+'" | plate -noTk', outcs3
-for i=0L, n_elements(outcs3)-1L do begin
-    bad= strmatch(outcs3[i], 'collision*')
-    if(bad) then begin
-        print, outcs3
-        message, 'Final plate collision check failed!'
-    endif
-endfor
-spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
-       planfile+'" | plate -noTk'
+spawn, 'make_fanuc --mode=apogee_south --plan-file=' + planfile
+
+;; This is the old call to the plate product to create the fanuc files
+;;print, 'In the "plate" product run the following commands:"'
+;;print, '   makeFanuc'
+;;print, '   makeDrillPos'
+;;print, '   use_cs3'
+;;print, '   makePlots -skipBrightCheck'
+;;print
+;; setupplate = 'setup plate'
+;; spawn, setupplate +'; echo "makeFanuc -gcode=G56 -plan='+planfile+' " | plate -noTk'
+;; spawn, setupplate +'; echo "makeDrillPos -plan='+planfile+'" | plate -noTk'
+;; spawn, setupplate +'; echo "use_cs3 -planDir '+platerun_dir+' '+ $
+;;       planname+'" | plate -noTk', outcs3
+;;for i=0L, n_elements(outcs3)-1L do begin
+;;    bad= strmatch(outcs3[i], 'collision*')
+;;    if(bad) then begin
+;;        print, outcs3
+;;        message, 'Final plate collision check failed!'
+;;    endif
+;;endfor
+;;spawn, setupplate +'; echo "makePlots -skipBrightCheck -plan='+ $
+;;''       planfile+'" | plate -noTk'
 
 for i=0L, n_elements(plateid)-1L do begin
     fanucfile= getenv('PLATELIST_DIR')+'/runs/'+platerun+'/plFanucUnadjusted-'+ $
