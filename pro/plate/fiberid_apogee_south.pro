@@ -93,14 +93,8 @@ npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 
 full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksAPOGEE_SOUTH.par'
-bright_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksBrightAPOGEE_SOUTH.par'
-medium_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksMediumAPOGEE_SOUTH.par'
-faint_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksFaintAPOGEE_SOUTH.par'
 
 blocks= yanny_readone(full_blockfile)
-bblocks= yanny_readone(bright_blockfile)
-mblocks= yanny_readone(medium_blockfile)
-fblocks= yanny_readone(faint_blockfile)
 
 relaxed_fiber_classes=0
 if(tag_indx(default, 'relaxed_fiber_classes') ge 0) then begin
@@ -109,106 +103,11 @@ if(tag_indx(default, 'relaxed_fiber_classes') ge 0) then begin
    endif
 endif
 
-
 maxiter=7L
 for iter=0L, maxiter-1L do begin
    
    if(relaxed_fiber_classes eq 0) then begin
-      ;; brights 
-      ibright= where(strupcase(design.holetype) eq 'APOGEE_SOUTH' AND $
-                     (strupcase(design.targettype) eq 'STANDARD_BRIGHT' OR $
-                      strupcase(design.targettype) eq 'SCIENCE_BRIGHT'), nbright)
-      sdss_plugprob, design[ibright].xf_default, $
-        design[ibright].yf_default, tmp_fiberid, $
-        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
-        minavail=0L, blockfile=bright_blockfile, $
-        blockcenx=blockcenx, blockceny=blockceny, $
-        platescale=platescale
-      ibad= where(tmp_fiberid le 0, nbad)
-      if(nbad gt 0) then begin
-         message, 'Failed to assign all bright targets!'
-      endif
-      fiberid[ibright]=bblocks[tmp_fiberid-1L].fiberid
-      idone= where(fiberid gt 0, ndone)
-      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
-                           blockcenx, blockceny
-      if(keyword_set(debug)) then begin
-         splot, design.xf_default, design.yf_default, psym=4
-         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-         for i=0L, n_elements(bnums)-1L do begin
-            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-            isort= sort(design[idone[ib]].yf_default)
-            soplot, design[idone[ib[isort]]].xf_default, $
-                    design[idone[ib[isort]]].yf_default
-            soplot, blockcenx[bnums[i]-1]*platescale, $
-                    blockceny[bnums[i]-1]*platescale, psym=4, $
-                    color='red'
-         endfor
-      endif
-      
-      ;; mediums
-      imedium= where(strupcase(design.holetype) eq 'APOGEE_SOUTH' AND $
-                     (strupcase(design.targettype) eq 'STANDARD_MEDIUM' OR $
-                      strupcase(design.targettype) eq 'SCIENCE_MEDIUM'), nmedium)
-      sdss_plugprob, design[imedium].xf_default, $
-        design[imedium].yf_default, tmp_fiberid, $
-        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
-        minavail=0L, blockfile=medium_blockfile, $
-        blockcenx=blockcenx, blockceny=blockceny, $
-        platescale=platescale
-      ibad= where(tmp_fiberid le 0, nbad)
-      if(nbad gt 0) then begin
-         message, 'Failed to assign all medium targets!'
-      endif
-      fiberid[imedium]=tmp_fiberid
-      fiberid[imedium]=mblocks[tmp_fiberid-1L].fiberid
-      idone= where(fiberid gt 0, ndone)
-      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
-                           blockcenx, blockceny
-      if(keyword_set(debug)) then begin
-         splot, design.xf_default, design.yf_default, psym=4
-         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-         for i=0L, n_elements(bnums)-1L do begin
-            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-            isort= sort(design[idone[ib]].yf_default)
-            soplot, design[idone[ib[isort]]].xf_default, $
-                    design[idone[ib[isort]]].yf_default
-            soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
-                    color='red'
-         endfor
-      endif
-      
-      ;; faints
-      ifaint= where(strupcase(design.holetype) eq 'APOGEE_SOUTH' AND $
-                    (strupcase(design.targettype) eq 'STANDARD_FAINT' OR $
-                     strupcase(design.targettype) eq 'SCIENCE_FAINT' OR $
-                     strupcase(design.targettype) eq 'SKY'), nfaint)
-      sdss_plugprob, design[ifaint].xf_default, $
-        design[ifaint].yf_default, tmp_fiberid, $
-        reachfunc='apogee_south_reachcheck', maxinblock=2L, $
-        minavail=0L, blockfile=faint_blockfile, $
-        blockcenx=blockcenx, blockceny=blockceny , $
-        platescale=platescale
-      ibad= where(tmp_fiberid le 0, nbad)
-      if(nbad gt 0) then begin
-         message, 'Failed to assign all faint targets!'
-      endif
-      fiberid[ifaint]=fblocks[tmp_fiberid-1L].fiberid
-      idone= where(fiberid gt 0, ndone)
-      set_blockcen_apogee, design[idone], blocks, fiberid[idone], $
-                           blockcenx, blockceny
-      if(keyword_set(debug)) then begin
-         splot, design.xf_default, design.yf_default, psym=4
-         bnums= (uniqtag(blocks[fiberid[idone]-1],'blockid')).blockid
-         for i=0L, n_elements(bnums)-1L do begin
-            ib=where(blocks[fiberid[idone]-1].blockid eq bnums[i])
-            isort= sort(design[idone[ib]].yf_default)
-            soplot, design[idone[ib[isort]]].xf_default, $
-                    design[idone[ib[isort]]].yf_default
-            soplot, blockcenx[bnums[i]-1], blockceny[bnums[i]-1], psym=4, $
-                    color='red'
-         endfor
-      endif
+      message, 'relaxed_fiber_classes must be 1 -- unrelaxed version not allowed'
    endif else begin
       ;; all in one go
       iapogee= where(strupcase(design.holetype) eq 'APOGEE_SOUTH' AND $

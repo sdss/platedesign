@@ -79,11 +79,6 @@ for i=0L, n_elements(plateid)-1L do begin
            strtrim(string(plateid[i]),2)+'*.par '+ $
            platerun_dir
 
-    ;; copy the pdf overlays from the individual plate directories
-	spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
-           strtrim(string(plateid[i], FORMAT='(I06)'),2)+'-*.pdf '+ $
-           platerun_dir
-
 endfor
 pdata=ptr_new(plobs)
 yanny_write, platerun_dir+'/plObs-'+platerun+'.par', $
@@ -97,6 +92,11 @@ if(keyword_set(nolines) eq 0) then begin
        apogee_fibervhmag, plateid[i], holetype='APOGEE_SOUTH'
        platelines_guide, plateid[i]
        spawn, /noshell, ['plate_overlay', '--plate', strtrim(string(plateid[i]),2), '--png']
+
+       ;; copy the pdf overlays from the individual plate directories
+       spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
+              strtrim(string(plateid[i], FORMAT='(I6)'),2)+'-*.pdf '+ $
+              platerun_dir
    endfor
 endif
 

@@ -260,7 +260,7 @@ definition = plate_definition(designid=designid)
 
 ;; tag for acquisition camera
   if(tag_exist(default, 'ACQUISITION_CAMERA')) then begin
-     acquisition_camera= float(default.acquisition_camera)
+     acquisition_camera= long(default.acquisition_camera)
  endif
 
 ;; Get number of offsets, instruments, target types

@@ -180,8 +180,7 @@ def acquisition_layer(holes):
     center_xfocal = np.array(holes['xfocal'])[icenter[0]]
     center_yfocal = np.array(holes['yfocal'])[icenter[0]]
 
-    ioffaxis = np.nonzero(np.array(holes['holetype']) ==
-                          b'ACQUISITION_OFFAXIS')[0]
+    ioffaxis = np.nonzero(np.array(holes['holetype']) == b'ACQUISITION_OFFAXIS')[0]
     if(len(ioffaxis) == 0):
         print("If there is a center acquisition camera we expect an off-axis.")
         sys.exit()
@@ -237,8 +236,7 @@ def whiteout_layer(holes):
     ioffaxis = np.nonzero(np.array(holes['holetype']) ==
                           b'ACQUISITION_OFFAXIS')[0]
     if(len(ioffaxis) == 0):
-        print("If there is a center acquisition camera we expect an off-axis.")
-        sys.exit()
+        return whiteout
     if(len(ioffaxis) > 1):
         print("Expect just one off-axis acquisition camera.")
         sys.exit()
