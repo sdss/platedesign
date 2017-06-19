@@ -254,6 +254,7 @@ pro/plate/make_gridtest.pro -text
 pro/plate/make_guideplate.pro -text
 pro/plate/make_hexpack_1353.pro -text
 pro/plate/minmaxinblock.pro -text
+pro/plate/plate_acquisition_images.pro -text
 pro/plate/plate_ad2xy.pro -text
 pro/plate/plate_assign.pro -text
 pro/plate/plate_assign_constrained.pro -text
