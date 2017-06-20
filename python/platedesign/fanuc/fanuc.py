@@ -260,8 +260,66 @@ def _fanuc_measure(gcodes=None, plugmap=None, plate=None, param=None,
     return(xflat, yflat, holediam)
 
 
+def _fix_path(x1, y1, x2, y2, rlimit=None):
+    """Avoid trajectories outside radial limit of drill
+
+    Parameters
+    ----------
+    x1 : np.float32
+        X position start (inches)
+    y1 : np.float32
+        Y position start (inches)
+    x2 : np.float32
+        X position end (inches)
+    y2 : np.float32
+        Y position end (inches)
+    rlimit : np.float32
+        radial limit (inches)
+
+    Returns
+    -------
+    (code, xnew, ynew) : (str, np.float32, np.float32)
+        Nones if no trajectory change required, 
+        code and new intermediate point if trajectory change
+        required.
+    """
+    dx = x2 - x1
+    dy = y2 - y1
+    adx = np.abs(dx)
+    ady = np.abs(dy)
+    if(adx > ady):
+        y3 = y2
+        y4 = y1
+        if(dx >= 0.):
+            x3 = x1 + ady
+            x4 = x2 - ady
+        else:
+            x3 = x1 - ady
+            x4 = x2 + ady
+    else:
+        x3 = x2
+        x4 = x1
+        if(dy >= 0.):
+            y3 = y1 + adx
+            y4 = y2 - adx
+        else:
+            y3 = y1 - adx
+            y4 = y2 + adx
+    r3 = np.sqrt(x3**2 + y3**2)
+    r4 = np.sqrt(x4**2 + y4**2)
+    if(r3 < rlimit):
+        return (None, None, None)
+    else:
+        if(r4 < rlimit):
+            print("Fixing path, inserting x={x:.6f} y={y:.6f} (mm)".format(x=x4 * 25.4, y=y4 * 25.4))
+            return("G00 X{x:.6f} Y{y:.6f}\n".format(x=x4, y=y4), x4, y4)
+        else:
+            print("Path fix failed! ABORTING")
+            sys.exit()
+
+
 def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
-                 objId=None, holetype=None):
+                 objId=None, holetype=None, rlimit=None):
     """Write codes for list of holes
 
     Parameters
@@ -281,6 +339,17 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
         for SDSS imaging targets )
     holetype : str
         type of hole
+    rlimit : np.float32
+        radial limit for drill path
+
+    Returns:
+    --------
+    code : str
+        Codes for fanuc file
+    xpath : ndarray of np.float32
+        path points in mm (usually the same as x)
+    ypath : ndarray of np.float32
+        path points in mm (usually the same as y)
     """
     mm2inch = 1. / 25.4
     x_inch = x * mm2inch
@@ -290,11 +359,25 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
 
     codes = gcodes.first(cx=x_inch[0], cy=y_inch[0], cz=z_inch[0],
                          czr=zr_inch[0], drillSeq=gcodes.drillSeq[holetype])
+    px = x_inch[0]
+    py = y_inch[0]
+    xpath = np.array([x_inch[0]])
+    ypath = np.array([y_inch[0]])
     for cx, cy, cz, czr, cobjId in zip(x_inch, y_inch, z_inch, zr_inch, objId):
+        fixcode, xfix, yfix = _fix_path(px, py, cx, cy, rlimit=rlimit * mm2inch)
+        if(fixcode is not None):
+            codes += fixcode
+            xpath = np.append(xpath, [xfix])
+            ypath = np.append(ypath, [yfix])
         code = gcodes.hole(holetype=holetype, cx=cx, cy=cy, cz=cz, czr=czr,
                            objId=cobjId)
+        (px, py) = (cx, cy)
         codes += code
-    return(codes)
+        xpath = np.append(xpath, [cx])
+        ypath = np.append(ypath, [cy])
+    xpath = xpath / mm2inch
+    ypath = ypath / mm2inch
+    return(codes, xpath, ypath)
 
 
 def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
@@ -430,6 +513,52 @@ def _fanuc_check(plateid=None):
     return(True)
 
 
+def _plot_path(x, y, xpath, ypath, color=None, label=None):
+    """Plot a path
+
+    Parameters
+    ----------
+    x, y : ndarray of np.float32
+        x and y locations of holes
+    xpath, ypath : ndarray of np.float32
+        x and y locations of path points
+    color : str
+        color of path
+    label : str
+        label of path
+
+    Notes
+    -----
+    Plots the path assuming the drilling machine moves equally
+    fast in X and Y.
+
+    """
+    nn = 30
+    clabel = label
+    for indx in np.arange(len(xpath) -1):
+        x1 = xpath[indx]
+        x2 = xpath[indx + 1]
+        y1 = ypath[indx]
+        y2 = ypath[indx + 1]
+        mm = np.max([np.abs(x2 - x1), np.abs(y2 - y1)])
+        if(np.abs(x2 - x1) > 0.):
+            fx = np.arange(nn) / np.float(nn - 1) * mm / np.abs(x2 - x1)
+            ix = np.nonzero(fx > 1.)[0]
+            fx[ix] = 1.
+        else:
+            fx = np.zeros(nn)
+        if(np.abs(y2 - y1) > 0.):
+            fy = np.arange(nn) / np.float(nn - 1) * mm / np.abs(y2 - y1)
+            iy = np.nonzero(fy > 1.)[0]
+            fy[iy] = 1.
+        else:
+            fy = np.zeros(nn)
+        plt.plot(x1 + fx * (x2 - x1), y1 + fy * (y2 - y1), color=color,
+                 label=clabel)
+        clabel = None
+    plt.plot(x, y, 'o', ms=3.5, color=color, alpha=0.5)
+        
+
 def fanuc(mode='boss', planfile=None):
     """Create plFanuc file for plates
 
@@ -494,10 +623,17 @@ def fanuc(mode='boss', planfile=None):
         # Open drilling path PNG
         plt.figure(dpi=150, figsize=(5, 5))
         plt.title("plate {plateId}".format(plateId=plate['plateId']))
-        plt.xlim((-405., 405.))
-        plt.ylim((-405., 405.))
+        plt.xlim((-405., 485.))
+        plt.ylim((-405., 485.))
         plt.xlabel("X drill (mm)")
         plt.ylabel("Y drill (mm)")
+        
+        # Plot circle at limit
+        rlimit = np.float32(param['maxRadius'])
+        theta = np.arange(1000) / 999. * np.pi * 2.
+        xlimit = rlimit * np.cos(theta)
+        ylimit = rlimit * np.sin(theta)
+        plt.plot(xlimit, ylimit, color='black')
 
         # Loop through plug map hole types
         linecolor = dict()
@@ -516,14 +652,14 @@ def fanuc(mode='boss', planfile=None):
                 (x, y, z, zr, zo) = _fanuc_xyz(plugmap=pmap[iorder],
                                                plate=plate, param=param)
                 length = _fanuc_length(x, y)
-                codes = _fanuc_codes(gcodes=gcodes, x=x, y=y, z=z, zr=zr,
-                                     objId=pmap['objId'][iorder],
-                                     holetype=holetype)
+                codes, xpath, ypath = _fanuc_codes(gcodes=gcodes, x=x, y=y,
+                                                   z=z, zr=zr, objId=pmap['objId'][iorder],
+                                                   holetype=holetype, rlimit=rlimit)
                 ffp.write(codes)
                 label = "{holetype} holes ({length:.1f} m)"
                 label = label.format(holetype=holetype,
                                      length=length / 1000.)
-                plt.plot(x, y, color=linecolor[holetype], label=label)
+                _plot_path(x, y, xpath, ypath, color=linecolor[holetype], label=label)
 
         # Write completion
         (ax, ay, az, azr, azo) = _fanuc_xyz(plugmap=pmaps['acquisition_offaxis'],
