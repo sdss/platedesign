@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# load_plates
+#
+# Created by José Sánchez-Gallego on 14 Jun 2017.
+
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+
+import click
+import pgpasslib
+import socket
+
+from platedesign.core.logger import get_log
+
+from sdssdb.observatory import database
+
+from platedesign.db.plate_plans_db import plate_plans_db
+from platedesign.db.plate_holes_db import plate_holes_db
+from platedesign.db.plate_addenda_db import plate_addenda_db
+
+
+DBNAME_DEFAULT = 'lcodb' if socket.getfqdn().endswith('lco.cl') else 'apodb'
+DBUSER_DEFAULT = 'sdssdb_admin'
+DBHOST_DEFAULT = 'sdss4-db'
+
+
+@click.group()
+@click.option('-v', '--verbose', is_flag=True)
+@click.option('-w', '--overwrite', is_flag=True)
+@click.option('-n', '--dbname', help='the database name.',
+              default=DBNAME_DEFAULT, metavar='<db>', show_default=True)
+@click.option('-u', '--dbuser', help='the database user.',
+              default=DBUSER_DEFAULT, metavar='<user>', show_default=True)
+@click.option('-h', '--dbhost', help='the database host.',
+              default=DBHOST_DEFAULT, metavar='<host>', show_default=True)
+@click.pass_context
+def load_plates(ctx, verbose=False, overwrite=False,
+                dbname=DBNAME_DEFAULT, dbuser=DBUSER_DEFAULT, dbhost=DBHOST_DEFAULT):
+    """Loads plates to the APO/LCO database."""
+
+    ctx.obj['verbose'] = verbose
+    ctx.obj['overwrite'] = verbose
+
+    ctx.obj['log'] = get_log(log_level='INFO' if verbose is False else 'DEBUG')
+
+    try:
+        password = pgpasslib.getpass(host=dbhost, user=dbuser, dbname=dbname)
+    except pgpasslib.FileNotFound:
+        password = None
+
+    if password is None:
+        click.echo('Cannot find password for user {0} in pgpass. '
+                   'Input it manually.'.format(dbuser))
+        password = click.prompt('Password', hide_input=True)
+
+    database.connect_from_parameters(database=dbname, user=dbuser, host=dbhost)
+
+
+@load_plates.command()
+@click.option('-p', '--plate', is_flag=True,
+              help='if set, the argument is one or multiple plates, '
+                   'instead of a list of plateruns.')
+@click.argument('platerun', nargs=-1, metavar='PLATERUN(s)/PLATE(s)', required=True)
+def all(platerun, plate=False):
+    """Loads the plates, plateHoles, and definitionAddenda."""
+
+    do_load(platerun, is_plate=plate, do_plates=True, do_holes=True, do_addenda=True)
+
+
+@click.pass_context
+def do_load(ctx, platerun, is_plate=False, do_plates=True, do_holes=True, do_addenda=True):
+
+    log = ctx.obj['log']
+    overwrite = ctx.obj['overwrite']
+
+    if do_plates:
+        # plate_plans_db takes care of calling plate_holes_db and plate_addenda_db
+        plate_plans_db(platerun, plate_mode=is_plate, overwrite=overwrite, log=log,
+                       load_holes=do_holes, load_addenda=do_addenda)
+        return
+
+    if do_holes:
+        plate_holes_db(platerun, plate_mode=is_plate, overwrite=overwrite, log=log,
+                       load_holes=do_holes)
+
+    if do_addenda:
+        plate_addenda_db(platerun, design_mode=is_plate, overwrite=overwrite, log=log)
+
+
+if __name__ == '__main__':
+    load_plates(obj={})
