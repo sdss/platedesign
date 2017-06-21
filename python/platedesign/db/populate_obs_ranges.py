@@ -50,6 +50,20 @@ for line in open(never_drilled_file, 'r').read().splitlines():
         never_drilled.append(int(line_strip))
 
 
+def populate_all(**kwargs):
+    """Reloads the observing ranges for all the plates in platePlans.
+
+    Parameters:
+        kwargs (dict):
+            Parameters to be passed to ``populate_obs_range``.
+
+    """
+
+    platePlans = utils.get_platePlans()
+
+    return populate_obs_range(platePlans['plateid'], **kwargs)
+
+
 def populate_obs_range(plates, verbose=False, log=None, ignore_missing=False):
     """Loads observing ranges into the DB.
 
