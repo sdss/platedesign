@@ -279,7 +279,7 @@ def _fix_path(x1, y1, x2, y2, rlimit=None):
     Returns
     -------
     (code, xnew, ynew) : (str, np.float32, np.float32)
-        ("", None, None) if no trajectory change required, 
+        Nones if no trajectory change required, 
         code and new intermediate point if trajectory change
         required.
     """
@@ -308,7 +308,7 @@ def _fix_path(x1, y1, x2, y2, rlimit=None):
     r3 = np.sqrt(x3**2 + y3**2)
     r4 = np.sqrt(x4**2 + y4**2)
     if(r3 < rlimit):
-        return ("", None, None)
+        return (None, None, None)
     else:
         if(r4 < rlimit):
             print("Fixing path, inserting x={x:.6f} y={y:.6f} (mm)".format(x=x4 * 25.4, y=y4 * 25.4))
@@ -365,11 +365,12 @@ def _fanuc_codes(gcodes=None, x=None, y=None, z=None, zr=None,
     ypath = np.array([y_inch[0]])
     for cx, cy, cz, czr, cobjId in zip(x_inch, y_inch, z_inch, zr_inch, objId):
         fixcode, xfix, yfix = _fix_path(px, py, cx, cy, rlimit=rlimit * mm2inch)
-        if(fixcode != ""):
+        if(fixcode is not None):
+            codes += fixcode
             xpath = np.append(xpath, [xfix])
             ypath = np.append(ypath, [yfix])
         code = gcodes.hole(holetype=holetype, cx=cx, cy=cy, cz=cz, czr=czr,
-                           objId=cobjId, fixcode=fixcode)
+                           objId=cobjId)
         (px, py) = (cx, cy)
         codes += code
         xpath = np.append(xpath, [cx])

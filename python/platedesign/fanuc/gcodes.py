@@ -61,15 +61,15 @@ M08
 """
         self.hole_text = dict()
         self.hole_text['objects'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.5 F9.0
-{fixcode}G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
+G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
 """
         self.hole_text['lighttrap'] = self.hole_text['objects']
         self.hole_text['manga'] = self.hole_text['objects']
         self.hole_text['alignment'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.02 F2.0
-{fixcode}G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
+G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
 """
         self.hole_text['manga_alignment'] = """G83 G98 Z{cz:.6f} R{czr:.3f} L0 Q0.02 F1.5
-{fixcode}G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
+G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]} )
 """
 
         self.holediam_values = dict()
@@ -200,7 +200,7 @@ M08
                                       drillSeq=drillSeq))
 
     def hole(self, holetype=None, cx=None, cy=None, cz=None, czr=None,
-             objId=None, fixcode=None):
+             objId=None):
         """Create CNC code for holes
 
         Parameters
@@ -224,7 +224,7 @@ M08
             CNC code
         """
         return(self.hole_text[holetype].format(cx=cx, cy=cy, cz=cz, czr=czr,
-                                               objId=objId, fixcode=fixcode))
+                                               objId=objId))
 
     def completion(self, plateId=None, axy=None):
         """Create CNC code for plate completion
