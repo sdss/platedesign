@@ -21,6 +21,7 @@ from sdssdb.observatory import database
 from platedesign.db.plate_plans_db import plate_plans_db
 from platedesign.db.plate_holes_db import plate_holes_db
 from platedesign.db.plate_addenda_db import plate_addenda_db
+from platedesign.db.populate_obs_ranges import populate_obs_range, populate_all
 
 
 DBNAME_DEFAULT = 'lcodb' if socket.getfqdn().endswith('lco.cl') else 'apodb'
@@ -69,6 +70,61 @@ def all(platerun, plate=False):
     """Loads the plates, plateHoles, and definitionAddenda."""
 
     do_load(platerun, is_plate=plate, do_plates=True, do_holes=True, do_addenda=True)
+
+
+@load_plates.command()
+@click.option('-p', '--plate', is_flag=True,
+              help='if set, the argument is one or multiple plates, '
+                   'instead of a list of plateruns.')
+@click.argument('platerun', nargs=-1, metavar='PLATERUN(s)/PLATE(s)', required=True)
+def plans(platerun, plate=False):
+    """Loads the a group of plates or plateruns from platePlans to the DB."""
+
+    do_load(platerun, is_plate=plate, do_plates=True, do_holes=False, do_addenda=False)
+
+
+@load_plates.command()
+@click.option('-p', '--plate', is_flag=True,
+              help='if set, the argument is one or multiple plates, '
+                   'instead of a list of plateruns.')
+@click.argument('platerun', nargs=-1, metavar='PLATERUN(s)/PLATE(s)', required=True)
+def holes(platerun, plate=False):
+    """Loads plate holes into the DB for a group of plates or plateruns."""
+
+    do_load(platerun, is_plate=plate, do_plates=False, do_holes=True, do_addenda=False)
+
+
+@load_plates.command()
+@click.option('-p', '--plate', is_flag=True,
+              help='if set, the argument is one or multiple plates, '
+                   'instead of a list of plateruns.')
+@click.argument('platerun', nargs=-1, metavar='PLATERUN(s)/PLATE(s)', required=True)
+def addenda(platerun, plate=False):
+    """Loads plateDefinitionAddenda into the DB for a group of plates or plateruns."""
+
+    do_load(platerun, is_plate=plate, do_plates=False, do_holes=False, do_addenda=True)
+
+
+@load_plates.command()
+@click.option('-a', '--all', is_flag=True,
+              help='if set, reloads the observing ranges for all the plates in platePlans.')
+@click.option('--no-ignore-missing', is_flag=True,
+              help='if set, the process will fail if trying to populate the '
+                   'observing ranges for a plates that is not in the DB.')
+@click.argument('plates', nargs=-1, metavar='PLATE(s)', required=False)
+@click.pass_context
+def obsrange(ctx, plates, no_ignore_missing=False, all=False):
+    """Loads observing ranges for a series of plates."""
+
+    if not all:
+        populate_obs_range(plates,
+                           verbose=ctx.obj['overwrite'],
+                           log=ctx.obj['log'],
+                           ignore_missing=not no_ignore_missing)
+    else:
+        populate_all(verbose=ctx.obj['overwrite'],
+                     log=ctx.obj['log'],
+                     ignore_missing=not no_ignore_missing)
 
 
 @click.pass_context
