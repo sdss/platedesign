@@ -25,6 +25,8 @@ pro/third_party/*.o
 pro/third_party/galloy/*.o
 python/*.o
 python/platedesign/*.o
+python/platedesign/core/*.o
+python/platedesign/db/*.o
 python/platedesign/fanuc/*.o
 python/platedesign/plate/*.o
 python/platedesign/survey/*.o
