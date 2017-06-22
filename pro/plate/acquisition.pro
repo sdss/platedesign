@@ -52,9 +52,9 @@ tmp_design.buffer = buffersize
 
 tmp_design[m2].holetype = 'ACQUISITION_CENTER'
 ferrulesize= get_ferrulesize(definition, default, 'ACQUISITION_CENTER')
-tmp_design.diameter = ferrulesize
+tmp_design[m2].diameter = ferrulesize
 buffersize= get_buffersize(definition, default, 'ACQUISITION_CENTER')
-tmp_design.buffer = buffersize
+tmp_design[m2].buffer = buffersize
 
 return, tmp_design
 
