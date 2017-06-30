@@ -30,8 +30,8 @@ function check_acquisition, acquisition, regular
 xsize = 55.
 ysize = 40.
 
-xlimit = xsize + regular.diameter * 0.5 + regular.buffer
-ylimit = ysize + regular.diameter * 0.5 + regular.buffer
+xlimit = xsize * 0.5 + regular.diameter * 0.5 + regular.buffer
+ylimit = ysize * 0.5 + regular.diameter * 0.5 + regular.buffer
 
 xlo = acquisition.xf_default - xlimit
 xhi = acquisition.xf_default + xlimit
