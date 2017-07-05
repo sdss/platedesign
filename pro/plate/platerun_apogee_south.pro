@@ -95,7 +95,7 @@ if(keyword_set(nolines) eq 0) then begin
 
        ;; copy the pdf overlays from the individual plate directories
        spawn, 'cp -f '+plate_dir(plateid[i])+'/plateLines-'+ $
-              strtrim(string(plateid[i], FORMAT='(I6)'),2)+'-*.pdf '+ $
+              strtrim(string(plateid[i], FORMAT='(I06)'),2)+'-*.pdf '+ $
               platerun_dir
    endfor
 endif
