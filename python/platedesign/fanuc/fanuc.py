@@ -430,7 +430,8 @@ def _fanuc_drillpos(gcodes=None, plugmap=None, plate=None, param=None):
     enum_holetype = ('HOLETYPE', ('OBJECT', 'COHERENT_SKY', 'GUIDE',
                                   'LIGHT_TRAP', 'ALIGNMENT', 'QUALITY',
                                   'MANGA', 'MANGA_SINGLE',
-                                  'MANGA_ALIGNMENT'))
+                                  'MANGA_ALIGNMENT', 'ACQUISITION_CENTER',
+                                  'ACQUISITION_OFFAXIS'))
     enums_drillpos = {'holeType': enum_holetype}
     drillpos = np.zeros(len(xdrill), dtype=dtype_drillpos)
     drillpos['holeType'] = plugmap['PLUGMAPOBJ']['holeType']
@@ -484,7 +485,12 @@ def _fanuc_check(plateid=None):
     Notes 
     -----
     Assumes 5 arcmin is biggest thing it needs to check
+
+    For the off-axis acquisition camera at LCO,
+     it assumes a 55 x 40 mm footprint.
     """
+    offaxis_xsize = 55.
+    offaxis_ysize = 40.
     drillpos_template = 'plDrillPos-{plate}.par' + post_str
     drillpos_name = drillpos_template.format(plate=plateid)
     dpos = yanny.yanny(drillpos_name)
@@ -503,13 +509,26 @@ def _fanuc_check(plateid=None):
             limit = 0.5 * (dpos['DRILLPOS']['holeDiam'][indx1] +
                            dpos['DRILLPOS']['holeDiam'][indx2])
             if(d12 < limit):
-                print("{x} {y}".format(x=dpos['DRILLPOS']['xDrill'][indx1],
-                                       y=dpos['DRILLPOS']['yDrill'][indx1]))
-                print("{x} {y}".format(x=dpos['DRILLPOS']['xDrill'][indx2],
-                                       y=dpos['DRILLPOS']['yDrill'][indx2]))
-                print("{indx1} {indx2}".format(indx1=indx1, indx2=indx2))
-                print("{dx} {dy} {limit}".format(dx=dx, dy=dy, limit=limit))
-                return(False)
+                conflict = True
+                holeType1 = dpos['DRILLPOS']['holeType'][indx1].decode()
+                holeType2 = dpos['DRILLPOS']['holeType'][indx2].decode()
+                # Special case for acquisition camera
+                if(holeType1 == "ACQUISITION_OFFAXIS" or
+                   holeType2 == "ACQUISITION_OFFAXIS"):
+                    conflict = False
+                    x1 = dpos['DRILLPOS']['xDrill'][indx1]
+                    x2 = dpos['DRILLPOS']['xDrill'][indx2]
+                    y1 = dpos['DRILLPOS']['yDrill'][indx1]
+                    y2 = dpos['DRILLPOS']['yDrill'][indx2]
+                    if(holeType1 == "ACQUISITION_OFFAXIS"):
+                        holeDiam = dpos['DRILLPOS']['holeDiam'][indx2]
+                    else:
+                        holeDiam = dpos['DRILLPOS']['holeDiam'][indx1]
+                    if(np.abs(x1 - x2) < 0.5 * (offaxis_xsize + holeDiam) and
+                       np.abs(y1 - y2) < 0.5 * (offaxis_ysize + holeDiam)):
+                        conflict = True
+                if(conflict is True):
+                    return(False)
     return(True)
 
 
