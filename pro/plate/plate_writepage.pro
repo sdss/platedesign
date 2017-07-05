@@ -166,12 +166,12 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
             endelse
-            
+
             if(it eq 0) then begin
                 printf, unit, tdst
                 printf, unit, pointing_name[ip]
                 printf, unit, '</td>'
-                
+
                 printf, unit, tdst
                 printf, unit, racen[ip]
                 printf, unit, '</td>'
@@ -204,13 +204,13 @@ for indx=0L, n_elements(plateid)-1L do begin
                            words[n_elements(words)-2L]+'/'+ $
                            words[n_elements(words)-1L]
                 path='../../plates/'+lastwords
-                
+
                 lastwords= words[n_elements(words)-3L]+'/'+ $
                            words[n_elements(words)-2L]
                 gpath= '../../plates/'+lastwords
                 ghtml= 'guideDSS-'+ strtrim(string(f='(i6.6)', plateid[i]),2)+ $
                   '-p'+strtrim(string(ip+1L),2)+'.html'
-                
+
                 printf, unit, tdst
                 if(file_test(plate_dir(plateid[i])+'/'+ghtml) gt 0) then $
                   printf, unit, '<a href="'+gpath+'/'+ghtml+'">'
@@ -221,7 +221,7 @@ for indx=0L, n_elements(plateid)-1L do begin
 
                 ahtml= 'acquisitionDSS-'+ strtrim(string(f='(i6.6)', plateid[i]),2)+ $
                   '-p'+strtrim(string(ip+1L),2)+'.html'
-                
+
                 printf, unit, tdst
                 if(file_test(plate_dir(plateid[i])+'/'+ahtml) gt 0) then $
                    printf, unit, '<a href="'+gpath+'/'+ahtml+'">cameras</a>' $
@@ -240,8 +240,9 @@ for indx=0L, n_elements(plateid)-1L do begin
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
                 printf, unit, '<td></td>'
+                printf, unit, '<td></td>'
             endelse
-                
+
             printf, unit, tdst
             printf, unit, instruments[it]
             printf, unit, '</td>'
@@ -256,10 +257,10 @@ for indx=0L, n_elements(plateid)-1L do begin
             printf, unit, '</td>'
 
             printf, unit, '</tr>'
-        endfor 
-    endfor 
-            
-            
+        endfor
+    endfor
+
+
     openw, plunit, runpath+'/'+plfile, /get_lun
     printf, plunit, '<html>'
     printf, plunit, '<head>'
@@ -329,13 +330,13 @@ for indx=0L, n_elements(plateid)-1L do begin
                            count=count)
     if(count gt 0) then $
        linestable, 'APOGEE fiber class QA', plunit, tmp_files
-    
+
     printf, plunit, '</tbody>'
     printf, plunit, '</table>'
     printf, plunit, '</body>'
     printf, plunit, '</html>'
     free_lun, plunit
-    
+
     printf, unit, '</tr>'
 endfor
 printf, unit, '</tbody>'
