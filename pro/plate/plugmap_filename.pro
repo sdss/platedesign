@@ -38,7 +38,7 @@ FUNCTION plugmap_filename, plateID=plateID, type=type, pointing=pointing
 	if keyword_set(pointing) then begin
 
 		; validatation
-		if typename(pointing) ne 'STRING' || strlen(pointing) gt 1 then $
+		if size(pointing, /type) ne 'STRING' || strlen(pointing) gt 1 then $
 			message, color_string('An invalid pointing value was specified.', 'red', 'bold')
 
 		if pointing eq 'A' then begin
