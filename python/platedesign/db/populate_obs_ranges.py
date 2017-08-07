@@ -14,6 +14,8 @@ from __future__ import absolute_import
 import os
 import warnings
 
+import numpy as np
+
 import astropy.table as table
 
 from sdssdb.observatory import platedb
@@ -140,11 +142,11 @@ def populate_obs_range(plates, verbose=False, log=None, ignore_missing=False):
 
             plate_pointing_dbo = plate_pointing_dbo.first()
 
-            if plate_id in exceptions['plateid']:
-                warnings.warn('plate {0}: override value used.'.format(plate_id))
+            if np.any(exceptions['plateid'] == plate_id):
+                warnings.warn('plate {0}: override value used.'.format(plate_id), UserWarning)
                 row = exceptions[exceptions['plateid'] == plate_id][0]
-                plate_pointing_dbo.ha_observable_min = row['ha_min']
-                plate_pointing_dbo.ha_observable_max = row['ha_max']
+                plate_pointing_dbo.ha_observable_min = row['ha_observable_min']
+                plate_pointing_dbo.ha_observable_max = row['ha_observable_max']
             else:
                 plate_pointing_dbo.ha_observable_min = ha_observable_min
                 plate_pointing_dbo.ha_observable_max = ha_observable_max

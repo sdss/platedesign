@@ -111,18 +111,18 @@ def addenda(platerun, plate=False):
 @click.option('--no-ignore-missing', is_flag=True,
               help='if set, the process will fail if trying to populate the '
                    'observing ranges for a plates that is not in the DB.')
-@click.argument('plates', nargs=-1, metavar='PLATE(s)', required=False)
+@click.argument('plates', nargs=-1, metavar='PLATE(s)', type=int, required=False)
 @click.pass_context
 def obsrange(ctx, plates, no_ignore_missing=False, all=False):
     """Loads observing ranges for a series of plates."""
 
     if not all:
         populate_obs_range(plates,
-                           verbose=ctx.obj['overwrite'],
+                           verbose=ctx.obj['verbose'],
                            log=ctx.obj['log'],
                            ignore_missing=not no_ignore_missing)
     else:
-        populate_all(verbose=ctx.obj['overwrite'],
+        populate_all(verbose=ctx.obj['verbose'],
                      log=ctx.obj['log'],
                      ignore_missing=not no_ignore_missing)
 
