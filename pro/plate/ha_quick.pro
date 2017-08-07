@@ -109,7 +109,7 @@ endif else begin
     ntry= 1L
     try_ha= haact[0]
     try_maxdist=fltarr(ntry)
-endelse
+ endelse
 for i=0L, ntry-1L do begin
     try_lst= racen+try_ha[i]
     ad2xyfocal, observatory, ratest, dectest, try_xf, try_yf, racen=racen, deccen=deccen, $
@@ -151,9 +151,22 @@ if(n_elements(haact) eq 0) then begin
     ok_ha= int_maxdist lt max_off 
     iok= where(ok_ha, nok)
     if(nok eq 0) then $
-      message, 'No valid HA choices close enough to design HA??'
-    hamin= min(int_ha[iok])
-    hamax= max(int_ha[iok])
+       message, color_string('No valid HA choices close enough to design HA??','red', 'bold')
+    cha = min(abs(int_ha - ha), icha)
+    iha = icha
+    while iha gt 0 do begin
+       if(int_maxdist[iha - 1] gt max_off) then $
+          break
+       iha = iha - 1
+    endwhile
+    hamin = int_ha[iha]
+    iha = icha
+    while iha lt n_elements(int_maxdist) - 2L do begin
+       if(int_maxdist[iha + 1] gt max_off) then $
+          break
+       iha = iha + 1
+    endwhile
+    hamax = int_ha[iha]
     
     if(keyword_set(plot)) then begin
         splot, int_ha, int_maxdist, xra=[-30., 30.], _EXTRA=extra_for_plot
