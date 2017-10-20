@@ -144,7 +144,7 @@ def do_load(ctx, platerun, is_plate=False, do_plates=True, do_holes=True, do_add
                        load_holes=do_holes)
 
     if do_addenda:
-        plate_addenda_db(platerun, design_mode=is_plate, overwrite=overwrite, log=log)
+        plate_addenda_db(platerun, design_mode=is_plate, log=log)
 
 
 if __name__ == '__main__':
