@@ -13,6 +13,7 @@ from __future__ import absolute_import
 
 import hashlib
 import os
+import six
 import warnings
 
 import peewee
@@ -202,7 +203,7 @@ def _load_plate(plate_id, plateplans_line, log, overwrite=False):
 
     # Handle survey relationship
     plate_dbo.surveys.clear()  # First remove surveys
-    for survey in plateplans_line['survey'].astype('U').split('-'):
+    for survey in six.u(plateplans_line['survey']).split('-'):
         plate_dbo.surveys.add([platedb.Survey.get(plateplan_name=survey)])
 
     # Ensure "design" foreign key constraint is met (lookup design from db).
@@ -272,7 +273,7 @@ def _load_plate(plate_id, plateplans_line, log, overwrite=False):
         plate_pointing_dbo.pointing_name = pointing_name[0].value.split()[pno - 1]
 
         # Sets the priority to 5 for MaNGA and APOGEE, 2 for eBOSS
-        survey = plateplans_line['survey'].astype('U')
+        survey = six.u(plateplans_line['survey'])
         if 'manga' in survey or 'apogee' in survey:
             plate_pointing_dbo.priority = 5
         else:
