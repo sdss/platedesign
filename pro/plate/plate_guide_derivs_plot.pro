@@ -27,6 +27,23 @@ offset=0L
 
 platedir= plate_dir(plateid)
 
+if(n_tags(hdrstr) eq 0) then begin
+   plplug= platedir+'/plPlugMapP-'+ $
+           strtrim(string(plateid),2)+'.par'
+   if(NOT file_test(plplug)) then $
+      plplug= platedir+'/plPlugMapH-'+ $
+              strtrim(string(plateid),2)+'.par'
+   check_file_exists, plplug, plateid=plateid
+   holes= yanny_readone(plplug, hdr=hdr)
+   hdrstr= lines2struct(hdr, /relaxed)
+endif
+
+itag=tag_indx(hdrstr,'OBSERVATORY')
+if(itag eq -1) then $
+  observatory = 'APO' $
+else $
+  observatory = hdrstr.(itag)
+
 post=string(f='(i6.6)', plateid)+ $
      '-p'+strtrim(string(pointing),2)+ $
      '-l'+strtrim(string(guideon, f='(i5.5)'),2)
@@ -34,9 +51,10 @@ off= yanny_readone(platedir+'/plateGuideOffsets-'+post+'.par')
 adjust= yanny_readone(platedir+'/plateGuideAdjust-'+post+'.par')
 
 nha=n_elements(adjust)
-platelines_start, plateid, platedir+'/plateGuide-'+post, $
-                  'offsets (\DeltaHA= '+strtrim(string(adjust[0].delha, f='(i)'),2)+ $
-                  ' to '+strtrim(string(adjust[nha-1].delha, f='(i)'),2)+')'
+label = 'offsets (\DeltaHA= '+strtrim(string(adjust[0].delha, f='(i)'),2)+ $
+        ' to '+strtrim(string(adjust[nha-1].delha, f='(i)'),2)+')'
+platelines_start, plateid, platedir+'/plateGuide-'+post, label, $
+                  observatory=observatory
 
 hogg_usersym, 10, /fill 
 djs_oplot, off.yfocal, off.xfocal, psym=8, symsize=0.15
