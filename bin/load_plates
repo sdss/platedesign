@@ -95,14 +95,14 @@ def holes(platerun, plate=False):
 
 
 @load_plates.command()
-@click.option('-p', '--plate', is_flag=True,
+@click.option('-d', '--design', is_flag=True,
               help='if set, the argument is one or multiple plates, '
                    'instead of a list of plateruns.')
 @click.argument('platerun', nargs=-1, metavar='PLATERUN(s)/PLATE(s)', required=True)
-def addenda(platerun, plate=False):
-    """Loads plateDefinitionAddenda into the DB for a group of plates or plateruns."""
+def addenda(platerun, design=False):
+    """Loads plateDefinitionAddenda into the DB for a group of designs or plateruns."""
 
-    do_load(platerun, is_plate=plate, do_plates=False, do_holes=False, do_addenda=True)
+    do_load(platerun, is_plate=design, do_plates=False, do_holes=False, do_addenda=True)
 
 
 @load_plates.command()
