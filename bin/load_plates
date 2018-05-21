@@ -47,6 +47,7 @@ def load_plates(ctx, verbose=False, overwrite=False,
     ctx.obj['overwrite'] = verbose
 
     ctx.obj['log'] = get_log(log_level='INFO' if verbose is False else 'DEBUG')
+    log = ctx.obj['log']
 
     try:
         password = pgpasslib.getpass(host=dbhost, user=dbuser, dbname=dbname)
@@ -59,6 +60,11 @@ def load_plates(ctx, verbose=False, overwrite=False,
         password = click.prompt('Password', hide_input=True)
 
     database.connect_from_parameters(database=dbname, user=dbuser, host=dbhost)
+
+    if database.connected:
+        log.info(f'connected to {database.database!r}')
+    else:
+        ctx.fail('cannot connect to database')
 
 
 @load_plates.command()

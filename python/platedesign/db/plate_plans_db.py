@@ -384,8 +384,6 @@ def plate_plans_db(inputs, plate_mode=False, verbose=False, overwrite=False,
         else:
             log.debug('added platerun {0} to the plate_run table.'.format(platerun))
 
-        pr.save()
-
         design_ids = np.unique(run_lines['designid'])
 
         for design_id in design_ids:
