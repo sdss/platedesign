@@ -114,7 +114,7 @@ def _load_design(design_id, log, overwrite=False):
                                      for pointing in design_dbo.pointings])
 
         if no_plate_pointings > 0:
-            raise RuntimeError('design_id {0} has pointins with '
+            raise RuntimeError('design_id {0} has pointings with '
                                'already created plate_pointings. '
                                'This requires manual intervention.'
                                .format(design_id))
@@ -155,7 +155,6 @@ def _load_plate(plate_id, plateplans_line, log, overwrite=False):
     else:
         log.info('creating new Plate for plate_id={0}.'.format(plate_id))
 
-    plate_dbo.plate_id = plateplans_line['plateid']
     plate_dbo.location_id = plateplans_line['locationid']
     plate_dbo.temperature = plateplans_line['temp']
     plate_dbo.epoch = plateplans_line['epoch']
