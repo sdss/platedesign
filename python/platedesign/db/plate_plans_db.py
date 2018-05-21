@@ -140,7 +140,7 @@ def _load_design(design_id, log, overwrite=False):
 
 @platedb.database.atomic()
 def _load_plate(plate_id, plateplans_line, log, overwrite=False):
-    """Loads a plate and plate_pointing infor to the DB."""
+    """Loads a plate and plate_pointing info to the DB."""
 
     # Does this plate exist in the database?
     plate_dbo, created = platedb.Plate.get_or_create(plate_id=plate_id)
