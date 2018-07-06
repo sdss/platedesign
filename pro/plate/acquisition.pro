@@ -56,6 +56,17 @@ tmp_design[m2].diameter = ferrulesize
 buffersize= get_buffersize(definition, default, 'ACQUISITION_CENTER')
 tmp_design[m2].buffer = buffersize
 
+observatory = get_observatory(definition, default)
+tilerad = get_tilerad(definition, default)
+platescale = get_platescale(observatory)
+rlimit = tilerad * platescale - 0.5 * ferrulesize - buffersize
+rmm = sqrt(tmp_design.xf_default^2 + tmp_design.yf_default^2)
+iout = where(rmm gt rlimit, nout)
+
+if (nout gt 0) then begin
+   message, 'Acquisition hole too close to edge!'
+endif
+
 return, tmp_design
 
 end
