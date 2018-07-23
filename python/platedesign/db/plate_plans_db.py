@@ -114,7 +114,7 @@ def _load_design(design_id, log, overwrite=False):
                                      for pointing in design_dbo.pointings])
 
         if no_plate_pointings > 0:
-            raise RuntimeError('design_id {0} has pointins with '
+            raise RuntimeError('design_id {0} has pointings with '
                                'already created plate_pointings. '
                                'This requires manual intervention.'
                                .format(design_id))
@@ -140,7 +140,7 @@ def _load_design(design_id, log, overwrite=False):
 
 @platedb.database.atomic()
 def _load_plate(plate_id, plateplans_line, log, overwrite=False):
-    """Loads a plate and plate_pointing infor to the DB."""
+    """Loads a plate and plate_pointing info to the DB."""
 
     # Does this plate exist in the database?
     plate_dbo, created = platedb.Plate.get_or_create(plate_id=plate_id)
@@ -155,7 +155,6 @@ def _load_plate(plate_id, plateplans_line, log, overwrite=False):
     else:
         log.info('creating new Plate for plate_id={0}.'.format(plate_id))
 
-    plate_dbo.plate_id = plateplans_line['plateid']
     plate_dbo.location_id = plateplans_line['locationid']
     plate_dbo.temperature = plateplans_line['temp']
     plate_dbo.epoch = plateplans_line['epoch']
@@ -383,8 +382,6 @@ def plate_plans_db(inputs, plate_mode=False, verbose=False, overwrite=False,
             log.debug('platerun {0} already is already in the DB.'.format(platerun))
         else:
             log.debug('added platerun {0} to the plate_run table.'.format(platerun))
-
-        pr.save()
 
         design_ids = np.unique(run_lines['designid'])
 
