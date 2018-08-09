@@ -72,7 +72,6 @@ setenv [string toupper $product]_DIR $PRODUCT_DIR
 module load photoop
 prereq photoop
 module load platelist
-module load plate
 module load fitsverify
 module load mangacore
 module load sdss_access
