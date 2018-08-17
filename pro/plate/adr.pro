@@ -70,7 +70,9 @@ irefract6_tp_ref= irefract6_ref* tpfact
 fhoffset= fhumid*(0.0624-0.000680/mlambda^2)/(1.+0.003661*temperature)
 irefract6_f= irefract6_tp- fhoffset
 fhoffset_ref= fhumid*(0.0624-0.000680/mreflambda^2)/(1.+0.003661*temperature)
-irefract6_f_ref= irefract6_tp_ref- fhoffset_ref
+;irefract6_f_ref= irefract6_tp_ref- fhoffset_ref
+; DRL- this next line is a hack to test code- must undo it!!
+irefract6_f_ref= irefract6_tp_ref- fhoffset
 
 ;; Now convert to shift
 ;; delta_r = (r(lambda)-r(5500)) = 206265*(n(lambda)-n(5500))*tan z
