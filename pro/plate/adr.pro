@@ -26,8 +26,13 @@ function adr, trualt, pressure=pressure, $
               temperature=temperature, lambda=lambda, $
               pr72=pr72, fhumid=fhumid, reflambda=reflambda
 
-if(NOT keyword_set(reflambda)) then reflambda=5500.
 if(NOT keyword_set(lambda)) then lambda=5500.
+; Ensure type of reflambda matches lambda (float or double)
+if(NOT keyword_set(reflambda)) then begin
+  if (size(lambda,/type) eq 5) then reflambda=5500.d $
+  else reflambda=5500.
+endif
+
 if(NOT keyword_set(pressure)) then pressure=1013.25
 if(n_elements(fhumid) eq 0) then fhumid=8.
 if(n_elements(temperature) eq 0) then temperature=5.
@@ -70,9 +75,7 @@ irefract6_tp_ref= irefract6_ref* tpfact
 fhoffset= fhumid*(0.0624-0.000680/mlambda^2)/(1.+0.003661*temperature)
 irefract6_f= irefract6_tp- fhoffset
 fhoffset_ref= fhumid*(0.0624-0.000680/mreflambda^2)/(1.+0.003661*temperature)
-;irefract6_f_ref= irefract6_tp_ref- fhoffset_ref
-; DRL- this next line is a hack to test code- must undo it!!
-irefract6_f_ref= irefract6_tp_ref- fhoffset
+irefract6_f_ref= irefract6_tp_ref- fhoffset_ref
 
 ;; Now convert to shift
 ;; delta_r = (r(lambda)-r(5500)) = 206265*(n(lambda)-n(5500))*tan z
