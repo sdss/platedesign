@@ -1,3 +1,4 @@
 *.o
 src/cs2/cs2
 bin/skycalc
+!data/lco/*.o
