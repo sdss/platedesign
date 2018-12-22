@@ -18,7 +18,7 @@ import numpy as np
 
 import astropy.table as table
 
-from sdssdb.observatory import platedb
+from sdssdb.peewee.operationsdb import platedb
 
 from sdss.utilities import yanny
 

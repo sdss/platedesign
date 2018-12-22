@@ -19,7 +19,7 @@ import peewee
 from platedesign.core.logger import get_log
 from platedesign import utils
 
-from sdssdb.observatory import platedb
+from sdssdb.peewee.operationsdb import platedb
 
 from sdss.utilities import yanny
 
