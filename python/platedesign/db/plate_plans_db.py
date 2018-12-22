@@ -27,7 +27,7 @@ from .populate_obs_ranges import populate_obs_range
 from .plate_holes_db import plate_holes_db
 from .plate_addenda_db import plate_addenda_db
 
-from sdssdb.observatory import platedb
+from sdssdb.peewee.operationsdb import platedb
 
 import numpy as np
 
