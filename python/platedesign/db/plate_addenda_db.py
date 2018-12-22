@@ -47,7 +47,7 @@ def plate_addenda_db(inputs, design_mode=False, verbose=False, log=None):
                                                               if not design_mode else 'plate'))
 
     # Checks the connection
-    conn_status = platedb.database.check_connection()
+    conn_status = platedb.database.connected
     if conn_status:
         log.info('database connection is open.')
     else:

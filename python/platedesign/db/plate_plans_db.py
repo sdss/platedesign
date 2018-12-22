@@ -313,7 +313,7 @@ def plate_plans_db(inputs, plate_mode=False, verbose=False, overwrite=False,
                                                             if not plate_mode else 'plate'))
 
     # Checks the connection
-    conn_status = platedb.database.check_connection()
+    conn_status = platedb.database.connected
     if conn_status:
         log.info('database connection is open.')
     else:

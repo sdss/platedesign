@@ -86,7 +86,7 @@ def populate_obs_range(plates, verbose=False, log=None, ignore_missing=False):
         log = get_log(log_level='INFO' if not verbose else 'DEBUG')
 
     # Checks the connection
-    conn_status = platedb.database.check_connection()
+    conn_status = platedb.database.connected
     if conn_status:
         log.debug('database connection is open.')
     else:
