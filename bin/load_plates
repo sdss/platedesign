@@ -16,7 +16,7 @@ import socket
 
 from platedesign.core.logger import get_log
 
-from sdssdb.observatory import database
+from sdssdb.peewee.operationsdb import database
 
 from platedesign.db.plate_plans_db import plate_plans_db
 from platedesign.db.plate_holes_db import plate_holes_db
