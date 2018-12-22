@@ -59,7 +59,7 @@ def load_plates(ctx, verbose=False, overwrite=False,
                    'Input it manually.'.format(dbuser))
         password = click.prompt('Password', hide_input=True)
 
-    database.connect_from_parameters(database=dbname, user=dbuser, host=dbhost)
+    database.connect_from_parameters(dbname=dbname, user=dbuser, host=dbhost)
 
     if database.connected:
         log.info(f'connected to {database.database!r}')
