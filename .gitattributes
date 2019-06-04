@@ -433,4 +433,5 @@ src/xml/platePlans.xsl -text
 src/xml/plate_designs.dtd -text
 tcl/makeFanucET.tcl -text
 tcl/makeFanucManga.tcl -text
+/test -text
 ups/platedesign.table -text
