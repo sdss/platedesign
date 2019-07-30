@@ -31,7 +31,7 @@ offset=0L
 
 ; If this plateid is the same as the last one, we won't read
 ; in the plate information again; but if it is a different one,
-; we reset these variables (and will therefore read in new files 
+; we reset these variables (and will therefore read in new files
 ; below)
 if(keyword_set(plateid)) then begin
    if(in_plateid ne plateid) then begin
@@ -39,7 +39,7 @@ if(keyword_set(plateid)) then begin
       definition=0L
       default=0L
    endif
-endif 
+endif
 plateid= in_plateid
 
 ; Set path to directory for the specified plate number
@@ -58,7 +58,7 @@ offsetfile=platedir+'/plateGuideOffsets-'+post+'.par'
 fullfile= platedir+'/'+plateholes_filename(plateid=plateid, /sorted)
 check_file_exists, fullfile, plateid=plateid
 
-; Parse contents of input file, 
+; Parse contents of input file,
 ; the input file has a global header and a data entry with multiple fields for each fiber
 if(n_tags(full) eq 0) then begin
    full= yanny_readone(fullfile, hdr=phdr, /anon)
@@ -73,7 +73,7 @@ temp=float(definition.temp)
 
 ; Calculate ra and dec for center of the plate
 ; The values are accessible through 'racen' and 'deccen' after this
-; This is necessary for handling multiple pointing plates (and 
+; This is necessary for handling multiple pointing plates (and
 ; we keep it general for multi-offset plates).
 plate_center, definition, default, pointing, offset, $
               racen=racen, deccen=deccen
@@ -89,7 +89,7 @@ xforig= full[igood].xfocal
 yforig= full[igood].yfocal
 zoffset= full[igood].zoffset
 
-; Calculate xfocal and yfocal for this pointing (should be similar 
+; Calculate xfocal and yfocal for this pointing (should be similar
 ; to xforig/yforig up to round-off)
 plate_ad2xy, definition, default, pointing, offset, ra, dec, $
              lambda, xf=xfocal, yf=yfocal, lst=racen+ha[pointing-1L], $
@@ -100,7 +100,7 @@ plate_ad2xy, definition, default, pointing, offset, ra, dec, $
 ; I propose something like:
 ;  guidefibers = where(full[goodfibers].holetype eq 'GUIDE', nguide)
 ; MRB: I would check how stable this is first; it may be that my code
-;  is actually worse behaved for low N than the guider is, and that is 
+;  is actually worse behaved for low N than the guider is, and that is
 ;  worth checking before using these for corrections; this is a
 ;  critical issue for APOGEE and can't be changed without
 ;  thorough testing.
@@ -120,9 +120,9 @@ if(ha[pointing-1L] lt -120. OR $
    print, color_string('HA desired is more than 120 deg! Double check that this is intended.', 'yellow', 'blink')
 endif
 
-nha=17L
-minha= (ha[pointing-1L]-45.)>(-80.)
-maxha= (ha[pointing-1L]+45.)<(80.)
+nha=22L
+minha= (ha[pointing-1L]-60.)>(-80.)
+maxha= (ha[pointing-1L]+60.)<(80.)
 hatest= minha+(maxha-minha)*(findgen(nha)/float(nha-1L))
 
 ; Create empty arrays to store guiding corrections and position offsets at each hour angle value
