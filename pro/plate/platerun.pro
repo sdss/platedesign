@@ -56,12 +56,12 @@ call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
 cmd = [getenv('ADJUSTFANUCFILES_DIR') + '/bin/adjustFanucScript.py', $
        getenv('PLATELIST_DIR')+'/runs/' + platerun]
 spawn, /nosh, cmd
-message, 'Drill files adjusted for quadrupole'
+splog, 'Drill files adjusted for quadrupole'
 
 ; Convert adjusted files to CRLF
-cmd = ['unix2dos', getenv('PLATELIST_DIR')+'/runs/' + platerun + '/*Adjusted-*.txt']
-spawn, /nosh, cmd
-message, 'Drill files line endings converted to CRLF'
+cmd = 'unix2dos ' + getenv('PLATELIST_DIR') + '/runs/' + platerun + '/*Adjusted-*.txt'
+spawn, cmd
+splog, 'Drill files line endings converted to CRLF'
 
 ;; create plateGuideOffsets, default wavelengths defined in create_derivs
 ;for i=0, nplate-1 do begin
