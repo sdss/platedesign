@@ -69,6 +69,7 @@ setenv [string toupper $product]_DIR $PRODUCT_DIR
 #
 # Add any non-standard Module code below this point.
 #
+module load idlutils
 module load photoop
 prereq photoop
 module load platelist
@@ -80,3 +81,4 @@ module load tree
 #
 module load tycho2
 prereq tycho2
+module load adjustFanucFiles
