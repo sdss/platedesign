@@ -38,7 +38,7 @@ endif
 if (keyword_set(skip_design) eq FALSE) then begin
 	;; run plate_design for each one
 	plate_design, plans[iplate].plateid, succeeded=succeeded, _EXTRA=extra_for_plate_design
-	
+
 	if (~succeeded) then return
 endif
 
@@ -51,6 +51,17 @@ if(n_elements(iuniq) gt 1) then $
 drillstyle=drillstyle[0]
 call_procedure, 'platerun_'+drillstyle, platerun, plans[iplate].plateid, $
   nolines=nolines
+
+; Adjust the files to compensate for the drill machine quadrupole.
+cmd = [getenv('ADJUSTFANUCFILES_DIR') + '/bin/adjustFanucScript.py', $
+       getenv('PLATELIST_DIR')+'/runs/' + platerun]
+spawn, /nosh, cmd
+message, 'Drill files adjusted for quadrupole'
+
+; Convert adjusted files to CRLF
+cmd = ['unix2dos', getenv('PLATELIST_DIR')+'/runs/' + platerun + '/*Adjusted-*.txt']
+spawn, /nosh, cmd
+message, 'Drill files line endings converted to CRLF'
 
 ;; create plateGuideOffsets, default wavelengths defined in create_derivs
 ;for i=0, nplate-1 do begin
