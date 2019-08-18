@@ -123,7 +123,6 @@ endif
 ha_obs_min = float(strsplit(definition.ha_observable_min, /extr))
 ha_obs_max = float(strsplit(definition.ha_observable_max, /extr))
 
-
 minha= (ha[pointing-1L]-45.)>(-80.)
 maxha= (ha[pointing-1L]+45.)<(80.)
 
