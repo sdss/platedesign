@@ -58,6 +58,12 @@ cmd = [getenv('ADJUSTFANUCFILES_DIR') + '/bin/adjustFanucScript.py', $
 spawn, /nosh, cmd
 splog, 'Drill files adjusted for quadrupole'
 
+; Generate CMM machine files.
+cmd = [getenv('GENERATECMMDATA_DIR') + '/bin/generateCMMDataScript.py', $
+       getenv('PLATELIST_DIR')+'/runs/' + platerun]
+spawn, /nosh, cmd
+splog, 'CMM files created'
+
 ;; create plateGuideOffsets, default wavelengths defined in create_derivs
 ;for i=0, nplate-1 do begin
 ;	create_derivs, plans[iplate[i]].plateid
