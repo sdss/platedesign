@@ -14,9 +14,9 @@ if ($name == "") set name = noname
 
 cd $PLATELIST_DIR/runs/$name
 mkdir -p dos
-cp pl*CounterBore* plDrillPos* plFanuc* plNorthFanuc* plSouthFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* plateLines-*print.pdf dos
+cp pl*CounterBore* plDrillPos* plFanuc* plNorthFanuc* plSouthFanuc* plMeas* plOverlay* plObs* plPlan* plPlugMapP* plateLines-*print.pdf N* dos
 cd dos
-unix2dos *.txt *par
+unix2dos *.txt *par N*
 rm -f ../$name.dos.zip
 zip ../$name.dos.zip *
 cd ../
