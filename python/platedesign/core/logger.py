@@ -27,6 +27,18 @@ from .colour_print import _color_text as color_text
 __all__ = ['get_logger']
 
 
+# Adds custom log level for important messages
+IMPORTANT = 25
+logging.addLevelName(IMPORTANT, 'IMPORTANT')
+
+
+def important(self, message, *args, **kws):
+    self._log(IMPORTANT, message, args, **kws)
+
+
+logging.Logger.important = important
+
+
 def get_exception_formatted(tp, value, tb):
     """Adds colours to tracebacks."""
 
@@ -42,6 +54,7 @@ def colored_formatter(record):
     colours = {'info': 'blue',
                'debug': 'magenta',
                'warning': 'yellow',
+               'important': 'green',
                'critical': 'red',
                'error': 'red'}
 
