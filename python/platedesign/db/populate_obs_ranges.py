@@ -22,7 +22,7 @@ from sdssdb.peewee.operationsdb import platedb
 
 from sdss.utilities import yanny
 
-from platedesign.core.logger import get_log
+from platedesign import log as pd_log
 from platedesign import utils
 
 
@@ -82,8 +82,7 @@ def populate_obs_range(plates, verbose=False, log=None, ignore_missing=False):
 
     """
 
-    if not log:
-        log = get_log(log_level='INFO' if not verbose else 'DEBUG')
+    log = log or pd_log
 
     # Checks the connection
     conn_status = platedb.database.connected

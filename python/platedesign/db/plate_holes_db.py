@@ -16,7 +16,7 @@ import warnings
 
 import peewee
 
-from platedesign.core.logger import get_log
+from platedesign import log as pd_log
 from platedesign import utils
 
 from sdssdb.peewee.operationsdb import platedb
@@ -42,8 +42,7 @@ def plate_holes_db(inputs, plate_mode=False, verbose=False, overwrite=False, log
 
     """
 
-    if not log:
-        log = get_log(log_level='INFO' if not verbose else 'DEBUG')
+    log = log or pd_log
 
     log.info('running plate_holes_db in mode={0!r}.'.format('platerun'
                                                             if not plate_mode else 'plate'))

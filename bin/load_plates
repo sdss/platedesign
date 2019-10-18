@@ -6,22 +6,19 @@
 # Created by José Sánchez-Gallego on 14 Jun 2017.
 
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
+import socket
 
 import click
 import pgpasslib
-import socket
 
-from platedesign.core.logger import get_log
-
-from sdssdb.peewee.operationsdb import database
-
-from platedesign.db.plate_plans_db import plate_plans_db
-from platedesign.db.plate_holes_db import plate_holes_db
+from platedesign import log
 from platedesign.db.plate_addenda_db import plate_addenda_db
-from platedesign.db.populate_obs_ranges import populate_obs_range, populate_all
+from platedesign.db.plate_holes_db import plate_holes_db
+from platedesign.db.plate_plans_db import plate_plans_db
+from platedesign.db.populate_obs_ranges import populate_all, populate_obs_range
+from sdssdb.peewee.operationsdb import database
 
 
 DBNAME_DEFAULT = 'lcodb' if socket.getfqdn().endswith('lco.cl') else 'apodb'
@@ -46,8 +43,7 @@ def load_plates(ctx, verbose=False, overwrite=False,
     ctx.obj['verbose'] = verbose
     ctx.obj['overwrite'] = verbose
 
-    ctx.obj['log'] = get_log(log_level='INFO' if verbose is False else 'DEBUG')
-    log = ctx.obj['log']
+    ctx.obj['log'] = log
 
     try:
         password = pgpasslib.getpass(host=dbhost, user=dbuser, dbname=dbname)

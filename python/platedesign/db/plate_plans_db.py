@@ -20,7 +20,7 @@ import peewee
 
 from astropy import table
 
-from platedesign.core.logger import get_log
+from platedesign import log as pd_log
 from platedesign import utils
 
 from .populate_obs_ranges import populate_obs_range
@@ -306,8 +306,7 @@ def plate_plans_db(inputs, plate_mode=False, verbose=False, overwrite=False,
 
     """
 
-    if not log:
-        log = get_log(log_level='INFO' if not verbose else 'DEBUG')
+    log = log or pd_log
 
     log.info('running plate_plans_db in mode={0!r}.'.format('platerun'
                                                             if not plate_mode else 'plate'))
