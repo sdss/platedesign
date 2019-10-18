@@ -21,7 +21,7 @@ from pygments import highlight
 from pygments.formatters import TerminalFormatter
 from pygments.lexers import get_lexer_by_name
 
-from .color_print import color_text
+from .colour_print import _color_text as color_text
 
 
 __all__ = ['get_logger']
