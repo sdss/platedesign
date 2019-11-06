@@ -38,13 +38,15 @@ class Gcodes(object):
         else:
             self.name = 'SDSS'
 
-        self.acquisition_template = """(CAMERA MOUNTING HOLES)
+        self.acquisition_header = """(CAMERA MOUNTING HOLES)
 G90 G56
-G68 X0.0 Y0.0 R-90.0
+"""
+        self.acquisition_offaxis_template = """G68 X0.0 Y0.0 R-90.0
 G00 X{axy[0]:.6f} Y{axy[1]:.6f}
 M98 P9775
 G69
-M98 P9776
+"""
+        self.acquisition_center = """M98 P9776
 M01
 """
 
@@ -254,12 +256,15 @@ G60 X{cx:.6f} Y{cy:.6f} ( {objId[0]} {objId[1]} {objId[2]} {objId[3]} {objId[4]}
             repl = repl.format(digit_int=digit_int, digit_str=digit_str)
             completion_text = completion_text.replace("--", repl, 1)
 
-        if((self.mode == 'apogee_south') &
-           (axy[0] is not None) &
-           (axy[1] is not None)):
-            ax = axy[0] / 25.4
-            ay = axy[1] / 25.4
-            acquisition_text = self.acquisition_template.format(axy=(ax, ay))
+        if(self.mode == 'apogee_south'):
+            acquisition_text = self.acquisition_header
+            if((axy[0] is not None) &
+               (axy[1] is not None)):
+                ax = axy[0] / 25.4
+                ay = axy[1] / 25.4
+                offaxis_text = self.acquisition_offaxis_template.format(axy=(ax, ay))
+                acquisition_text = acquisition_text + offaxis_text
+            acquisition_text = acquisition_text + self.acquisition_center
             completion_text = completion_text.format(acquisition_text=acquisition_text)
 
         return(completion_text)

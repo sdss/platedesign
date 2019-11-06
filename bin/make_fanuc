@@ -24,7 +24,8 @@ parser = argparse.ArgumentParser(description="Make Fanuc file",
 parser.add_argument("-p", "--plan-file", dest="plan_file", type=str, required=True, help="plan file name")
 
 # output a png too?
-parser.add_argument("-m", "--mode", dest="mode", type=str, required=True, help="plate drilling mode")
+parser.add_argument("-m", "--mode", dest="mode", type=str, required=True, help="plate drilling mode", 
+                    choices=['boss', 'manga', 'apogee_south'])
 
 # parse input from command line
 args = parser.parse_args()

@@ -11,6 +11,7 @@
 ;   targets - target structure
 ;   design - design structure
 ;   info - structure with information tags for various options
+;   plan_epoch - epoch to advance PMs to
 ; OPTIONAL KEYWORD:
 ;   /relax_targettype - don't check targettype 
 ; COMMENTS:
@@ -22,15 +23,15 @@
 ;     raCen1 [, ... as necessary]
 ;     decCen1 [, ... as necessary]
 ;   Writes in XF_DEFAULT, YF_DEFAULT, which are the positions to
-;     assume for the sake of collisions. They are zero-hour angle, 5C
-;     epoch 2011. results. (Actually, the epoch is whatever is
-;     returned by default_epoch())
+;     assume for the sake of collisions. They are zero-hour angle, 5C.
+;     Actually, the epoch is set according to the input file (or 
+;     if no PMs are given, whatever is returned by default_epoch())
 ; REVISION HISTORY:
 ;   8-May-2008  Written by MRB, NYU
 ;	12-July-2011  Colorized error messages, Demitri Muna, NYU
 ;-
 pro target2design, definition, default, targets, design, info=info, $
-                   relax_targettype=relax_targettype
+                   relax_targettype=relax_targettype, plan_epoch=plan_epoch
 
 ;; which pointing are we adding these targets to?
 pointing= 1L
@@ -84,6 +85,10 @@ design= replicate(design_blank(), ntargets)
 
 ;; now copy all appropriate tags to design from the target list
 struct_assign, targets, design, /nozero
+
+;; Move objects to plate plan epoch
+if(n_elements(plan_epoch) gt 0) then $
+   design_pm, design, toepoch=plan_epoch
 
 ;; Get default xf_default and yf_default
 ;; (not particular position for this LST and temp)

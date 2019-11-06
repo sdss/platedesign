@@ -514,7 +514,7 @@ definition = plate_definition(designid=designid)
                  ;; convert target information to design structure
                  ;; (record which plate input file this came from)
                  target2design, definition, default, tmp_targets, $
-                                tmp_design, info=hdrstr
+                                tmp_design, info=hdrstr, plan_epoch=epoch
                  tmp_design.iplateinput= k+1L
 
                  if(n_tags(new_design) eq 0) then begin
@@ -527,6 +527,8 @@ definition = plate_definition(designid=designid)
              endfor
              
               ;; apply proper motions to the designs
+              ;; (this is a catch-all; PMs should have been applied 
+              ;; in target2design or elsewhere)
               splog, 'Applying proper motions'
               design_pm, new_design, toepoch=epoch
 

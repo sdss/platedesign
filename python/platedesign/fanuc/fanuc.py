@@ -633,6 +633,26 @@ def fanuc(mode='boss', planfile=None):
         # Separate into types for sorting
         pmaps = _fanuc_separate(plugmap)
 
+        # Some checks
+        if((len(pmaps['acquisition_center']) > 0) &
+           (mode != 'apogee_south')):
+            print("Not an apogee_south mode plate, but central acquisition specified")
+            sys.exit(1)
+        if((len(pmaps['acquisition_offaxis']) > 0) &
+           (mode != 'apogee_south')):
+            print("Not an apogee_south mode plate, but offaxis acquisition specified")
+            sys.exit(1)
+        if(len(pmaps['acquisition_offaxis']) > 1):
+            print("More than one offaxis camera specified")
+            sys.exit(1)
+        if(len(pmaps['acquisition_center']) > 1):
+            print("More than one center camera specified")
+            sys.exit(1)
+        if((len(pmaps['acquisition_center']) == 0) &
+           (mode == 'apogee_south')):
+            print("No center camera specified")
+            sys.exit(1)
+
         # Open Fanuc file and write header
         ffp = open(fanuc_name, 'w')
         hdr = _fanuc_header(gcodes=gcodes, plate=plate, param=param,
