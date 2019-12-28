@@ -101,9 +101,12 @@ if (keyword_set(objs)) then begin
       psfmag, psfmag_err
     sdss_flux2lups, objs.fiberflux, objs.fiberflux_ivar, counts_err, $
       fibermag, fibermag_err
+    sdss_flux2lups, objs.fiber2flux, objs.fiber2flux_ivar, counts_err, $
+      fiber2mag, fiber2mag_err
     
     sphoto_design.psfmag= psfmag
     sphoto_design.fibermag= fibermag
+    sphoto_design.fiber2mag= fiber2mag
 
     ;; set epoch
     allruns= (uniqtag(sphoto_design, 'RUN')).run

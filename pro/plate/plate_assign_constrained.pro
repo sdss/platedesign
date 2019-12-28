@@ -84,6 +84,12 @@ while(gotall eq 0) do begin
 						 plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
 			BREAK
 			END
+		'bosshalf': BEGIN
+			fiberids = fiberid_bosshalf(default, test_fibercount, $
+						 test_design[icurr], all_design=test_design, $
+						 plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
+			BREAK
+			END
 		'manga':
 		'marvels': 
 		'sdss': BEGIN

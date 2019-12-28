@@ -95,10 +95,10 @@ bright_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksBrightAPOGEE
 medium_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksMediumAPOGEE.par'
 faint_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksFaintAPOGEE.par'
 
-blocks= yanny_readone(full_blockfile)
-bblocks= yanny_readone(bright_blockfile)
-mblocks= yanny_readone(medium_blockfile)
-fblocks= yanny_readone(faint_blockfile)
+blocks= yanny_readone(full_blockfile, /anon)
+bblocks= yanny_readone(bright_blockfile, /anon)
+mblocks= yanny_readone(medium_blockfile, /anon)
+fblocks= yanny_readone(faint_blockfile, /anon)
 
 relaxed_fiber_classes=0
 if(tag_indx(default, 'relaxed_fiber_classes') ge 0) then begin

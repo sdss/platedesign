@@ -81,7 +81,7 @@ endif else begin
 endelse
 if(keyword_set(reload)) then begin
     blockfile= in_blockfile
-    fiberblocks= yanny_readone(blockfile)
+    fiberblocks= yanny_readone(blockfile, /anon)
 endif
 fiberblockid= fiberblocks.blockid
 nblocks= max(fiberblocks.blockid)

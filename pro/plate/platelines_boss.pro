@@ -24,7 +24,14 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_rearrange, full, holes
+pro platelines_rearrange, full, holes, blockfile=blockfile, $
+  blockname=blockname
+
+  if(n_elements(blockname) eq 0) then $
+     blockname='BOSS'
+  if(n_elements(blockfile) eq 0) then $
+     blockfile = getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocks'+ $
+                 blockname+'.par'
 
   platescale = get_platescale('APO')
   maxiter=3L
@@ -32,10 +39,9 @@ pro platelines_rearrange, full, holes
   minyblocksize=0.3
 
   iboss= where(strupcase(full.holetype) eq 'BOSS', nboss)
-  if(nboss ne 1000) then $
-     message, 'Not 1000 BOSS fibers?'
-  blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSS.par'
-  fiberblocks= yanny_readone(blockfile)
+  fiberblocks= yanny_readone(blockfile, /anon)
+  if(nboss ne n_elements(fiberblocks)) then $
+     message, 'Not the right number of BOSS fibers?'
   nblocks=max(fiberblocks.blockid)
   blockcenx= fltarr(nblocks)
   blockceny= fltarr(nblocks)
@@ -94,13 +100,20 @@ pro platelines_rearrange, full, holes
 end
 ;
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty, $
-                     rearrange=rearrange, relax_lines=relax_lines
+                     rearrange=rearrange, relax_lines=relax_lines, $
+                     blockfile=blockfile, blockname=blockname
 
 common com_plb, plateid, full, holes, hdr, hdrstr
 
-nblocks=50L
-nper=20L
-nperblue=10L
+if(n_elements(blockname) eq 0) then $
+   blockname='BOSS'
+if(n_elements(blockfile) eq 0) then $
+   blockfile = getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocks'+ $
+               blockname+'.par'
+fiberblocks= yanny_readone(blockfile, /anon)
+nblocks=max(fiberblocks.blockid)
+nper=n_elements(fiberblocks) / nblocks
+nperblue= nper / 2L
 
 if(NOT keyword_set(in_plateid)) then $
   message, 'Plate ID must be given!'
@@ -143,7 +156,6 @@ endif
 if(keyword_set(rearrange) ne 0) then $
    platelines_rearrange, full, holes
       
-
 ;; basic versions
 versions=['', 'sky', 'std']
 
@@ -208,7 +220,9 @@ for k=0L, n_elements(versions)-1L do begin
    ;; set colors of each brightness fiber
    for i=0L, nblocks-1L do begin
       ii= where(-holes.fiberid ge i*nper+1L and $
-                -holes.fiberid le (i+1L)*nper, nii)
+                -holes.fiberid le (i+1L)*nper and $
+                ((full.holetype eq 'BOSSHALF') or $
+                 (full.holetype eq 'BOSS')), nii)
       if(nii eq nper) then begin
          isort= lindgen(nii)
          if(keyword_set(sorty)) then $
@@ -225,7 +239,10 @@ for k=0L, n_elements(versions)-1L do begin
             ired= where(full[ii].bluefiber eq 0, nred)
             ish= shuffle_indx(nred, num_sub=nperblue-nblue, $
                               seed=plateid+i)
-            iblue= [iblue, ired[ish]]
+            if(nblue eq 0) then $
+               iblue = ired[ish] $
+            else $
+               iblue= [iblue, ired[ish]]
          endif
          if(n_elements(iblue) ne nperblue) then $
             message, 'Inconsistency in iblue!'
