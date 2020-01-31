@@ -28,14 +28,14 @@ standardtype= strsplit(default.standardtype, /extr)
 for i=0L, n_elements(platedesignstandards)-1L do begin
     if(strupcase(platedesignstandards[i]) ne 'NONE' AND $
        strupcase(platedesignstandards[i]) ne 'BOSS' AND $
-       strupcase(platedesignstandards[i]) ne 'BOSS_APOGEE' AND $
-       strupcase(platedesignstandards[i]) ne 'APOGEE_BOSS' AND $
+       strupcase(platedesignstandards[i]) ne 'BOSS_SHARED' AND $
+       strupcase(platedesignstandards[i]) ne 'APOGEE_SHARED' AND $
        strupcase(platedesignstandards[i]) ne 'SDSS' AND $
        strupcase(platedesignstandards[i]) ne 'MARVELS' AND $
        strupcase(platedesignstandards[i]) ne 'APOGEE') then begin
         message, 'No such instrument '+platedesignstandards[i]+'; '+ $
-          'plateDesignStandards must specify NONE, BOSS, BOSS_APOGEE, SDSS, MARVELS, '+ $
-          'APOGEE, or APOGEE_BOSS'
+          'plateDesignStandards must specify NONE, BOSS, BOSS_SHARED, SDSS, MARVELS, '+ $
+          'APOGEE, or APOGEE_SHARED'
     endif
 endfor
 

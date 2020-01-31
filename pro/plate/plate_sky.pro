@@ -27,16 +27,16 @@ platedesignskies= strsplit(default.platedesignskies, /extr)
 for i=0L, n_elements(platedesignskies)-1L do begin
     if(strupcase(platedesignskies[i]) ne 'NONE' AND $
        strupcase(platedesignskies[i]) ne 'BOSS' AND $
-       strupcase(platedesignskies[i]) ne 'BOSS_APOGEE' AND $
-       strupcase(platedesignskies[i]) ne 'APOGEE_BOSS' AND $
+       strupcase(platedesignskies[i]) ne 'BOSS_SHARED' AND $
+       strupcase(platedesignskies[i]) ne 'APOGEE_SHARED' AND $
        strupcase(platedesignskies[i]) ne 'SDSS' AND $
        strupcase(platedesignskies[i]) ne 'MANGA' AND $
        strupcase(platedesignskies[i]) ne 'MANGA_SINGLE' AND $
        strupcase(platedesignskies[i]) ne 'MARVELS' AND $
        strupcase(platedesignskies[i]) ne 'APOGEE') then begin
         message, 'No such instrument '+platedesignskies[i]+'; '+ $
-          'plateDesignSkies must specify NONE, BOSS, BOSS_APOGEE, SDSS, MARVELS, '+ $
-          'APOGEE, or APOGEE_BOSS'
+          'plateDesignSkies must specify NONE, BOSS, BOSS_SHARED, SDSS, MARVELS, '+ $
+          'APOGEE, or APOGEE_SHARED'
     endif
 endfor
 

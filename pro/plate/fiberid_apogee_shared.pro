@@ -28,7 +28,7 @@
 ; REVISION HISTORY:
 ;   4-Oct-2010 MRB, adjusted for APOGEE
 ;-
-pro set_blockcen_apogee_boss, design, blocks, fiberid, blockcenx, blockceny
+pro set_blockcen_apogee_shared, design, blocks, fiberid, blockcenx, blockceny
   platescale = get_platescale('APO')
 
   ;; now find the center location for each block, and limits in
@@ -43,7 +43,7 @@ pro set_blockcen_apogee_boss, design, blocks, fiberid, blockcenx, blockceny
   endfor
 end
 ;;
-function fiberid_apogee_boss, default, fibercount, design, $
+function fiberid_apogee_shared, default, fibercount, design, $
                          minstdinblock=minstdinblock, $
                          minskyinblock=minskyinblock, $
                          maxskyinblock=maxskyinblock, $
@@ -105,7 +105,7 @@ maxiter=7L
 for iter=0L, maxiter-1L do begin
    
    ;; all in one go
-   iapogee= where(strupcase(design.holetype) eq 'APOGEE_BOSS' AND $
+   iapogee= where(strupcase(design.holetype) eq 'APOGEE_SHARED' AND $
                   (strupcase(design.targettype) eq 'STANDARD' OR $
                    strupcase(design.targettype) eq 'SCIENCE' OR $
                    strupcase(design.targettype) eq 'SKY'), napogee)
@@ -120,7 +120,7 @@ for iter=0L, maxiter-1L do begin
    endif
    fiberid[iapogee]=blocks[tmp_fiberid-1L].fiberid
    idone= where(fiberid gt 0, ndone)
-   set_blockcen_apogee_boss, design[idone], blocks, fiberid[idone], $
+   set_blockcen_apogee_shared, design[idone], blocks, fiberid[idone], $
                         blockcenx, blockceny
    if(keyword_set(debug)) then begin
       splot, design.xf_default, design.yf_default, psym=4

@@ -221,7 +221,7 @@ for k=0L, n_elements(versions)-1L do begin
    for i=0L, nblocks-1L do begin
       ii= where(-holes.fiberid ge i*nper+1L and $
                 -holes.fiberid le (i+1L)*nper and $
-                ((full.holetype eq 'BOSS_APOGEE') or $
+                ((full.holetype eq 'BOSS_SHARED') or $
                  (full.holetype eq 'BOSS')), nii)
       if(nii eq nper) then begin
          isort= lindgen(nii)

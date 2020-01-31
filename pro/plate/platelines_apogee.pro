@@ -73,7 +73,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
   platescale = get_platescale(observatory)
   
   isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE' OR $
-              strupcase(strtrim(full.holetype,2)) eq 'APOGEE_BOSS', nsci)
+              strupcase(strtrim(full.holetype,2)) eq 'APOGEE_SHARED', nsci)
 
   if(keyword_set(relaxed) ne 0 and nsci gt 0) then begin
       plug= yanny_readone(plplug, hdr=hdr)

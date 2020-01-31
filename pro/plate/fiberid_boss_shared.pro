@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   fiberid_boss_apogee
+;   fiberid_boss_shared
 ; PURPOSE:
 ;   assign fiberid's to a list of BOSS targets
 ; CALLING SEQUENCE:
-;   fiberid= fiberid_boss_apogee(design)
+;   fiberid= fiberid_boss_shared(design)
 ; INPUTS:
 ;   design - [500] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
@@ -31,7 +31,7 @@
 ;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;   17-Dec-2019 MRB, NYU; alter for half a BOSS spectrograph
 ;-
-function fiberid_boss_apogee, default, fibercount, design, $
+function fiberid_boss_shared, default, fibercount, design, $
   minstdinblock=minstdinblock, $
   minskyinblock=minskyinblock, $
   maxskyinblock=maxskyinblock, $
@@ -41,7 +41,7 @@ function fiberid_boss_apogee, default, fibercount, design, $
   plate_obj=plate_obj, $
   debug=debug, all_design=all_design
 
-common com_fiberid_boss_apogee, fiberblocks
+common com_fiberid_boss_shared, fiberblocks
 
 if(keyword_set(respect_fiberid)) then $
   message, 'BOSS spectrograph designs cannot respect fiberid'
@@ -135,7 +135,7 @@ if(NOT keyword_set(nosky)) then begin
             isky= where(strupcase(design.targettype) eq 'SKY' AND $
                         design.pointing eq ip and design.offset eq io, nsky)
             if(nsky gt 0) then begin
-                iinst=where(strupcase(fibercount.instruments) eq 'BOSS_APOGEE', ninst)
+                iinst=where(strupcase(fibercount.instruments) eq 'BOSS_SHARED', ninst)
                 itype=where(strupcase(fibercount.targettypes) eq 'SKY', ntype)
                 nmax=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
                 
