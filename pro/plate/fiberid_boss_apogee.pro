@@ -1,10 +1,10 @@
 ;+
 ; NAME:
-;   fiberid_bosshalf
+;   fiberid_boss_apogee
 ; PURPOSE:
 ;   assign fiberid's to a list of BOSS targets
 ; CALLING SEQUENCE:
-;   fiberid= fiberid_bosshalf(design)
+;   fiberid= fiberid_boss_apogee(design)
 ; INPUTS:
 ;   design - [500] struct array of targets, in design_blank() form
 ;            Required tags are .XF_DEFAULT, .YF_DEFAULT
@@ -31,7 +31,7 @@
 ;   1-Sep-2010 Demitri Muna, NYU, Adding file test before opening files.
 ;   17-Dec-2019 MRB, NYU; alter for half a BOSS spectrograph
 ;-
-function fiberid_bosshalf, default, fibercount, design, $
+function fiberid_boss_apogee, default, fibercount, design, $
   minstdinblock=minstdinblock, $
   minskyinblock=minskyinblock, $
   maxskyinblock=maxskyinblock, $
@@ -41,7 +41,7 @@ function fiberid_bosshalf, default, fibercount, design, $
   plate_obj=plate_obj, $
   debug=debug, all_design=all_design
 
-common com_fiberid_bosshalf, fiberblocks
+common com_fiberid_boss_apogee, fiberblocks
 
 if(keyword_set(respect_fiberid)) then $
   message, 'BOSS spectrograph designs cannot respect fiberid'
@@ -63,7 +63,7 @@ npointings= long(default.npointings)
 noffsets= long(default.noffsets)
 
 ;; default centers of blocks
-blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSSHalf.par'
+blockfile=getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocksBOSSwAPOGEE.par'
 if(n_tags(fiberblocks) eq 0) then begin
 	check_file_exists, blockfile
     fiberblocks= yanny_readone(blockfile, /anon)
@@ -135,7 +135,7 @@ if(NOT keyword_set(nosky)) then begin
             isky= where(strupcase(design.targettype) eq 'SKY' AND $
                         design.pointing eq ip and design.offset eq io, nsky)
             if(nsky gt 0) then begin
-                iinst=where(strupcase(fibercount.instruments) eq 'BOSSHALF', ninst)
+                iinst=where(strupcase(fibercount.instruments) eq 'BOSS_APOGEE', ninst)
                 itype=where(strupcase(fibercount.targettypes) eq 'SKY', ntype)
                 nmax=long(total(fibercount.ntot[iinst, itype, ip-1L, io]))
                 

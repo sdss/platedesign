@@ -83,16 +83,16 @@ if(nhole gt 0) then plug[ihole].sectarget= 64
 ihole= where(strupcase(holes.holetype) eq 'ALIGNMENT', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'ALIGNMENT'
 
-ihole= where(holes.holetype eq 'BOSSHALF', nhole)
+ihole= where(holes.holetype eq 'BOSS_APOGEE', nhole)
 if(nhole gt 0) then plug[ihole].holetype= 'OBJECT'
 if(nhole gt 0) then plug[ihole].objtype= 'QSO'
 
-ihole= where(holes.holetype eq 'BOSSHALF' and $
+ihole= where(holes.holetype eq 'BOSS_APOGEE' and $
              strupcase(holes.targettype) eq 'STANDARD', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'SPECTROPHOTO_STD'
 if(nhole gt 0) then plug[ihole].sectarget= 32
 
-ihole= where(holes.holetype eq 'BOSSHALF' and $
+ihole= where(holes.holetype eq 'BOSS_APOGEE' and $
              strupcase(holes.targettype) eq 'SKY', nhole)
 if(nhole gt 0) then plug[ihole].objtype= 'SKY'
 if(nhole gt 0) then plug[ihole].sectarget= 16
@@ -159,14 +159,14 @@ if(nsdss gt 0) then begin
 endif
 
 ;; spectrographid, throughput, primtarget not set
-iapogee=where(strupcase(holes.holetype) eq 'APOGEE', napogee)
+iapogee=where(strupcase(holes.holetype) eq 'APOGEE_BOSS', napogee)
 if(napogee gt 0) then begin
    plug[iapogee].primtarget= holes[iapogee].apogee2_target1
    plug[iapogee].sectarget= plug[iapogee].sectarget OR $
                             holes[iapogee].apogee2_target2
 endif
 
-iboss=where(strupcase(holes.holetype) eq 'BOSSHALF', nboss)
+iboss=where(strupcase(holes.holetype) eq 'BOSS_APOGEE', nboss)
 if(nboss gt 0) then begin
    plug[iboss].primtarget= holes[iboss].boss_target1
    plug[iboss].sectarget= plug[iboss].sectarget OR $
@@ -225,14 +225,14 @@ if(nhole gt 0) then begin
     endelse
 endif
 
-ihole= where(holes.holetype eq 'BOSSHALF', nhole)
+ihole= where(holes.holetype eq 'BOSS_APOGEE', nhole)
 if(nhole gt 0) then begin
     isort= sort(abs(plug[ihole].fiberid))
     newplug=[newplug, plug[ihole[isort]]]
     newholes=[newholes, holes[ihole[isort]]]
 endif
 
-ihole= where(holes.holetype eq 'APOGEE', nhole)
+ihole= where(holes.holetype eq 'APOGEE_BOSS', nhole)
 if(nhole gt 0) then begin
     isort= sort(abs(plug[ihole].fiberid))
     newplug=[newplug, plug[ihole[isort]]]

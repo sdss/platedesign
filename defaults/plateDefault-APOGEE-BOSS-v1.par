@@ -26,7 +26,7 @@
 # Which instruments are to be used? 
 # At least one argument required, from among:
 #   SDSS BOSS MARVELS APOGEE MANGA
-instruments APOGEE BOSSHALF
+instruments APOGEE_BOSS BOSS_APOGEE
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but 
@@ -47,18 +47,18 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nBOSSHALF_science 400
-nBOSSHALF_sky 80 
-nBOSSHALF_standard 20 
-nAPOGEE_standard 35
-nAPOGEE_science 230
-nAPOGEE_sky 35
+nBOSS_APOGEE_science 400
+nBOSS_APOGEE_sky 80 
+nBOSS_APOGEE_standard 20 
+nAPOGEE_BOSS_standard 35
+nAPOGEE_BOSS_science 230
+nAPOGEE_BOSS_sky 35
 
 # What are conditions on number of skies and standards per block?
 # (per pointing)
-minstdinblockBOSSHALF 0
-minskyinblockBOSSHALF 0
-maxskyinblockBOSSHALF 4
+minstdinblockBOSS_APOGEE 0
+minskyinblockBOSS_APOGEE 0
+maxskyinblockBOSS_APOGEE 4
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2
@@ -73,10 +73,10 @@ nguidemax 600
 # So I will assume 7mm here
 # In target selection I have resolved at 116" which is 
 # slightly larger than this
-ferruleSizeBOSSHALF 3.72231
-bufferSizeBOSSHALF 0.000
-ferruleSizeAPOGEE 3.72231
-bufferSizeAPOGEE 0.300
+ferruleSizeBOSS_APOGEE 3.72231
+bufferSizeBOSS_APOGEE 0.000
+ferruleSizeAPOGEE_BOSS 3.72231
+bufferSizeAPOGEE_BOSS 0.300
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
@@ -84,12 +84,12 @@ bufferSizeGUIDE 0.3
 
 # Settings if platedesign is meant to find standards
 # Specify which instruments we need to find standards for
-plateDesignStandards BOSSHALF
+plateDesignStandards BOSS_APOGEE
 standardType SDSS
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
-plateDesignSkies BOSSHALF
+plateDesignSkies BOSS_APOGEE
 skyType BOSS
 
 # Use sdss5 plugmap style

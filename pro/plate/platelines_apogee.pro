@@ -24,12 +24,15 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
-pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
+pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed, $
+                       blockname=blockname
 
   common com_pla, plateid, full, holes, hdr, hdrstr
 
   if(NOT keyword_set(in_plateid)) then $
      message, 'Plate ID must be given!'
+  if(NOT keyword_set(blockname)) then $
+     blockname = 'APOGEE'
 
   if(keyword_set(plateid) gt 0) then begin
      if(plateid ne in_plateid) then begin
@@ -41,7 +44,7 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      plateid=in_plateid
   endelse
 
-  full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocksAPOGEE.par'
+  full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocks'+blockname+'.par'
   blocks= yanny_readone(full_blockfile)
 
   platedir= plate_dir(plateid)
@@ -69,7 +72,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
     observatory = hdrstr.(itag)
   platescale = get_platescale(observatory)
   
-  isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE', nsci)
+  isci= where(strupcase(strtrim(full.holetype,2)) eq 'APOGEE' OR $
+              strupcase(strtrim(full.holetype,2)) eq 'APOGEE_BOSS', nsci)
 
   if(keyword_set(relaxed) ne 0 and nsci gt 0) then begin
       plug= yanny_readone(plplug, hdr=hdr)

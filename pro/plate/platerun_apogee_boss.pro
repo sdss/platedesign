@@ -88,9 +88,9 @@ ptr_free, pdata
 if(keyword_set(nolines) eq 0) then begin
    ;; make the plateLines files
    for i=0L, n_elements(plateid)-1L do begin
-       platelines_apogee, plateid[i], /sorty
+       platelines_apogee, plateid[i], /sorty, blockname='APOGEEwBOSS'
        apogee_fibervhmag, plateid[i]
-       platelines_boss, plateid[i], blockname='BOSSHalf'
+       platelines_boss, plateid[i], blockname='BOSSwAPOGEE'
        platelines_guide, plateid[i]
    endfor
 
