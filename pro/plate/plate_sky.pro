@@ -1,6 +1,6 @@
 ;+
 ; NAME:
-;   plate_sky 
+;   plate_sky
 ; PURPOSE:
 ;   Return sky for a given plate set up
 ;   This script writes the 'plateSky<instrument>-<designid>-<pointing>-<offset>.par file.
@@ -17,7 +17,7 @@ function plate_sky, definition, default, instrument, pointing, offset, $
                     seed=seed
 if(NOT tag_exist(default, 'PLATEDESIGNSKIES')) then begin
     return, 0
-endif 
+endif
 
 designid= long(definition.designid)
 
@@ -29,6 +29,7 @@ for i=0L, n_elements(platedesignskies)-1L do begin
        strupcase(platedesignskies[i]) ne 'BOSS' AND $
        strupcase(platedesignskies[i]) ne 'BOSS_SHARED' AND $
        strupcase(platedesignskies[i]) ne 'APOGEE_SHARED' AND $
+       strupcase(platedesignskies[i]) ne 'BOSSHALF' AND $
        strupcase(platedesignskies[i]) ne 'SDSS' AND $
        strupcase(platedesignskies[i]) ne 'MANGA' AND $
        strupcase(platedesignskies[i]) ne 'MANGA_SINGLE' AND $
@@ -81,14 +82,14 @@ if(nsky gt 0) then begin
             string(designid, f='(i6.6)')+ $
             '-p'+strtrim(string(pointing),2)+ $
             '-o'+strtrim(string(offset),2)+'.par'
-    
+
     if(file_test(skyfile) eq 0) then begin
         ;; what is center for this pointing and offset?
         plate_center, definition, default, pointing, offset, $
                       racen=racen, deccen=deccen
-        
+
         ;; find skies and assign them
-        case skytype of 
+        case skytype of
             'SDSS': $
               plate_select_sky_sdss, racen, deccen, $
                 nsky=nsky, seed=seed, $
@@ -118,7 +119,7 @@ if(nsky gt 0) then begin
         sky_design.diameter= ferrulesize
         sky_design.buffer= buffersize
         sky_design.bluefiber= 1
-        
+
         if(n_tags(sky_design) gt 0) then begin
             pdata= ptr_new(sky_design)
             hdrstr=plate_struct_combine(default, definition)
