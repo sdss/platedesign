@@ -30,7 +30,6 @@ for i=0L, n_elements(platedesignstandards)-1L do begin
        strupcase(platedesignstandards[i]) ne 'BOSS' AND $
        strupcase(platedesignstandards[i]) ne 'BOSS_SHARED' AND $
        strupcase(platedesignstandards[i]) ne 'APOGEE_SHARED' AND $
-       strupcase(platedesignstandards[i]) ne 'BOSSHALF' AND $
        strupcase(platedesignstandards[i]) ne 'SDSS' AND $
        strupcase(platedesignstandards[i]) ne 'MARVELS' AND $
        strupcase(platedesignstandards[i]) ne 'APOGEE') then begin

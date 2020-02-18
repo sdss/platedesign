@@ -29,7 +29,6 @@ for i=0L, n_elements(platedesignskies)-1L do begin
        strupcase(platedesignskies[i]) ne 'BOSS' AND $
        strupcase(platedesignskies[i]) ne 'BOSS_SHARED' AND $
        strupcase(platedesignskies[i]) ne 'APOGEE_SHARED' AND $
-       strupcase(platedesignskies[i]) ne 'BOSSHALF' AND $
        strupcase(platedesignskies[i]) ne 'SDSS' AND $
        strupcase(platedesignskies[i]) ne 'MANGA' AND $
        strupcase(platedesignskies[i]) ne 'MANGA_SINGLE' AND $
