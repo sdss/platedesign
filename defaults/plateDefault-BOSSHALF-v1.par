@@ -16,7 +16,7 @@
 #
 
 # Which instruments are to be used?
-instruments BOSS_SHARED
+instruments BOSSHALF
 
 # Types of targets to guarantee a certain number of.
 # At least one type required.  Names are free-form, but
