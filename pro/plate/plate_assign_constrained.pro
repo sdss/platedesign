@@ -59,7 +59,7 @@ while(gotall eq 0) do begin
     test_design=design
     test_fibercount=fibercount
     plate_assign, plate_obj->get('definition'), default, test_fibercount, $
-				  test_design, new_design, seed=seed, /collect 
+				  test_design, new_design, seed=seed, /collect
 
     ;; now assign fibers
     icurr=where(test_design.holetype eq instrument)
@@ -90,6 +90,12 @@ while(gotall eq 0) do begin
 						 plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
 			BREAK
 			END
+		'bosshalf': BEGIN
+			fiberids = fiberid_boss_shared(default, test_fibercount, $
+						 test_design[icurr], all_design=test_design, $
+						 plate_obj=plate_obj, _EXTRA=extra_for_fiberid, /quiet)
+			BREAK
+			END
 		'apogee_shared': BEGIN
 			fiberids = fiberid_apogee_shared(default, test_fibercount, $
 						 test_design[icurr], all_design=test_design, $
@@ -97,7 +103,7 @@ while(gotall eq 0) do begin
 			BREAK
 			END
 		'manga':
-		'marvels': 
+		'marvels':
 		'sdss': BEGIN
              fiberids = call_function('fiberid_'+instrument, $
                             default, test_fibercount, $
@@ -120,17 +126,17 @@ while(gotall eq 0) do begin
               strlowcase(test_design[icurr].targettype) $
               eq strlowcase(targettype), non)
     istd=where(strlowcase(targettypes) eq strlowcase(targettype), nstd)
-        
+
     if(non ge test_fibercount.ntot[iinst, istd, pointing-1L, offset]) $
       then begin
-        
+
         ;; if so, save the results
         design=test_design
         fibercount=test_fibercount
         gotall=1
-        
+
     endif else begin
-        
+
         ;; if we are already collecting all possible standards, bomb
         if(fibercount.ncollect[iinst, istd, $
                                pointing-1L, offset] gt $
@@ -141,7 +147,7 @@ while(gotall eq 0) do begin
             if(keyword_set(debug)) then stop
             return
         endif
-        
+
         ;; if not, increase the collect factor to get more standards
         fibercount.ncollect[iinst, istd, pointing-1L, offset]=  $
           2L*fibercount.ncollect[iinst, istd, pointing-1L, offset]
