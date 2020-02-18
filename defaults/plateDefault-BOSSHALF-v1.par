@@ -1,4 +1,4 @@
-# Default settings for a single BOSS spectrograph (BOSS_SHARED)
+# Default settings for a single BOSS spectrograph (BOSSHALF)
 
 # Remaining things:
 #  - Probably BHM should supply standards
@@ -37,15 +37,15 @@ nOffsets 0
 # for multi-pointing or offset plates, of the form
 #  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
 # (for M pointings and N offsets).
-nBOSS_SHARED_science 400
-nBOSS_SHARED_sky 80
-nBOSS_SHARED_standard 20
+nBOSSHALF_science 400
+nBOSSHALF_sky 80
+nBOSSHALF_standard 20
 
 # What are conditions on number of skies and standards per block?
 # (per pointing)
-minstdinblockBOSS_SHARED 0
-minskyinblockBOSS_SHARED 0
-maxskyinblockBOSS_SHARED 4
+minstdinblockBOSSHALF 0
+minskyinblockBOSSHALF 0
+maxskyinblockBOSSHALF 4
 
 # Guide fibers to use for each pointing
 gfiberType gfiber2
@@ -60,8 +60,8 @@ nguidemax 600
 # So I will assume 7mm here
 # In target selection I have resolved at 116" which is
 # slightly larger than this
-ferruleSizeBOSS_SHARED 3.72231
-bufferSizeBOSS_SHARED 0.000
+ferruleSizeBOSSHALF 3.72231
+bufferSizeBOSSHALF 0.000
 
 # Buffer size made up for GUIDEs
 ferruleSizeGUIDE 6.9555
@@ -69,12 +69,12 @@ bufferSizeGUIDE 0.3
 
 # Settings if platedesign is meant to find standards
 # Specify which instruments we need to find standards for
-plateDesignStandards BOSS_SHARED
+plateDesignStandards BOSSHALF
 standardType SDSS
 
 # Settings if platedesign is meant to find skies.
 # Specify which instruments we need to find skies for.
-plateDesignSkies BOSS_SHARED
+plateDesignSkies BOSSHALF
 skyType BOSS
 
 # Use sdss5 plugmap style. Use plplugmap_apogee_boss although we only have BOSS holes.
