@@ -139,7 +139,7 @@ def plate_holes_db(inputs, plate_mode=False, verbose=False, overwrite=False, log
                     pht_dbo = platedb.PlateHoleType.get(label=plate_hole['holetype'])
                     ph_dbo.plate_hole_type = pht_dbo
                 except peewee.DoesNotExist:
-                    raise RuntimeError('PlateHoleType {0!r} does not appear to exist in the DB.'
+                    raise RuntimeError('PlateHoleType {0!r} does not appear to exist in the DB. '
                                        'Add it to the PlateHoleType table manually and load '
                                        'this plate again.'.format(plate_hole['holetype']))
 
@@ -147,7 +147,7 @@ def plate_holes_db(inputs, plate_mode=False, verbose=False, overwrite=False, log
                     ot_dbo = platedb.ObjectType.get(label=plate_hole['targettype'])
                     ph_dbo.objectType = ot_dbo
                 except peewee.DoesNotExist:
-                    raise RuntimeError('ObjectType {0!r} does not appear to exist in the DB.'
+                    raise RuntimeError('ObjectType {0!r} does not appear to exist in the DB. '
                                        'Add it to the ObjectType table manually and load '
                                        'this plate again.'.format(plate_hole['targettype']))
                 nn += 1

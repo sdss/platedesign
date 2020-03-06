@@ -357,9 +357,10 @@ def plate_plans_db(inputs, plate_mode=False, verbose=False, overwrite=False,
             platedb.Survey.get(platedb.Survey.plateplan_name == survey)
             log.debug('survey {0!r} is in the DB'.format(survey))
         except peewee.DoesNotExist:
-            raise ValueError('A survey name was found that does not appear in the database: {0!r}'
-                             'Please correct the platePlans.par entry or else add the new survey '
-                             'to the survey table in the plate database.'.format(survey))
+            raise ValueError(
+                'A survey name was found that does not appear in the database: {0!r}. '
+                'Please correct the platePlans.par entry or else add the new survey '
+                'to the survey table in the plate database.'.format(survey))
 
     for platerun in lines_dict:
 
