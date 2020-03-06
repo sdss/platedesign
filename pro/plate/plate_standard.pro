@@ -1,6 +1,6 @@
 ;+
 ; NAME:
-;   plate_standard 
+;   plate_standard
 ; PURPOSE:
 ;   Return standards for a given plate set up
 ; CALLING SEQUENCE:
@@ -17,7 +17,7 @@ tilerad= get_tilerad(definition, default)
 
 if(tag_exist(default, 'PLATEDESIGNSTANDARDS') eq 0) then begin
     return, 0
-endif 
+endif
 
 designid= long(definition.designid)
 
@@ -48,7 +48,7 @@ endif
 
 standardtype= standardtype[pointing-1L]
 
-itag= tag_indx(default, 'STANDARDMAG_MINMAX_'+instrument) 
+itag= tag_indx(default, 'STANDARDMAG_MINMAX_'+instrument)
 if(itag ne -1) then begin
     gminmax=float(strsplit(default.(itag), /extr))
 endif
@@ -70,21 +70,21 @@ if(NOT file_test(stdfile)) then begin
     ;; what is center for this pointing and offset?
     plate_center, definition, default, pointing, offset, $
       racen=racen, deccen=deccen
-    
+
     if(standardtype eq 'SDSS') then begin
         ;; find SDSS standards and assign them
         plate_select_sphoto_sdss, racen, deccen, $
           rerun=rerun, gminmax=gminmax, $
           sphoto_design= sphoto_design, tilerad=tilerad
-    endif 
-    
+    endif
+
     if(standardtype eq '2MASS') then begin
         ;; find 2MASS standards and assign them
         plate_select_sphoto_2mass, racen, deccen, $
           gminmax=gminmax, $
           sphoto_design= sphoto_design, tilerad=tilerad
     endif
-    
+
     if(n_tags(sphoto_design) gt 0) then begin
         sphoto_design.pointing=pointing
         sphoto_design.offset=offset
@@ -99,15 +99,15 @@ if(NOT file_test(stdfile)) then begin
         sphoto_design.diameter= ferrulesize
         sphoto_design.buffer= buffersize
         sphoto_design.bluefiber= 1
-        
+
         plate_pmotion_star, sphoto_design.target_ra, $
           sphoto_design.target_dec, pmra= tmp_pmra, pmdec= tmp_pmdec, $
           racen=racen, deccen=deccen, tilerad=tilerad
-          
+
         sphoto_design.pmra= tmp_pmra
         sphoto_design.pmdec= tmp_pmdec
     endif
-    
+
     if(n_tags(sphoto_design) gt 0) then begin
         pdata= ptr_new(sphoto_design)
         hdrstr=plate_struct_combine(default, definition)
