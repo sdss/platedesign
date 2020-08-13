@@ -115,7 +115,6 @@ design0={DESIGN_TARGET, $
          gaia_bp:0.0, $
          gaia_rp:0.0, $
          gaia_g:0.0, $
-         tmass_h:0.0, $
          tmass_id:'NA', $
          sdssv_apogee_target0:ulong(0), $
          sdssv_boss_target0:ulong64(0), $
