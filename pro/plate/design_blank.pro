@@ -118,7 +118,8 @@ design0={DESIGN_TARGET, $
          tmass_id:'NA', $
          sdssv_apogee_target0:ulong(0), $
          sdssv_boss_target0:ulong64(0), $
-         gri_gaia_transform:ulong(0) $
+         gri_gaia_transform:ulong(0), $
+         firstcarton:'NA' $
         }
 
 if(keyword_set(center)) then begin
