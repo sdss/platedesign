@@ -118,17 +118,17 @@ if(ntmass gt 0) then $
                                         holes[itmass].tmass_h, $
                                         holes[itmass].tmass_k)
 
-magtype= 'FIBER2MAG'
+magtype= 'fiber2mag'
 itag= tag_indx(holes[0], magtype)
 if(itag eq -1) then $
   message, 'No tag '+magtype+' in holes structure.'
-isdss= where(holes.run ne 0, nsdss)
+;; isdss= where(holes.run ne 0, nsdss)
 if(strmatch(strupcase(magtype), '*FLUX')) then begin
-   if(nsdss gt 0) then $
-      plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].(itag) > 0.1)
+   ;; if(nsdss gt 0) then $
+   plug[isdss].mag= 22.5-2.5*alog10(holes[isdss].(itag) > 0.1)
 endif else if (strmatch(strupcase(magtype), '*MAG')) then begin
-   if(nsdss gt 0) then $
-      plug[isdss].mag= holes[isdss].(itag) 
+   ;; if(nsdss gt 0) then $
+   plug.mag= holes.(itag) 
 endif else begin
     message, 'MAGTYPE must match either *MAG or *FLUX'
 endelse
