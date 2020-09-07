@@ -111,7 +111,7 @@ design0={DESIGN_TARGET, $
          pmdec:0., $
          targetids:'NA', $
          ifuid: 0L, $
-         catalogid:ulong64(0), $
+         catalogid:long64(0), $
          gaia_bp:0.0, $
          gaia_rp:0.0, $
          gaia_g:0.0, $
