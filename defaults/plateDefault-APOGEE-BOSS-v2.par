@@ -1,0 +1,105 @@
+# Default settings for BOSS and APOGEE
+
+# Remaining things:
+#  - Probably BHM should supply standards
+#  - BHM plateInputs need header
+#  - "epoch", "designid", "locationid" in header shouldn't be there
+#  - if "pmra" and "pmdec" are defined, need epoch (BHM plateInput)
+#  - need target bits
+#  - inputs need tmass magnitudes?
+#
+#  - what should OBJTYPE and HOLETYPE be?
+#
+#  - need to make sure module file is ok for platedesign
+#    (missing sdss_access, and idlutils needs to be updated goddard)
+#    also ADJUSTFANUCFILES and  GENERATECMMDATA
+#
+# platerun_apogee_boss.pro - draft
+# Counterboring and holes - draft in platerun
+# overlays - draft in platerun
+# new make_fanuc mode - draft (just boss mode)
+#
+# Observability of test plate -- lead survey
+#
+# test misplacing fibers in holes
+
+# Which instruments are to be used?
+# At least one argument required, from among:
+#   SDSS BOSS MARVELS APOGEE MANGA
+instruments APOGEE_SHARED BOSS_SHARED
+
+# Types of targets to guarantee a certain number of.
+# At least one type required.  Names are free-form, but
+# are not case sensitive.
+relaxed_fiber_classes 1
+targettypes standard science sky
+
+# Number of pointings, and number of offsets per pointing
+# A pointing involves closing the shutter and reacquisition.
+# An offset is a small offset (arcminutish) during an exposure.
+# "nOffsets 0" means we don't move during the exposure.
+# If there is an offset, it must be the same for all exposures.
+nPointings 1
+nOffsets 0
+
+# For each instrument, you must specify how many
+# targets of each type are wanted. This is an array
+# for multi-pointing or offset plates, of the form
+#  p1/o0 p2/o0 pM/o0 ... p1/oN ... pM/oN
+# (for M pointings and N offsets).
+nBOSS_SHARED_science 400
+nBOSS_SHARED_sky 80
+nBOSS_SHARED_standard 20
+nAPOGEE_SHARED_standard 35
+nAPOGEE_SHARED_science 230
+nAPOGEE_SHARED_sky 35
+
+# What are conditions on number of skies and standards per block?
+# (per pointing)
+maxskyinblockBOSS_SHARED 4
+minskyinblockBOSS_SHARED 2
+minstandardinblockBOSS_SHARED 2
+
+# Guide fibers to use for each pointing
+gfiberType gfiber2
+guideType GAIA
+guideNums1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+guidemag_minmax 11. 15.0
+guide_lambda_eff 5400.
+nguidemax 600
+
+# Ferrule sizes to assume for each instrument's fiber (mm)
+# The Ferrule diameter is 6.99mm
+# So I will assume 7mm here
+# In target selection I have resolved at 116" which is
+# slightly larger than this
+ferruleSizeBOSS_SHARED 3.72231
+bufferSizeBOSS_SHARED 0.000
+ferruleSizeAPOGEE_SHARED 3.72231
+bufferSizeAPOGEE_SHARED 0.300
+
+# Buffer size made up for GUIDEs
+ferruleSizeGUIDE 6.9555
+bufferSizeGUIDE 0.3
+
+# Settings if platedesign is meant to find standards
+# Specify which instruments we need to find standards for
+plateDesignStandards NONE
+standardType NONE
+
+# Settings if platedesign is meant to find skies.
+# Specify which instruments we need to find skies for.
+plateDesignSkies NONE
+skyType NONE
+
+# Use sdss5 plugmap style
+plugmapstyle plplugmap_apogee_boss
+bossmagtype fiber2mag
+
+# Default pointing_name
+pointing_name A B C D E F
+
+# Set conditions for maximum offset (arcsec) of fiber in HA range
+max_off_fiber_for_ha 0.3
+
+collectfactor 6
