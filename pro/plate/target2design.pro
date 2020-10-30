@@ -85,15 +85,18 @@ design= replicate(design_blank(), ntargets)
 
 ;; now copy all appropriate tags to design from the target list
 struct_assign, targets, design, /nozero
+design.target_ra= targets.ra
+design.target_dec= targets.dec
 
 ;; Move objects to plate plan epoch
-if(n_elements(plan_epoch) gt 0) then $
+if(n_elements(plan_epoch) gt 0) then begin
    design_pm, design, toepoch=plan_epoch
+endif
 
 ;; Get default xf_default and yf_default
 ;; (not particular position for this LST and temp)
-plate_ad2xy, definition, default, pointing, offset, targets.ra, $
-             targets.dec, design.lambda_eff, xfocal=xf_default, $
+plate_ad2xy, definition, default, pointing, offset, design.target_ra, $
+             design.target_dec, design.lambda_eff, xfocal=xf_default, $
              yfocal=yf_default, zoffset=design.zoffset
 
 ;; add per plateInput data 
@@ -122,8 +125,6 @@ buffersize= get_buffersize(definition, default, info.instrument)
 
 ;; add per target data 
 design.sourcetype= targets.sourcetype
-design.target_ra= targets.ra
-design.target_dec= targets.dec
 design.xf_default=xf_default
 design.yf_default=yf_default
 design.diameter=ferrulesize
