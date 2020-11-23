@@ -10,7 +10,7 @@
 #
 
 # Test in case we are in a Git environment.
-GIT_REV=`git describe --tags --abbrev=0 2> /dev/null`
+GIT_REV=`git describe --tags 2> /dev/null`
 if [ $? -eq 0 ]; then
     echo $GIT_REV
 else
