@@ -24,8 +24,80 @@
 ;    1-Sep-2010  Demitri Muna, NYU, Adding file test before opening files.
 ;-
 ;------------------------------------------------------------------------------
+pro set_blockcen_apogee_shared_lines, full, fiberblocks, fiberid, blockcenx, $
+                                      blockceny
+
+  platescale = get_platescale('APO')
+
+  ;; now find the center location for each block, and limits in
+  ;; y-direction of targets
+  bnums= (uniqtag(fiberblocks, 'blockid')).blockid
+  for i=0L, n_elements(bnums)-1L do begin
+     ib= where(fiberblocks[fiberid-1].blockid eq bnums[i], nb)
+     if(nb gt 0) then begin
+        blockcenx[bnums[i]-1]= mean(full[ib].xf_default)/platescale
+        blockceny[bnums[i]-1]= mean(full[ib].yf_default)/platescale
+     endif 
+  endfor
+end
+;
+pro platelines_apogee_rearrange, full, holes, blockfile=blockfile, $
+  blockname=blockname, stretch=stretch, blocks=blocks
+
+  if(n_elements(stretch) eq 0) then $
+     stretch=0.
+  if(n_elements(blockname) eq 0) then $
+     blockname='APOGEE'
+  if(n_elements(blockfile) eq 0) then $
+     blockfile = getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocks'+ $
+                 blockname+'.par'
+
+  platescale = get_platescale('APO')
+  nperblock=6L
+
+  iapogee= where(strupcase(full.holetype) eq 'APOGEE' or $
+                 strupcase(full.holetype) eq 'APOGEE_SHARED', napogee)
+  if(keyword_set(blocks)) then begin
+     toblock=blocks[iapogee]
+  endif
+  fiberblocks= yanny_readone(blockfile, /anon)
+  fiberblocks.fiberid = lindgen(n_elements(fiberblocks)) + 1L
+  if(napogee ne n_elements(fiberblocks)) then $
+     message, 'Not the right number of APOGEE fibers?'
+  nblocks=max(fiberblocks.blockid)
+  blockcenx= fltarr(nblocks)
+  blockceny= fltarr(nblocks)
+  for i=1L, nblocks do begin
+     ib= where(fiberblocks.blockid eq i, nb)
+     blockcenx[i-1]= mean(fiberblocks[ib].fibercenx)
+     blockceny[i-1]= mean(fiberblocks[ib].fiberceny)
+  endfor
+
+  maxiter=7L
+  for iter=0L, maxiter-1L do begin
+     sdss_plugprob, full[iapogee].xf_default, $
+                    full[iapogee].yf_default, $
+                    tmp_fiberid, $
+                    reachfunc='boss_reachcheck', $
+                    blockfile=blockfile, maxinblock=6, $
+                    minavail=0, stretch=stretch, $
+                    blockcenx=blockcenx, blockceny=blockceny, $
+                    toblock=toblock
+     
+     if(min(tmp_fiberid) lt 1) then $
+        message, 'Some fibers unassigned'
+     
+     full[iapogee].fiberid= tmp_fiberid
+     holes[iapogee].fiberid= -tmp_fiberid
+     
+     set_blockcen_apogee_shared_lines, full[iapogee], fiberblocks, $
+                                       tmp_fiberid, blockcenx, blockceny
+  endfor
+
+end
+;
 pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed, $
-                       blockname=blockname
+                       blockname=blockname, rearrange=rearrange, stretch=stretch, blocks=blocks
 
   common com_pla, plateid, full, holes, hdr, hdrstr
 
@@ -33,6 +105,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      message, 'Plate ID must be given!'
   if(NOT keyword_set(blockname)) then $
      blockname = 'APOGEE'
+  if(NOT keyword_set(stretch)) then $
+     stretch = 0.
 
   if(keyword_set(plateid) gt 0) then begin
      if(plateid ne in_plateid) then begin
@@ -45,7 +119,8 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
   endelse
 
   full_blockfile=getenv('PLATEDESIGN_DIR')+'/data/apogee/fiberBlocks'+blockname+'.par'
-  blocks= yanny_readone(full_blockfile)
+  fiberblocks= yanny_readone(full_blockfile)
+  fiberblocks.fiberid = lindgen(n_elements(fiberblocks)) + 1L
 
   platedir= plate_dir(plateid)
 
@@ -100,6 +175,11 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      splog, msg
      return
   endif
+
+;; if desired, rearrange APOGEE fibers
+if(keyword_set(rearrange) ne 0) then $
+   platelines_apogee_rearrange, full, holes, blockfile=full_blockfile, $
+                                stretch=stretch, blocks=blocks
   
 ;; basic versions
   versions=['apogee', 'apogee.sky', 'apogee.std', 'traps']
@@ -223,12 +303,12 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
                          ;; should color according to fiber type
                          currthick=circle_thick
                          currthick=circle_thick
-                         ib= where(blocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
+                         ib= where(fiberblocks.fiberid eq abs(holes[isci[ii[j]]].fiberid), nb)
                          if(nb eq 0) then $
                            message, 'Unknown fiber!'
                          if(nb gt 1) then $
                            message, 'Duplicate fiber in blocks!'
-                         curr_ftype= blocks[ib[0]].ftype 
+                         curr_ftype= fiberblocks[ib[0]].ftype 
                          if(curr_ftype eq 'B') then $
                            currcolor='red'
                          if(curr_ftype eq 'M') then $
@@ -270,6 +350,15 @@ pro platelines_apogee, in_plateid, diesoft=diesoft, sorty=sorty, relaxed=relaxed
      endif
      
      platelines_end
+  endfor
+
+  blocks = lonarr(n_elements(full))
+  for i = 0L, n_elements(full) - 1L do begin
+     if(strupcase(full[i].holetype) eq 'APOGEE' or $
+        strupcase(full[i].holetype) eq 'APOGEE_SHARED') then begin
+        ib = where(fiberblocks.fiberid eq full[i].fiberid)
+        blocks[i] = fiberblocks[ib[0]].blockid
+     endif
   endfor
 
   return

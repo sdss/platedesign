@@ -25,8 +25,10 @@
 ;-
 ;------------------------------------------------------------------------------
 pro platelines_rearrange, full, holes, blockfile=blockfile, $
-  blockname=blockname
+  blockname=blockname, stretch=stretch, blocks=blocks
 
+  if(n_elements(stretch) eq 0) then $
+     stretch=0.
   if(n_elements(blockname) eq 0) then $
      blockname='BOSS'
   if(n_elements(blockfile) eq 0) then $
@@ -38,8 +40,13 @@ pro platelines_rearrange, full, holes, blockfile=blockfile, $
   nperblock=20L
   minyblocksize=0.3
 
-  iboss= where(strupcase(full.holetype) eq 'BOSS', nboss)
+  iboss= where(strupcase(full.holetype) eq 'BOSS' or $
+               strupcase(full.holetype) eq 'BOSS_SHARED', nboss)
+  if(keyword_set(blocks)) then begin
+     toblock=blocks[iboss]
+  endif
   fiberblocks= yanny_readone(blockfile, /anon)
+  fiberblocks.fiberid = lindgen(n_elements(fiberblocks)) + 1L
   if(nboss ne n_elements(fiberblocks)) then $
      message, 'Not the right number of BOSS fibers?'
   nblocks=max(fiberblocks.blockid)
@@ -54,42 +61,8 @@ pro platelines_rearrange, full, holes, blockfile=blockfile, $
                  full[iboss].yf_default, $
                  tmp_fiberid, $
                  reachfunc='boss_reachcheck', $
-                 blockfile=blockfile, minavail=0
-
-  ;; section for optimizing centers; commented out since it doesn't 
-  ;; do much better than just the regular fit.
-  if(0) then begin
-     for iter=0L, maxiter-1L do begin
-        splog, 'iter='+string(iter)
-        block= (tmp_fiberid-1L)/nperblock+1L
-        ;; now find the center location for each block, and limits in
-        ;; y-direction of targets
-        for i=1L, nblocks do begin
-           ib= where(block eq i, nb)
-           if(nb gt 0) then begin
-              blockcenx[i-1]= mean(full[iboss[ib]].xf_default)/platescale
-              blockceny[i-1]= mean(full[iboss[ib]].yf_default)/platescale
-           endif 
-        endfor
-        tmp_fiberid=0
-        sdss_plugprob, full[iboss].xf_default, $
-                       full[iboss].yf_default, $
-                       tmp_fiberid, $
-                       reachfunc='boss_reachcheck', $
-                       blockfile=blockfile, $
-                       blockcenx=blockcenx, blockceny=blockceny, /quiet
-     endfor
-     if(min(tmp_fiberid) lt 1) then $
-        message, 'Some fibers unassigned'
-     
-     block= (tmp_fiberid-1L)/nperblock+1L
-     tmp_fiberid=0
-     sdss_plugprob, full[iboss].xf_default, $
-                    full[iboss].yf_default, $
-                    tmp_fiberid, $
-                    reachfunc='boss_reachcheck', $
-                    blockfile=blockfile, toblock=block
-  endif
+                 blockfile=blockfile, minavail=0, stretch=stretch, $
+                 toblock=toblock
 
   if(min(tmp_fiberid) lt 1) then $
      message, 'Some fibers unassigned'
@@ -101,16 +74,20 @@ end
 ;
 pro platelines_boss, in_plateid, diesoft=diesoft, sorty=sorty, $
                      rearrange=rearrange, relax_lines=relax_lines, $
-                     blockfile=blockfile, blockname=blockname
+                     blockfile=blockfile, blockname=blockname, $
+                     stretch=stretch, blocks=blocks
 
 common com_plb, plateid, full, holes, hdr, hdrstr
 
+if(n_elements(stretch) eq 0) then $
+   stretch=0.
 if(n_elements(blockname) eq 0) then $
    blockname='BOSS'
 if(n_elements(blockfile) eq 0) then $
    blockfile = getenv('PLATEDESIGN_DIR')+'/data/boss/fiberBlocks'+ $
                blockname+'.par'
 fiberblocks= yanny_readone(blockfile, /anon)
+fiberblocks.fiberid = lindgen(n_elements(fiberblocks)) + 1L
 nblocks=max(fiberblocks.blockid)
 nper=n_elements(fiberblocks) / nblocks
 nperblue= nper / 2L
@@ -154,8 +131,9 @@ endif
 
 ;; if desired, rearrange BOSS fibers
 if(keyword_set(rearrange) ne 0) then $
-   platelines_rearrange, full, holes
-      
+   platelines_rearrange, full, holes, blockfile=blockfile, stretch=stretch, $
+                         blocks=blocks
+
 ;; basic versions
 versions=['', 'sky', 'std']
 
@@ -381,6 +359,15 @@ for k=0L, n_elements(versions)-1L do begin
    endfor
    
    platelines_end
+endfor
+
+blocks = lonarr(n_elements(full))
+for i = 0L, n_elements(full) - 1L do begin
+   if(strupcase(full[i].holetype) eq 'BOSS' or $
+      strupcase(full[i].holetype) eq 'BOSS_SHARED') then begin
+      ib = where(fiberblocks.fiberid eq full[i].fiberid)
+      blocks[i] = fiberblocks[ib[0]].blockid
+   endif
 endfor
 
 platelines_guide, plateid, holes, full, hdrstr
