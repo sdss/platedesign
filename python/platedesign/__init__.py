@@ -5,4 +5,4 @@ from .core.logger import get_logger
 log = get_logger('platedesignlog')
 
 
-__version__ = 'v5_4_5'
+__version__ = 'v5_4_6'
